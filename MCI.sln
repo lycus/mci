@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.core", "mci.core\mci.core.visualdproj", "{84F6B84D-C7EF-4DCB-AF7F-9D7295CFEDB0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{15874E22-14B9-4AB7-A121-9C3AE378BEE7}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Authors.txt = docs\Authors.txt
+		docs\Compatibility.txt = docs\Compatibility.txt
+		docs\Design.txt = docs\Design.txt
+		docs\License.txt = docs\License.txt
+		docs\Welcome.txt = docs\Welcome.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{84F6B84D-C7EF-4DCB-AF7F-9D7295CFEDB0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{84F6B84D-C7EF-4DCB-AF7F-9D7295CFEDB0}.Debug|Win32.Build.0 = Debug|Win32
+		{84F6B84D-C7EF-4DCB-AF7F-9D7295CFEDB0}.Release|Win32.ActiveCfg = Release|Win32
+		{84F6B84D-C7EF-4DCB-AF7F-9D7295CFEDB0}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
