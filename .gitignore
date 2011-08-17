@@ -1,0 +1,9 @@
+*.suo
+*.user
+*ReSharper*
+
+*/Debug/*
+*/Release/*
+*/Test/*
+
+*.orig
