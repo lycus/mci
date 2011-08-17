@@ -1,0 +1,12 @@
+            == MCI: Managed Compiler Infrastructure ==
+
+                -- Authors --
+
+This project is written and maintained by the following people:
+
+    * Alex Rønne Petersen (AKA "Zor")
+      - http://xtzgzorex.wordpress.com/
+      - xtzgzorex@gmail.com
+
+    * Tony Young (AKA "rfw")
+      - rofflwaffls@gmail.com

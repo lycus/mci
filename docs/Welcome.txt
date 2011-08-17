@@ -1,0 +1,31 @@
+            == MCI: Managed Compiler Infrastructure ==
+
+                -- Introduction --
+
+Welcome to the MCI!
+
+The MCI (Managed Compiler Infrastructure) is a project that seeks to
+write a complete compiler infrastructure and JIT (just-in-time) compiler
+in the D 2.0 language.
+
+The rationale for such a project is that developing and maintaining such
+systems in C/C++ (or similar languages) is tedious and error-prone. Also,
+such native implementations usually cannot expose a clean object-oriented
+API.
+
+In addition, the MCI puts high emphasis on treating code as data. Code is
+generally represented in its original form, and the object model is fully
+extensible for new languages.
+
+For further information, see:
+
+    * License.txt
+      - Licensing and Copyright information.
+    * Design.txt
+      - Information regarding the design of the MCI.
+    * Compatibility.txt
+      - Supported compilers, architectures, operating systems, etc.
+    * Specification.tex
+      - The full specification of the MCI in TeX form.
+    * Authors.txt
+      - Names and contact information for MCI developers.

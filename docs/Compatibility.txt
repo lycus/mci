@@ -1,0 +1,49 @@
+            == MCI: Managed Compiler Infrastructure ==
+
+                -- Compatibility --
+
+The MCI generally requires D 2.0, but allows compilation to happen in
+version 1.0 of the language. The latter is, however, unsupported.
+
+The following compilers are supported:
+
+    * Digital Mars D (DMD)
+    * GNU D Compiler (GDC)
+    * LLVM D Compiler (LDC)
+
+The MCI will generally compile even if you're using an unsupported
+compiler, but we cannot in any way guarantee support.
+
+The following architectures are supported:
+
+    * x86
+    * x86-64
+
+Architecture must be determined when compiling, or the compilation
+process will be aborted.
+
+The following forms of inline assembly are supported:
+
+    * x86
+    * x86-64
+
+Inline assembly is not required, but if no assembler is available, no
+low-level optimizations in the MCI will be enabled.
+
+The following operating systems are supported:
+
+    * Windows
+    * FreeBSD
+    * Solaris
+    * Mac OS X
+    * Linux
+
+Operating system must be determined when compiling, or the compilation
+process will be aborted.
+
+Byte order must also be determined when compiling.
+
+During compilation (when config.d is compiled), a configuration briefing
+will be printed. This is useful for determining the cause of problems in the
+compilation process. If a configuration issue is found, the compilation
+process will generally abort in config.d.
