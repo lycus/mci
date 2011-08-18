@@ -2,8 +2,7 @@
 
                 -- Compatibility --
 
-The MCI generally requires D 2.0, but allows compilation to happen in
-version 1.0 of the language. The latter is, however, unsupported.
+The MCI generally requires D 2.0.
 
 The following compilers are supported:
 

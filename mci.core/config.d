@@ -20,7 +20,7 @@ version (D_Version2)
 }
 else
 {
-    pragma(msg, "- Language: D 1.0");
+    static assert(false, "Unsupported D language version.");
 }
 
 version (DigitalMars)
