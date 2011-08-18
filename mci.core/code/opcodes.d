@@ -222,7 +222,7 @@ public static __gshared Enumerable!OpCode allOpCodes;
 static this()
 {
     ubyte valueCount;
-    Array!OpCode opCodes;
+    auto opCodes = new Array!OpCode();
     
     OpCode create(string name, OpCodeType type, OperandType operandType,
                   uint registers, bool hasTarget)
