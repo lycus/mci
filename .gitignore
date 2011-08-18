@@ -10,5 +10,6 @@
 *.a
 *.deps
 *.json
+*.lst
 
 *.orig

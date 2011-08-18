@@ -34,6 +34,7 @@ clean:
 	-rm -f libmci.*.a
 	-rm -f libmci.*.deps
 	-rm -f libmci.*.json
+	-rm -f mci.*.lst
 
 #################### mci.core ####################
 
