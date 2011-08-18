@@ -6,4 +6,9 @@
 */Release/*
 */Test/*
 
+*.o
+*.a
+*.deps
+*.json
+
 *.orig
