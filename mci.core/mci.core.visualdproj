@@ -183,7 +183,7 @@
  <Config name="Test">
   <obj>0</obj>
   <link>0</link>
-  <lib>1</lib>
+  <lib>0</lib>
   <multiobj>0</multiobj>
   <singleFileCompilation>0</singleFileCompilation>
   <oneobj>0</oneobj>
@@ -258,7 +258,7 @@
   <libpaths />
   <deffile />
   <resfile />
-  <exefile>$(OutDir)\$(ProjectName).lib</exefile>
+  <exefile>$(OutDir)\$(ProjectName).exe</exefile>
   <additionalOptions />
   <preBuildCommand />
   <postBuildCommand />
