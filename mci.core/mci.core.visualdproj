@@ -272,20 +272,20 @@
  </Config>
  <Folder name="mci.core">
   <Folder name="code">
-   <File path="instructions.d" />
-   <File path="opcodes.d" />
+   <File path="code\instructions.d" />
+   <File path="code\opcodes.d" />
   </Folder>
   <Folder name="diagnostics">
-   <File path="debugging.d" />
+   <File path="diagnostics\debugging.d" />
+  </Folder>
+  <Folder name="typing">
+   <File path="typing\generics.d" />
+   <File path="typing\members.d" />
+   <File path="typing\types.d" />
   </Folder>
   <Folder name="translation" />
   <Folder name="tree">
-   <File path="base.d" />
-  </Folder>
-  <Folder name="typing">
-   <File path="generics.d" />
-   <File path="members.d" />
-   <File path="types.d" />
+   <File path="tree\base.d" />
   </Folder>
   <File path="all.d" />
   <File path="config.d" />
