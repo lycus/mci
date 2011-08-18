@@ -278,19 +278,20 @@
   <Folder name="diagnostics">
    <File path="diagnostics\debugging.d" />
   </Folder>
+  <Folder name="translation" />
+  <Folder name="tree">
+   <File path="tree\base.d" />
+  </Folder>
   <Folder name="typing">
    <File path="typing\generics.d" />
    <File path="typing\members.d" />
    <File path="typing\types.d" />
   </Folder>
-  <Folder name="translation" />
-  <Folder name="tree">
-   <File path="tree\base.d" />
-  </Folder>
   <File path="all.d" />
   <File path="config.d" />
   <File path="container.d" />
   <File path="exception.d" />
+  <File path="main.d" />
   <File path="nullable.d" />
   <File path="tuple.d" />
  </Folder>
