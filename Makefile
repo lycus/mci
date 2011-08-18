@@ -20,7 +20,7 @@ DFLAGS = -v -w -wi -ignore -X -m$(MODEL)
 ifeq ($(BUILD), release)
 	DFLAGS += -release -O -inline -noboundscheck -profile
 else
-	DFLAGS += -debug -g
+	DFLAGS += -debug -gc
 
 	ifeq ($(BUILD), test)
 		DFLAGS += -unittest -cov
