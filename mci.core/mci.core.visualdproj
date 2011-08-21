@@ -7,7 +7,7 @@
   <multiobj>0</multiobj>
   <singleFileCompilation>0</singleFileCompilation>
   <oneobj>0</oneobj>
-  <trace>0</trace>
+  <trace>1</trace>
   <quiet>0</quiet>
   <verbose>1</verbose>
   <vtls>0</vtls>
@@ -97,7 +97,7 @@
   <multiobj>0</multiobj>
   <singleFileCompilation>0</singleFileCompilation>
   <oneobj>0</oneobj>
-  <trace>1</trace>
+  <trace>0</trace>
   <quiet>0</quiet>
   <verbose>1</verbose>
   <vtls>0</vtls>
@@ -187,7 +187,7 @@
   <multiobj>0</multiobj>
   <singleFileCompilation>0</singleFileCompilation>
   <oneobj>0</oneobj>
-  <trace>0</trace>
+  <trace>1</trace>
   <quiet>0</quiet>
   <verbose>1</verbose>
   <vtls>0</vtls>
