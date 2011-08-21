@@ -46,7 +46,10 @@ ifneq ($(BUILD), test)
 endif
 
 libmci.core.a: $(MCI_CORE_SOURCES)
-	dmd $(MCI_CORE_DFLAGS) -of$@ $(MCI_CORE_SOURCES)
+	dmd $(MCI_CORE_DFLAGS) -of$@ $(MCI_CORE_SOURCES);
+	if [ ${BUILD} = "test" ]; then \
+		gdb --command=mci.gdb libmci.core.a; \
+	fi
 
 MCI_CORE_SOURCES = \
 	mci.core/all.d \
