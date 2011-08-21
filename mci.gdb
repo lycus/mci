@@ -25,6 +25,7 @@ define hook-stop
         disassemble $pc-50,+100
         echo \n:::::::::: THREAD BACKTRACES ::::::::::\n
         thread apply all backtrace full
+        quit
     end
 end
 
