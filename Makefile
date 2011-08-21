@@ -18,9 +18,9 @@ endif
 DFLAGS = -v -w -wi -ignore -X -m$(MODEL)
 
 ifeq ($(BUILD), release)
-	DFLAGS += -release -O -inline -noboundscheck -profile
+	DFLAGS += -release -O -inline -noboundscheck
 else
-	DFLAGS += -debug -gc
+	DFLAGS += -debug -gc -profile
 
 	ifeq ($(BUILD), test)
 		DFLAGS += -unittest -cov
