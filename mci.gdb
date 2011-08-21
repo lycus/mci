@@ -8,9 +8,7 @@ handle SIGTERM nostop print pass
 handle SIGPIPE nostop
 
 define hook-stop
-    if $_exitcode != -999
-        quit
-    else
+    if $_exitcode == -999
         echo \n:::::::::: ACTIVE BACKTRACE :::::::::::\n\n
         backtrace full
         echo \n:::::::::: FUNCTION ARGUMENTS :::::::::\n\n
@@ -25,8 +23,8 @@ define hook-stop
         disassemble $pc-50,+100
         echo \n:::::::::: THREAD BACKTRACES ::::::::::\n
         thread apply all backtrace full
-        quit
     end
+    quit
 end
 
 run
