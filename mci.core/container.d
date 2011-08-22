@@ -1,7 +1,8 @@
 module mci.core.container;
 
 import std.algorithm,
-       std.range;
+       std.range,
+       std.traits;
 
 public interface Enumerable(T)
 {
@@ -30,6 +31,44 @@ public interface Collection(T) : Enumerable!T
     public void remove(T item);
     
     public void clear();
+}
+
+public void addRange(T, V)(Collection!T col, V values)
+    if (isIterable!V)
+{
+    foreach (i; values)
+        col.add(i);
+}
+
+unittest
+{
+    auto arr = new Array!int();
+    
+    addRange(arr, [1, 2, 3]);
+    
+    assert(arr[0] == 1);
+    assert(arr[1] == 2);
+    assert(arr[2] == 3);
+    assert(arr.count == 3);
+}
+
+public void removeRange(T, V)(Collection!T col, V values)
+    if (isIterable!V)
+{
+    foreach (i; values)
+        col.remove(i);
+}
+
+unittest
+{
+    auto arr = new Array!int();
+    
+    addRange(arr, [1, 2, 3, 4, 5, 6]);
+    removeRange(arr, [2, 3, 4, 5]);
+    
+    assert(arr[0] == 1);
+    assert(arr[1] == 6);
+    assert(arr.count == 2);
 }
 
 public class Array(T) : Collection!T
