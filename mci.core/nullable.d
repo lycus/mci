@@ -27,3 +27,16 @@ public struct Nullable(T)
         return _value;
     }
 }
+
+unittest
+{
+    auto x = Nullable!int();
+    
+    assert(!x.hasValue);
+    assertThrown!AssertError(x.value);
+    
+    auto y = Nullable!int(0xdeadbeef);
+    
+    assert(x.hasValue);
+    assert(x.value == 0xdeadbeef);
+}
