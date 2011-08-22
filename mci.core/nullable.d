@@ -40,6 +40,6 @@ unittest
     
     auto y = Nullable!int(0xdeadbeef);
     
-    assert(x.hasValue);
-    assert(x.value == 0xdeadbeef);
+    assert(y.hasValue);
+    assert(y.value == 0xdeadbeef);
 }
