@@ -11,5 +11,6 @@
 *.deps
 *.json
 *.lst
+*.log
 
 *.orig
