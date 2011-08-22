@@ -12,5 +12,6 @@
 *.json
 *.lst
 *.log
+*.def
 
 *.orig
