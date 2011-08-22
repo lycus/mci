@@ -1,5 +1,8 @@
 module mci.core.nullable;
 
+import core.exception,
+       std.exception;
+
 public struct Nullable(T)
     if (!__traits(compiles, { T t = null; }))
 {
