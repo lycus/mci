@@ -37,9 +37,12 @@ unittest
     
     assert(!x.hasValue);
     assertThrown!AssertError(x.value);
+}
+
+unittest
+{
+    auto x = Nullable!int(0xdeadbeef);
     
-    auto y = Nullable!int(0xdeadbeef);
-    
-    assert(y.hasValue);
-    assert(y.value == 0xdeadbeef);
+    assert(x.hasValue);
+    assert(x.value == 0xdeadbeef);
 }

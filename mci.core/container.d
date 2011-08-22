@@ -93,3 +93,57 @@ public class Array(T) : Collection!T
         _array.clear();
     }
 }
+
+unittest
+{
+    auto arr1 = new Array!int();
+    
+    arr1.add(1);
+    arr1.add(2);
+    arr1.add(3);
+    
+    assert(arr1.count == 3);
+}
+
+unittest
+{
+    auto arr = new Array!int();
+    
+    arr.add(1);
+    arr.add(2);
+    
+    arr.remove(2);
+    
+    assert(arr.count == 1);
+}
+
+unittest
+{
+    auto arr = new Array!int();
+    
+    arr.add(1);
+    arr.add(2);
+    arr.add(3);
+    
+    arr.remove(2);
+    
+    assert(arr[0] == 1);
+    assert(arr[1] == 3);
+}
+
+unittest
+{
+    auto arr = new Array!int();
+    
+    arr.add(1);
+    arr.add(2);
+    arr.add(3);
+    
+    arr.clear();
+    
+    assert(arr.count == 0);
+}
+
+unittest
+{
+}
