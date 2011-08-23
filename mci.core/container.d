@@ -1,6 +1,7 @@
 module mci.core.container;
 
-import std.algorithm,
+import mci.core.tuple,
+       std.algorithm,
        std.range,
        std.traits;
 
@@ -31,6 +32,27 @@ public interface Collection(T) : Enumerable!T
     public void remove(T item);
     
     public void clear();
+}
+
+public interface Map(K, V) : Collection!(Tuple!(K, V))
+{
+    public void add(K key, V value)
+    in
+    {
+        static if (__traits(compiles, { K k = null; }))
+            assert(key);
+    }
+    
+    public void remove(K key)
+    in
+    {
+        static if (__traits(compiles, { K k = null; }))
+            assert(key);
+    }
+    
+    public Enumerable!K keys();
+    
+    public Enumerable!V values();
 }
 
 public void addRange(T, V)(Collection!T col, V values)
@@ -183,6 +205,134 @@ unittest
     assert(arr.count == 0);
 }
 
+public class Dictionary(K, V) : Map!(K, V)
+{
+    private V[K] _aa;
+    
+    // For compatibility with std.container and similar.
+    alias _aa this;
+    
+    public int opApply(int delegate(ref Tuple!(K, V)) dg)
+    {
+        foreach (k, v; _aa)
+        {
+            auto status = dg(Tuple!(K, V)(k, v));
+            
+            if (status != 0)
+                return status;
+        }
+        
+        return 0;
+    }
+    
+    public int opApply(int delegate(ref size_t, ref Tuple!(K, V)) dg)
+    {
+        size_t i = 0;
+        
+        foreach (k, v; _aa)
+        {
+            auto status = dg(i, Tuple!(K, V)(k, v));
+            
+            if (status != 0)
+                return status;
+            
+            i++;
+        }
+        
+        return 0;
+    }
+    
+    @property public size_t count()
+    {
+        return _aa.length;
+    }
+    
+    @property public bool empty()
+    {
+        return _aa.length == 0;
+    }
+    
+    public void add(Tuple!(K, V) item)
+    {
+        add(item.x, item.y);
+    }
+    
+    public void remove(Tuple!(K, V) item)
+    {
+        remove(item.x);
+    }
+    
+    public void clear()
+    {
+        _aa = null;
+    }
+    
+    public void add(K key, V value)
+    {
+        _aa[key] = value;
+    }
+    
+    public void remove(K key)
+    {
+        _aa.remove(key);
+    }
+    
+    public Enumerable!K keys()
+    {
+        auto arr = new Array!K();
+        
+        foreach (k; _aa)
+            arr.add(k);
+        
+        return arr;
+    }
+    
+    public Enumerable!V values()
+    {
+        auto arr = new Array!K();
+        
+        foreach (v; _aa.values)
+            arr.add(v);
+        
+        return arr;
+    }
+}
+
 unittest
 {
+    auto dict = new Dictionary!(int, int)();
+    
+    dict.add(1, 3);
+    dict.add(2, 2);
+    dict.add(3, 1);
+    
+    assert(dict.count == 3);
+}
+
+unittest
+{
+    auto dict = new Dictionary!(int, int)();
+    
+    dict.add(1, 3);
+    dict.add(2, 2);
+    dict.add(3, 1);
+    
+    dict.clear();
+    
+    assert(dict.count == 0);
+}
+
+unittest
+{
+    auto dict = new Dictionary!(int, int)();
+    
+    dict.add(1, 3);
+    dict.add(2, 2);
+    dict.add(3, 1);
+    
+    dict.remove(2);
+    
+    assert(dict[1] == 3);
+    assert(dict[3] == 1);
+    assert(dict.count == 2);
 }
