@@ -1,5 +1,8 @@
 module mci.core.typing.types;
 
+import mci.core.container,
+       mci.core.typing.members;
+
 public abstract class TypeBase
 {
     private string _name;
@@ -48,6 +51,7 @@ public class Type : TypeBase
     public TypeAttributes attributes;
     public TypeLayout layout;
     private uint _packingSize = (void*).sizeof;
+    private List!Field _fields;
     
     public this(string name)
     in
@@ -72,6 +76,11 @@ public class Type : TypeBase
     body
     {
         _packingSize = packingSize;
+    }
+    
+    @property public List!Field fields()
+    {
+        return _fields;
     }
 }
 
