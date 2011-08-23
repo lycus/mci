@@ -100,7 +100,7 @@ public class List(T) : Collection!T
     // For compatibility with std.container and similar.
     alias _array this;
     
-    public int opApply(int delegate(ref T) dg)
+    public final int opApply(int delegate(ref T) dg)
     {
         foreach (item; _array)
         {
@@ -113,7 +113,7 @@ public class List(T) : Collection!T
         return 0;
     }
     
-    public int opApply(int delegate(ref size_t, ref T) dg)
+    public final int opApply(int delegate(ref size_t, ref T) dg)
     {
         foreach (i, item; _array)
         {
@@ -126,32 +126,50 @@ public class List(T) : Collection!T
         return 0;
     }
     
-    @property public size_t count()
+    @property public final size_t count()
     {
         return _array.length;
     }
     
-    @property public bool empty()
+    @property public final bool empty()
     {
         return _array.empty;
     }
     
-    public void add(T item)
+    public final void add(T item)
     {
+        onAdd(item);
+        
         _array ~= item;
     }
     
-    public void remove(T item)
+    public final void remove(T item)
     {
+        onRemove(item);
+        
         auto index = _array.countUntil(item);
         
         if (index != -1)
             _array = _array[0 .. index] ~ _array[index + 1 .. $];
     }
     
-    public void clear()
+    public final void clear()
     {
+        onClear();
+        
         _array.clear();
+    }
+    
+    protected void onAdd(T item)
+    {
+    }
+    
+    protected void onRemove(T item)
+    {
+    }
+    
+    protected void onClear()
+    {
     }
 }
 
@@ -212,7 +230,7 @@ public class Dictionary(K, V) : Map!(K, V)
     // For compatibility with std.container and similar.
     alias _aa this;
     
-    public int opApply(int delegate(ref Tuple!(K, V)) dg)
+    public final int opApply(int delegate(ref Tuple!(K, V)) dg)
     {
         foreach (k, v; _aa)
         {
@@ -225,7 +243,7 @@ public class Dictionary(K, V) : Map!(K, V)
         return 0;
     }
     
-    public int opApply(int delegate(ref size_t, ref Tuple!(K, V)) dg)
+    public final int opApply(int delegate(ref size_t, ref Tuple!(K, V)) dg)
     {
         size_t i = 0;
         
@@ -242,42 +260,48 @@ public class Dictionary(K, V) : Map!(K, V)
         return 0;
     }
     
-    @property public size_t count()
+    @property public final size_t count()
     {
         return _aa.length;
     }
     
-    @property public bool empty()
+    @property public final bool empty()
     {
         return _aa.length == 0;
     }
     
-    public void add(Tuple!(K, V) item)
+    public final void add(Tuple!(K, V) item)
     {
         add(item.x, item.y);
     }
     
-    public void remove(Tuple!(K, V) item)
+    public final void remove(Tuple!(K, V) item)
     {
         remove(item.x);
     }
     
-    public void clear()
+    public final void clear()
     {
+        onClear();
+        
         _aa = null;
     }
     
-    public void add(K key, V value)
+    public final void add(K key, V value)
     {
+        onAdd(key, value);
+        
         _aa[key] = value;
     }
     
-    public void remove(K key)
+    public final void remove(K key)
     {
+        onRemove(key);
+        
         _aa.remove(key);
     }
     
-    public Iterable!K keys()
+    public final Iterable!K keys()
     {
         auto arr = new List!K();
         
@@ -287,7 +311,7 @@ public class Dictionary(K, V) : Map!(K, V)
         return arr;
     }
     
-    public Iterable!V values()
+    public final Iterable!V values()
     {
         auto arr = new List!K();
         
@@ -295,6 +319,18 @@ public class Dictionary(K, V) : Map!(K, V)
             arr.add(v);
         
         return arr;
+    }
+    
+    protected void onAdd(K key, V value)
+    {
+    }
+    
+    protected void onRemove(K key)
+    {
+    }
+    
+    protected void onClear()
+    {
     }
 }
 
