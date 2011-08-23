@@ -51,7 +51,7 @@ public class Type : TypeBase
     public TypeAttributes attributes;
     public TypeLayout layout;
     private uint _packingSize = (void*).sizeof;
-    private List!Field _fields;
+    private NoNullList!Field _fields;
     
     public this(string name)
     in
@@ -62,7 +62,7 @@ public class Type : TypeBase
     {
         super(name);
         
-        _fields = new List!Field();
+        _fields = new NoNullList!Field();
     }
     
     @property public final uint packingSize()
@@ -80,7 +80,7 @@ public class Type : TypeBase
         _packingSize = packingSize;
     }
     
-    @property public List!Field fields()
+    @property public NoNullList!Field fields()
     {
         return _fields;
     }

@@ -5,14 +5,14 @@ import mci.core.container,
 
 public final class BasicBlock
 {
-    private List!Instruction _instructions;
+    private NoNullList!Instruction _instructions;
     
     public this()
     {
-        _instructions = new List!Instruction();
+        _instructions = new NoNullList!Instruction();
     }
     
-    @property public List!Instruction instructions()
+    @property public NoNullList!Instruction instructions()
     {
         return _instructions;
     }
@@ -20,14 +20,14 @@ public final class BasicBlock
 
 public final class Function
 {
-    private List!BasicBlock _blocks;
+    private NoNullList!BasicBlock _blocks;
     
     public this()
     {
-        _blocks = new List!BasicBlock();
+        _blocks = new NoNullList!BasicBlock();
     }
     
-    @property public List!BasicBlock blocks()
+    @property public NoNullList!BasicBlock blocks()
     {
         return _blocks;
     }
