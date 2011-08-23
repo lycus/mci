@@ -53,7 +53,7 @@ alias Algebraic!(byte,
                  string,
                  TypeBase,
                  Field,
-                 Enumerable!(Tuple!(string, Register))) InstructionOperand;
+                 Iterable!(Tuple!(string, Register))) InstructionOperand;
 
 public final class Instruction
 {

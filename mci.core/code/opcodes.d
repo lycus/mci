@@ -88,7 +88,7 @@ public static TypeInfo operandToTypeInfo(OperandType operandType)
              assert(false, "Not implemented."); // TODO
             
         case OperandType.registers:
-            return typeid(Enumerable!(Tuple!(string, Register)));
+            return typeid(Iterable!(Tuple!(string, Register)));
     }
 }
 
@@ -217,7 +217,7 @@ public static __gshared OpCode opLeave;
 public static __gshared OpCode opReturn;
 public static __gshared OpCode opPhi;
 
-public static __gshared Enumerable!OpCode allOpCodes;
+public static __gshared Iterable!OpCode allOpCodes;
 
 static this()
 {

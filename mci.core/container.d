@@ -5,14 +5,14 @@ import mci.core.tuple,
        std.range,
        std.traits;
 
-public interface Enumerable(T)
+public interface Iterable(T)
 {
     public int opApply(int delegate(ref T) dg);
     
     public int opApply(int delegate(ref size_t, ref T) dg);
 }
 
-public interface Collection(T) : Enumerable!T
+public interface Collection(T) : Iterable!T
 {
     @property public size_t count()
     out (result)
@@ -50,9 +50,9 @@ public interface Map(K, V) : Collection!(Tuple!(K, V))
             assert(key);
     }
     
-    public Enumerable!K keys();
+    public Iterable!K keys();
     
-    public Enumerable!V values();
+    public Iterable!V values();
 }
 
 public void addRange(T, V)(Collection!T col, V values)
@@ -277,7 +277,7 @@ public class Dictionary(K, V) : Map!(K, V)
         _aa.remove(key);
     }
     
-    public Enumerable!K keys()
+    public Iterable!K keys()
     {
         auto arr = new Array!K();
         
@@ -287,7 +287,7 @@ public class Dictionary(K, V) : Map!(K, V)
         return arr;
     }
     
-    public Enumerable!V values()
+    public Iterable!V values()
     {
         auto arr = new Array!K();
         
