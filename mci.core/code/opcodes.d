@@ -133,7 +133,7 @@ public final class OpCode
         return _type;
     }
     
-    @property public OperandType operandType() const
+    @property public OperandType operandType()
     {
         return _operandType;
     }
@@ -152,7 +152,7 @@ public final class OpCode
 public static __gshared OpCode opNop;
 public static __gshared OpCode opComment;
 public static __gshared OpCode opDead;
-public static __gshared OpCode opLabel;
+public static __gshared OpCode opRaw;
 public static __gshared OpCode opLoadI8;
 public static __gshared OpCode opLoadUI8;
 public static __gshared OpCode opLoadI16;
@@ -237,7 +237,7 @@ static this()
     opNop = create("nop", OpCodeType.noOperation, OperandType.none, 0, false);
     opComment = create("comment", OpCodeType.annotation, OperandType.bytes, 0, false);
     opDead = create("dead", OpCodeType.annotation, OperandType.none, 0, false);
-    opLabel = create("label", OpCodeType.annotation, OperandType.label, 0, false);
+    opRaw = create("raw", OpCodeType.normal, OperandType.bytes, 0, false);
     opLoadI8 = create("load.i8", OpCodeType.normal, OperandType.int8, 0, true);
     opLoadUI8 = create("load.ui8", OpCodeType.normal, OperandType.uint8, 0, true);
     opLoadI16 = create("load.i16", OpCodeType.normal, OperandType.int16, 0, true);
