@@ -1,9 +1,11 @@
 module mci.core.container;
 
-import mci.core.tuple,
+import core.exception,
        std.algorithm,
+       std.exception,
        std.range,
-       std.traits;
+       std.traits,
+       mci.core.tuple;
 
 public interface Iterable(T)
 {
@@ -64,14 +66,14 @@ public void addRange(T, V)(Collection!T col, V values)
 
 unittest
 {
-    auto arr = new List!int();
+    auto list = new List!int();
     
-    addRange(arr, [1, 2, 3]);
+    addRange(list, [1, 2, 3]);
     
-    assert(arr[0] == 1);
-    assert(arr[1] == 2);
-    assert(arr[2] == 3);
-    assert(arr.count == 3);
+    assert(list[0] == 1);
+    assert(list[1] == 2);
+    assert(list[2] == 3);
+    assert(list.count == 3);
 }
 
 public void removeRange(T, V)(Collection!T col, V values)
@@ -83,14 +85,14 @@ public void removeRange(T, V)(Collection!T col, V values)
 
 unittest
 {
-    auto arr = new List!int();
+    auto list = new List!int();
     
-    addRange(arr, [1, 2, 3, 4, 5, 6]);
-    removeRange(arr, [2, 3, 4, 5]);
+    addRange(list, [1, 2, 3, 4, 5, 6]);
+    removeRange(list, [2, 3, 4, 5]);
     
-    assert(arr[0] == 1);
-    assert(arr[1] == 6);
-    assert(arr.count == 2);
+    assert(list[0] == 1);
+    assert(list[1] == 6);
+    assert(list.count == 2);
 }
 
 public class List(T) : Collection!T
@@ -175,52 +177,88 @@ public class List(T) : Collection!T
 
 unittest
 {
-    auto arr1 = new List!int();
+    auto list = new List!int();
     
-    arr1.add(1);
-    arr1.add(2);
-    arr1.add(3);
+    list.add(1);
+    list.add(2);
+    list.add(3);
     
-    assert(arr1.count == 3);
+    assert(list.count == 3);
 }
 
 unittest
 {
-    auto arr = new List!int();
+    auto list = new List!int();
     
-    arr.add(1);
-    arr.add(2);
+    list.add(1);
+    list.add(2);
     
-    arr.remove(2);
+    list.remove(2);
     
-    assert(arr.count == 1);
+    assert(list.count == 1);
 }
 
 unittest
 {
-    auto arr = new List!int();
+    auto list = new List!int();
     
-    arr.add(1);
-    arr.add(2);
-    arr.add(3);
+    list.add(1);
+    list.add(2);
+    list.add(3);
     
-    arr.remove(2);
+    list.remove(2);
     
-    assert(arr[0] == 1);
-    assert(arr[1] == 3);
+    assert(list[0] == 1);
+    assert(list[1] == 3);
 }
 
 unittest
 {
-    auto arr = new List!int();
+    auto list = new List!int();
     
-    arr.add(1);
-    arr.add(2);
-    arr.add(3);
+    list.add(1);
+    list.add(2);
+    list.add(3);
     
-    arr.clear();
+    list.clear();
     
-    assert(arr.count == 0);
+    assert(list.count == 0);
+}
+
+public class NoNullList(T) : List!T
+{
+    protected override void onAdd(T item)
+    {
+        assert(item);
+    }
+    
+    protected override void onRemove(T item)
+    {
+        assert(item);
+    }
+}
+
+unittest
+{
+    auto list = new NoNullList!string();
+    
+    assertThrown!AssertError(list.add(null));
+}
+
+unittest
+{
+    auto list = new NoNullList!string();
+    
+    assertThrown!AssertError(list.remove(null));
+}
+
+unittest
+{
+    auto list = new NoNullList!string();
+    
+    list.add("foo");
+    list.add("bar");
+    list.add("baz");
 }
 
 public class Dictionary(K, V) : Map!(K, V)
