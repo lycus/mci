@@ -272,6 +272,7 @@
  </Config>
  <Folder name="mci.core">
   <Folder name="code">
+   <File path="code\functions.d" />
    <File path="code\instructions.d" />
    <File path="code\opcodes.d" />
   </Folder>

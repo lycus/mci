@@ -59,6 +59,7 @@ MCI_CORE_SOURCES = \
 	mci.core/main.d \
 	mci.core/nullable.d \
 	mci.core/tuple.d \
+	mci.core/code/functions.d \
 	mci.core/code/instructions.d \
 	mci.core/code/opcodes.d \
 	mci.core/diagnostics/debugging.d \
