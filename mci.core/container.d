@@ -64,7 +64,7 @@ public void addRange(T, V)(Collection!T col, V values)
 
 unittest
 {
-    auto arr = new Array!int();
+    auto arr = new List!int();
     
     addRange(arr, [1, 2, 3]);
     
@@ -83,7 +83,7 @@ public void removeRange(T, V)(Collection!T col, V values)
 
 unittest
 {
-    auto arr = new Array!int();
+    auto arr = new List!int();
     
     addRange(arr, [1, 2, 3, 4, 5, 6]);
     removeRange(arr, [2, 3, 4, 5]);
@@ -93,7 +93,7 @@ unittest
     assert(arr.count == 2);
 }
 
-public class Array(T) : Collection!T
+public class List(T) : Collection!T
 {
     private T[] _array;
     
@@ -157,7 +157,7 @@ public class Array(T) : Collection!T
 
 unittest
 {
-    auto arr1 = new Array!int();
+    auto arr1 = new List!int();
     
     arr1.add(1);
     arr1.add(2);
@@ -168,7 +168,7 @@ unittest
 
 unittest
 {
-    auto arr = new Array!int();
+    auto arr = new List!int();
     
     arr.add(1);
     arr.add(2);
@@ -180,7 +180,7 @@ unittest
 
 unittest
 {
-    auto arr = new Array!int();
+    auto arr = new List!int();
     
     arr.add(1);
     arr.add(2);
@@ -194,7 +194,7 @@ unittest
 
 unittest
 {
-    auto arr = new Array!int();
+    auto arr = new List!int();
     
     arr.add(1);
     arr.add(2);
@@ -279,7 +279,7 @@ public class Dictionary(K, V) : Map!(K, V)
     
     public Iterable!K keys()
     {
-        auto arr = new Array!K();
+        auto arr = new List!K();
         
         foreach (k; _aa)
             arr.add(k);
@@ -289,7 +289,7 @@ public class Dictionary(K, V) : Map!(K, V)
     
     public Iterable!V values()
     {
-        auto arr = new Array!K();
+        auto arr = new List!K();
         
         foreach (v; _aa.values)
             arr.add(v);
