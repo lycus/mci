@@ -61,6 +61,8 @@ public class Type : TypeBase
     body
     {
         super(name);
+        
+        _fields = new List!Field();
     }
     
     @property public final uint packingSize()
