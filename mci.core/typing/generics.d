@@ -35,7 +35,7 @@ public class GenericParameter : Type
         _name = name;
     }
     
-    @property public string name()
+    @property public override string name()
     {
         return _name;
     }
