@@ -5,32 +5,7 @@ import mci.core.container,
 
 public abstract class TypeBase
 {
-    private string _name;
-    
-    protected this(string name)
-    in
-    {
-        assert(name);
-    }
-    body
-    {
-        _name = name;
-    }
-    
-    @property public final string name()
-    {
-        return _name;
-    }
-    
-    @property public final void name(string name)
-    in
-    {
-        assert(name);
-    }
-    body
-    {
-        _name = name;
-    }
+    @property public abstract string name();
 }
 
 public enum TypeAttributes : ubyte
@@ -46,10 +21,11 @@ public enum TypeLayout : ubyte
     explicit = 2,
 }
 
-public class Type : TypeBase
+public class StructureType : TypeBase
 {
     public TypeAttributes attributes;
     public TypeLayout layout;
+    private string _name;
     private uint _packingSize = (void*).sizeof;
     private NoNullList!Field _fields;
     
@@ -60,8 +36,7 @@ public class Type : TypeBase
     }
     body
     {
-        super(name);
-        
+        _name = name;
         _fields = new NoNullList!Field();
     }
     
@@ -80,9 +55,24 @@ public class Type : TypeBase
         _packingSize = packingSize;
     }
     
-    @property public NoNullList!Field fields()
+    @property public final NoNullList!Field fields()
     {
         return _fields;
+    }
+    
+    @property public override string name()
+    {
+        return _name;
+    }
+    
+    @property public void name(string name)
+    in
+    {
+        assert(name);
+    }
+    body
+    {
+        _name = name;
     }
 }
 
@@ -90,21 +80,13 @@ public abstract class TypeSpecification : TypeBase
 {
     private TypeBase _elementType;
     
-    invariant()
-    {
-        assert(_elementType);
-    }
-    
-    public this(string name, TypeBase elementType)
+    public this(TypeBase elementType)
     in
     {
-        assert(name);
         assert(elementType);
     }
     body
     {
-        super(name);
-        
         _elementType = elementType;
     }
     
@@ -124,7 +106,7 @@ public abstract class TypeSpecification : TypeBase
     }
 }
 
-public nothrow pure class PointerType : TypeSpecification
+public class PointerType : TypeSpecification
 {
     public this(TypeBase elementType)
     in
@@ -133,6 +115,11 @@ public nothrow pure class PointerType : TypeSpecification
     }
     body
     {
-        super(elementType.name ~ "*", elementType);
+        super(elementType);
+    }
+    
+    @property public override string name()
+    {
+        return elementType.name ~ "*";
     }
 }

@@ -13,20 +13,22 @@ public class Field
 {
     private string _name;
     private TypeBase _type;
-    private Type _declaringType;
+    private StructureType _declaringType;
     private Nullable!int _offset;
     public FieldAttributes attributes;
     
-    public this(string name, TypeBase type, Type declaringType)
+    public this(string name, TypeBase type, StructureType declaringType)
     in
     {
         assert(name);
         assert(type);
+        assert(declaringType);
     }
     body
     {
         _name = name;
         _type = type;
+        _declaringType = declaringType;
     }
     
     @property public string name()
@@ -59,12 +61,12 @@ public class Field
         _type = type;
     }
     
-    @property public Type declaringType()
+    @property public StructureType declaringType()
     {
         return _declaringType;
     }
     
-    @property public void declaringType(Type declaringType)
+    @property public void declaringType(StructureType declaringType)
     in
     {
         assert(declaringType);
