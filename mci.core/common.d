@@ -18,6 +18,10 @@ version (unittest)
     private class C : B
     {
     }
+    
+    private class D
+    {
+    }
 }
 
 unittest
@@ -40,4 +44,18 @@ unittest
     auto a = new A();
     
     assert(!isType!B(a));
+}
+
+unittest
+{
+    auto a = new A();
+    
+    assert(isType!A(a));
+}
+
+unittest
+{
+    auto d = new D();
+    
+    assert(!isType!A(d));
 }
