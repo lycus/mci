@@ -12,23 +12,20 @@ public enum FieldAttributes : ubyte
 public class Field
 {
     private string _name;
-    private TypeBase _type;
-    private StructureType _declaringType;
+    private Type _type;
     private Nullable!int _offset;
     public FieldAttributes attributes;
     
-    public this(string name, TypeBase type, StructureType declaringType)
+    public this(string name, Type type)
     in
     {
         assert(name);
         assert(type);
-        assert(declaringType);
     }
     body
     {
         _name = name;
         _type = type;
-        _declaringType = declaringType;
     }
     
     @property public string name()
@@ -46,12 +43,12 @@ public class Field
         _name = name;
     }
     
-    @property public TypeBase type()
+    @property public Type type()
     {
         return _type;
     }
     
-    @property public void type(TypeBase type)
+    @property public void type(Type type)
     in
     {
         assert(type);
@@ -59,21 +56,6 @@ public class Field
     body
     {
         _type = type;
-    }
-    
-    @property public StructureType declaringType()
-    {
-        return _declaringType;
-    }
-    
-    @property public void declaringType(StructureType declaringType)
-    in
-    {
-        assert(declaringType);
-    }
-    body
-    {
-        _declaringType = declaringType;
     }
     
     @property public Nullable!int offset()

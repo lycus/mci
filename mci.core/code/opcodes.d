@@ -79,7 +79,7 @@ public static TypeInfo operandToTypeInfo(OperandType operandType)
             return typeid(string);
             
         case OperandType.type:
-            return typeid(TypeBase);
+            return typeid(Type);
             
         case OperandType.field:
             return typeid(Field);

@@ -10,9 +10,9 @@ import std.variant,
 public final class Register
 {
     private uint _number;
-    private TypeBase _type;
+    private Type _type;
     
-    public this(uint number, TypeBase type)
+    public this(uint number, Type type)
     in
     {
         assert(number < maxRegister);
@@ -24,7 +24,7 @@ public final class Register
         _type = type;
     }
     
-    @property public TypeBase type()
+    @property public Type type()
     {
         return _type;
     }
@@ -51,7 +51,7 @@ alias Algebraic!(byte,
                  double,
                  Object,
                  string,
-                 TypeBase,
+                 Type,
                  Field,
                  Iterable!(Tuple!(string, Register))) InstructionOperand;
 

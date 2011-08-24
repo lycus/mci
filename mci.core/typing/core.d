@@ -2,82 +2,24 @@ module mci.core.typing.core;
 
 import mci.core.typing.types;
 
-public final class Int8Type : TypeBase
+private mixin template CoreType(string type, string name)
 {
-    @property public override string name()
-    {
-        return "int8";
-    }
+    mixin("public final class " ~ type ~ "Type : Type" ~
+          "{" ~
+          "    @property public override string name()" ~
+          "    {" ~
+          "        return \"" ~ name ~ "\";" ~
+          "    }"
+          "}");
 }
 
-public final class UInt8Type : TypeBase
-{
-    @property public override string name()
-    {
-        return "uint8";
-    }
-}
-
-public final class Int16Type : TypeBase
-{
-    @property public override string name()
-    {
-        return "int16";
-    }
-}
-
-public final class UInt16Type : TypeBase
-{
-    @property public override string name()
-    {
-        return "uint16";
-    }
-}
-
-public final class Int32Type : TypeBase
-{
-    @property public override string name()
-    {
-        return "int32";
-    }
-}
-
-public final class UInt32Type : TypeBase
-{
-    @property public override string name()
-    {
-        return "uint32";
-    }
-}
-
-public final class Int64Type : TypeBase
-{
-    @property public override string name()
-    {
-        return "int64";
-    }
-}
-
-public final class UInt64Type : TypeBase
-{
-    @property public override string name()
-    {
-        return "uint64";
-    }
-}
-
-public final class Float32Type : TypeBase
-{
-    @property public override string name()
-    {
-        return "float32";
-    }
-}
-
-public final class Float64Type : TypeBase
-{
-    @property public override string name()
-    {
-        return "float64";
-    }
-}
+mixin CoreType!("Int8", "int8");
+mixin CoreType!("UInt8", "uint8");
+mixin CoreType!("Int16", "int16");
+mixin CoreType!("UInt16", "uint16");
+mixin CoreType!("Int32", "int32");
+mixin CoreType!("UInt32", "uint32");
+mixin CoreType!("Int64", "int64");
+mixin CoreType!("UInt64", "uint64");
+mixin CoreType!("Float32", "float32");
+mixin CoreType!("Float64", "float64");

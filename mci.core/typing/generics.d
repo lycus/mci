@@ -5,9 +5,55 @@ import std.traits,
        mci.core.typing.core,
        mci.core.typing.types;
 
+public enum GenericParameterVariance : ubyte
+{
+    none = 0,
+    covariant = 1,
+    contravariant = 2,
+}
+
+public enum GenericParameterConstraint : ubyte
+{
+    none = 0,
+    referenceType = 1,
+    valueType = 2,
+}
+
+public class GenericParameter : Type
+{
+    public GenericParameterVariance variance;
+    public GenericParameterConstraint constraint;
+    private string _name;
+    
+    public this(string name)
+    in
+    {
+        assert(name);
+    }
+    body
+    {
+        _name = name;
+    }
+    
+    @property public string name()
+    {
+        return _name;
+    }
+    
+    @property public void name(string name)
+    in
+    {
+        assert(name);
+    }
+    body
+    {
+        _name = name;
+    }
+}
+
 public class GenericType : TypeSpecification
 {
-    private NoNullList!string _genericParameters;
+    private NoNullList!GenericParameter _genericParameters;
     
     public this(StructureType elementType)
     in
@@ -18,15 +64,15 @@ public class GenericType : TypeSpecification
     {
         super(elementType);
         
-        _genericParameters = new NoNullList!string();
+        _genericParameters = new NoNullList!GenericParameter();
     }
     
-    @property public final NoNullList!string genericParameters()
+    @property public final NoNullList!GenericParameter genericParameters()
     {
         return _genericParameters;
     }
     
-    public final GenericTypeInstance construct(Countable!TypeBase args)
+    public final GenericTypeInstance construct(Countable!Type args)
     in
     {
         assert(args);
@@ -48,7 +94,7 @@ public class GenericType : TypeSpecification
 
 public class GenericTypeInstance : GenericType
 {
-    private NoNullList!TypeBase _genericArguments;
+    private NoNullList!Type _genericArguments;
     
     public this(StructureType elementType)
     in
@@ -59,10 +105,10 @@ public class GenericTypeInstance : GenericType
     {
         super(elementType);
         
-        _genericArguments = new NoNullList!TypeBase();
+        _genericArguments = new NoNullList!Type();
     }
     
-    @property public final NoNullList!TypeBase genericArguments()
+    @property public final NoNullList!Type genericArguments()
     {
         return _genericArguments;
     }
@@ -73,10 +119,10 @@ unittest
     auto st = new StructureType("test_struct");
     auto gt = new GenericType(st);
     
-    gt.genericParameters.add("a");
-    gt.genericParameters.add("b");
+    gt.genericParameters.add(new GenericParameter("a"));
+    gt.genericParameters.add(new GenericParameter("b"));
     
-    auto args = new NoNullList!TypeBase();
+    auto args = new NoNullList!Type();
     
     args.add(new Int32Type());
     args.add(new Float64Type());

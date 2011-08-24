@@ -1,9 +1,10 @@
 module mci.core.typing.types;
 
 import mci.core.container,
+       mci.core.typing.core,
        mci.core.typing.members;
 
-public abstract class TypeBase
+public abstract class Type
 {
     @property public abstract string name();
 }
@@ -11,7 +12,7 @@ public abstract class TypeBase
 public enum TypeAttributes : ubyte
 {
     none = 0x00,
-    value = 0x01,
+    valueType = 0x01,
 }
 
 public enum TypeLayout : ubyte
@@ -21,7 +22,7 @@ public enum TypeLayout : ubyte
     explicit = 2,
 }
 
-public class StructureType : TypeBase
+public class StructureType : Type
 {
     public TypeAttributes attributes;
     public TypeLayout layout;
@@ -76,11 +77,11 @@ public class StructureType : TypeBase
     }
 }
 
-public abstract class TypeSpecification : TypeBase
+public abstract class TypeSpecification : Type
 {
-    private TypeBase _elementType;
+    private Type _elementType;
     
-    public this(TypeBase elementType)
+    public this(Type elementType)
     in
     {
         assert(elementType);
@@ -90,12 +91,12 @@ public abstract class TypeSpecification : TypeBase
         _elementType = elementType;
     }
     
-    @property public final TypeBase elementType()
+    @property public final Type elementType()
     {
         return _elementType;
     }
     
-    @property public final void elementType(TypeBase elementType)
+    @property public final void elementType(Type elementType)
     in
     {
         assert(elementType);
@@ -113,7 +114,7 @@ public abstract class TypeSpecification : TypeBase
 
 public class PointerType : TypeSpecification
 {
-    public this(TypeBase elementType)
+    public this(Type elementType)
     in
     {
         assert(elementType);
@@ -127,4 +128,20 @@ public class PointerType : TypeSpecification
     {
         return elementType.name ~ "*";
     }
+}
+
+unittest
+{
+    auto int32 = new Int32Type();
+    auto ptr = new PointerType(int32);
+    
+    assert(ptr.name == "int32*");
+}
+
+unittest
+{
+    auto st = new StructureType("foo_bar_baz");
+    auto ptr = new PointerType(st);
+    
+    assert(ptr.name == "foo_bar_baz*");
 }
