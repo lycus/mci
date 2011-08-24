@@ -225,18 +225,18 @@ unittest
     assert(list.count == 0);
 }
 
-public class NoNullList(T)
-    if (__traits(compiles, { T t = null; }))
-    : List!T
+public class NoNullList(T) : List!T
 {
     protected override void onAdd(T item)
     {
-        assert(item);
+        static if (__traits(compiles, { T t = null; }))
+            assert(item);
     }
     
     protected override void onRemove(T item)
     {
-        assert(item);
+        static if (__traits(compiles, { T t = null; }))
+            assert(item);
     }
 }
 
