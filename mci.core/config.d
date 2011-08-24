@@ -27,61 +27,61 @@ version (DigitalMars)
 {
     pragma(msg, "- Compiler: Digital Mars D (DMD)");
     
-    public static immutable bool isDMD = true;
-    public static immutable bool isGDC = false;
-    public static immutable bool isLDC = false;
-    public static immutable bool isSDC = false;
+    public enum bool isDMD = true;
+    public enum bool isGDC = false;
+    public enum bool isLDC = false;
+    public enum bool isSDC = false;
 }
 else version (GNU)
 {
     pragma(msg, "- Compiler: GNU D Compiler (GDC)");
     
-    public static immutable bool isDMD = false;
-    public static immutable bool isGDC = true;
-    public static immutable bool isLDC = false;
-    public static immutable bool isSDC = false;
+    public enum bool isDMD = false;
+    public enum bool isGDC = true;
+    public enum bool isLDC = false;
+    public enum bool isSDC = false;
 }
 else version (LDC)
 {
     pragma(msg, "- Compiler: LLVM D Compiler (LDC)");
     
-    public static immutable bool isDMD = false;
-    public static immutable bool isGDC = false;
-    public static immutable bool isLDC = true;
-    public static immutable bool isSDC = false;
+    public enum bool isDMD = false;
+    public enum bool isGDC = false;
+    public enum bool isLDC = true;
+    public enum bool isSDC = false;
 }
 else version (SDC)
 {
     pragma(msg, "- Compiler: Stupid D Compiler (SDC)");
     
-    public static immutable bool isDMD = false;
-    public static immutable bool isGDC = false;
-    public static immutable bool isLDC = false;
-    public static immutable bool isSDC = true;
+    public enum bool isDMD = false;
+    public enum bool isGDC = false;
+    public enum bool isLDC = false;
+    public enum bool isSDC = true;
 }
 else
 {
     pragma(msg, "- Compiler: Unknown");
     
-    public static immutable bool isDMD = false;
-    public static immutable bool isGDC = false;
-    public static immutable bool isLDC = false;
-    public static immutable bool isSDC = false;
+    public enum bool isDMD = false;
+    public enum bool isGDC = false;
+    public enum bool isLDC = false;
+    public enum bool isSDC = false;
 }
 
 version (X86)
 {
     pragma(msg, "- Architecture: x86");
     
-    public static immutable bool is32Bit = true;
-    public static immutable bool is64Bit = false;
+    public enum bool is32Bit = true;
+    public enum bool is64Bit = false;
 }
 else version (X86_64)
 {
     pragma(msg, "- Architecture: x86-64");
     
-    public static immutable bool is32Bit = false;
-    public static immutable bool is64Bit = true;
+    public enum bool is32Bit = false;
+    public enum bool is64Bit = true;
 }
 else
 {
@@ -92,15 +92,15 @@ version (LittleEndian)
 {
     pragma(msg, "- Byte Order: Little Endian (LE)");
     
-    public static immutable bool isLittleEndian = true;
-    public static immutable bool isBigEndian = false;
+    public enum bool isLittleEndian = true;
+    public enum bool isBigEndian = false;
 }
 else version (BigEndian)
 {
     pragma(msg, "- Byte Order: Big Endian (BE)");
     
-    public static immutable bool isLittleEndian = false;
-    public static immutable bool isBigEndian = true;
+    public enum bool isLittleEndian = false;
+    public enum bool isBigEndian = true;
 }
 else
 {
@@ -111,25 +111,25 @@ version (D_InlineAsm_X86_64)
 {
     pragma(msg, "- Inline Assembly: x86-64 & x86");
     
-    public static immutable bool hasAsm = true;
-    public static immutable bool hasX86Asm = true;
-    public static immutable bool hasX64Asm = true;
+    public enum bool hasAsm = true;
+    public enum bool hasX86Asm = true;
+    public enum bool hasX64Asm = true;
 }
 else version (D_InlineAsm_X86)
 {
     pragma(msg, "- Inline Assembly: x86");
     
-    public static immutable bool hasAsm = true;
-    public static immutable bool hasX86Asm = true;
-    public static immutable bool hasX64Asm = false;
+    public enum bool hasAsm = true;
+    public enum bool hasX86Asm = true;
+    public enum bool hasX64Asm = false;
 }
 else
 {
     pragma(msg, "- Inline Assembly: None");
     
-    public static immutable bool hasAsm = false;
-    public static immutable bool hasX86Asm = false;
-    public static immutable bool hasX64Asm = false;
+    public enum bool hasAsm = false;
+    public enum bool hasX86Asm = false;
+    public enum bool hasX64Asm = false;
 }
 
 version (Windows)
@@ -147,8 +147,8 @@ version (Windows)
         static assert(false, "Unknown Windows bitness.");
     }
     
-    public static immutable bool isWindows = true;
-    public static immutable bool isPosix = false;
+    public enum bool isWindows = true;
+    public enum bool isPosix = false;
 }
 else version (Posix)
 {
@@ -173,8 +173,8 @@ else version (Posix)
         static assert(false, "Unknown Posix operating system.");
     }
     
-    public static immutable bool isWindows = false;
-    public static immutable bool isPosix = true;
+    public enum bool isWindows = false;
+    public enum bool isPosix = true;
 }
 else
 {
