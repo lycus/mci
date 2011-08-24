@@ -290,6 +290,7 @@
    <File path="typing\types.d" />
   </Folder>
   <File path="all.d" />
+  <File path="common.d" />
   <File path="config.d" />
   <File path="container.d" />
   <File path="exception.d" />

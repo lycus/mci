@@ -53,6 +53,7 @@ libmci.core.a: $(MCI_CORE_SOURCES)
 
 MCI_CORE_SOURCES = \
 	mci.core/all.d \
+	mci.core/common.d \
 	mci.core/config.d \
 	mci.core/container.d \
 	mci.core/exception.d \
