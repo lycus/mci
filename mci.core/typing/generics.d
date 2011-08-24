@@ -29,6 +29,7 @@ public class GenericType : TypeSpecification
     public final GenericTypeInstance construct(Countable!TypeBase args)
     in
     {
+        assert(args);
         assert(args.count == genericParameters.count);
     }
     body
