@@ -21,17 +21,9 @@ public interface Countable(T) : Iterable!T
     out (result)
     {
         assert(result >= 0);
-        
-        if (empty)
-            assert(!result);
     }
     
-    @property public bool empty()
-    out (result)
-    {
-        if (count == 0)
-            assert(result);
-    }
+    @property public bool empty();
 }
 
 public interface Collection(T) : Countable!T
@@ -187,49 +179,6 @@ public class List(T) : Collection!T
     }
 }
 
-public List!T toList(T)(T[] items ...)
-{
-    auto list = new List!T();
-    
-    foreach (item; items)
-        list.add(item);
-    
-    return list;
-}
-
-unittest
-{
-    auto list = toList(1, 2, 3);
-    
-    assert(list[0] == 1);
-    assert(list[1] == 2);
-    assert(list[2] == 3);
-}
-
-public Countable!T toCountable(T)(T[] items ...)
-{
-    return toList(items);
-}
-
-unittest
-{
-    auto list = toCountable(1, 2, 3);
-    
-    assert(list);
-}
-
-public Iterable!T toIterable(T)(T[] items ...)
-{
-    return toCountable(items);
-}
-
-unittest
-{
-    auto list = toIterable(1, 2, 3);
-    
-    assert(list);
-}
-
 unittest
 {
     auto list = new List!int();
@@ -277,7 +226,50 @@ unittest
     
     list.clear();
     
-    assert(list.count == 0);
+    assert(list.empty);
+}
+
+public List!T toList(T)(T[] items ...)
+{
+    auto list = new List!T();
+    
+    foreach (item; items)
+        list.add(item);
+    
+    return list;
+}
+
+unittest
+{
+    auto list = toList(1, 2, 3);
+    
+    assert(list[0] == 1);
+    assert(list[1] == 2);
+    assert(list[2] == 3);
+}
+
+public Countable!T toCountable(T)(T[] items ...)
+{
+    return toList(items);
+}
+
+unittest
+{
+    auto list = toCountable(1, 2, 3);
+    
+    assert(list);
+}
+
+public Iterable!T toIterable(T)(T[] items ...)
+{
+    return toCountable(items);
+}
+
+unittest
+{
+    auto list = toIterable(1, 2, 3);
+    
+    assert(list);
 }
 
 public class NoNullList(T) : List!T

@@ -58,6 +58,8 @@ public class GenericTypeInstance : GenericType
     body
     {
         super(elementType);
+        
+        _genericArguments = new NoNullList!TypeBase();
     }
     
     @property public final NoNullList!TypeBase genericArguments()
