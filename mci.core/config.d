@@ -30,6 +30,7 @@ version (DigitalMars)
     public static immutable bool isDMD = true;
     public static immutable bool isGDC = false;
     public static immutable bool isLDC = false;
+    public static immutable bool isSDC = false;
 }
 else version (GNU)
 {
@@ -38,6 +39,7 @@ else version (GNU)
     public static immutable bool isDMD = false;
     public static immutable bool isGDC = true;
     public static immutable bool isLDC = false;
+    public static immutable bool isSDC = false;
 }
 else version (LDC)
 {
@@ -46,6 +48,16 @@ else version (LDC)
     public static immutable bool isDMD = false;
     public static immutable bool isGDC = false;
     public static immutable bool isLDC = true;
+    public static immutable bool isSDC = false;
+}
+else version (SDC)
+{
+    pragma(msg, "- Compiler: Stupid D Compiler (SDC)");
+    
+    public static immutable bool isDMD = false;
+    public static immutable bool isGDC = false;
+    public static immutable bool isLDC = false;
+    public static immutable bool isSDC = true;
 }
 else
 {
@@ -54,6 +66,7 @@ else
     public static immutable bool isDMD = false;
     public static immutable bool isGDC = false;
     public static immutable bool isLDC = false;
+    public static immutable bool isSDC = false;
 }
 
 version (X86)

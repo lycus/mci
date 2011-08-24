@@ -9,6 +9,7 @@ The following compilers are supported:
     * Digital Mars D (DMD)
     * GNU D Compiler (GDC)
     * LLVM D Compiler (LDC)
+    * Stupid D Compiler (SDC)
 
 The MCI will generally compile even if you're using an unsupported
 compiler, but we cannot in any way guarantee support.
