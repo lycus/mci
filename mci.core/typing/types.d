@@ -104,6 +104,11 @@ public abstract class TypeSpecification : TypeBase
     {
         _elementType = elementType;
     }
+    
+    @property public override string name()
+    {
+        return elementType.name;
+    }
 }
 
 public class PointerType : TypeSpecification
