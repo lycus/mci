@@ -22,13 +22,24 @@ public final class Function
 {
     private NoNullList!BasicBlock _blocks;
     
-    public this()
+    public this(BasicBlock entry)
+    in
+    {
+        assert(entry);
+    }
+    body
     {
         _blocks = new NoNullList!BasicBlock();
+        _blocks.add(entry);
     }
     
     @property public NoNullList!BasicBlock blocks()
     {
         return _blocks;
+    }
+    
+    @property public BasicBlock entry()
+    {
+        return _blocks.get(0);
     }
 }
