@@ -168,6 +168,11 @@ public class List(T) : Collection!T
         _array.clear();
     }
     
+    public final T get(uint index)
+    {
+        return _array[index];
+    }
+    
     protected void onAdd(T item)
     {
     }
