@@ -14,12 +14,15 @@ public interface Iterable(T)
     public int opApply(int delegate(ref size_t, ref T) dg);
 }
 
-public interface Collection(T) : Iterable!T
+public interface Countable(T) : Iterable!T
 {
     @property public size_t count()
     out (result)
     {
         assert(result >= 0);
+        
+        if (empty)
+            assert(!result);
     }
     
     @property public bool empty()
@@ -28,7 +31,10 @@ public interface Collection(T) : Iterable!T
         if (count == 0)
             assert(result);
     }
-    
+}
+
+public interface Collection(T) : Iterable!T
+{
     public void add(T item);
     
     public void remove(T item);
