@@ -1,10 +1,11 @@
 module mci.core.nullable;
 
 import core.exception,
-       std.exception;
+       std.exception,
+       mci.core.meta;
 
 public struct Nullable(T)
-    if (!__traits(compiles, { T t = null; }))
+    if (!isNullable!T)
 {
     private bool _hasValue;
     private T _value;

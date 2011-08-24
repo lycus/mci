@@ -294,6 +294,7 @@
   <File path="container.d" />
   <File path="exception.d" />
   <File path="main.d" />
+  <File path="meta.d" />
   <File path="nullable.d" />
   <File path="tuple.d" />
  </Folder>

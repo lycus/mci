@@ -5,6 +5,7 @@ import core.exception,
        std.exception,
        std.range,
        std.traits,
+       mci.core.meta,
        mci.core.tuple;
 
 public interface Iterable(T)
@@ -47,14 +48,14 @@ public interface Map(K, V) : Collection!(Tuple!(K, V))
     public void add(K key, V value)
     in
     {
-        static if (__traits(compiles, { K k = null; }))
+        static if (isNullable!K)
             assert(key);
     }
     
     public void remove(K key)
     in
     {
-        static if (__traits(compiles, { K k = null; }))
+        static if (isNullable!K)
             assert(key);
     }
     
@@ -283,13 +284,13 @@ public class NoNullList(T) : List!T
 {
     protected override void onAdd(T item)
     {
-        static if (__traits(compiles, { T t = null; }))
+        static if (isNullable!T)
             assert(item);
     }
     
     protected override void onRemove(T item)
     {
-        static if (__traits(compiles, { T t = null; }))
+        static if (isNullable!T)
             assert(item);
     }
 }
