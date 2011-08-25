@@ -282,6 +282,8 @@
   <Folder name="translation" />
   <Folder name="tree">
    <File path="tree\base.d" />
+   <File path="tree\expressions.d" />
+   <File path="tree\statements.d" />
   </Folder>
   <Folder name="typing">
    <File path="typing\core.d" />

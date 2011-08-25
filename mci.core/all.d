@@ -14,6 +14,10 @@ public import mci.core.code.instructions;
 
 public import mci.core.diagnostics.debugging;
 
+public import mci.core.tree.base;
+public import mci.core.tree.expressions;
+public import mci.core.tree.statements;
+
 public import mci.core.typing.core;
 public import mci.core.typing.generics;
 public import mci.core.typing.members;
