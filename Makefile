@@ -66,6 +66,8 @@ MCI_CORE_SOURCES = \
 	mci.core/code/opcodes.d \
 	mci.core/diagnostics/debugging.d \
 	mci.core/tree/base.d \
+	mci.core/tree/expressions.d \
+	mci.core/tree/statements.d \
 	mci.core/typing/core.d \
 	mci.core/typing/generics.d \
 	mci.core/typing/members.d \
