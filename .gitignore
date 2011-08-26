@@ -5,7 +5,9 @@
 */Debug/*
 */Release/*
 */Test/*
+*/bin/*
 
+*.rf
 *.o
 *.a
 *.deps
