@@ -2,6 +2,7 @@ module mci.core.code.functions;
 
 import mci.core.container,
        mci.core.code.instructions,
+       mci.core.tree.statements,
        mci.core.typing.types;
 
 public final class BasicBlock
@@ -81,16 +82,15 @@ public enum FunctionAttributes : ubyte
     none = 0x00,
 }
 
-public class Function
+public abstract class Function
 {
     public FunctionAttributes attributes;
     public CallingConvention callingConvention;
     private string _name;
     private NoNullList!Parameter _parameters;
     private Type _returnType;
-    private NoNullList!BasicBlock _blocks;
     
-    public this(string name, Type returnType)
+    protected this(string name, Type returnType)
     in
     {
         assert(name);
@@ -101,7 +101,6 @@ public class Function
         _name = name;
         _returnType = returnType;
         _parameters = new NoNullList!Parameter();
-        _blocks = new NoNullList!BasicBlock();
     }
     
     @property public string name()
@@ -123,9 +122,59 @@ public class Function
     {
         return _parameters;
     }
+}
+
+public class CodeFunction : Function
+{
+    private NoNullList!BasicBlock _blocks;
+    
+    public this(string name, Type returnType)
+    in
+    {
+        assert(name);
+        assert(returnType);
+    }
+    body
+    {
+        super(name, returnType);
+        
+        _blocks = new NoNullList!BasicBlock();
+    }
     
     @property public final NoNullList!BasicBlock blocks()
     {
         return _blocks;
+    }
+}
+
+public class TreeFunction : Function
+{
+    private BlockNode _tree;
+    
+    public this(string name, Type returnType, BlockNode tree)
+    in
+    {
+        assert(name);
+        assert(returnType);
+        assert(tree);
+    }
+    body
+    {
+        super(name, returnType);
+    }
+    
+    @property public final BlockNode tree()
+    {
+        return _tree;
+    }
+    
+    @property public void tree(BlockNode tree)
+    in
+    {
+        assert(tree);
+    }
+    body
+    {
+        _tree = tree;
     }
 }
