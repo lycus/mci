@@ -124,8 +124,8 @@ unittest
     
     auto args = new NoNullList!Type();
     
-    args.add(new Int32Type());
-    args.add(new Float64Type());
+    args.add(Int32Type.instance);
+    args.add(Float64Type.instance);
     
     auto gti = gt.construct(args);
     

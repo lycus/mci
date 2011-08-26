@@ -6,6 +6,18 @@ private mixin template CoreType(string type, string name)
 {
     mixin("public final class " ~ type ~ "Type : Type" ~
           "{" ~
+          "    private static " ~ type ~ "Type _instance;" ~
+          "" ~
+          "    @property public static " ~ type ~ "Type instance()" ~
+          "    {" ~
+          "        return _instance; " ~
+          "    }" ~
+          "" ~
+          "    private this()" ~
+          "    {" ~
+          "        _instance = new " ~ type ~ "Type();" ~
+          "    }" ~
+          "" ~
           "    @property public override string name()" ~
           "    {" ~
           "        return \"" ~ name ~ "\";" ~

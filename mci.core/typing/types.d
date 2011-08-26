@@ -132,7 +132,7 @@ public class PointerType : TypeSpecification
 
 unittest
 {
-    auto int32 = new Int32Type();
+    auto int32 = Int32Type.instance;
     auto ptr = new PointerType(int32);
     
     assert(ptr.name == "int32*");
