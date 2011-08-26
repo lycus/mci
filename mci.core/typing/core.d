@@ -13,9 +13,13 @@ private mixin template CoreType(string type, string name)
           "        return _instance; " ~
           "    }" ~
           "" ~
-          "    private this()" ~
+          "    static this()" ~
           "    {" ~
           "        _instance = new " ~ type ~ "Type();" ~
+          "    }" ~
+          "" ~
+          "    private this()" ~
+          "    {" ~
           "    }" ~
           "" ~
           "    @property public override string name()" ~
