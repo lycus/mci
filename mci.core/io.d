@@ -15,9 +15,9 @@ public class BinaryReader
     {
         mixin("public final " ~ type ~ " read" ~ name ~ "()" ~
               "{" ~
-                  type ~ "[1] arr;" ~
-                  "_file.rawRead(arr);" ~
-                  "return arr[0];" ~
+              "    " ~ type ~ "[1] arr;" ~
+              "    _file.rawRead(arr);" ~
+              "    return arr[0];" ~
               "}");
     }
     
@@ -37,6 +37,24 @@ public class BinaryReader
     mixin Read!("Char", "char");
     mixin Read!("WChar", "wchar");
     mixin Read!("DChar", "dchar");
+    
+    private mixin template ReadArray(string name, string type, string read)
+    {
+        mixin("public final " ~ type ~ " read" ~ name ~ "(size_t length)" ~
+              "{" ~
+              "    " ~ type ~ " arr;" ~
+              "" ~
+              "    for (size_t i = 0; i < length; i++)" ~
+              "        arr ~= read" ~ read ~ "();" ~
+              "" ~
+              "    return arr;" ~
+              "}");
+    }
+    
+    mixin ReadArray!("Bytes", "ubyte[]", "UInt8");
+    mixin ReadArray!("String", "string", "Char");
+    mixin ReadArray!("WString", "wstring", "WChar");
+    mixin ReadArray!("DString", "dstring", "DChar");
 }
 
 public class BinaryWriter
@@ -73,4 +91,18 @@ public class BinaryWriter
     mixin Write!("Char", "char");
     mixin Write!("WChar", "wchar");
     mixin Write!("DChar", "dchar");
+    
+    private mixin template WriteArray(string name, string type, string read)
+    {
+        mixin("public final void write" ~ name ~ "(" ~ type ~ " array)" ~
+              "{" ~
+              "    foreach (item; array)" ~
+              "        write" ~ read ~ "(item);" ~
+              "}");
+    }
+    
+    mixin WriteArray!("Bytes", "ubyte[]", "UInt8");
+    mixin WriteArray!("String", "string", "Char");
+    mixin WriteArray!("WString", "wstring", "WChar");
+    mixin WriteArray!("DString", "dstring", "DChar");
 }
