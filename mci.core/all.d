@@ -4,6 +4,7 @@ public import mci.core.common;
 public import mci.core.config;
 public import mci.core.container;
 public import mci.core.exception;
+public import mci.core.io;
 public import mci.core.meta;
 public import mci.core.nullable;
 public import mci.core.tuple;

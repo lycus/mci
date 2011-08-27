@@ -56,6 +56,7 @@ MCI_CORE_SOURCES = \
 	mci.core/config.d \
 	mci.core/container.d \
 	mci.core/exception.d \
+	mci.core/io.d \
 	mci.core/main.d \
 	mci.core/meta.d \
 	mci.core/nullable.d \
