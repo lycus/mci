@@ -29,6 +29,7 @@ private mixin template CoreType(string type, string name)
           "}");
 }
 
+mixin CoreType!("Unit", "unit");
 mixin CoreType!("Int8", "int8");
 mixin CoreType!("UInt8", "uint8");
 mixin CoreType!("Int16", "int16");
