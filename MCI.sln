@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 		docs\Welcome.txt = docs\Welcome.txt
 	EndProjectSection
 EndProject
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.assembler", "mci.assembler\mci.assembler.visualdproj", "{97197E6E-6919-4743-9637-DF02DE3E4667}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -25,6 +27,12 @@ Global
 		{84F6B84D-C7EF-4DCB-AF7F-9D7295CFEDB0}.Release|Win32.Build.0 = Release|Win32
 		{84F6B84D-C7EF-4DCB-AF7F-9D7295CFEDB0}.Test|Win32.ActiveCfg = Test|Win32
 		{84F6B84D-C7EF-4DCB-AF7F-9D7295CFEDB0}.Test|Win32.Build.0 = Test|Win32
+		{97197E6E-6919-4743-9637-DF02DE3E4667}.Debug|Win32.ActiveCfg = Debug|Win32
+		{97197E6E-6919-4743-9637-DF02DE3E4667}.Debug|Win32.Build.0 = Debug|Win32
+		{97197E6E-6919-4743-9637-DF02DE3E4667}.Release|Win32.ActiveCfg = Release|Win32
+		{97197E6E-6919-4743-9637-DF02DE3E4667}.Release|Win32.Build.0 = Release|Win32
+		{97197E6E-6919-4743-9637-DF02DE3E4667}.Test|Win32.ActiveCfg = Test|Win32
+		{97197E6E-6919-4743-9637-DF02DE3E4667}.Test|Win32.Build.0 = Test|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

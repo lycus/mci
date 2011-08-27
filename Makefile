@@ -27,7 +27,7 @@ else
 	endif
 endif
 
-all: libmci.core.a
+all: libmci.core.a libmci.assembler.a
 
 clean:
 	-rm -f libmci.*.o
@@ -38,8 +38,7 @@ clean:
 
 #################### mci.core ####################
 
-MCI_CORE_DFLAGS = $(DFLAGS)
-MCI_CORE_DFLAGS += -Xf"libmci.core.json" -deps="libmci.core.deps"
+MCI_CORE_DFLAGS = $(DFLAGS) -Xf"libmci.core.json" -deps="libmci.core.deps"
 
 ifneq ($(BUILD), test)
 	MCI_CORE_DFLAGS += -lib
@@ -72,3 +71,22 @@ MCI_CORE_SOURCES = \
 	mci.core/typing/generics.d \
 	mci.core/typing/members.d \
 	mci.core/typing/types.d
+
+#################### mci.assembler ####################
+
+MCI_ASSEMBLER_DFLAGS = $(DFLAGS) -Xf"libmci.assembler.json" -deps="libmci.assembler.deps"
+
+ifneq ($(BUILD), test)
+	MCI_ASSEMBLER_DFLAGS += -lib
+endif
+
+libmci.assembler.a: $(MCI_ASSEMBLER_SOURCES)
+	dmd $(MCI_ASSEMBLER_DFLAGS) -of$@ $(MCI_ASSEMBLER_SOURCES);
+	if [ ${BUILD} = "test" ]; then \
+		gdb --command=mci.gdb libmci.assembler.a; \
+	fi
+
+MCI_ASSEMBLER_SOURCES =
+	mci.assembler/lexer.d \
+	mci.assembler/main.d \
+	mci.assembler/parser.d
