@@ -95,6 +95,11 @@ public class BinaryWriter
     private mixin template WriteArray(string name, string type, string read)
     {
         mixin("public final void write" ~ name ~ "(" ~ type ~ " array)" ~
+              "in" ~
+              "{" ~
+              "    assert(array);" ~
+              "}" ~
+              "body" ~
               "{" ~
               "    foreach (item; array)" ~
               "        write" ~ read ~ "(item);" ~
