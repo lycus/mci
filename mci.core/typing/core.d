@@ -38,5 +38,8 @@ mixin CoreType!("Int32", "int32");
 mixin CoreType!("UInt32", "uint32");
 mixin CoreType!("Int64", "int64");
 mixin CoreType!("UInt64", "uint64");
+mixin CoreType!("NativeInt", "intn");
+mixin CoreType!("NativeUInt", "uintn");
 mixin CoreType!("Float32", "float32");
 mixin CoreType!("Float64", "float64");
+mixin CoreType!("NativeFloat", "floatn");
