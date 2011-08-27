@@ -86,7 +86,7 @@ libmci.assembler.a: $(MCI_ASSEMBLER_SOURCES)
 		gdb --command=mci.gdb libmci.assembler.a; \
 	fi
 
-MCI_ASSEMBLER_SOURCES =
+MCI_ASSEMBLER_SOURCES = \
 	mci.assembler/lexer.d \
 	mci.assembler/main.d \
 	mci.assembler/parser.d
