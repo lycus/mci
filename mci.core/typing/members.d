@@ -7,6 +7,7 @@ public enum FieldAttributes : ubyte
 {
     none = 0x00,
     global = 0x01,
+    constant = 0x02,
 }
 
 public class Field
