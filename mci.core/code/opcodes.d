@@ -153,6 +153,7 @@ public final class OpCode
     }
 }
 
+// TODO: Add exception handling opcodes.
 public static __gshared OpCode opNop;
 public static __gshared OpCode opComment;
 public static __gshared OpCode opDead;
