@@ -32,7 +32,8 @@ public enum OperandType : ubyte
     type = 13,
     field = 14,
     method = 15,
-    registers = 16,
+    signature = 16,
+    registers = 17,
 }
 
 public static TypeInfo operandToTypeInfo(OperandType operandType)
@@ -86,6 +87,9 @@ public static TypeInfo operandToTypeInfo(OperandType operandType)
             
         case OperandType.method:
              assert(false, "Not implemented."); // TODO
+            
+        case OperandType.signature:
+            assert(false, "Not implemented."); // TODO
             
         case OperandType.registers:
             return typeid(Iterable!(Tuple!(string, Register)));
@@ -166,7 +170,6 @@ public static __gshared OpCode opLoadF64;
 public static __gshared OpCode opLoadFunc;
 public static __gshared OpCode opLoadNull;
 public static __gshared OpCode opLoadSize;
-public static __gshared OpCode opCopy;
 public static __gshared OpCode opAdd;
 public static __gshared OpCode opSub;
 public static __gshared OpCode opMul;
@@ -254,7 +257,6 @@ static this()
     opLoadFunc = create("load.func", OpCodeType.normal, OperandType.method, 0, true);
     opLoadNull = create("load.null", OpCodeType.normal, OperandType.none, 0, true);
     opLoadSize = create("load.size", OpCodeType.normal, OperandType.type, 0, true);
-    opCopy = create("copy", OpCodeType.normal, OperandType.none, 1, true);
     opAdd = create("add", OpCodeType.normal, OperandType.none, 2, true);
     opSub = create("sub", OpCodeType.normal, OperandType.none, 2, true);
     opMul = create("mul", OpCodeType.normal, OperandType.none, 2, true);
@@ -300,6 +302,7 @@ static this()
     opArgPop = create("arg.pop", OpCodeType.normal, OperandType.none, 0, true);
     opCall = create("call", OpCodeType.controlFlow, OperandType.method, 0, true);
     opCallTail = create("call.tail", OpCodeType.controlFlow, OperandType.method, 0, true);
+    opCallTail = create("call.indirect", OpCodeType.controlFlow, OperandType.signature, 0, true);
     opJump = create("jump", OpCodeType.controlFlow, OperandType.label, 0, false);
     opJumpTrue = create("jump.true", OpCodeType.controlFlow, OperandType.label, 1, false);
     opJumpFalse = create("jump.false", OpCodeType.controlFlow, OperandType.label, 1, false);
