@@ -80,6 +80,11 @@ public enum CallingConvention : ubyte
 public enum FunctionAttributes : ubyte
 {
     none = 0x00,
+    intrinsic = 0x01,
+    readOnly = 0x02,
+    noOptimization = 0x04,
+    noInlining = 0x08,
+    noCallInlining = 0x10,
 }
 
 public abstract class Function
