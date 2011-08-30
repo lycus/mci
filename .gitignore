@@ -1,11 +1,12 @@
 *.suo
 *.user
-*ReSharper*
 
+_ReSharper.*/*
 */Debug/*
 */Release/*
 */Test/*
 */bin/*
+*/obj/*
 
 *.rf
 *.o

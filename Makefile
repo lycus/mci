@@ -21,33 +21,38 @@ ifeq ($(BUILD), release)
 	DFLAGS += -release -O -inline -noboundscheck
 else
 	DFLAGS += -debug -gc -profile
-
-	ifeq ($(BUILD), test)
-		DFLAGS += -unittest -cov
-	endif
 endif
 
-all: libmci.core.a libmci.assembler.a
+all: \
+	mci.core/bin/libmci.core.a \
+	mci.core/bin/libmci.core \
+	mci.assembler/bin/libmci.assembler.a \
+	mci.assembler/bin/libmci.assembler
 
 clean:
-	-rm -f libmci.*.o
-	-rm -f libmci.*.a
-	-rm -f libmci.*.deps
-	-rm -f libmci.*.json
-	-rm -f mci.*.lst
+	-rm -f */bin/*.o
+	-rm -f */bin/*.a
+	-rm -f */bin/*.deps
+	-rm -f */bin/*.json
+	-rm -f */bin/*.lst
+	-rm -f */bin/trace.def
+	-rm -f */bin/trace.log
+	-rm -f mci.core/bin/libmci.core
+	-rm -f mci.assembler/bin/libmci.assembler
 
 #################### mci.core ####################
 
-MCI_CORE_DFLAGS = $(DFLAGS) -Xf"libmci.core.json" -deps="libmci.core.deps"
+MCI_CORE_DFLAGS = $(DFLAGS) -Xf"mci.core/bin/libmci.core.json" -deps="mci.core/bin/libmci.core.deps"
 
-ifneq ($(BUILD), test)
-	MCI_CORE_DFLAGS += -lib
-endif
+mci.core/bin/libmci.core.a: $(MCI_CORE_SOURCES)
+	dmd $(MCI_CORE_DFLAGS) -lib -of$@ $(MCI_CORE_SOURCES);
 
-libmci.core.a: $(MCI_CORE_SOURCES)
-	dmd $(MCI_CORE_DFLAGS) -of$@ $(MCI_CORE_SOURCES);
+mci.core/bin/libmci.core: $(MCI_CORE_SOURCES)
+	dmd $(MCI_CORE_DFLAGS) -unittest -cov -of$@ $(MCI_CORE_SOURCES);
 	if [ ${BUILD} = "test" ]; then \
-		gdb --command=mci.gdb libmci.core.a; \
+		cd mci.core/bin; \
+		gdb --command=../../mci.gdb libmci.core; \
+		cd ../..; \
 	fi
 
 MCI_CORE_SOURCES = \
@@ -75,16 +80,18 @@ MCI_CORE_SOURCES = \
 
 #################### mci.assembler ####################
 
-MCI_ASSEMBLER_DFLAGS = $(DFLAGS) -Xf"libmci.assembler.json" -deps="libmci.assembler.deps"
+MCI_ASSEMBLER_DFLAGS = $(DFLAGS) -Xf"mci.assembler/bin/libmci.assembler.json" -deps="mci.assembler/bin/libmci.assembler.deps"
+MCI_ASSEMBLER_DFLAGS += -L-lmci.core -L-Lmci.core/bin
 
-ifneq ($(BUILD), test)
-	MCI_ASSEMBLER_DFLAGS += -lib
-endif
+mci.assembler/bin/libmci.assembler.a: $(MCI_ASSEMBLER_SOURCES)
+	dmd $(MCI_ASSEMBLER_DFLAGS) -lib -of$@ $(MCI_ASSEMBLER_SOURCES);
 
-libmci.assembler.a: $(MCI_ASSEMBLER_SOURCES)
-	dmd $(MCI_ASSEMBLER_DFLAGS) -of$@ $(MCI_ASSEMBLER_SOURCES);
+mci.assembler/bin/libmci.assembler: $(MCI_ASSEMBLER_SOURCES)
+	dmd $(MCI_ASSEMBLER_DFLAGS) -unittest -cov -of$@ $(MCI_ASSEMBLER_SOURCES);
 	if [ ${BUILD} = "test" ]; then \
-		gdb --command=mci.gdb libmci.assembler.a; \
+		cd mci.assembler/bin; \
+		gdb --command=../../mci.gdb libmci.assembler; \
+		cd ../..; \
 	fi
 
 MCI_ASSEMBLER_SOURCES = \
