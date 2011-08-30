@@ -42,7 +42,7 @@
   <ignoreUnsupportedPragmas>1</ignoreUnsupportedPragmas>
   <otherDMD>0</otherDMD>
   <program>$(DMDInstallDir)windows\bin\dmd.exe</program>
-  <imppath />
+  <imppath>..\..\</imppath>
   <fileImppath />
   <outdir>$(ConfigurationName)</outdir>
   <objdir>$(OutDir)</objdir>
@@ -75,7 +75,7 @@
   <objfiles />
   <linkswitches />
   <libfiles>mci.core.lib</libfiles>
-  <libpaths>..\core\Debug</libpaths>
+  <libpaths>..\core\Test</libpaths>
   <deffile />
   <resfile />
   <exefile>$(OutDir)\$(ProjectName).lib</exefile>
@@ -132,7 +132,7 @@
   <ignoreUnsupportedPragmas>1</ignoreUnsupportedPragmas>
   <otherDMD>0</otherDMD>
   <program>$(DMDInstallDir)windows\bin\dmd.exe</program>
-  <imppath />
+  <imppath>..\..\</imppath>
   <fileImppath />
   <outdir>$(ConfigurationName)</outdir>
   <objdir>$(OutDir)</objdir>
@@ -165,7 +165,7 @@
   <objfiles />
   <linkswitches />
   <libfiles>mci.core.lib</libfiles>
-  <libpaths>..\mci.core\Release</libpaths>
+  <libpaths>..\core\Test</libpaths>
   <deffile />
   <resfile />
   <exefile>$(OutDir)\$(ProjectName).lib</exefile>
@@ -222,7 +222,7 @@
   <ignoreUnsupportedPragmas>1</ignoreUnsupportedPragmas>
   <otherDMD>0</otherDMD>
   <program>$(DMDInstallDir)windows\bin\dmd.exe</program>
-  <imppath />
+  <imppath>..\..\</imppath>
   <fileImppath />
   <outdir>$(ConfigurationName)</outdir>
   <objdir>$(OutDir)</objdir>
@@ -255,7 +255,7 @@
   <objfiles />
   <linkswitches />
   <libfiles>mci.core.lib</libfiles>
-  <libpaths>..\mci.core\Test</libpaths>
+  <libpaths>..\core\Test</libpaths>
   <deffile />
   <resfile />
   <exefile>$(OutDir)\$(ProjectName).exe</exefile>
