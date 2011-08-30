@@ -88,6 +88,8 @@ libmci.assembler.a: $(MCI_ASSEMBLER_SOURCES)
 	fi
 
 MCI_ASSEMBLER_SOURCES = \
-	mci.assembler/lexer.d \
+	mci.assembler/all.d \
 	mci.assembler/main.d \
-	mci.assembler/parser.d
+	mci.assembler/parsing/lexer.d \
+	mci.assembler/parsing/parser.d \
+	mci.assembler/parsing/tokens.d

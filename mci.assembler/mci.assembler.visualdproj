@@ -271,8 +271,12 @@
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="mci.assembler">
-  <File path="lexer.d" />
+  <Folder name="parsing">
+   <File path="parsing\lexer.d" />
+   <File path="parsing\parser.d" />
+   <File path="parsing\tokens.d" />
+  </Folder>
+  <File path="all.d" />
   <File path="main.d" />
-  <File path="parser.d" />
  </Folder>
 </DProject>
