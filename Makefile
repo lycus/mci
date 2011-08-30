@@ -48,6 +48,7 @@ mci.core/bin/libmci.core.a: $(MCI_CORE_SOURCES)
 	dmd $(MCI_CORE_DFLAGS) -lib -of$@ $(MCI_CORE_SOURCES);
 
 mci.core/bin/libmci.core: $(MCI_CORE_SOURCES)
+	if ! test -d mci.core/bin; then mkdir mci.core/bin; fi;
 	dmd $(MCI_CORE_DFLAGS) -unittest -cov -of$@ $(MCI_CORE_SOURCES);
 	if [ ${BUILD} = "test" ]; then \
 		cd mci.core/bin; \
@@ -87,6 +88,7 @@ mci.assembler/bin/libmci.assembler.a: $(MCI_ASSEMBLER_SOURCES)
 	dmd $(MCI_ASSEMBLER_DFLAGS) -lib -of$@ $(MCI_ASSEMBLER_SOURCES);
 
 mci.assembler/bin/libmci.assembler: $(MCI_ASSEMBLER_SOURCES)
+	if ! test -d mci.assembler/bin; then mkdir mci.assembler/bin; fi;
 	dmd $(MCI_ASSEMBLER_DFLAGS) -unittest -cov -of$@ $(MCI_ASSEMBLER_SOURCES);
 	if [ ${BUILD} = "test" ]; then \
 		cd mci.assembler/bin; \
