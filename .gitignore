@@ -6,7 +6,6 @@ _ReSharper.*/*
 */Release/*
 */Test/*
 */bin/*
-*/obj/*
 
 *.rf
 *.o
@@ -18,3 +17,7 @@ _ReSharper.*/*
 *.def
 
 *.orig
+
+libmci.core
+libmci.assembler
+
