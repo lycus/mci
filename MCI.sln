@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.core", "mci.core\mci.core.visualdproj", "{84F6B84D-C7EF-4DCB-AF7F-9D7295CFEDB0}"
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.core", "mci\core\mci.core.visualdproj", "{84F6B84D-C7EF-4DCB-AF7F-9D7295CFEDB0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{15874E22-14B9-4AB7-A121-9C3AE378BEE7}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 		docs\Welcome.txt = docs\Welcome.txt
 	EndProjectSection
 EndProject
-Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.assembler", "mci.assembler\mci.assembler.visualdproj", "{97197E6E-6919-4743-9637-DF02DE3E4667}"
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.assembler", "mci\assembler\mci.assembler.visualdproj", "{97197E6E-6919-4743-9637-DF02DE3E4667}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

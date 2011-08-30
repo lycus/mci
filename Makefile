@@ -54,27 +54,27 @@ libmci.core: $(MCI_CORE_SOURCES)
 	fi
 
 MCI_CORE_SOURCES = \
-	mci.core/all.d \
-	mci.core/common.d \
-	mci.core/config.d \
-	mci.core/container.d \
-	mci.core/exception.d \
-	mci.core/io.d \
-	mci.core/main.d \
-	mci.core/meta.d \
-	mci.core/nullable.d \
-	mci.core/tuple.d \
-	mci.core/code/functions.d \
-	mci.core/code/instructions.d \
-	mci.core/code/opcodes.d \
-	mci.core/diagnostics/debugging.d \
-	mci.core/tree/base.d \
-	mci.core/tree/expressions.d \
-	mci.core/tree/statements.d \
-	mci.core/typing/core.d \
-	mci.core/typing/generics.d \
-	mci.core/typing/members.d \
-	mci.core/typing/types.d
+	mci/core/all.d \
+	mci/core/common.d \
+	mci/core/config.d \
+	mci/core/container.d \
+	mci/core/exception.d \
+	mci/core/io.d \
+	mci/core/main.d \
+	mci/core/meta.d \
+	mci/core/nullable.d \
+	mci/core/tuple.d \
+	mci/core/code/functions.d \
+	mci/core/code/instructions.d \
+	mci/core/code/opcodes.d \
+	mci/core/diagnostics/debugging.d \
+	mci/core/tree/base.d \
+	mci/core/tree/expressions.d \
+	mci/core/tree/statements.d \
+	mci/core/typing/core.d \
+	mci/core/typing/generics.d \
+	mci/core/typing/members.d \
+	mci/core/typing/types.d
 
 #################### mci.assembler ####################
 
@@ -91,8 +91,8 @@ libmci.assembler: $(MCI_ASSEMBLER_SOURCES)
 	fi
 
 MCI_ASSEMBLER_SOURCES = \
-	mci.assembler/all.d \
-	mci.assembler/main.d \
-	mci.assembler/parsing/lexer.d \
-	mci.assembler/parsing/parser.d \
-	mci.assembler/parsing/tokens.d
+	mci/assembler/all.d \
+	mci/assembler/main.d \
+	mci/assembler/parsing/lexer.d \
+	mci/assembler/parsing/parser.d \
+	mci/assembler/parsing/tokens.d

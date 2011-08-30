@@ -2,10 +2,10 @@
 *.user
 
 _ReSharper.*/*
-*/Debug/*
-*/Release/*
-*/Test/*
-*/bin/*
+*/*/Debug/*
+*/*/Release/*
+*/*/Test/*
+*/*/bin/*
 
 *.rf
 *.o
@@ -20,4 +20,3 @@ _ReSharper.*/*
 
 libmci.core
 libmci.assembler
-

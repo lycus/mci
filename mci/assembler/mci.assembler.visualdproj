@@ -75,7 +75,7 @@
   <objfiles />
   <linkswitches />
   <libfiles>mci.core.lib</libfiles>
-  <libpaths>..\mci.core\Debug</libpaths>
+  <libpaths>..\core\Debug</libpaths>
   <deffile />
   <resfile />
   <exefile>$(OutDir)\$(ProjectName).lib</exefile>
