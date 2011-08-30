@@ -74,8 +74,8 @@
   <pathCv2pdb>$(VisualDInstallDir)cv2pdb\cv2pdb.exe</pathCv2pdb>
   <objfiles />
   <linkswitches />
-  <libfiles />
-  <libpaths />
+  <libfiles>mci.core.lib</libfiles>
+  <libpaths>..\mci.core\Debug</libpaths>
   <deffile />
   <resfile />
   <exefile>$(OutDir)\$(ProjectName).lib</exefile>
@@ -164,8 +164,8 @@
   <pathCv2pdb>$(VisualDInstallDir)cv2pdb\cv2pdb.exe</pathCv2pdb>
   <objfiles />
   <linkswitches />
-  <libfiles />
-  <libpaths />
+  <libfiles>mci.core.lib</libfiles>
+  <libpaths>..\mci.core\Release</libpaths>
   <deffile />
   <resfile />
   <exefile>$(OutDir)\$(ProjectName).lib</exefile>
@@ -254,8 +254,8 @@
   <pathCv2pdb>$(VisualDInstallDir)cv2pdb\cv2pdb.exe</pathCv2pdb>
   <objfiles />
   <linkswitches />
-  <libfiles />
-  <libpaths />
+  <libfiles>mci.core.lib</libfiles>
+  <libpaths>..\mci.core\Test</libpaths>
   <deffile />
   <resfile />
   <exefile>$(OutDir)\$(ProjectName).exe</exefile>
