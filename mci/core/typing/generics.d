@@ -15,8 +15,10 @@ public enum GenericParameterVariance : ubyte
 public enum GenericParameterConstraint : ubyte
 {
     none = 0,
-    referenceType = 1,
-    valueType = 2,
+    value = 1,
+    pointer = 2,
+    integral = 3,
+    numeric = 4,
 }
 
 public class GenericParameter : Type

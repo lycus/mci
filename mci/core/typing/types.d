@@ -12,7 +12,7 @@ public abstract class Type
 public enum TypeAttributes : ubyte
 {
     none = 0x00,
-    valueType = 0x01,
+    value = 0x01,
 }
 
 public enum TypeLayout : ubyte
