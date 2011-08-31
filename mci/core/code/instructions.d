@@ -3,6 +3,7 @@ module mci.core.code.instructions;
 import std.variant,
        mci.core.container,
        mci.core.tuple,
+       mci.core.code.functions,
        mci.core.code.opcodes,
        mci.core.typing.members,
        mci.core.typing.types;
@@ -35,10 +36,9 @@ public final class Register
     }
 }
 
-public static immutable uint maxRegister = uint.max / 2;
-public static immutable uint maxSourceRegisters = 2;
+public enum uint maxRegister = uint.max / 2;
+public enum uint maxSourceRegisters = 2;
 
-// TODO: Add method.
 alias Algebraic!(byte,
                  ubyte,
                  short,
@@ -49,10 +49,11 @@ alias Algebraic!(byte,
                  ulong,
                  float,
                  double,
-                 Object,
-                 string,
+                 Iterable!ubyte,
+                 string, // TODO: Should be BasicBlock.
                  Type,
                  Field,
+                 CodeFunction,
                  Iterable!(Tuple!(string, Register))) InstructionOperand;
 
 public final class Instruction
