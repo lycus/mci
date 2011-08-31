@@ -1,6 +1,8 @@
 module mci.core.typing.members;
 
-import mci.core.nullable,
+import std.variant,
+       mci.core.container,
+       mci.core.nullable,
        mci.core.typing.types;
 
 public enum FieldAttributes : ubyte
@@ -10,12 +12,25 @@ public enum FieldAttributes : ubyte
     constant = 0x02,
 }
 
+alias Algebraic!(byte,
+                 ubyte,
+                 short,
+                 ushort,
+                 int,
+                 uint,
+                 long,
+                 ulong,
+                 float,
+                 double,
+                 Iterable!ubyte) FieldValue;
+
 public class Field
 {
     private string _name;
     private Type _type;
     private Nullable!int _offset;
     public FieldAttributes attributes;
+    public FieldValue value;
     
     public this(string name, Type type)
     in
