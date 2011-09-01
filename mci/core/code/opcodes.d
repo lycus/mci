@@ -105,7 +105,7 @@ public final class OpCode
     private uint _registers;
     private bool _hasTarget;
     
-    package this(string name, ubyte code, OpCodeType type, OperandType operandType,
+    private this(string name, ubyte code, OpCodeType type, OperandType operandType,
                  uint registers, bool hasTarget)
     in
     {
