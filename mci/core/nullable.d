@@ -8,7 +8,7 @@ public struct Nullable(T)
     if (!isNullable!T)
 {
     private bool _hasValue;
-    private T _value;
+    private T _value = void;
     
     public this(T value)
     {
@@ -29,6 +29,11 @@ public struct Nullable(T)
     body
     {
         return _value;
+    }
+    
+    public T valueOrDefault(T def)
+    {
+        return _hasValue ? _value : def;
     }
 }
 
