@@ -92,6 +92,7 @@ libmci.assembler: $(MCI_ASSEMBLER_SOURCES)
 
 MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/all.d \
+	mci/assembler/exception.d \
 	mci/assembler/main.d \
 	mci/assembler/parsing/lexer.d \
 	mci/assembler/parsing/parser.d \

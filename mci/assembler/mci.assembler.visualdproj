@@ -277,6 +277,7 @@
    <File path="parsing\tokens.d" />
   </Folder>
   <File path="all.d" />
+  <File path="exception.d" />
   <File path="main.d" />
  </Folder>
 </DProject>
