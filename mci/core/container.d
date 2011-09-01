@@ -161,7 +161,7 @@ public class List(T) : Collection!T
         _array.clear();
     }
     
-    public final T get(uint index)
+    public final T get(size_t index)
     {
         return _array[index];
     }
