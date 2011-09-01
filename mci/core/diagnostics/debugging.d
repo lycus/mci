@@ -5,9 +5,14 @@ import mci.core.nullable;
 public final class SourceLocation
 {
     private uint _line;
-    private Nullable!uint _column;
+    private uint _column;
     
-    public this(uint line, Nullable!uint column = Nullable!uint())
+    public this(uint line)
+    {
+        this(line, 0);
+    }
+    
+    public this(uint line, uint column)
     {
         _line = line;
         _column = column;
@@ -18,7 +23,7 @@ public final class SourceLocation
         return _line;
     }
     
-    @property public Nullable!uint column()
+    @property public uint column()
     {
         return _column;
     }
