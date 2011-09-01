@@ -1,6 +1,7 @@
 module mci.assembler.parsing.tokens;
 
-import mci.core.diagnostics.debugging;
+import mci.core.container,
+       mci.core.diagnostics.debugging;
 
 public enum TokenType : ubyte
 {
@@ -112,61 +113,61 @@ public TokenType identifierToType(string identifier)
         case "pack":
             return TokenType.pack;
             
-        case "covariant":
+        case "var+":
             return TokenType.covariant;
             
-        case "contravariant":
+        case "var-":
             return TokenType.contravariant;
             
-        case "pointer":
+        case "ptr":
             return TokenType.pointer;
             
-        case "integral":
+        case "int":
             return TokenType.integral;
             
-        case "numeric":
+        case "num":
             return TokenType.numeric;
             
         case "field":
             return TokenType.field;
             
-        case "global":
+        case "static":
             return TokenType.global;
             
-        case "constant":
+        case "const":
             return TokenType.constant;
             
-        case "method":
+        case "function":
             return TokenType.method;
             
-        case "queuecall":
+        case "qcall":
             return TokenType.queueCall;
             
-        case "cdecl":
+        case "ccall":
             return TokenType.cdecl;
             
-        case "stdcall":
+        case "scall":
             return TokenType.stdCall;
             
-        case "thiscall":
+        case "tcall":
             return TokenType.thisCall;
             
-        case "fastcall":
+        case "fcall":
             return TokenType.fastCall;
             
         case "intrinsic":
             return TokenType.intrinsic;
             
-        case "readonly":
+        case "pure":
             return TokenType.readOnly;
             
-        case "nooptimization":
+        case "noopt":
             return TokenType.noOptimization;
             
-        case "noinlining":
+        case "noinl":
             return TokenType.noInlining;
             
-        case "noCallInlining":
+        case "nocinl":
             return TokenType.noCallInlining;
             
         default:
@@ -206,5 +207,59 @@ public final class Token
     @property public SourceLocation location()
     {
         return _location;
+    }
+}
+
+public abstract class TokenStream
+{
+    @property public abstract Token current();
+    
+    @property public abstract Token previous();
+    
+    @property public abstract Token next();
+    
+    public abstract Token movePrevious();
+    
+    public abstract Token moveNext();
+}
+
+public final class MemoryTokenStream : TokenStream
+{
+    private NoNullList!Token _stream;
+    private size_t _position;
+    
+    public this(NoNullList!Token stream)
+    in
+    {
+        assert(stream);
+    }
+    body
+    {
+        _stream = stream;
+    }
+    
+    @property public override Token current()
+    {
+        return _stream.get(_position);
+    }
+    
+    @property public override Token previous()
+    {
+        return _stream.get(_position - 1);
+    }
+    
+    @property public override Token next()
+    {
+        return _stream.get(_position + 1);
+    }
+    
+    public override Token movePrevious()
+    {
+        return _stream.get(--_position);
+    }
+    
+    public override Token moveNext()
+    {
+        return _stream.get(++_position);
     }
 }
