@@ -1,10 +1,13 @@
 module mci.assembler.parsing.lexer;
 
 import std.file,
+       std.uni,
        std.utf,
        mci.core.io,
+       mci.core.container,
        mci.core.diagnostics.debugging,
-       mci.assembler.exception;
+       mci.assembler.exception,
+       mci.assembler.parsing.tokens;
 
 public final class Source
 {
@@ -45,6 +48,9 @@ public final class Source
     
     public dchar next()
     {
+        if (!_position)
+            _location = new SourceLocation(1, 1);
+        
         if (_position == _source.length)
             return _current = dchar.init;
         
@@ -62,18 +68,25 @@ public final class Source
         
         return _current = decode(_source, _position);
     }
+    
+    public void reset()
+    {
+        _position = 0;
+        _current = dchar.init;
+        _location = new SourceLocation(1, 1);
+    }
 }
 
 private string removeByteOrderMark(string text)
 {
     // Stolen from Bernard Helyer's SDC. Thanks!
-    if (text.length >= 2 && text[0 .. 2] == [0xFE, 0xFF] ||
-        text.length >= 2 && text[0 .. 2] == [0xFF, 0xFE] ||
-        text.length >= 4 && text[0 .. 4] == [0x00, 0x00, 0xFE, 0xFF] ||
-        text.length >= 4 && text[0 .. 4] == [0xFF, 0xFE, 0x00, 0x00])
+    if (text.length >= 2 && text[0 .. 2] == [0xfe, 0xff] ||
+        text.length >= 2 && text[0 .. 2] == [0xff, 0xfe] ||
+        text.length >= 4 && text[0 .. 4] == [0x00, 0x00, 0xfe, 0xff] ||
+        text.length >= 4 && text[0 .. 4] == [0xff, 0xfe, 0x00, 0x00])
         throw new AssemblerException("Only UTF-8 input is supported.");
     
-    if (text.length >= 3 && text[0 .. 3] == [0xEF, 0xBB, 0xBF])
+    if (text.length >= 3 && text[0 .. 3] == [0xef, 0xbb, 0xbf])
         return text[3 .. $];
     
     return text;
@@ -91,5 +104,30 @@ public final class Lexer
     body
     {
         _source = source;
+    }
+    
+    public MemoryTokenStream lex()
+    {
+        auto stream = new NoNullList!Token();
+        
+        Token tok;
+        
+        while ((tok = lexNext()) !is null)
+            stream.add(tok);
+        
+        return new MemoryTokenStream(stream);
+    }
+    
+    private Token lexNext()
+    {
+        dchar chr;
+        string str;
+        
+        while ((chr = _source.next()) != dchar.init)
+        {
+            // TODO: Write something useful here.
+        }
+        
+        return null;
     }
 }
