@@ -8,11 +8,21 @@ public final class SourceLocation
     private uint _column;
     
     public this(uint line)
+    in
+    {
+        assert(line);
+    }
+    body
     {
         this(line, 0);
     }
     
     public this(uint line, uint column)
+    in
+    {
+        assert(line);
+    }
+    body
     {
         _line = line;
         _column = column;
