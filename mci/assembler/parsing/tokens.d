@@ -328,3 +328,24 @@ public final class MemoryTokenStream : TokenStream
         return _stream.get(++_position);
     }
 }
+
+unittest
+{
+    auto list = new NoNullList!Token();
+
+    list.add(new Token(TokenType.unit, "unit", new SourceLocation(1, 1)));
+    list.add(new Token(TokenType.constant, "const", new SourceLocation(1, 1)));
+    list.add(new Token(TokenType.queueCall, "qcall", new SourceLocation(1, 1)));
+
+    auto stream = new MemoryTokenStream(list);
+
+    assert(stream.current.type == TokenType.unit);
+    assert(stream.next.type == TokenType.constant);
+
+    auto next = stream.moveNext();
+
+    assert(next.type == TokenType.constant);
+    assert(stream.previous.type == TokenType.unit);
+    assert(stream.current.type == TokenType.constant);
+    assert(stream.next.type == TokenType.queueCall);
+}
