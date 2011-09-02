@@ -24,7 +24,10 @@ public final class Source
     }
     body
     {
+        validate(source);
+
         _source = source;
+        _location = new SourceLocation(1, 0);
     }
     
     public this(BinaryReader reader, size_t length)
@@ -34,7 +37,7 @@ public final class Source
     }
     body
     {
-        _source = removeByteOrderMark(reader.readString(length));
+        this(removeByteOrderMark(reader.readString(length)));
     }
     
     @property public dchar current()
@@ -49,9 +52,6 @@ public final class Source
     
     public dchar moveNext()
     {
-        if (!_position)
-            _location = new SourceLocation(1, 1);
-        
         if (_position == _source.length)
             return _current = dchar.init;
         
@@ -90,6 +90,42 @@ public final class Source
     }
 }
 
+unittest
+{
+    auto source = new Source("abcdefghijklmnopqrstuvwxyz");
+
+    assert(source.current == dchar.init);
+    assert(source.location.line == 1);
+    assert(source.location.column == 0);
+
+    auto next = source.moveNext();
+
+    assert(next == 'a');
+    assert(source.current == 'a');
+    assert(source.location.line == 1);
+    assert(source.location.column == 1);
+}
+
+unittest
+{
+    auto source = new Source("abc\r\ndef\nghi\njkl");
+
+    source.moveNext();
+    source.moveNext();
+    source.moveNext();
+    source.moveNext();
+
+    assert(source.current == '\r');
+    assert(source.location.line == 1);
+    assert(source.location.column == 4);
+
+    source.moveNext();
+
+    assert(source.current == '\n');
+    assert(source.location.line == 2);
+    assert(source.location.column == 1);
+}
+
 private string removeByteOrderMark(string text)
 {
     // Stolen from Bernard Helyer's SDC. Thanks!
@@ -101,7 +137,7 @@ private string removeByteOrderMark(string text)
     
     if (text.length >= 3 && text[0 .. 3] == [0xef, 0xbb, 0xbf])
         return text[3 .. $];
-    
+
     return text;
 }
 
