@@ -9,7 +9,7 @@ import std.file,
 public final class Source
 {
     private string _source;
-    private uint _position;
+    private size_t _position;
     private dchar _current;
     private SourceLocation _location;
     
