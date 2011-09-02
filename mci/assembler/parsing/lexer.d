@@ -1,6 +1,7 @@
 module mci.assembler.parsing.lexer;
 
-import std.file,
+import std.conv,
+       std.file,
        std.uni,
        std.utf,
        mci.core.io,
@@ -128,16 +129,96 @@ public final class Lexer
         return new MemoryTokenStream(stream);
     }
     
+    private static void error(T)(string expected, T got)
+    {
+        throw new LexerException("Expected " ~ expected ~ ", but found " ~
+                                 to!string(got) ~ ".");
+    }
+    
     private Token lexNext()
     {
         dchar chr;
         string str;
         
+        // TODO: Handle integers and floats.
         while ((chr = _source.moveNext()) != dchar.init)
         {
-            // TODO: Write something useful here.
+            // Skip any white space.
+            if (isWhite(chr))
+                continue;
+            
+            if (chr == '/')
+            {
+                if (_source.moveNext() == '/')
+                {
+                    // We have a comment, so scan to the end of the line.
+                    while (_source.moveNext() != '\n')
+                    {
+                    }
+                }
+                else
+                    error("'/'", chr);
+            }
+            
+            // Simple symbols.
+            switch (chr)
+            {
+                case '{':
+                case '}':
+                case '(':
+                case ')':
+                case '[':
+                case ']':
+                case '<':
+                case '>':
+                case ':':
+                case ';':
+                case '.':
+                case ',':
+                case '=':
+                case '*':
+                    return new Token(charToType(chr), chr.stringof, _source.location);
+                default:
+                    break;
+            }
+            
+            if (isIdentifierChar(chr))
+            {
+                string id = [cast(char)chr];
+                dchar idChr;
+                bool hasDot;
+                
+                // Until we encounter white space, we construct an identifier.
+                while (!isWhite(idChr = _source.moveNext()))
+                {
+                    auto isDot = chr == '.';
+                    
+                    if (isDot)
+                        hasDot = true;
+                    
+                    if (isIdentifierChar(idChr) || isDot)
+                        id ~= cast(char)idChr;
+                    else
+                        error("identifier character", idChr);
+                }
+                
+                auto type = identifierToType(id);
+                
+                if (hasDot && type != TokenType.opCode)
+                    error("opcode name", id);
+                
+                // This can be a keyword, an opcode, or an identifier.
+                return new Token(type, id, _source.location);
+            }
+            
+            error("any valid character", chr);
         }
         
         return null;
     }
+}
+
+private bool isIdentifierChar(dchar chr)
+{
+    return chr == '_' || std.ascii.isAlpha(chr);
 }
