@@ -1,7 +1,7 @@
 module mci.assembler.parsing.lexer;
 
-import std.conv,
-       std.file,
+import std.ascii,
+       std.conv,
        std.uni,
        std.utf,
        mci.core.io,
@@ -62,8 +62,10 @@ public final class Source
         if (chr == '\n')
         {
             line++;
-            column = 0;
+            column = 1;
         }
+        else
+            column++;
         
         _location = new SourceLocation(line, column);
         
@@ -120,7 +122,6 @@ public final class Lexer
     public MemoryTokenStream lex()
     {
         auto stream = new NoNullList!Token();
-        
         Token tok;
         
         while ((tok = lexNext()) !is null)
@@ -129,38 +130,56 @@ public final class Lexer
         return new MemoryTokenStream(stream);
     }
     
-    private static void error(T)(string expected, T got)
+    private static void errorGot(T)(string expected, SourceLocation location, T got)
     {
-        throw new LexerException("Expected " ~ expected ~ ", but found " ~
-                                 to!string(got) ~ ".");
+        string s;
+        
+        static if (is(T == dchar))
+            s = got == dchar.init ? "end of file" : got.stringof;
+        else
+            s = to!string(got);
+        
+        throw new LexerException("Expected " ~ expected ~ ", but found " ~ s ~ ".", location);
+    }
+    
+    private static void error(string expected, SourceLocation location)
+    {
+        throw new LexerException("Expected " ~ expected ~ ".", location);
     }
     
     private Token lexNext()
     {
         dchar chr;
-        string str;
         
-        // TODO: Handle integers and floats.
         while ((chr = _source.moveNext()) != dchar.init)
         {
             // Skip any white space.
-            if (isWhite(chr))
+            if (std.uni.isWhite(chr))
                 continue;
             
             if (chr == '/')
             {
-                if (_source.moveNext() == '/')
+                if (_source.moveNext() != '/')
+                    errorGot("/", _source.location, chr);
+                
+                // We have a comment, so scan to the end of the line (or stream).
+                dchar cmtChr;
+                
+                do
                 {
-                    // We have a comment, so scan to the end of the line.
-                    while (_source.moveNext() != '\n')
-                    {
-                    }
+                    // If this happens, we've reached the end of the file, and we
+                    // just return null.
+                    if ((cmtChr = _source.moveNext()) == dchar.init)
+                        return null;
                 }
-                else
-                    error("'/'", chr);
+                while (cmtChr != '\n');
+                
+                // Comment skipped; continue the outer loop and look for the next
+                // token, if any.
+                continue;
             }
             
-            // Simple symbols.
+            // Simple operators/delimiters.
             switch (chr)
             {
                 case '{':
@@ -184,36 +203,80 @@ public final class Lexer
             
             if (isIdentifierChar(chr))
             {
+                auto idLoc = _source.location;
                 string id = [cast(char)chr];
-                dchar idChr;
                 bool hasDot;
                 
                 // Until we encounter white space, we construct an identifier.
-                while (!isWhite(idChr = _source.moveNext()))
+                while (true)
                 {
-                    auto isDot = chr == '.';
+                    auto idChr = _source.moveNext();
+                    
+                    if (std.uni.isWhite(idChr))
+                        break;
+                    
+                    auto isDot = idChr == '.';
+                    
+                    if (idChr == dchar.init || (!isIdentifierChar(idChr) && !isDot))
+                        errorGot("identifier character (a-z, A-Z, _)", _source.location, idChr);
                     
                     if (isDot)
                         hasDot = true;
                     
-                    if (isIdentifierChar(idChr) || isDot)
-                        id ~= cast(char)idChr;
-                    else
-                        error("identifier character", idChr);
+                    id ~= idChr;
                 }
                 
                 auto type = identifierToType(id);
                 
                 if (hasDot && type != TokenType.opCode)
-                    error("opcode name", id);
+                    errorGot("opcode name", idLoc, id);
                 
                 // This can be a keyword, an opcode, or an identifier.
                 return new Token(type, id, _source.location);
             }
             
-            error("any valid character", chr);
+            // Handle integer and float literals.
+            if (isDigit(chr))
+            {
+                string str = [cast(char)chr];
+                bool hasDot;
+                bool hasDecimal;
+                
+                while (true)
+                {
+                    auto digChr = _source.moveNext();
+                    
+                    if (std.uni.isWhite(digChr))
+                    {
+                        // Don't allow a decimal point with no trailing digit.
+                        if (hasDot && !hasDecimal)
+                            error("base-10 digit", _source.location);
+                        
+                        break;
+                    }
+                    
+                    if (digChr == '.')
+                        hasDot = true;
+                    else
+                    {
+                        if (digChr == dchar.init || !isDigit(digChr))
+                            errorGot("base-10 digit" ~ (!hasDot ? "or decimal point" : ""),
+                                     _source.location, digChr);
+                        
+                        if (hasDot)
+                            hasDecimal = true;
+                    }
+                    
+                    str ~= digChr;
+                }
+                
+                return new Token(TokenType.literal, str, _source.location);
+            }
+            
+            errorGot("any valid character", _source.location, chr);
         }
         
+        // We reached EOF; stop iterating.
         return null;
     }
 }
