@@ -2,6 +2,7 @@
 *.user
 
 _ReSharper.*/*
+docs/_build
 */*/Debug/*
 */*/Release/*
 */*/Test/*
