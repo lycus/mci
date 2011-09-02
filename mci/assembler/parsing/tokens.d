@@ -47,54 +47,33 @@ public enum TokenType : ubyte
     noOptimization = 39,
     noInlining = 40,
     noCallInlining = 41,
+    unit = 42,
+    int8 = 43,
+    uint8 = 44,
+    int16 = 45,
+    uint16 = 46,
+    int32 = 47,
+    uint32 = 48,
+    int64 = 49,
+    uint64 = 50,
+    nativeInt = 51,
+    nativeUInt = 52,
+    float32 = 53,
+    float64 = 54,
+    nativeFloat = 55,
+    integer = 56,
+    number = 57,
 }
 
-public TokenType identifierToType(string identifier)
+public TokenType identifierToKeyword(string identifier)
+in
+{
+    assert(identifier);
+}
+body
 {
     switch (identifier)
     {
-        case "{":
-            return TokenType.openBrace;
-            
-        case "}":
-            return TokenType.closeBrace;
-            
-        case "(":
-            return TokenType.openParen;
-            
-        case ")":
-            return TokenType.closeParen;
-            
-        case "[":
-            return TokenType.openBracket;
-            
-        case "]":
-            return TokenType.closeBracket;
-            
-        case "<":
-            return TokenType.openAngle;
-            
-        case ">":
-            return TokenType.closeAngle;
-            
-        case ":":
-            return TokenType.colon;
-            
-        case ";":
-            return TokenType.semicolon;
-            
-        case ".":
-            return TokenType.dot;
-            
-        case ",":
-            return TokenType.comma;
-            
-        case "=":
-            return TokenType.equals;
-            
-        case "*":
-            return TokenType.star;
-            
         case "type":
             return TokenType.type;
             
@@ -119,13 +98,13 @@ public TokenType identifierToType(string identifier)
         case "var-":
             return TokenType.contravariant;
             
-        case "ptr":
+        case "pointer":
             return TokenType.pointer;
             
-        case "int":
+        case "integral":
             return TokenType.integral;
             
-        case "num":
+        case "numeric":
             return TokenType.numeric;
             
         case "field":
@@ -169,6 +148,48 @@ public TokenType identifierToType(string identifier)
             
         case "nocinl":
             return TokenType.noCallInlining;
+            
+        case "unit":
+            return TokenType.unit;
+            
+        case "int8":
+            return TokenType.int8;
+            
+        case "uint8":
+            return TokenType.uint8;
+            
+        case "int16":
+            return TokenType.int16;
+            
+        case "uint16":
+            return TokenType.uint16;
+            
+        case "int32":
+            return TokenType.int32;
+            
+        case "uint32":
+            return TokenType.uint32;
+            
+        case "int64":
+            return TokenType.int64;
+            
+        case "uint64":
+            return TokenType.uint64;
+            
+        case "int":
+            return TokenType.nativeInt;
+            
+        case "uint":
+            return TokenType.nativeUInt;
+            
+        case "float32":
+            return TokenType.float32;
+            
+        case "float64":
+            return TokenType.float64;
+            
+        case "float":
+            return TokenType.nativeFloat;
             
         default:
             return TokenType.identifier;
