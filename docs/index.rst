@@ -1,12 +1,12 @@
-Welcome to the MCI documentation!
-=================================
+Welcome to the MCI Documentation
+================================
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
-Indices and tables
+Indices and Tables
 ==================
 
 * :ref:`genindex`

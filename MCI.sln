@@ -5,14 +5,31 @@ Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.core", "mci\core\mci.co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{15874E22-14B9-4AB7-A121-9C3AE378BEE7}"
 	ProjectSection(SolutionItems) = preProject
-		docs\Authors.txt = docs\Authors.txt
-		docs\Compatibility.txt = docs\Compatibility.txt
-		docs\Design.txt = docs\Design.txt
-		docs\License.txt = docs\License.txt
-		docs\Welcome.txt = docs\Welcome.txt
+		AUTHORS = AUTHORS
+		COMPATIBILITY = COMPATIBILITY
+		LICENSE = LICENSE
+		README = README
 	EndProjectSection
 EndProject
 Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.assembler", "mci\assembler\mci.assembler.visualdproj", "{97197E6E-6919-4743-9637-DF02DE3E4667}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Miscellaneous", "Miscellaneous", "{F6494086-CE93-4F63-8501-29FD51EA7A71}"
+	ProjectSection(SolutionItems) = preProject
+		Makefile = Makefile
+		mci.gdb = mci.gdb
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{9956EC64-ACD3-4F73-A4E9-DEC06207DC54}"
+	ProjectSection(SolutionItems) = preProject
+		docs\index.rst = docs\index.rst
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{20057E24-56A3-437A-AC7A-0919CADB78BE}"
+	ProjectSection(SolutionItems) = preProject
+		docs\conf.py = docs\conf.py
+		docs\make.bat = docs\make.bat
+		docs\Makefile = docs\Makefile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +53,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{20057E24-56A3-437A-AC7A-0919CADB78BE} = {9956EC64-ACD3-4F73-A4E9-DEC06207DC54}
 	EndGlobalSection
 EndGlobal
