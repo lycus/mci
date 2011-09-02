@@ -19,13 +19,9 @@ extensible for new languages.
 
 For further information, see:
 
-    * License.txt
+    * LICENSE
       - Licensing and Copyright information.
-    * Design.txt
-      - Information regarding the design of the MCI.
-    * Compatibility.txt
+    * COMPATIBILITY
       - Supported compilers, architectures, operating systems, etc.
-    * Specification.tex
-      - The full specification of the MCI in TeX form.
-    * Authors.txt
+    * AUTHORS
       - Names and contact information for MCI developers.
