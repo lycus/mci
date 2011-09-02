@@ -1,6 +1,7 @@
 module mci.assembler.parsing.tokens;
 
 import mci.core.container,
+       mci.core.code.opcodes,
        mci.core.diagnostics.debugging;
 
 public enum TokenType : ubyte
@@ -61,11 +62,49 @@ public enum TokenType : ubyte
     float32 = 53,
     float64 = 54,
     nativeFloat = 55,
-    integer = 56,
-    number = 57,
+    opCode = 56,
+    integer = 57,
+    number = 58,
 }
 
-public TokenType identifierToKeyword(string identifier)
+public TokenType charToType(dchar chr)
+{
+    switch (chr)
+    {
+        case '{':
+            return TokenType.openBrace;
+        case '}':
+            return TokenType.closeBrace;
+        case '(':
+            return TokenType.openParen;
+        case ')':
+            return TokenType.closeParen;
+        case '[':
+            return TokenType.openBracket;
+        case ']':
+            return TokenType.closeBracket;
+        case '<':
+            return TokenType.openAngle;
+        case '>':
+            return TokenType.closeAngle;
+        case ':':
+            return TokenType.colon;
+        case ';':
+            return TokenType.semicolon;
+        case '.':
+            return TokenType.dot;
+        case ',':
+            return TokenType.comma;
+        case '=':
+            return TokenType.equals;
+        case '*':
+            return TokenType.star;
+        default:
+            assert(false);
+    }
+}
+
+public TokenType identifierToType(string identifier)
 in
 {
     assert(identifier);
@@ -92,10 +131,10 @@ body
         case "pack":
             return TokenType.pack;
             
-        case "var+":
+        case "co":
             return TokenType.covariant;
             
-        case "var-":
+        case "contra":
             return TokenType.contravariant;
             
         case "pointer":
@@ -192,8 +231,14 @@ body
             return TokenType.nativeFloat;
             
         default:
-            return TokenType.identifier;
+            break;
     }
+    
+    foreach (opCode; allOpCodes)
+        if (identifier == opCode.name)
+            return TokenType.opCode;
+    
+    return TokenType.identifier;
 }
 
 public final class Token
