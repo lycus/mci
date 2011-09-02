@@ -46,7 +46,7 @@ public final class Source
         return _location;
     }
     
-    public dchar next()
+    public dchar moveNext()
     {
         if (!_position)
             _location = new SourceLocation(1, 1);
@@ -67,6 +67,16 @@ public final class Source
         _location = new SourceLocation(line, column);
         
         return _current = decode(_source, _position);
+    }
+    
+    public dchar next()
+    {
+        if (_position == _source.length)
+            return dchar.init;
+        
+        auto index = _position;
+        
+        return decode(_source, index);
     }
     
     public void reset()
@@ -123,7 +133,7 @@ public final class Lexer
         dchar chr;
         string str;
         
-        while ((chr = _source.next()) != dchar.init)
+        while ((chr = _source.moveNext()) != dchar.init)
         {
             // TODO: Write something useful here.
         }
