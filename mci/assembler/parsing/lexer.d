@@ -193,127 +193,145 @@ public final class Lexer
             if (std.uni.isWhite(chr))
                 continue;
             
-            if (chr == '/')
-            {
-                if (_source.moveNext() != '/')
-                    errorGot("/", _source.location, chr);
-                
-                // We have a comment, so scan to the end of the line (or stream).
-                dchar cmtChr;
-                
-                do
-                {
-                    // If this happens, we've reached the end of the file, and we
-                    // just return null.
-                    if ((cmtChr = _source.moveNext()) == dchar.init)
-                        return null;
-                }
-                while (cmtChr != '\n');
-                
-                // Comment skipped; continue the outer loop and look for the next
-                // token, if any.
-                continue;
-            }
+            if (chr == '/' && !lexComment())
+                return null;
             
-            // Simple operators/delimiters.
-            switch (chr)
-            {
-                case '{':
-                case '}':
-                case '(':
-                case ')':
-                case '[':
-                case ']':
-                case '<':
-                case '>':
-                case ':':
-                case ';':
-                case '.':
-                case ',':
-                case '=':
-                case '*':
-                    return new Token(charToType(chr), chr.stringof, _source.location);
-                default:
-                    break;
-            }
+            auto del = lexDelimiter(chr);
+            
+            if (del)
+                return del;
             
             if (isIdentifierChar(chr))
-            {
-                auto idLoc = _source.location;
-                string id = [cast(char)chr];
-                bool hasDot;
-                
-                // Until we encounter white space, we construct an identifier.
-                while (true)
-                {
-                    auto idChr = _source.moveNext();
-                    
-                    if (std.uni.isWhite(idChr))
-                        break;
-                    
-                    auto isDot = idChr == '.';
-                    
-                    if (idChr == dchar.init || (!isIdentifierChar(idChr) && !isDot))
-                        errorGot("identifier character (a-z, A-Z, _)", _source.location, idChr);
-                    
-                    if (isDot)
-                        hasDot = true;
-                    
-                    id ~= idChr;
-                }
-                
-                auto type = identifierToType(id);
-                
-                if (hasDot && type != TokenType.opCode)
-                    errorGot("opcode name", idLoc, id);
-                
-                // This can be a keyword, an opcode, or an identifier.
-                return new Token(type, id, _source.location);
-            }
+                return lexIdentifier(chr);
             
             // Handle integer and float literals.
             if (isDigit(chr))
-            {
-                string str = [cast(char)chr];
-                bool hasDot;
-                bool hasDecimal;
-                
-                while (true)
-                {
-                    auto digChr = _source.moveNext();
-                    
-                    if (std.uni.isWhite(digChr))
-                    {
-                        // Don't allow a decimal point with no trailing digit.
-                        if (hasDot && !hasDecimal)
-                            error("base-10 digit", _source.location);
-                        
-                        break;
-                    }
-                    
-                    if (digChr == '.')
-                        hasDot = true;
-                    else
-                    {
-                        if (digChr == dchar.init || !isDigit(digChr))
-                            errorGot("base-10 digit" ~ (!hasDot ? "or decimal point" : ""),
-                                     _source.location, digChr);
-                        
-                        if (hasDot)
-                            hasDecimal = true;
-                    }
-                    
-                    str ~= digChr;
-                }
-                
-                return new Token(TokenType.literal, str, _source.location);
-            }
+                return lexLiteral(chr);
             
             errorGot("any valid character", _source.location, chr);
         }
         
         // We reached EOF; stop iterating.
         return null;
+    }
+    
+    private bool lexComment()
+    {
+        auto chr = _source.moveNext();
+        
+        if (chr != '/')
+            errorGot("/", _source.location, chr);
+        
+        // We have a comment, so scan to the end of the line (or stream).
+        dchar cmtChr;
+        
+        do
+        {
+            // If this happens, we've reached the end of the file.
+            if ((cmtChr = _source.moveNext()) == dchar.init)
+                return false;
+        }
+        while (cmtChr != '\n');
+        
+        // Comment skipped; continue the outer loop and look for the next
+        // token, if any.
+        return true;
+    }
+    
+    private Token lexDelimiter(dchar chr)
+    {
+        // Simple operators/delimiters.
+        switch (chr)
+        {
+            case '{':
+            case '}':
+            case '(':
+            case ')':
+            case '[':
+            case ']':
+            case '<':
+            case '>':
+            case ':':
+            case ';':
+            case '.':
+            case ',':
+            case '=':
+            case '*':
+                return new Token(charToType(chr), chr.stringof, _source.location);
+            default:
+                return null;
+        }
+    }
+    
+    private Token lexIdentifier(dchar chr)
+    {
+        auto idLoc = _source.location;
+        string id = [cast(char)chr];
+        bool hasDot;
+        
+        // Until we encounter white space, we construct an identifier.
+        while (true)
+        {
+            auto idChr = _source.moveNext();
+            
+            if (std.uni.isWhite(idChr))
+                break;
+            
+            auto isDot = idChr == '.';
+            
+            if (idChr == dchar.init || (!isIdentifierChar(idChr) && !isDot))
+                errorGot("identifier character (a-z, A-Z, _)", _source.location, idChr);
+            
+            if (isDot)
+                hasDot = true;
+            
+            id ~= idChr;
+        }
+        
+        auto type = identifierToType(id);
+        
+        if (hasDot && type != TokenType.opCode)
+            errorGot("opcode name", idLoc, id);
+        
+        // This can be a keyword, an opcode, or an identifier.
+        return new Token(type, id, _source.location);
+    }
+    
+    private Token lexLiteral(dchar chr)
+    {
+        string str = [cast(char)chr];
+        bool hasDot;
+        bool hasDecimal;
+        
+        while (true)
+        {
+            auto digChr = _source.moveNext();
+            
+            if (std.uni.isWhite(digChr))
+            {
+                // Don't allow a decimal point with no trailing digit.
+                if (hasDot && !hasDecimal)
+                    error("base-10 digit", _source.location);
+                
+                break;
+            }
+            
+            if (digChr == '.')
+                hasDot = true;
+            else
+            {
+                if (digChr == dchar.init || !isDigit(digChr))
+                    errorGot("base-10 digit" ~ (!hasDot ? "or decimal point" : ""),
+                                _source.location, digChr);
+                
+                if (hasDot)
+                    hasDecimal = true;
+            }
+            
+            str ~= digChr;
+        }
+        
+        return new Token(TokenType.literal, str, _source.location);
     }
 }
 
