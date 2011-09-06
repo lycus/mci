@@ -1,6 +1,14 @@
 module mci.tester.main;
 
-import std.stdio;
+version (unittest)
+{
+    import mci.assembler.all,
+           mci.core.all;
+}
+else
+{
+    import std.stdio;
+}
 
 private void main()
 {

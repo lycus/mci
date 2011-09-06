@@ -21,3 +21,4 @@ docs/_build
 
 libmci.core
 libmci.assembler
+mci.tester
