@@ -60,7 +60,6 @@ MCI_CORE_SOURCES = \
 	mci/core/container.d \
 	mci/core/exception.d \
 	mci/core/io.d \
-	mci/core/main.d \
 	mci/core/meta.d \
 	mci/core/nullable.d \
 	mci/core/tuple.d \
@@ -93,7 +92,6 @@ libmci.assembler: $(MCI_ASSEMBLER_SOURCES)
 MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/all.d \
 	mci/assembler/exception.d \
-	mci/assembler/main.d \
 	mci/assembler/parsing/lexer.d \
 	mci/assembler/parsing/parser.d \
 	mci/assembler/parsing/tokens.d
