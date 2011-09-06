@@ -20,14 +20,23 @@ DFLAGS = -v -w -wi -ignore -X -m$(MODEL) -L-L.
 ifeq ($(BUILD), release)
 	DFLAGS += -release -O -inline -noboundscheck
 else
+	ifeq ($(BUILD), test)
+		DFLAGS += -unittest -cov
+	endif
+
 	DFLAGS += -debug -gc -profile
+endif
+
+ifeq ($(BUILD), test)
+	MCI_TESTER = mci.tester
+else
+	MCI_TESTER =
 endif
 
 all: \
 	libmci.core.a \
-	libmci.core \
 	libmci.assembler.a \
-	libmci.assembler
+	$(MCI_TESTER)
 
 clean:
 	-rm -f *.o
@@ -39,19 +48,14 @@ clean:
 	-rm -f trace.log
 	-rm -f libmci.core
 	-rm -f libmci.assembler
+	-rm -f mci.tester
 
 #################### mci.core ####################
 
-MCI_CORE_DFLAGS = $(DFLAGS) -Xf"libmci.core.json" -deps="libmci.core.deps"
+MCI_CORE_DFLAGS = $(DFLAGS) -lib -Xf"libmci.core.json" -deps="libmci.core.deps"
 
 libmci.core.a: $(MCI_CORE_SOURCES)
-	dmd $(MCI_CORE_DFLAGS) -lib -of$@ $(MCI_CORE_SOURCES);
-
-libmci.core: $(MCI_CORE_SOURCES)
-	dmd $(MCI_CORE_DFLAGS) -unittest -cov -of$@ $(MCI_CORE_SOURCES);
-	if [ ${BUILD} = "test" ]; then \
-		gdb --command=mci.gdb libmci.core; \
-	fi
+	dmd $(MCI_CORE_DFLAGS) -of$@ $(MCI_CORE_SOURCES);
 
 MCI_CORE_SOURCES = \
 	mci/core/all.d \
@@ -77,17 +81,11 @@ MCI_CORE_SOURCES = \
 
 #################### mci.assembler ####################
 
-MCI_ASSEMBLER_DFLAGS = $(DFLAGS) -Xf"libmci.assembler.json" -deps="libmci.assembler.deps"
+MCI_ASSEMBLER_DFLAGS = $(DFLAGS) -lib -Xf"libmci.assembler.json" -deps="libmci.assembler.deps"
 MCI_ASSEMBLER_DFLAGS += -L-lmci.core
 
 libmci.assembler.a: $(MCI_ASSEMBLER_SOURCES)
-	dmd $(MCI_ASSEMBLER_DFLAGS) -lib -of$@ $(MCI_ASSEMBLER_SOURCES);
-
-libmci.assembler: $(MCI_ASSEMBLER_SOURCES)
-	dmd $(MCI_ASSEMBLER_DFLAGS) -unittest -cov -of$@ $(MCI_ASSEMBLER_SOURCES);
-	if [ ${BUILD} = "test" ]; then \
-		gdb --command=mci.gdb libmci.assembler; \
-	fi
+	dmd $(MCI_ASSEMBLER_DFLAGS) -of$@ $(MCI_ASSEMBLER_SOURCES);
 
 MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/all.d \
@@ -95,3 +93,18 @@ MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/parsing/lexer.d \
 	mci/assembler/parsing/parser.d \
 	mci/assembler/parsing/tokens.d
+
+#################### mci.tester #######################
+
+MCI_TESTER_DFLAGS = $(DFLAGS) -Xf"mci.tester.json" -deps="mci.tester.deps"
+MCI_TESTER_DFLAGS += -L-lmci.core -L-lmci.assembler
+
+mci.tester: $(MCI_TESTER_SOURCES)
+	dmd $(MCI_TESTER_DFLAGS) -of$@ $(MCI_TESTER_SOURCES);
+	if [ ${BUILD} = "test" ]; then \
+		gdb --command=mci.gdb mci.tester; \
+	fi
+
+
+MCI_TESTER_SOURCES = \
+	mci/tester/main.d
