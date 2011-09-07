@@ -1,14 +1,9 @@
 module mci.tester.main;
 
-version (unittest)
-{
-    import mci.assembler.all,
-           mci.core.all;
-}
-else
-{
-    import std.stdio;
-}
+import mci.assembler.all,
+       mci.core.all;
+
+import std.stdio;
 
 private void main()
 {
@@ -16,6 +11,7 @@ private void main()
     // of all loaded modules. This is its sole purpose.
     version (unittest)
     {
+        writeln("All unit tests passed!");
     }
     else
     {
