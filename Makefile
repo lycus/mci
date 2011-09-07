@@ -105,6 +105,5 @@ mci.tester: libmci.core.a libmci.assembler.a
 		gdb --command=mci.gdb mci.tester; \
 	fi;
 
-
 MCI_TESTER_SOURCES = \
 	mci/tester/main.d
