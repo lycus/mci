@@ -12,6 +12,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 	EndProjectSection
 EndProject
 Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.assembler", "mci\assembler\mci.assembler.visualdproj", "{97197E6E-6919-4743-9637-DF02DE3E4667}"
+	ProjectSection(ProjectDependencies) = postProject
+		{84F6B84D-C7EF-4DCB-AF7F-9D7295CFEDB0} = {84F6B84D-C7EF-4DCB-AF7F-9D7295CFEDB0}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Miscellaneous", "Miscellaneous", "{F6494086-CE93-4F63-8501-29FD51EA7A71}"
 	ProjectSection(SolutionItems) = preProject
@@ -32,6 +35,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{20057E24
 	EndProjectSection
 EndProject
 Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.tester", "mci\tester\mci.tester.visualdproj", "{409812DF-0560-45D9-B1CE-5AB1CE474A9A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{84F6B84D-C7EF-4DCB-AF7F-9D7295CFEDB0} = {84F6B84D-C7EF-4DCB-AF7F-9D7295CFEDB0}
+		{97197E6E-6919-4743-9637-DF02DE3E4667} = {97197E6E-6919-4743-9637-DF02DE3E4667}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
