@@ -74,7 +74,7 @@
   <pathCv2pdb>$(VisualDInstallDir)cv2pdb\cv2pdb.exe</pathCv2pdb>
   <objfiles />
   <linkswitches />
-  <libfiles>mci.core.lib;mci.assembler.lib</libfiles>
+  <libfiles>mci.core.lib mci.assembler.lib</libfiles>
   <libpaths>..\core\Test;..\assembler\Test</libpaths>
   <deffile />
   <resfile />
