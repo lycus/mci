@@ -1,7 +1,7 @@
 [compileoptions]
 buildtype = EXECUTABLE
 out = bin
-outname = mci.core
+outname = mci.core.a
 buildtool = $DEEBUILDER.COMPILEREXEPATH @build.rf
-extraOptions = -od$DEEBUILDER.OUTPUTPATH\n-of$DEEBUILDER.OUTPUTEXE\n$DEEBUILDER.SRCLIBS.-I\n$DEEBUILDER.SRCFOLDERS.-I\n$DEEBUILDER.SRCMODULES\n-I../..\n-debug\n-m64\n-v\n-w\n-wi\n-ignore\n-X\n-debug\n-gc\n-profile\n-lib
+extraOptions = -od$DEEBUILDER.OUTPUTPATH\n-of$DEEBUILDER.OUTPUTEXE\n$DEEBUILDER.SRCLIBS.-I\n$DEEBUILDER.SRCFOLDERS.-I\n$DEEBUILDER.SRCMODULES\n-I../..\n-v\n-w\n-wi\n-ignore\n-X\n-m64\n-unittest\n-debug\n-gc\n-profile\n-lib
 

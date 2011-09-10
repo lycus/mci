@@ -3,6 +3,8 @@
 	<name>mci.tester</name>
 	<comment></comment>
 	<projects>
+		<project>mci.assembler</project>
+		<project>mci.core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

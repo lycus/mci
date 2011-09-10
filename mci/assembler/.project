@@ -3,6 +3,7 @@
 	<name>mci.assembler</name>
 	<comment></comment>
 	<projects>
+		<project>mci.core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
