@@ -21,7 +21,7 @@ ifeq ($(BUILD), release)
 	DFLAGS += -release -O -inline -noboundscheck
 else
 	ifeq ($(BUILD), test)
-		DFLAGS += -unittest -cov
+		DFLAGS += -unittest
 	endif
 
 	DFLAGS += -debug -gc -profile
@@ -82,10 +82,9 @@ MCI_CORE_SOURCES = \
 #################### mci.assembler ####################
 
 MCI_ASSEMBLER_DFLAGS = $(DFLAGS) -lib -Xf"libmci.assembler.json" -deps="libmci.assembler.deps"
-MCI_ASSEMBLER_DFLAGS += -L-lmci.core
 
 libmci.assembler.a: libmci.core.a
-	dmd $(MCI_ASSEMBLER_DFLAGS) -of$@ $(MCI_ASSEMBLER_SOURCES);
+	dmd $(MCI_ASSEMBLER_DFLAGS) -of$@ $(MCI_ASSEMBLER_SOURCES) $(MCI_ASSEMBLER_DEPS);
 
 MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/all.d \
@@ -94,16 +93,22 @@ MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/parsing/parser.d \
 	mci/assembler/parsing/tokens.d
 
+MCI_ASSEMBLER_DEPS = \
+	libmci.core.a
+
 #################### mci.tester #######################
 
 MCI_TESTER_DFLAGS = $(DFLAGS) -Xf"mci.tester.json" -deps="mci.tester.deps"
-MCI_TESTER_DFLAGS += -L-lmci.core -L-lmci.assembler
 
 mci.tester: libmci.core.a libmci.assembler.a
-	dmd $(MCI_TESTER_DFLAGS) -of$@ $(MCI_TESTER_SOURCES);
+	dmd $(MCI_TESTER_DFLAGS) -of$@ $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS);
 	if [ ${BUILD} = "test" ]; then \
 		gdb --command=mci.gdb mci.tester; \
 	fi;
 
 MCI_TESTER_SOURCES = \
 	mci/tester/main.d
+
+MCI_TESTER_DEPS = \
+	libmci.core.a \
+	libmci.assembler.a
