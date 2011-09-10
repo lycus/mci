@@ -21,7 +21,7 @@ ifeq ($(BUILD), release)
 	DFLAGS += -release -O -inline -noboundscheck
 else
 	ifeq ($(BUILD), test)
-		DFLAGS += -unittest #-cov
+		DFLAGS += -unittest -cov
 	endif
 
 	DFLAGS += -debug -gc -profile
@@ -39,16 +39,16 @@ all: \
 	$(MCI_TESTER)
 
 clean:
-	-rm -f *.o
-	-rm -f *.a
-	-rm -f *.deps
-	-rm -f *.json
-	-rm -f *.lst
-	-rm -f trace.def
-	-rm -f trace.log
-	-rm -f libmci.core
-	-rm -f libmci.assembler
-	-rm -f mci.tester
+	-rm -f *.o;
+	-rm -f *.a;
+	-rm -f *.deps;
+	-rm -f *.json;
+	-rm -f *.lst;
+	-rm -f trace.def;
+	-rm -f trace.log;
+	-rm -f libmci.core;
+	-rm -f libmci.assembler;
+	-rm -f mci.tester;
 
 #################### mci.core ####################
 
