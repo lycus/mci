@@ -272,6 +272,7 @@
  </Config>
  <Folder name="mci.assembler">
   <Folder name="parsing">
+   <File path="parsing\ast.d" />
    <File path="parsing\lexer.d" />
    <File path="parsing\parser.d" />
    <File path="parsing\tokens.d" />
