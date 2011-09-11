@@ -7,7 +7,7 @@ import mci.core.container,
 public abstract class Node
 {
     private SourceLocation _location;
-    private List!Object _tags;
+    private NoNullList!Object _tags;
 
     protected this(SourceLocation location)
     in
@@ -17,7 +17,7 @@ public abstract class Node
     body
     {
         _location = location;
-        _tags = new List!Object();
+        _tags = new NoNullList!Object();
     }
 
     @property public SourceLocation location()
@@ -25,7 +25,7 @@ public abstract class Node
         return _location;
     }
 
-    @property public List!Object tags()
+    @property public NoNullList!Object tags()
     {
         return _tags;
     }
@@ -38,9 +38,8 @@ public class TypeDeclaration : Node
     private TypeLayout _layout;
     private uint _packingSize = (void*).sizeof;
 
-    public this(SourceLocation location, string name,
-                TypeAttributes attributes, TypeLayout layout,
-                uint packingSize)
+    public this(SourceLocation location, string name, TypeAttributes attributes,
+                TypeLayout layout, uint packingSize)
     in
     {
         assert(name);
