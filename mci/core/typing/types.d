@@ -130,6 +130,58 @@ public class PointerType : TypeSpecification
     }
 }
 
+public class FunctionPointerType : Type
+{
+    private Type _returnType;
+    private NoNullList!Type _parameterTypes;
+
+    public this(Type returnType)
+    in
+    {
+        assert(returnType);
+    }
+    body
+    {
+        _returnType = returnType;
+        _parameterTypes = new NoNullList!Type();
+    }
+
+    @property public final Type returnType()
+    {
+        return _returnType;
+    }
+
+    @property public final void returnType(Type returnType)
+    in
+    {
+        assert(returnType);
+    }
+    body
+    {
+        _returnType = returnType;
+    }
+
+    @property public final NoNullList!Type parameterTypes()
+    {
+        return _parameterTypes;
+    }
+
+    @property public override string name()
+    {
+        auto s = _returnType.name ~ " *(";
+
+        foreach (i, param; _parameterTypes)
+        {
+            s ~= param.name;
+
+            if (i != _parameterTypes.count - 1)
+                s ~= ", ";
+        }
+
+        return s ~ ")";
+    }
+}
+
 unittest
 {
     auto int32 = Int32Type.instance;
@@ -144,4 +196,14 @@ unittest
     auto ptr = new PointerType(st);
     
     assert(ptr.name == "foo_bar_baz*");
+}
+
+unittest
+{
+    auto fpt = new FunctionPointerType(Float64Type.instance);
+
+    fpt.parameterTypes.add(Int32Type.instance);
+    fpt.parameterTypes.add(UnitType.instance);
+
+    assert(fpt.name == "float64 *(int32, unit)");
 }
