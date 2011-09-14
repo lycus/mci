@@ -49,12 +49,12 @@ alias Algebraic!(byte,
                  ulong,
                  float,
                  double,
-                 Iterable!ubyte,
+                 Countable!ubyte,
                  string, // TODO: Should be BasicBlock.
                  Type,
                  Field,
                  CodeFunction,
-                 Iterable!(Tuple!(string, Register))) InstructionOperand;
+                 Countable!(Tuple!(string, Register))) InstructionOperand;
 
 public final class Instruction
 {
