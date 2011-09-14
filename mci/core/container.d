@@ -392,7 +392,7 @@ public class Dictionary(K, V) : Map!(K, V)
     {
         auto arr = new List!K();
         
-        foreach (k; _aa)
+        foreach (k; _aa.keys)
             arr.add(k);
         
         return arr;
@@ -400,7 +400,7 @@ public class Dictionary(K, V) : Map!(K, V)
     
     public final Iterable!V values()
     {
-        auto arr = new List!K();
+        auto arr = new List!V();
         
         foreach (v; _aa.values)
             arr.add(v);
