@@ -58,6 +58,12 @@ public interface Map(K, V) : Collection!(Tuple!(K, V))
 
 public void addRange(T, V)(Collection!T col, V values)
     if (isIterable!V)
+in
+{
+    assert(col);
+    assert(values);
+}
+body
 {
     foreach (i; values)
         col.add(i);
@@ -77,6 +83,12 @@ unittest
 
 public void removeRange(T, V)(Collection!T col, V values)
     if (isIterable!V)
+in
+{
+    assert(col);
+    assert(values);
+}
+body
 {
     foreach (i; values)
         col.remove(i);
@@ -92,6 +104,43 @@ unittest
     assert(list[0] == 1);
     assert(list[1] == 6);
     assert(list.count == 2);
+}
+
+public bool contains(T)(Iterable!T iter, T value)
+in
+{
+    assert(iter);
+
+    static if (isNullable!T)
+        assert(value);
+}
+body
+{
+    foreach (item; iter)
+        if (item == value)
+            return true;
+
+    return false;
+}
+
+unittest
+{
+    auto list = new List!int();
+
+    list.add(1);
+    list.add(2);
+    list.add(3);
+
+    assert(contains(list, 1));
+    assert(contains(list, 2));
+    assert(contains(list, 3));
+}
+
+unittest
+{
+    auto list = new List!int();
+
+    assert(!contains(list, 1));
 }
 
 public class List(T) : Collection!T
