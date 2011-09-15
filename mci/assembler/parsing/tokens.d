@@ -245,9 +245,8 @@ public final class Token
     private TokenType _type;
     private string _value;
     private SourceLocation _location;
-    private Object _object;
     
-    public this(TokenType type, string value, SourceLocation location, Object object = null)
+    public this(TokenType type, string value, SourceLocation location)
     in
     {
         assert(value);
@@ -258,7 +257,6 @@ public final class Token
         _type = type;
         _value = value;
         _location = location;
-        _object = object;
     }
     
     @property public TokenType type()
@@ -274,11 +272,6 @@ public final class Token
     @property public SourceLocation location()
     {
         return _location;
-    }
-
-    @property public Object object()
-    {
-        return _object;
     }
 }
 
