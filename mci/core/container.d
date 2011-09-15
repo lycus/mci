@@ -447,15 +447,15 @@ unittest
 
 unittest
 {
-    auto dict = new Dictionary!(int, int)();
+    auto dict = new Dictionary!(int, string)();
     
-    dict.add(1, 3);
-    dict.add(2, 2);
-    dict.add(3, 1);
+    dict.add(1, "a");
+    dict.add(2, "b");
+    dict.add(3, "c");
     
     dict.remove(2);
     
-    assert(dict[1] == 3);
-    assert(dict[3] == 1);
+    assert(dict[1] == "a");
+    assert(dict[3] == "c");
     assert(dict.count == 2);
 }
