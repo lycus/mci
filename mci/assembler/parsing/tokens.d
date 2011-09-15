@@ -249,8 +249,16 @@ public final class Token
     public this(TokenType type, string value, SourceLocation location)
     in
     {
-        assert(value);
-        assert(location);
+        if (type == TokenType.begin || type == TokenType.end)
+        {
+            assert(!value);
+            assert(!location);
+        }
+        else
+        {
+            assert(value);
+            assert(location);
+        }
     }
     body
     {
@@ -297,6 +305,9 @@ public final class MemoryTokenStream : TokenStream
     in
     {
         assert(stream);
+        assert(stream.count >= 2);
+        assert(stream.get(0).type == TokenType.begin);
+        assert(stream.get(stream.count - 1).type == TokenType.end);
     }
     body
     {
@@ -333,19 +344,25 @@ unittest
 {
     auto list = new NoNullList!Token();
 
+    list.add(new Token(TokenType.begin, null, null));
     list.add(new Token(TokenType.unit, "unit", new SourceLocation(1, 1)));
     list.add(new Token(TokenType.constant, "const", new SourceLocation(1, 1)));
-    list.add(new Token(TokenType.queueCall, "qcall", new SourceLocation(1, 1)));
+    list.add(new Token(TokenType.end, null, null));
 
     auto stream = new MemoryTokenStream(list);
 
-    assert(stream.current.type == TokenType.unit);
-    assert(stream.next.type == TokenType.constant);
+    assert(stream.current.type == TokenType.begin);
+    assert(stream.next.type == TokenType.unit);
 
     auto next = stream.moveNext();
 
-    assert(next.type == TokenType.constant);
-    assert(stream.previous.type == TokenType.unit);
-    assert(stream.current.type == TokenType.constant);
-    assert(stream.next.type == TokenType.queueCall);
+    assert(next.type == TokenType.unit);
+    assert(stream.previous.type == TokenType.begin);
+    assert(stream.current.type == TokenType.unit);
+    assert(stream.next.type == TokenType.constant);
+
+    auto next2 = stream.moveNext();
+
+    assert(next2.type == TokenType.constant);
+    assert(stream.next.type == TokenType.end);
 }
