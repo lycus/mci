@@ -36,6 +36,19 @@ public abstract class Node
     }
 }
 
+public abstract class DeclarationNode : Node
+{
+    protected this(SourceLocation location)
+    in
+    {
+        assert(location);
+    }
+    body
+    {
+        super(location);
+    }
+}
+
 public class SimpleNameNode : Node
 {
     private string _name;
@@ -192,7 +205,7 @@ public class FunctionReferenceNode : Node
     }
 }
 
-public class TypeDeclarationNode : Node
+public class TypeDeclarationNode : DeclarationNode
 {
     private string _name;
     private TypeAttributes _attributes;
@@ -355,7 +368,7 @@ public class ParameterNode : Node
     }
 }
 
-public class FunctionDeclarationNode : Node
+public class FunctionDeclarationNode : DeclarationNode
 {
     private string _name;
     private FunctionAttributes _attributes;
@@ -460,24 +473,32 @@ public class RegisterDeclarationNode : Node
 
 public class BasicBlockNode : Node
 {
+    private string _name;
     private Countable!InstructionNode _instructions;
 
-    public this(SourceLocation location, Countable!InstructionNode instructions)
+    public this(SourceLocation location, string name, Countable!InstructionNode instructions)
     in
     {
         assert(location);
+        assert(name);
         assert(instructions);
     }
     body
     {
         super(location);
 
+        _name = name;
         _instructions = instructions;
     }
 
     @property public final Countable!InstructionNode instructions()
     {
         return _instructions;
+    }
+
+    @property public final string name()
+    {
+        return _name;
     }
 }
 
