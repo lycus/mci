@@ -162,10 +162,10 @@ public class FunctionReferenceNode : Node
     private ModuleReferenceNode _moduleName;
     private SimpleNameNode _name;
     private TypeReferenceNode _returnType;
-    private Countable!TypeReferenceNode _parameterTypes;
+    private NoNullList!TypeReferenceNode _parameterTypes;
 
     public this(SourceLocation location, ModuleReferenceNode moduleName, SimpleNameNode name,
-                TypeReferenceNode returnType, Countable!TypeReferenceNode parameterTypes)
+                TypeReferenceNode returnType, NoNullList!TypeReferenceNode parameterTypes)
     in
     {
         assert(location);
@@ -211,13 +211,13 @@ public class TypeDeclarationNode : DeclarationNode
     private TypeAttributes _attributes;
     private TypeLayout _layout;
     private uint _packingSize;
-    private Countable!GenericParameterNode _genericParameters;
-    private Countable!FieldDeclarationNode _fields;
+    private NoNullList!GenericParameterNode _genericParameters;
+    private NoNullList!FieldDeclarationNode _fields;
 
     public this(SourceLocation location, string name, TypeAttributes attributes,
                 TypeLayout layout, uint packingSize,
-                Countable!GenericParameterNode genericParameters,
-                Countable!FieldDeclarationNode fields)
+                NoNullList!GenericParameterNode genericParameters,
+                NoNullList!FieldDeclarationNode fields)
     in
     {
         assert(location);
@@ -373,15 +373,15 @@ public class FunctionDeclarationNode : DeclarationNode
     private string _name;
     private FunctionAttributes _attributes;
     private CallingConvention _callingConvention;
-    private Countable!ParameterNode _parameters;
+    private NoNullList!ParameterNode _parameters;
     private TypeReferenceNode _returnType;
-    private Countable!RegisterDeclarationNode _registers;
-    private Countable!BasicBlockNode _blocks;
+    private NoNullList!RegisterDeclarationNode _registers;
+    private NoNullList!BasicBlockNode _blocks;
 
     public this(SourceLocation location, string name, FunctionAttributes attributes,
-                CallingConvention callingConvention, Countable!ParameterNode parameters,
-                TypeReferenceNode returnType, Countable!RegisterDeclarationNode registers,
-                Countable!BasicBlockNode blocks)
+                CallingConvention callingConvention, NoNullList!ParameterNode parameters,
+                TypeReferenceNode returnType, NoNullList!RegisterDeclarationNode registers,
+                NoNullList!BasicBlockNode blocks)
     in
     {
         assert(location);
@@ -474,9 +474,9 @@ public class RegisterDeclarationNode : Node
 public class BasicBlockNode : Node
 {
     private string _name;
-    private Countable!InstructionNode _instructions;
+    private NoNullList!InstructionNode _instructions;
 
-    public this(SourceLocation location, string name, Countable!InstructionNode instructions)
+    public this(SourceLocation location, string name, NoNullList!InstructionNode instructions)
     in
     {
         assert(location);
@@ -540,10 +540,10 @@ public class BasicBlockReferenceNode : Node
 
 public class RegisterListNode : Node
 {
-    private Countable!(Tuple!(BasicBlockReferenceNode, RegisterReferenceNode)) _registers;
+    private NoNullList!(Tuple!(BasicBlockReferenceNode, RegisterReferenceNode)) _registers;
 
     public this(SourceLocation location,
-                Countable!(Tuple!(BasicBlockReferenceNode, RegisterReferenceNode)) registers)
+                NoNullList!(Tuple!(BasicBlockReferenceNode, RegisterReferenceNode)) registers)
     in
     {
         assert(location);
