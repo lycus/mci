@@ -5,7 +5,6 @@ import std.variant,
        mci.core.tuple,
        mci.core.code.functions,
        mci.core.diagnostics.debugging,
-       mci.core.typing.generics,
        mci.core.typing.members,
        mci.core.typing.types;
 
@@ -211,19 +210,15 @@ public class TypeDeclarationNode : DeclarationNode
     private TypeAttributes _attributes;
     private TypeLayout _layout;
     private uint _packingSize;
-    private NoNullList!GenericParameterNode _genericParameters;
     private NoNullList!FieldDeclarationNode _fields;
 
     public this(SourceLocation location, string name, TypeAttributes attributes,
-                TypeLayout layout, uint packingSize,
-                NoNullList!GenericParameterNode genericParameters,
-                NoNullList!FieldDeclarationNode fields)
+                TypeLayout layout, uint packingSize, NoNullList!FieldDeclarationNode fields)
     in
     {
         assert(location);
         assert(name);
         assert(packingSize);
-        assert(genericParameters);
         assert(fields);
     }
     body
@@ -234,7 +229,6 @@ public class TypeDeclarationNode : DeclarationNode
         _attributes = attributes;
         _layout = layout;
         _packingSize = packingSize;
-        _genericParameters = genericParameters;
         _fields = fields;
     }
 
@@ -258,52 +252,9 @@ public class TypeDeclarationNode : DeclarationNode
         return _packingSize;
     }
 
-    @property public final Countable!GenericParameterNode genericParameters()
-    {
-        return _genericParameters;
-    }
-
     @property public final Countable!FieldDeclarationNode fields()
     {
         return _fields;
-    }
-}
-
-public class GenericParameterNode : Node
-{
-    private string _name;
-    private GenericParameterVariance _variance;
-    private GenericParameterConstraint _constraint;
-
-    public this(SourceLocation location, string name, GenericParameterVariance variance,
-                GenericParameterConstraint constraint)
-    in
-    {
-        assert(location);
-        assert(name);
-    }
-    body
-    {
-        super(location);
-
-        _name = name;
-        _variance = variance;
-        _constraint = constraint;
-    }
-
-    @property public final string name()
-    {
-        return _name;
-    }
-
-    @property public final GenericParameterVariance variance()
-    {
-        return _variance;
-    }
-
-    @property public final GenericParameterConstraint constraint()
-    {
-        return _constraint;
     }
 }
 

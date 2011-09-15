@@ -6,64 +6,59 @@ import mci.core.container,
 
 public enum TokenType : ubyte
 {
-    begin = 0,
-    end = 1,
-    identifier = 2,
-    openBrace = 3,
-    closeBrace = 4,
-    openParen = 5,
-    closeParen = 6,
-    openBracket = 7,
-    closeBracket = 8,
-    openAngle = 9,
-    closeAngle = 10,
-    colon = 11,
-    semicolon = 12,
-    dot = 13,
-    comma = 14,
-    equals = 15,
-    star = 16,
-    type = 17,
-    value = 18,
-    automatic = 19,
-    sequential = 20,
-    explicit = 21,
-    pack = 22,
-    covariant = 23,
-    contravariant = 24,
-    pointer = 25,
-    integral = 26,
-    numeric = 27,
-    field = 28,
-    global = 29,
-    constant = 30,
-    method = 31,
-    queueCall = 32,
-    cdecl = 33,
-    stdCall = 34,
-    thisCall = 35,
-    fastCall = 36,
-    intrinsic = 37,
-    readOnly = 38,
-    noOptimization = 39,
-    noInlining = 40,
-    noCallInlining = 41,
-    unit = 42,
-    int8 = 43,
-    uint8 = 44,
-    int16 = 45,
-    uint16 = 46,
-    int32 = 47,
-    uint32 = 48,
-    int64 = 49,
-    uint64 = 50,
-    nativeInt = 51,
-    nativeUInt = 52,
-    float32 = 53,
-    float64 = 54,
-    nativeFloat = 55,
-    opCode = 56,
-    literal = 57,
+    begin,
+    end,
+    identifier,
+    openBrace,
+    closeBrace,
+    openParen,
+    closeParen,
+    openBracket,
+    closeBracket,
+    openAngle,
+    closeAngle,
+    colon,
+    semicolon,
+    dot,
+    comma,
+    equals,
+    star,
+    type,
+    value,
+    automatic,
+    sequential,
+    explicit,
+    pack,
+    field,
+    global,
+    constant,
+    method,
+    queueCall,
+    cdecl,
+    stdCall,
+    thisCall,
+    fastCall,
+    intrinsic,
+    readOnly,
+    noOptimization,
+    noInlining,
+    noCallInlining,
+    unit,
+    int8,
+    uint8,
+    int16,
+    uint16,
+    int32,
+    uint32,
+    int64,
+    uint64,
+    nativeInt,
+    nativeUInt,
+    float32,
+    float64,
+    nativeFloat,
+    opCode,
+    literal,
 }
 
 public TokenType charToType(dchar chr)
@@ -129,21 +124,6 @@ body
             
         case "pack":
             return TokenType.pack;
-            
-        case "co":
-            return TokenType.covariant;
-            
-        case "contra":
-            return TokenType.contravariant;
-            
-        case "pointer":
-            return TokenType.pointer;
-            
-        case "integral":
-            return TokenType.integral;
-            
-        case "numeric":
-            return TokenType.numeric;
             
         case "field":
             return TokenType.field;

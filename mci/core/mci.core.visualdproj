@@ -287,7 +287,6 @@
   </Folder>
   <Folder name="typing">
    <File path="typing\core.d" />
-   <File path="typing\generics.d" />
    <File path="typing\members.d" />
    <File path="typing\types.d" />
   </Folder>
