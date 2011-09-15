@@ -283,17 +283,19 @@ public final class Token
     }
 }
 
-public abstract class TokenStream
+public interface TokenStream
 {
-    @property public abstract Token current();
+    @property public Token current();
     
-    @property public abstract Token previous();
+    @property public Token previous();
     
-    @property public abstract Token next();
+    @property public Token next();
     
-    public abstract Token movePrevious();
+    public Token movePrevious();
     
-    public abstract Token moveNext();
+    public Token moveNext();
+
+    public void reset();
 }
 
 public final class MemoryTokenStream : TokenStream
@@ -314,29 +316,34 @@ public final class MemoryTokenStream : TokenStream
         _stream = stream;
     }
     
-    @property public override Token current()
+    @property public Token current()
     {
         return _stream.get(_position);
     }
     
-    @property public override Token previous()
+    @property public Token previous()
     {
         return _stream.get(_position - 1);
     }
     
-    @property public override Token next()
+    @property public Token next()
     {
         return _stream.get(_position + 1);
     }
     
-    public override Token movePrevious()
+    public Token movePrevious()
     {
         return _stream.get(--_position);
     }
     
-    public override Token moveNext()
+    public Token moveNext()
     {
         return _stream.get(++_position);
+    }
+
+    public void reset()
+    {
+        _position = 0;
     }
 }
 
