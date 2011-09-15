@@ -27,15 +27,15 @@ public abstract class Stream
 
 public enum FileAccess : ubyte
 {
-    write = 0,
-    read = 1,
+    write,
+    read,
 }
 
 public enum FileMode : ubyte
 {
-    open = 0,
-    truncate = 1,
-    append = 2,
+    open,
+    truncate,
+    append,
 }
 
 private char[] accessAndModeToString(FileAccess access, FileMode mode)
