@@ -2,6 +2,7 @@ module mci.assembler.parsing.ast;
 
 import std.variant,
        mci.core.container,
+       mci.core.nullable,
        mci.core.tuple,
        mci.core.code.functions,
        mci.core.diagnostics.debugging,
@@ -206,19 +207,18 @@ public class FunctionReferenceNode : Node
 
 public class TypeDeclarationNode : DeclarationNode
 {
-    private string _name;
+    private SimpleNameNode _name;
     private TypeAttributes _attributes;
     private TypeLayout _layout;
-    private uint _packingSize;
+    private LiteralValueNode _packingSize;
     private NoNullList!FieldDeclarationNode _fields;
 
-    public this(SourceLocation location, string name, TypeAttributes attributes,
-                TypeLayout layout, uint packingSize, NoNullList!FieldDeclarationNode fields)
+    public this(SourceLocation location, SimpleNameNode name, TypeAttributes attributes,
+                TypeLayout layout, LiteralValueNode packingSize, NoNullList!FieldDeclarationNode fields)
     in
     {
         assert(location);
         assert(name);
-        assert(packingSize);
         assert(fields);
     }
     body
@@ -232,7 +232,7 @@ public class TypeDeclarationNode : DeclarationNode
         _fields = fields;
     }
 
-    @property public final string name()
+    @property public final SimpleNameNode name()
     {
         return _name;
     }
@@ -247,7 +247,7 @@ public class TypeDeclarationNode : DeclarationNode
         return _layout;
     }
 
-    @property public final uint packingSize()
+    @property public final LiteralValueNode packingSize()
     {
         return _packingSize;
     }
@@ -260,10 +260,10 @@ public class TypeDeclarationNode : DeclarationNode
 
 public class FieldDeclarationNode : Node
 {
-    private string _name;
+    private SimpleNameNode _name;
     private FieldAttributes _attributes;
 
-    public this(SourceLocation location, string name, FieldAttributes attributes)
+    public this(SourceLocation location, SimpleNameNode name, FieldAttributes attributes)
     in
     {
         assert(location);
@@ -277,7 +277,7 @@ public class FieldDeclarationNode : Node
         _attributes = attributes;
     }
 
-    @property public final string name()
+    @property public final SimpleNameNode name()
     {
         return _name;
     }
@@ -290,10 +290,10 @@ public class FieldDeclarationNode : Node
 
 public class ParameterNode : Node
 {
-    private string _name;
+    private SimpleNameNode _name;
     private TypeReferenceNode _type;
 
-    public this(SourceLocation location, string name, TypeReferenceNode type)
+    public this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type)
     in
     {
         assert(location);
@@ -308,7 +308,7 @@ public class ParameterNode : Node
         _type = type;
     }
 
-    @property public final string name()
+    @property public final SimpleNameNode name()
     {
         return _name;
     }
@@ -321,7 +321,7 @@ public class ParameterNode : Node
 
 public class FunctionDeclarationNode : DeclarationNode
 {
-    private string _name;
+    private SimpleNameNode _name;
     private FunctionAttributes _attributes;
     private CallingConvention _callingConvention;
     private NoNullList!ParameterNode _parameters;
@@ -329,7 +329,7 @@ public class FunctionDeclarationNode : DeclarationNode
     private NoNullList!RegisterDeclarationNode _registers;
     private NoNullList!BasicBlockNode _blocks;
 
-    public this(SourceLocation location, string name, FunctionAttributes attributes,
+    public this(SourceLocation location, SimpleNameNode name, FunctionAttributes attributes,
                 CallingConvention callingConvention, NoNullList!ParameterNode parameters,
                 TypeReferenceNode returnType, NoNullList!RegisterDeclarationNode registers,
                 NoNullList!BasicBlockNode blocks)
@@ -355,7 +355,7 @@ public class FunctionDeclarationNode : DeclarationNode
         _blocks = blocks;
     }
 
-    @property public final string name()
+    @property public final SimpleNameNode name()
     {
         return _name;
     }
@@ -393,10 +393,10 @@ public class FunctionDeclarationNode : DeclarationNode
 
 public class RegisterDeclarationNode : Node
 {
-    private string _name;
+    private SimpleNameNode _name;
     private TypeReferenceNode _type;
 
-    public this(SourceLocation location, string name, TypeReferenceNode type)
+    public this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type)
     in
     {
         assert(location);
@@ -411,7 +411,7 @@ public class RegisterDeclarationNode : Node
         _type = type;
     }
 
-    @property public final string name()
+    @property public final SimpleNameNode name()
     {
         return _name;
     }
@@ -424,10 +424,10 @@ public class RegisterDeclarationNode : Node
 
 public class BasicBlockNode : Node
 {
-    private string _name;
+    private SimpleNameNode _name;
     private NoNullList!InstructionNode _instructions;
 
-    public this(SourceLocation location, string name, NoNullList!InstructionNode instructions)
+    public this(SourceLocation location, SimpleNameNode name, NoNullList!InstructionNode instructions)
     in
     {
         assert(location);
@@ -447,7 +447,7 @@ public class BasicBlockNode : Node
         return _instructions;
     }
 
-    @property public final string name()
+    @property public final SimpleNameNode name()
     {
         return _name;
     }
@@ -455,9 +455,9 @@ public class BasicBlockNode : Node
 
 public class RegisterReferenceNode : Node
 {
-    private string _name;
+    private SimpleNameNode _name;
 
-    public this(SourceLocation location, string name)
+    public this(SourceLocation location, SimpleNameNode name)
     in
     {
         assert(location);
@@ -473,9 +473,9 @@ public class RegisterReferenceNode : Node
 
 public class BasicBlockReferenceNode : Node
 {
-    private string _name;
+    private SimpleNameNode _name;
 
-    public this(SourceLocation location, string name)
+    public this(SourceLocation location, SimpleNameNode name)
     in
     {
         assert(location);
@@ -526,6 +526,7 @@ public class LiteralValueNode : Node
     }
 }
 
+// TODO: Turn this into an actual node with a source location.
 alias Algebraic!(TypeReferenceNode,
                  FieldReferenceNode,
                  FunctionReferenceNode,
