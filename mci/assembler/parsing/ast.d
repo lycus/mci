@@ -357,15 +357,15 @@ public class TypeDeclarationNode : DeclarationNode
     }
 }
 
-// TODO: Add support for constant fields.
 public class FieldDeclarationNode : Node
 {
     private TypeReferenceNode _type;
     private SimpleNameNode _name;
     private FieldAttributes _attributes;
+    private LiteralValueNode _value;
 
     public this(SourceLocation location, TypeReferenceNode type, SimpleNameNode name,
-                FieldAttributes attributes)
+                FieldAttributes attributes, LiteralValueNode value)
     in
     {
         assert(location);
@@ -379,6 +379,7 @@ public class FieldDeclarationNode : Node
         _type = type;
         _name = name;
         _attributes = attributes;
+        _value = value;
     }
 
     @property public final TypeReferenceNode type()
@@ -394,6 +395,11 @@ public class FieldDeclarationNode : Node
     @property public final FieldAttributes attributes()
     {
         return _attributes;
+    }
+
+    @property public final LiteralValueNode value()
+    {
+        return _value;
     }
 }
 
