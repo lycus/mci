@@ -1,6 +1,7 @@
 module mci.core.typing.types;
 
 import mci.core.container,
+       mci.core.nullable,
        mci.core.typing.core,
        mci.core.typing.members;
 
@@ -27,7 +28,7 @@ public class StructureType : Type
     public TypeAttributes attributes;
     public TypeLayout layout;
     private string _name;
-    private uint _packingSize = (void*).sizeof;
+    private Nullable!uint _packingSize;
     private NoNullList!Field _fields;
     
     public this(string name)
@@ -41,15 +42,15 @@ public class StructureType : Type
         _fields = new NoNullList!Field();
     }
     
-    @property public final uint packingSize()
+    @property public final Nullable!uint packingSize()
     {
         return _packingSize;
     }
     
-    @property public final void packingSize(uint packingSize)
+    @property public final void packingSize(Nullable!uint packingSize)
     in
     {
-        assert(packingSize);
+        assert(!packingSize.hasValue || packingSize.value);
     }
     body
     {
