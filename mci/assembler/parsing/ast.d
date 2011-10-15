@@ -469,6 +469,11 @@ public class RegisterReferenceNode : Node
 
         _name = name;
     }
+
+    @property public final SimpleNameNode name()
+    {
+        return _name;
+    }
 }
 
 public class BasicBlockReferenceNode : Node
@@ -486,6 +491,11 @@ public class BasicBlockReferenceNode : Node
         super(location);
 
         _name = name;
+    }
+
+    @property public final SimpleNameNode name()
+    {
+        return _name;
     }
 }
 
@@ -506,6 +516,11 @@ public class RegisterListNode : Node
 
         _registers = registers;
     }
+
+    @property public final NoNullList!(Tuple!(BasicBlockReferenceNode, RegisterReferenceNode)) registers()
+    {
+        return _registers;
+    }
 }
 
 public class LiteralValueNode : Node
@@ -523,6 +538,11 @@ public class LiteralValueNode : Node
         super(location);
 
         _value = value;
+    }
+
+    @property public final string value()
+    {
+        return _value;
     }
 }
 
