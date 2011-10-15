@@ -50,7 +50,7 @@ alias Algebraic!(byte,
                  float,
                  double,
                  Countable!ubyte,
-                 string, // TODO: Should be BasicBlock.
+                 BasicBlock,
                  Type,
                  Field,
                  CodeFunction,
