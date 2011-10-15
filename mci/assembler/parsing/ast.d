@@ -95,7 +95,20 @@ public class ModuleReferenceNode : Node
     }
 }
 
-public class TypeReferenceNode : Node
+public abstract class TypeReferenceNode : Node
+{
+    public this(SourceLocation location)
+    in
+    {
+        assert(location);
+    }
+    body
+    {
+        super(location);
+    }
+}
+
+public class StructureTypeReferenceNode : TypeReferenceNode
 {
     private ModuleReferenceNode _moduleName;
     private SimpleNameNode _name;
@@ -125,6 +138,92 @@ public class TypeReferenceNode : Node
         return _name;
     }
 }
+
+public class PointerTypeReferenceNode : TypeReferenceNode
+{
+    private TypeReferenceNode _elementType;
+
+    public this(SourceLocation location, TypeReferenceNode elementType)
+    in
+    {
+        assert(location);
+        assert(elementType);
+    }
+    body
+    {
+        super(location);
+
+        _elementType = elementType;
+    }
+
+    @property public final TypeReferenceNode elementType()
+    {
+        return _elementType;
+    }
+}
+
+public class FunctionPointerTypeReferenceNode : TypeReferenceNode
+{
+    private TypeReferenceNode _returnType;
+    private NoNullList!TypeReferenceNode _parameterTypes;
+
+    public this(SourceLocation location, TypeReferenceNode returnType,
+                NoNullList!TypeReferenceNode parameterTypes)
+    in
+    {
+        assert(location);
+        assert(returnType);
+        assert(parameterTypes);
+    }
+    body
+    {
+        super(location);
+
+        _returnType = returnType;
+        _parameterTypes = parameterTypes;
+    }
+
+    @property public final TypeReferenceNode returnType()
+    {
+        return _returnType;
+    }
+
+    @property public final Countable!TypeReferenceNode parameterTypes()
+    {
+        return _parameterTypes;
+    }
+}
+
+private mixin template CoreTypeReferenceNode(string type)
+{
+    mixin("public final class " ~ type ~ "TypeReferenceNode : TypeReferenceNode" ~
+          "{" ~
+          "    public this(SourceLocation location)" ~
+          "    in" ~
+          "    {" ~
+          "        assert(location);" ~
+          "    }" ~
+          "    body" ~
+          "    {" ~
+          "        super(location);" ~
+          "    }" ~
+          "}");
+}
+
+mixin CoreTypeReferenceNode!("Unit");
+mixin CoreTypeReferenceNode!("Int8");
+mixin CoreTypeReferenceNode!("UInt8");
+mixin CoreTypeReferenceNode!("Int16");
+mixin CoreTypeReferenceNode!("UInt16");
+mixin CoreTypeReferenceNode!("Int32");
+mixin CoreTypeReferenceNode!("UInt32");
+mixin CoreTypeReferenceNode!("Int64");
+mixin CoreTypeReferenceNode!("UInt64");
+mixin CoreTypeReferenceNode!("NativeInt");
+mixin CoreTypeReferenceNode!("NativeUInt");
+mixin CoreTypeReferenceNode!("Float32");
+mixin CoreTypeReferenceNode!("Float64");
+mixin CoreTypeReferenceNode!("NativeFloat");
 
 public class FieldReferenceNode : Node
 {
