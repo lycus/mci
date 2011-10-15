@@ -117,7 +117,6 @@ public class StructureTypeReferenceNode : TypeReferenceNode
     in
     {
         assert(location);
-        assert(moduleName);
         assert(name);
     }
     body
@@ -196,7 +195,7 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
 
 private mixin template CoreTypeReferenceNode(string type)
 {
-    mixin("public final class " ~ type ~ "TypeReferenceNode : TypeReferenceNode" ~
+    mixin("public class " ~ type ~ "TypeReferenceNode : TypeReferenceNode" ~
           "{" ~
           "    public this(SourceLocation location)" ~
           "    in" ~

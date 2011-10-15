@@ -108,103 +108,70 @@ body
     {
         case "type":
             return TokenType.type;
-            
         case "value":
             return TokenType.value;
-            
         case "automatic":
             return TokenType.automatic;
-            
         case "sequential":
             return TokenType.sequential;
-            
         case "explicit":
             return TokenType.explicit;
-            
         case "field":
             return TokenType.field;
-            
         case "static":
             return TokenType.global;
-            
         case "const":
             return TokenType.constant;
-            
         case "function":
             return TokenType.method;
-            
         case "qcall":
             return TokenType.queueCall;
-            
         case "ccall":
             return TokenType.cdecl;
-            
         case "scall":
             return TokenType.stdCall;
-            
         case "tcall":
             return TokenType.thisCall;
-            
         case "fcall":
             return TokenType.fastCall;
-            
         case "intrinsic":
             return TokenType.intrinsic;
-            
         case "pure":
             return TokenType.readOnly;
-            
         case "noopt":
             return TokenType.noOptimization;
-            
         case "noinl":
             return TokenType.noInlining;
-            
         case "nocinl":
             return TokenType.noCallInlining;
-            
         case "unit":
             return TokenType.unit;
-            
         case "int8":
             return TokenType.int8;
-            
         case "uint8":
             return TokenType.uint8;
-            
         case "int16":
             return TokenType.int16;
-            
         case "uint16":
             return TokenType.uint16;
-            
         case "int32":
             return TokenType.int32;
-            
         case "uint32":
             return TokenType.uint32;
-            
         case "int64":
             return TokenType.int64;
-            
         case "uint64":
             return TokenType.uint64;
-            
         case "int":
             return TokenType.nativeInt;
-            
         case "uint":
             return TokenType.nativeUInt;
-            
         case "float32":
             return TokenType.float32;
-            
         case "float64":
             return TokenType.float64;
-            
         case "float":
             return TokenType.nativeFloat;
-            
         default:
             break;
     }
