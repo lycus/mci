@@ -266,6 +266,8 @@ public interface TokenStream
     @property public Token previous();
     
     @property public Token next();
+
+    @property public bool done();
     
     public Token movePrevious();
     
@@ -305,6 +307,11 @@ public final class MemoryTokenStream : TokenStream
     @property public Token next()
     {
         return _stream.get(_position + 1);
+    }
+
+    @property public bool done()
+    {
+        return _position == _stream.count - 1;
     }
     
     public Token movePrevious()
