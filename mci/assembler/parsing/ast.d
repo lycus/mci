@@ -226,10 +226,10 @@ mixin CoreTypeReferenceNode!("NativeFloat");
 
 public class FieldReferenceNode : Node
 {
-    private TypeReferenceNode _typeName;
+    private StructureTypeReferenceNode _typeName;
     private SimpleNameNode _name;
 
-    public this(SourceLocation location, TypeReferenceNode typeName, SimpleNameNode name)
+    public this(SourceLocation location, StructureTypeReferenceNode typeName, SimpleNameNode name)
     in
     {
         assert(location);
@@ -244,7 +244,7 @@ public class FieldReferenceNode : Node
         _name = name;
     }
 
-    @property public final TypeReferenceNode typeName()
+    @property public final StructureTypeReferenceNode typeName()
     {
         return _typeName;
     }
