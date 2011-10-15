@@ -660,13 +660,35 @@ public class LiteralValueNode : Node
     }
 }
 
-// TODO: Turn this into an actual node with a source location.
 alias Algebraic!(TypeReferenceNode,
                  FieldReferenceNode,
                  FunctionReferenceNode,
                  LiteralValueNode,
                  BasicBlockReferenceNode,
-                 Countable!(Tuple!(BasicBlockReferenceNode, RegisterReferenceNode))) InstructionOperandNode;
+                 Countable!(Tuple!(BasicBlockReferenceNode, RegisterReferenceNode))) InstructionOperand;
+
+public class InstructionOperandNode : Node
+{
+    private InstructionOperand _operand;
+
+    public this(SourceLocation location, InstructionOperand operand)
+    in
+    {
+        assert(location);
+        assert(operand.hasValue);
+    }
+    body
+    {
+        super(location);
+
+        _operand = operand;
+    }
+
+    @property public final InstructionOperand operand()
+    {
+        return _operand;
+    }
+}
 
 public class InstructionNode : Node
 {
