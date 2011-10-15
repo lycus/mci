@@ -181,7 +181,7 @@ public final class Lexer
         else
             s = to!string(got);
         
-        throw new LexerException("Expected " ~ expected ~ ", but found " ~ s ~ ".", location);
+        throw new LexerException("Expected " ~ expected ~ ", but found '" ~ s ~ "'.", location);
     }
     
     private static void error(string expected, SourceLocation location)
@@ -211,7 +211,7 @@ public final class Lexer
                 return lexIdentifier(chr);
             
             // Handle integer and float literals.
-            if (isDigit(chr))
+            if (isDigit(chr) || chr == '-' || chr == '+')
                 return lexLiteral(chr);
             
             errorGot("any valid character", _source.location, chr);
@@ -328,7 +328,7 @@ public final class Lexer
             {
                 if (digChr == dchar.init || !isDigit(digChr))
                     errorGot("base-10 digit" ~ (!hasDot ? "or decimal point" : ""),
-                                _source.location, digChr);
+                             _source.location, digChr);
                 
                 if (hasDot)
                     hasDecimal = true;
