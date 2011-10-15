@@ -28,7 +28,6 @@ public enum TokenType : ubyte
     automatic,
     sequential,
     explicit,
-    pack,
     field,
     global,
     constant,
@@ -121,9 +120,6 @@ body
             
         case "explicit":
             return TokenType.explicit;
-            
-        case "pack":
-            return TokenType.pack;
             
         case "field":
             return TokenType.field;
