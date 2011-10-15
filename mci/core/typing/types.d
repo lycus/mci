@@ -78,10 +78,10 @@ public class StructureType : Type
     }
 }
 
-public abstract class TypeSpecification : Type
+public class PointerType : Type
 {
     private Type _elementType;
-    
+
     public this(Type elementType)
     in
     {
@@ -91,12 +91,12 @@ public abstract class TypeSpecification : Type
     {
         _elementType = elementType;
     }
-    
+
     @property public final Type elementType()
     {
         return _elementType;
     }
-    
+
     @property public final void elementType(Type elementType)
     in
     {
@@ -106,25 +106,7 @@ public abstract class TypeSpecification : Type
     {
         _elementType = elementType;
     }
-    
-    @property public override string name()
-    {
-        return elementType.name;
-    }
-}
 
-public class PointerType : TypeSpecification
-{
-    public this(Type elementType)
-    in
-    {
-        assert(elementType);
-    }
-    body
-    {
-        super(elementType);
-    }
-    
     @property public override string name()
     {
         return elementType.name ~ "*";
