@@ -440,12 +440,12 @@ public class FunctionDeclarationNode : DeclarationNode
     private NoNullList!ParameterNode _parameters;
     private TypeReferenceNode _returnType;
     private NoNullList!RegisterDeclarationNode _registers;
-    private NoNullList!BasicBlockNode _blocks;
+    private NoNullList!BasicBlockDeclarationNode _blocks;
 
     public this(SourceLocation location, SimpleNameNode name, FunctionAttributes attributes,
                 CallingConvention callingConvention, NoNullList!ParameterNode parameters,
                 TypeReferenceNode returnType, NoNullList!RegisterDeclarationNode registers,
-                NoNullList!BasicBlockNode blocks)
+                NoNullList!BasicBlockDeclarationNode blocks)
     in
     {
         assert(location);
@@ -498,7 +498,7 @@ public class FunctionDeclarationNode : DeclarationNode
         return _registers;
     }
 
-    @property public final Countable!BasicBlockNode blocks()
+    @property public final Countable!BasicBlockDeclarationNode blocks()
     {
         return _blocks;
     }
@@ -535,7 +535,7 @@ public class RegisterDeclarationNode : Node
     }
 }
 
-public class BasicBlockNode : Node
+public class BasicBlockDeclarationNode : Node
 {
     private SimpleNameNode _name;
     private NoNullList!InstructionNode _instructions;
