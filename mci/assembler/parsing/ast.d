@@ -5,6 +5,7 @@ import std.variant,
        mci.core.nullable,
        mci.core.tuple,
        mci.core.code.functions,
+       mci.core.code.opcodes,
        mci.core.diagnostics.debugging,
        mci.core.typing.members,
        mci.core.typing.types;
@@ -691,21 +692,24 @@ public class InstructionOperandNode : Node
 
 public class InstructionNode : Node
 {
+    private OpCode _opCode;
     private RegisterReferenceNode _target;
     private RegisterReferenceNode _source1;
     private RegisterReferenceNode _source2;
     private InstructionOperandNode _operand;
 
-    public this(SourceLocation location, RegisterReferenceNode target, RegisterReferenceNode source1,
-                RegisterReferenceNode source2, InstructionOperandNode operand)
+    public this(SourceLocation location, OpCode opCode, RegisterReferenceNode target,
+                RegisterReferenceNode source1, RegisterReferenceNode source2, InstructionOperandNode operand)
     in
     {
         assert(location);
+        assert(opCode);
     }
     body
     {
         super(location);
 
+        _opCode = opCode;
         _operand = operand;
     }
 }
