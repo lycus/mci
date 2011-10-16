@@ -57,6 +57,16 @@ public final class Parser
         return _stream.next;
     }
 
+    private Token peekEof()
+    in
+    {
+        assert(!_stream.done);
+    }
+    body
+    {
+        return _stream.next;
+    }
+
     private Token next()
     in
     {
@@ -83,7 +93,7 @@ public final class Parser
         return _stream.moveNext();
     }
 
-    private void consume(string expect)
+    private Token consume(string expect)
     in
     {
         assert(!_stream.done);
@@ -94,6 +104,8 @@ public final class Parser
 
         if (next.value != expect)
             errorGot("'" ~ expect ~ "'", next.location, next.value);
+
+        return next;
     }
 
     private static void error(string error, SourceLocation location)
