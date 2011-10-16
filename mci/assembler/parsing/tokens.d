@@ -73,14 +73,6 @@ public TokenType charToType(dchar chr)
             return TokenType.openParen;
         case ')':
             return TokenType.closeParen;
-        case '[':
-            return TokenType.openBracket;
-        case ']':
-            return TokenType.closeBracket;
-        case '<':
-            return TokenType.openAngle;
-        case '>':
-            return TokenType.closeAngle;
         case ':':
             return TokenType.colon;
         case ';':
