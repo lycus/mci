@@ -41,6 +41,7 @@ public enum TokenType : ubyte
     noOptimization,
     noInlining,
     noCallInlining,
+    register,
     unit,
     int8,
     uint8,
@@ -135,12 +136,14 @@ body
             return TokenType.fastCall;
         case "pure":
             return TokenType.readOnly;
-        case "noopt":
+        case "nooptimize":
             return TokenType.noOptimization;
-        case "noinl":
+        case "noinline":
             return TokenType.noInlining;
-        case "nocinl":
+        case "nocallinline":
             return TokenType.noCallInlining;
+        case "register":
+            return TokenType.register;
         case "unit":
             return TokenType.unit;
         case "int8":
