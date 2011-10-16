@@ -660,7 +660,31 @@ public class LiteralValueNode : Node
     }
 }
 
+public class ByteArrayLiteralNode : Node
+{
+    private NoNullList!LiteralValueNode _values;
+
+    public this(SourceLocation location, NoNullList!LiteralValueNode values)
+    in
+    {
+        assert(location);
+        assert(values);
+    }
+    body
+    {
+        super(location);
+
+        _values = values;
+    }
+
+    @property public final NoNullList!LiteralValueNode values()
+    {
+        return _values;
+    }
+}
+
 alias Algebraic!(LiteralValueNode,
+                 ByteArrayLiteralNode,
                  TypeReferenceNode,
                  StructureTypeReferenceNode,
                  FieldReferenceNode,
