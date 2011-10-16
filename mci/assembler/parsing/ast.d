@@ -267,7 +267,6 @@ public class FunctionReferenceNode : Node
     in
     {
         assert(location);
-        assert(moduleName);
         assert(name);
         assert(returnType);
         assert(parameterTypes);
@@ -404,32 +403,32 @@ public class FieldDeclarationNode : Node
 
 public class ParameterNode : Node
 {
-    private SimpleNameNode _name;
     private TypeReferenceNode _type;
+    private SimpleNameNode _name;
 
-    public this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type)
+    public this(SourceLocation location, TypeReferenceNode type, SimpleNameNode name)
     in
     {
         assert(location);
-        assert(name);
         assert(type);
+        assert(name);
     }
     body
     {
         super(location);
 
-        _name = name;
         _type = type;
-    }
-
-    @property public final SimpleNameNode name()
-    {
-        return _name;
+        _name = name;
     }
 
     @property public final TypeReferenceNode type()
     {
         return _type;
+    }
+
+    @property public final SimpleNameNode name()
+    {
+        return _name;
     }
 }
 
