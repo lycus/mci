@@ -2,6 +2,7 @@ module mci.core.code.opcodes;
 
 import mci.core.container,
        mci.core.tuple,
+       mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.typing.members,
        mci.core.typing.types;
@@ -42,55 +43,38 @@ public static TypeInfo operandToTypeInfo(OperandType operandType)
     {
         case OperandType.none:
             return null;
-            
         case OperandType.bytes:
             return typeid(Object);
-            
         case OperandType.int8:
             return typeid(byte);
-            
         case OperandType.uint8:
             return typeid(ubyte);
-            
         case OperandType.int16:
             return typeid(short);
-            
         case OperandType.uint16:
             return typeid(ushort);
-            
         case OperandType.int32:
             return typeid(int);
-            
         case OperandType.uint32:
             return typeid(uint);
-            
         case OperandType.int64:
             return typeid(long);
-            
         case OperandType.uint64:
             return typeid(ulong);
-            
         case OperandType.float32:
             return typeid(float);
-            
         case OperandType.float64:
             return typeid(double);
-            
         case OperandType.label:
-            return typeid(string);
-            
+            return typeid(BasicBlock);
         case OperandType.type:
             return typeid(Type);
-            
         case OperandType.field:
             return typeid(Field);
-            
         case OperandType.method:
-             assert(false, "Not implemented."); // TODO
-            
+            return typeid(CodeFunction);
         case OperandType.signature:
             assert(false, "Not implemented."); // TODO
-            
         case OperandType.registers:
             return typeid(Iterable!(Tuple!(string, Register)));
     }
@@ -154,6 +138,7 @@ public final class OpCode
 }
 
 // TODO: Add exception handling opcodes.
+// TODO: Add opcodes for accessing global fields.
 public static __gshared OpCode opNop;
 public static __gshared OpCode opComment;
 public static __gshared OpCode opDead;
