@@ -24,10 +24,7 @@ public final class Source
     }
     body
     {
-        validate(source);
-
-        _source = source;
-        _location = new SourceLocation(1, 0);
+        initialize(removeByteOrderMark(source));
     }
     
     public this(BinaryReader reader, size_t length)
@@ -37,7 +34,15 @@ public final class Source
     }
     body
     {
-        this(removeByteOrderMark(reader.readString(length)));
+        initialize(removeByteOrderMark(reader.readString(length)));
+    }
+
+    private void initialize(string source)
+    {
+        validate(source);
+
+        _source = source;
+        _location = new SourceLocation(1, 0);
     }
     
     @property public dchar current()
@@ -177,7 +182,7 @@ public final class Lexer
         string s;
         
         static if (is(T == dchar))
-            s = got == dchar.init ? "end of file" : got.stringof;
+            s = got == dchar.init ? "end of file" : to!string(got);
         else
             s = to!string(got);
         
@@ -259,7 +264,7 @@ public final class Lexer
             case ',':
             case '=':
             case '*':
-                return new Token(charToType(chr), chr.stringof, _source.location);
+                return new Token(charToType(chr), to!string(chr), _source.location);
             default:
                 return null;
         }

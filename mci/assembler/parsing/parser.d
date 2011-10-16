@@ -129,9 +129,11 @@ public final class Parser
     public CompilationUnit parse()
     {
         _stream.reset();
-        _stream.moveNext(); // Skip begin token.
 
         auto ast = new NoNullList!DeclarationNode();
+
+        if (_stream.done)
+            return new CompilationUnit(ast);
 
         Token token;
 
@@ -216,7 +218,7 @@ public final class Parser
 
         Token token;
 
-        while ((token = next()).type != TokenType.closeBrace)
+        while ((token = peek()).type != TokenType.closeBrace)
         {
             if (token.type == TokenType.field)
                 fields.add(parseFieldDeclaration());
@@ -226,7 +228,7 @@ public final class Parser
 
         consume("}");
 
-        return null;
+        return new TypeDeclarationNode(name.location, name, attributes, layout, packingSize, fields);
     }
 
     private ModuleReferenceNode parseModuleReference()
