@@ -37,7 +37,6 @@ public enum TokenType : ubyte
     stdCall,
     thisCall,
     fastCall,
-    intrinsic,
     readOnly,
     noOptimization,
     noInlining,
@@ -134,8 +133,6 @@ body
             return TokenType.thisCall;
         case "fcall":
             return TokenType.fastCall;
-        case "intrinsic":
-            return TokenType.intrinsic;
         case "pure":
             return TokenType.readOnly;
         case "noopt":
