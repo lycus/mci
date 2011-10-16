@@ -660,11 +660,12 @@ public class LiteralValueNode : Node
     }
 }
 
-alias Algebraic!(TypeReferenceNode,
+alias Algebraic!(LiteralValueNode,
+                 TypeReferenceNode,
                  StructureTypeReferenceNode,
                  FieldReferenceNode,
                  FunctionReferenceNode,
-                 LiteralValueNode,
+                 FunctionPointerTypeReferenceNode,
                  BasicBlockReferenceNode,
                  RegisterListNode) InstructionOperand;
 

@@ -29,12 +29,12 @@ public enum OperandType : ubyte
     float32,
     float64,
     bytes,
-    label,
     type,
     structure,
     field,
     method,
     signature,
+    label,
     registers,
 }
 
@@ -66,8 +66,6 @@ public static TypeInfo operandToTypeInfo(OperandType operandType)
             return typeid(float);
         case OperandType.float64:
             return typeid(double);
-        case OperandType.label:
-            return typeid(BasicBlock);
         case OperandType.type:
             return typeid(Type);
         case OperandType.structure:
@@ -78,6 +76,8 @@ public static TypeInfo operandToTypeInfo(OperandType operandType)
             return typeid(CodeFunction);
         case OperandType.signature:
             assert(false, "Not implemented."); // TODO
+        case OperandType.label:
+            return typeid(BasicBlock);
         case OperandType.registers:
             return typeid(Iterable!(Tuple!(string, Register)));
     }
