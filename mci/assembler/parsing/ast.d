@@ -630,7 +630,7 @@ public class RegisterListNode : Node
         _registers = registers;
     }
 
-    @property public final NoNullList!(Tuple!(BasicBlockReferenceNode, RegisterReferenceNode)) registers()
+    @property public final Countable!(Tuple!(BasicBlockReferenceNode, RegisterReferenceNode)) registers()
     {
         return _registers;
     }
@@ -664,7 +664,7 @@ alias Algebraic!(TypeReferenceNode,
                  FunctionReferenceNode,
                  LiteralValueNode,
                  BasicBlockReferenceNode,
-                 Countable!(Tuple!(BasicBlockReferenceNode, RegisterReferenceNode))) InstructionOperand;
+                 RegisterListNode) InstructionOperand;
 
 public class InstructionOperandNode : Node
 {
