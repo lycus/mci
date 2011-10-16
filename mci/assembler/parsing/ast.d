@@ -613,27 +613,34 @@ public class BasicBlockReferenceNode : Node
     }
 }
 
-public class RegisterListNode : Node
+public class RegisterSelectorNode : Node
 {
-    private NoNullList!(Tuple!(BasicBlockReferenceNode, RegisterReferenceNode)) _registers;
+    private RegisterReferenceNode _register;
+    private NoNullList!BasicBlockReferenceNode _blocks;
 
-    public this(SourceLocation location,
-                NoNullList!(Tuple!(BasicBlockReferenceNode, RegisterReferenceNode)) registers)
+    public this(SourceLocation location, RegisterReferenceNode register, NoNullList!BasicBlockReferenceNode blocks)
     in
     {
         assert(location);
-        assert(registers);
+        assert(register);
+        assert(blocks);
     }
     body
     {
         super(location);
 
-        _registers = registers;
+        _register = register;
+        _blocks = blocks;
     }
 
-    @property public final Countable!(Tuple!(BasicBlockReferenceNode, RegisterReferenceNode)) registers()
+    @property public final RegisterReferenceNode register()
     {
-        return _registers;
+        return _register;
+    }
+
+    @property public final Countable!BasicBlockReferenceNode blocks()
+    {
+        return _blocks;
     }
 }
 
@@ -691,7 +698,7 @@ alias Algebraic!(LiteralValueNode,
                  FunctionReferenceNode,
                  FunctionPointerTypeReferenceNode,
                  BasicBlockReferenceNode,
-                 RegisterListNode) InstructionOperand;
+                 RegisterSelectorNode) InstructionOperand;
 
 public class InstructionOperandNode : Node
 {
