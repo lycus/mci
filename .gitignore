@@ -1,12 +1,12 @@
-*.suo
-*.user
-
-_ReSharper.*/*
+*_ReSharper.*/*
 docs/_build
 */*/Debug/*
 */*/Release/*
 */*/Test/*
 */*/bin/*
+
+*.suo
+*.user
 
 *.rf
 *.o
@@ -21,4 +21,5 @@ docs/_build
 
 libmci.core
 libmci.assembler
+mci.cli
 mci.tester

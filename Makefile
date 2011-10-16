@@ -36,6 +36,7 @@ endif
 all: \
 	libmci.core.a \
 	libmci.assembler.a \
+	mci.cli \
 	$(MCI_TESTER)
 
 clean:
@@ -48,6 +49,7 @@ clean:
 	-rm -f trace.log;
 	-rm -f libmci.core;
 	-rm -f libmci.assembler;
+	-rm -f mci.cli;
 	-rm -f mci.tester;
 
 #################### mci.core ####################
@@ -112,3 +114,18 @@ MCI_TESTER_SOURCES = \
 MCI_TESTER_DEPS = \
 	libmci.core.a \
 	libmci.assembler.a
+
+#################### mci.cli #######################
+
+MCI_CLI_DFLAGS = $(DFLAGS) -Xf"mci.cli.json" -deps="mci.cli.deps"
+
+mci.cli: libmci.core.a libmci.assembler.a
+	dmd $(MCI_CLI_DFLAGS) -of$@ $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS);
+
+MCI_CLI_SOURCES = \
+	mci/tester/main.d
+
+MCI_CLI_DEPS = \
+	libmci.core.a \
+	libmci.assembler.a
+
