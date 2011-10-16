@@ -612,6 +612,30 @@ public class BasicBlockReferenceNode : Node
     }
 }
 
+public class RegisterListNode : Node
+{
+    private NoNullList!(Tuple!(BasicBlockReferenceNode, RegisterReferenceNode)) _registers;
+
+    public this(SourceLocation location,
+                NoNullList!(Tuple!(BasicBlockReferenceNode, RegisterReferenceNode)) registers)
+    in
+    {
+        assert(location);
+        assert(registers);
+    }
+    body
+    {
+        super(location);
+
+        _registers = registers;
+    }
+
+    @property public final NoNullList!(Tuple!(BasicBlockReferenceNode, RegisterReferenceNode)) registers()
+    {
+        return _registers;
+    }
+}
+
 public class LiteralValueNode : Node
 {
     private string _value;
