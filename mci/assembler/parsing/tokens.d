@@ -42,6 +42,7 @@ public enum TokenType : ubyte
     noInlining,
     noCallInlining,
     register,
+    block,
     unit,
     int8,
     uint8,
@@ -144,6 +145,8 @@ body
             return TokenType.noCallInlining;
         case "register":
             return TokenType.register;
+        case "block":
+            return TokenType.block;
         case "unit":
             return TokenType.unit;
         case "int8":
