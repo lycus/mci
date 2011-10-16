@@ -15,8 +15,6 @@ public enum TokenType : ubyte
     closeParen,
     openBracket,
     closeBracket,
-    openAngle,
-    closeAngle,
     colon,
     semicolon,
     dot,
@@ -73,6 +71,10 @@ public TokenType charToType(dchar chr)
             return TokenType.openParen;
         case ')':
             return TokenType.closeParen;
+        case '[':
+            return TokenType.openBracket;
+        case ']':
+            return TokenType.closeBracket;
         case ':':
             return TokenType.colon;
         case ';':
