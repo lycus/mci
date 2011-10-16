@@ -661,6 +661,7 @@ public class LiteralValueNode : Node
 }
 
 alias Algebraic!(TypeReferenceNode,
+                 StructureTypeReferenceNode,
                  FieldReferenceNode,
                  FunctionReferenceNode,
                  LiteralValueNode,

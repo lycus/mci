@@ -9,10 +9,10 @@ import mci.core.container,
 
 public enum OpCodeType : ubyte
 {
-    normal = 0,
-    controlFlow = 1,
-    noOperation = 2,
-    annotation = 3,
+    normal,
+    controlFlow,
+    noOperation,
+    annotation,
 }
 
 public enum OperandType : ubyte
@@ -31,6 +31,7 @@ public enum OperandType : ubyte
     bytes,
     label,
     type,
+    structure,
     field,
     method,
     signature,
@@ -69,6 +70,8 @@ public static TypeInfo operandToTypeInfo(OperandType operandType)
             return typeid(BasicBlock);
         case OperandType.type:
             return typeid(Type);
+        case OperandType.structure:
+            return typeid(StructureType);
         case OperandType.field:
             return typeid(Field);
         case OperandType.method:
@@ -270,7 +273,7 @@ static this()
     opConvF64 = create("conv.f64", OpCodeType.normal, OperandType.none, 1, true);
     opConvFN = create("conv.fn", OpCodeType.normal, OperandType.none, 1, true);
     opMemAlloc = create("mem.alloc", OpCodeType.normal, OperandType.none, 1, true);
-    opMemNew = create("mem.new", OpCodeType.normal, OperandType.type, 0, true);
+    opMemNew = create("mem.new", OpCodeType.normal, OperandType.structure, 0, true);
     opMemFree = create("mem.free", OpCodeType.normal, OperandType.none, 1, false);
     opMemDelete = create("mem.delete", OpCodeType.normal, OperandType.none, 1, false);
     opMemGet = create("mem.get", OpCodeType.normal, OperandType.none, 1, true);
