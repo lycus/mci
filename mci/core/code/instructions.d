@@ -52,9 +52,11 @@ alias Algebraic!(byte,
                  Countable!ubyte,
                  BasicBlock,
                  Type,
+                 StructureType,
                  Field,
                  CodeFunction,
-                 Countable!(Tuple!(string, Register))) InstructionOperand;
+                 FunctionPointerType,
+                 Tuple!(Register, Countable!BasicBlock)) InstructionOperand;
 
 public final class Instruction
 {

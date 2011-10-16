@@ -35,7 +35,7 @@ public enum OperandType : ubyte
     method,
     signature,
     label,
-    registers,
+    selector,
 }
 
 public static TypeInfo operandToTypeInfo(OperandType operandType)
@@ -75,11 +75,11 @@ public static TypeInfo operandToTypeInfo(OperandType operandType)
         case OperandType.method:
             return typeid(CodeFunction);
         case OperandType.signature:
-            assert(false, "Not implemented."); // TODO
+            return typeid(FunctionPointerType);
         case OperandType.label:
             return typeid(BasicBlock);
-        case OperandType.registers:
-            return typeid(Iterable!(Tuple!(string, Register)));
+        case OperandType.selector:
+            return typeid((Tuple!(Register, Countable!BasicBlock)));
     }
 }
 
@@ -297,7 +297,7 @@ static this()
     opJumpFalse = create("jump.false", OpCodeType.controlFlow, OperandType.label, 1, false);
     opLeave = create("leave", OpCodeType.controlFlow, OperandType.none, 0, false);
     opReturn = create("return", OpCodeType.controlFlow, OperandType.none, 1, false);
-    opPhi = create("phi", OpCodeType.normal, OperandType.registers, 0, true);
+    opPhi = create("phi", OpCodeType.normal, OperandType.selector, 0, true);
     
     allOpCodes = opCodes;
 }
