@@ -605,9 +605,10 @@ public final class Parser
     private BasicBlockDeclarationNode parseBasicBlockDeclaration()
     {
         consume("block");
-        consume("{");
 
         auto name = parseSimpleName();
+
+        consume("{");
 
         auto instructions = new NoNullList!InstructionNode();
 
