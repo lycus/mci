@@ -204,8 +204,8 @@ public final class Lexer
             if (std.uni.isWhite(chr))
                 continue;
             
-            if (chr == '/' && !lexComment())
-                return null;
+            if (chr == '/')
+                return lexComment() ? lexNext() : null;
             
             auto del = lexDelimiter(chr);
             
@@ -231,7 +231,7 @@ public final class Lexer
         auto chr = _source.moveNext();
         
         if (chr != '/')
-            errorGot("/", _source.location, chr);
+            errorGot("'/'", _source.location, chr);
         
         // We have a comment, so scan to the end of the line (or stream).
         dchar cmtChr;
@@ -244,8 +244,6 @@ public final class Lexer
         }
         while (cmtChr != '\n');
         
-        // Comment skipped; continue the outer loop and look for the next
-        // token, if any.
         return true;
     }
     
