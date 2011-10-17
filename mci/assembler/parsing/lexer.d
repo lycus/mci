@@ -315,7 +315,7 @@ public final class Lexer
         
         while (true)
         {
-            auto digChr = _source.moveNext();
+            auto digChr = _source.next();
             
             if (std.uni.isWhite(digChr))
             {
@@ -330,14 +330,18 @@ public final class Lexer
                 hasDot = true;
             else
             {
-                if (digChr == dchar.init || !isDigit(digChr))
+                if (digChr == dchar.init)
                     errorGot("base-10 digit" ~ (!hasDot ? " or decimal point" : ""),
                              _source.location, digChr);
+
+                if (!isDigit(digChr))
+                    break;
                 
                 if (hasDot)
                     hasDecimal = true;
             }
             
+            _source.moveNext();
             str ~= digChr;
         }
         
