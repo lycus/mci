@@ -298,6 +298,8 @@ public final class Parser
             moduleName = parseModuleReference();
             next();
         }
+        else
+            _stream.movePrevious();
 
         auto name = parseSimpleName();
 
