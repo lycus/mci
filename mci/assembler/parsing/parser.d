@@ -186,6 +186,8 @@ public final class Parser
                 errorGot("'automatic', 'sequential', or 'explicit'", layoutTok.location, layoutTok.value);
         }
 
+        auto name = parseSimpleName();
+
         LiteralValueNode packingSize;
 
         if (peek().type == TokenType.openParen)
@@ -209,8 +211,6 @@ public final class Parser
 
             consume(")");
         }
-
-        auto name = parseSimpleName();
 
         consume("{");
 
