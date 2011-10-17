@@ -214,7 +214,7 @@ public static __gshared OpCode opLeave;
 public static __gshared OpCode opReturn;
 public static __gshared OpCode opPhi;
 
-public static __gshared Iterable!OpCode allOpCodes;
+public static __gshared Countable!OpCode allOpCodes;
 
 static this()
 {
