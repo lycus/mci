@@ -2,6 +2,7 @@ module mci.core.typing.types;
 
 import mci.core.container,
        mci.core.nullable,
+       mci.core.code.modules,
        mci.core.typing.core,
        mci.core.typing.members;
 
@@ -27,19 +28,43 @@ public class StructureType : Type
 {
     public TypeAttributes attributes;
     public TypeLayout layout;
+    private Module _module;
     private string _name;
     private Nullable!uint _packingSize;
     private NoNullList!Field _fields;
 
-    public this(string name)
+    public this(Module module_, string name)
     in
     {
+        assert(module_);
         assert(name);
     }
     body
     {
+        _module = module_;
         _name = name;
         _fields = new NoNullList!Field();
+    }
+
+    @property public final Module module_()
+    {
+        return _module;
+    }
+
+    @property package void module_(Module module_)
+    in
+    {
+        assert(module_);
+    }
+    body
+    {
+        if (module_ !is _module)
+        {
+            (cast(NoNullList!StructureType)_module.types).remove(this);
+            (cast(NoNullList!StructureType)module_.types).add(this);
+        }
+
+        _module = module_;
     }
 
     @property public final Nullable!uint packingSize()
@@ -175,7 +200,8 @@ unittest
 
 unittest
 {
-    auto st = new StructureType("foo_bar_baz");
+    auto mod = new Module("foo");
+    auto st = new StructureType(mod, "foo_bar_baz");
     auto ptr = new PointerType(st);
 
     assert(ptr.name == "foo_bar_baz*");

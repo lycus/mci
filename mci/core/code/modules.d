@@ -7,7 +7,7 @@ import mci.core.container,
 public final class Module
 {
     private string _name;
-    private NoNullList!CodeFunction _functions;
+    private NoNullList!Function _functions;
     private NoNullList!StructureType _types;
 
     public this(string name)
@@ -17,7 +17,7 @@ public final class Module
     }
     body
     {
-        _functions = new NoNullList!CodeFunction();
+        _functions = new NoNullList!Function();
         _types = new NoNullList!StructureType();
     }
 
@@ -36,12 +36,12 @@ public final class Module
         _name = name;
     }
 
-    @property public NoNullList!CodeFunction functions()
+    @property public Countable!Function functions()
     {
         return _functions;
     }
 
-    @property public NoNullList!StructureType types()
+    @property public Countable!StructureType types()
     {
         return _types;
     }

@@ -2,6 +2,7 @@ module mci.core.code.functions;
 
 import mci.core.container,
        mci.core.code.instructions,
+       mci.core.code.modules,
        mci.core.tree.statements,
        mci.core.typing.types;
 
@@ -91,29 +92,53 @@ public abstract class Function
 {
     public FunctionAttributes attributes;
     public CallingConvention callingConvention;
+    private Module _module;
     private string _name;
     private NoNullList!Parameter _parameters;
     private Type _returnType;
 
-    protected this(string name, Type returnType)
+    protected this(Module module_, string name, Type returnType)
     in
     {
+        assert(module_);
         assert(name);
         assert(returnType);
     }
     body
     {
+        _module = module_;
         _name = name;
         _returnType = returnType;
         _parameters = new NoNullList!Parameter();
     }
 
-    @property public string name()
+    @property public final Module module_()
+    {
+        return _module;
+    }
+
+    @property package final void module_(Module module_)
+    in
+    {
+        assert(module_);
+    }
+    body
+    {
+        if (module_ !is _module)
+        {
+            (cast(NoNullList!Function)_module.functions).remove(this);
+            (cast(NoNullList!Function)module_.functions).add(this);
+        }
+
+        _module = module_;
+    }
+
+    @property public final string name()
     {
         return _name;
     }
 
-    @property public void name(string name)
+    @property public final void name(string name)
     in
     {
         assert(name);
@@ -133,15 +158,16 @@ public class CodeFunction : Function
 {
     private NoNullList!BasicBlock _blocks;
 
-    public this(string name, Type returnType)
+    public this(Module module_, string name, Type returnType)
     in
     {
+        assert(module_);
         assert(name);
         assert(returnType);
     }
     body
     {
-        super(name, returnType);
+        super(module_, name, returnType);
 
         _blocks = new NoNullList!BasicBlock();
     }
@@ -156,16 +182,17 @@ public class TreeFunction : Function
 {
     private BlockNode _tree;
 
-    public this(string name, Type returnType, BlockNode tree)
+    public this(Module module_, string name, Type returnType, BlockNode tree)
     in
     {
+        assert(module_);
         assert(name);
         assert(returnType);
         assert(tree);
     }
     body
     {
-        super(name, returnType);
+        super(module_, name, returnType);
     }
 
     @property public final BlockNode tree()
