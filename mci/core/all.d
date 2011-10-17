@@ -11,6 +11,7 @@ public import mci.core.tuple;
 
 public import mci.core.code.functions;
 public import mci.core.code.opcodes;
+public import mci.core.code.modules;
 public import mci.core.code.instructions;
 
 public import mci.core.diagnostics.debugging;
