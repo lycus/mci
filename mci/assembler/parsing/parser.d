@@ -634,6 +634,8 @@ public final class Parser
             target = parseRegisterReference();
             next();
         }
+        else
+            _stream.movePrevious();
 
         auto opCodeTok = next();
 
@@ -678,7 +680,7 @@ public final class Parser
 
             operand = parseInstructionOperand(operandType);
 
-            if (operandType == OperandType.bytes)
+            if (operandType != OperandType.bytes)
                 consume(")");
         }
 
@@ -772,6 +774,8 @@ public final class Parser
                 next();
                 continue;
             }
+
+            break;
         }
 
         return new RegisterSelectorNode(register.location, register, blocks);
