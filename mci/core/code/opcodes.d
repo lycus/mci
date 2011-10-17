@@ -141,7 +141,6 @@ public final class OpCode
 }
 
 // TODO: Add exception handling opcodes.
-// TODO: Add opcodes for accessing global fields.
 public static __gshared OpCode opNop;
 public static __gshared OpCode opComment;
 public static __gshared OpCode opDead;
@@ -195,6 +194,9 @@ public static __gshared OpCode opMemAddr;
 public static __gshared OpCode opFieldGet;
 public static __gshared OpCode opFieldSet;
 public static __gshared OpCode opFieldAddr;
+public static __gshared OpCode opFieldGGet;
+public static __gshared OpCode opFieldGSet;
+public static __gshared OpCode opFieldGAddr;
 public static __gshared OpCode opCmpEq;
 public static __gshared OpCode opCmpGt;
 public static __gshared OpCode opCmpLt;
@@ -281,7 +283,10 @@ static this()
     opMemAddr = create("mem.addr", OpCodeType.normal, OperandType.none, 1, true);
     opFieldGet = create("field.get", OpCodeType.normal, OperandType.field, 1, true);
     opFieldSet = create("field.set", OpCodeType.normal, OperandType.field, 2, false);
-    opFieldAddr = create("field.addr", OpCodeType.normal, OperandType.field, 1, true);
+    opFieldAddr = create("field.addr", OpCodeType.normal, OperandType.field, 0, true);
+    opFieldGGet = create("field.gget", OpCodeType.normal, OperandType.field, 0, true);
+    opFieldGSet = create("field.gset", OpCodeType.normal, OperandType.field, 1, false);
+    opFieldGAddr = create("field.gaddr", OpCodeType.normal, OperandType.field, 0, true);
     opCmpEq = create("cmp.eq", OpCodeType.normal, OperandType.none, 2, true);
     opCmpGt = create("cmp.gt", OpCodeType.normal, OperandType.none, 2, true);
     opCmpLt = create("cmp.lt", OpCodeType.normal, OperandType.none, 2, true);
