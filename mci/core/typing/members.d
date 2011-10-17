@@ -28,7 +28,7 @@ public class Field
 {
     private string _name;
     private Type _type;
-    private Nullable!int _offset;
+    private Nullable!uint _offset;
     public FieldAttributes attributes;
     public FieldValue value;
     
@@ -74,17 +74,12 @@ public class Field
         _type = type;
     }
     
-    @property public Nullable!int offset()
+    @property public Nullable!uint offset()
     {
         return _offset;
     }
     
-    @property public void offset(Nullable!int offset)
-    in
-    {
-        assert(!offset.hasValue || offset.value >= 0);
-    }
-    body
+    @property public void offset(Nullable!uint offset)
     {
         _offset = offset;
     }
