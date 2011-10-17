@@ -251,7 +251,7 @@ static this()
     opMul = create("mul", OpCodeType.normal, OperandType.none, 2, true);
     opDiv = create("div", OpCodeType.normal, OperandType.none, 2, true);
     opRem = create("rem", OpCodeType.normal, OperandType.none, 2, true);
-    opRem = create("rem", OpCodeType.normal, OperandType.none, 1, true);
+    opNeg = create("neg", OpCodeType.normal, OperandType.none, 1, true);
     opAnd = create("and", OpCodeType.normal, OperandType.none, 2, true);
     opOr = create("or", OpCodeType.normal, OperandType.none, 2, true);
     opXOr = create("xor", OpCodeType.normal, OperandType.none, 2, true);
