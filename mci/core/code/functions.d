@@ -8,6 +8,7 @@ import mci.core.container,
 public final class BasicBlock
 {
     private NoNullList!Instruction _instructions;
+
     public this()
     {
         _instructions = new NoNullList!Instruction();

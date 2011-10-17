@@ -71,6 +71,7 @@ MCI_CORE_SOURCES = \
 	mci/core/tuple.d \
 	mci/core/code/functions.d \
 	mci/core/code/instructions.d \
+	mci/core/code/modules.d \
 	mci/core/code/opcodes.d \
 	mci/core/diagnostics/debugging.d \
 	mci/core/tree/base.d \
