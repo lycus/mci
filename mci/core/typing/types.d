@@ -3,7 +3,6 @@ module mci.core.typing.types;
 import mci.core.container,
        mci.core.nullable,
        mci.core.code.modules,
-       mci.core.typing.core,
        mci.core.typing.members;
 
 public abstract class Type
@@ -192,10 +191,11 @@ public class FunctionPointerType : Type
 
 unittest
 {
-    auto int32 = Int32Type.instance;
-    auto ptr = new PointerType(int32);
+    auto mod = new Module("foo");
+    auto st = new StructureType(mod, "bar");
+    auto ptr = new PointerType(st);
 
-    assert(ptr.name == "int32*");
+    assert(ptr.name == "bar*");
 }
 
 unittest
@@ -209,10 +209,14 @@ unittest
 
 unittest
 {
-    auto fpt = new FunctionPointerType(Float64Type.instance);
+    auto mod = new Module("foo");
+    auto st1 = new StructureType(mod, "bar");
+    auto st2 = new StructureType(mod, "baz");
 
-    fpt.parameterTypes.add(Int32Type.instance);
-    fpt.parameterTypes.add(UnitType.instance);
+    auto fpt = new FunctionPointerType(st1);
 
-    assert(fpt.name == "float64 *(int32, unit)");
+    fpt.parameterTypes.add(st2);
+    fpt.parameterTypes.add(st1);
+
+    assert(fpt.name == "bar *(baz, bar)");
 }
