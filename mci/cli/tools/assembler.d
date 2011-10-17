@@ -3,6 +3,7 @@ module mci.cli.tools.assembler;
 import std.conv,
        std.file,
        std.stdio,
+       std.utf,
        mci.core.io,
        mci.assembler.exception,
        mci.assembler.parsing.lexer,
@@ -25,6 +26,11 @@ public final class AssemblerTool : Tool
             catch (FileException ex)
             {
                 writefln("Could not open file: %s", ex.msg);
+                return false;
+            }
+            catch (UtfException ex)
+            {
+                writefln("UTF-8 decoding error: %s", ex.msg);
                 return false;
             }
             catch (LexerException ex)
