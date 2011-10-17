@@ -372,6 +372,8 @@ public final class Parser
             moduleName = parseModuleReference();
             next();
         }
+        else
+            _stream.movePrevious();
 
         auto returnType = parseTypeSpecification();
         auto name = parseSimpleName();
@@ -708,6 +710,7 @@ public final class Parser
             case OperandType.uint64:
             case OperandType.float32:
             case OperandType.float64:
+                // TODO: Verify this value.
                 auto literal = parseLiteralValue();
                 operand = literal;
                 location = literal.location;
