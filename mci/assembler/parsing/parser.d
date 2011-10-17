@@ -292,7 +292,7 @@ public final class Parser
 
         ModuleReferenceNode moduleName;
 
-        if (peek().type == TokenType.colon)
+        if (peek().type == TokenType.slash)
         {
             _stream.movePrevious();
             moduleName = parseModuleReference();
@@ -366,7 +366,7 @@ public final class Parser
 
         ModuleReferenceNode moduleName;
 
-        if (peek().type == TokenType.colon)
+        if (peek().type == TokenType.slash)
         {
             _stream.movePrevious();
             moduleName = parseModuleReference();

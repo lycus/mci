@@ -204,8 +204,11 @@ public final class Lexer
             if (std.uni.isWhite(chr))
                 continue;
 
-            if (chr == '/')
+            if (chr == '/' && _source.next() == '/')
+            {
+                _source.moveNext();
                 return lexComment() ? lexNext() : null;
+            }
 
             auto del = lexDelimiter(chr);
 
@@ -228,11 +231,6 @@ public final class Lexer
 
     private bool lexComment()
     {
-        auto chr = _source.moveNext();
-
-        if (chr != '/')
-            errorGot("'/'", _source.location, chr);
-
         // We have a comment, so scan to the end of the line (or stream).
         dchar cmtChr;
 
@@ -261,6 +259,7 @@ public final class Lexer
             case ',':
             case '=':
             case '*':
+            case '/':
                 return new Token(charToType(chr), to!string(chr), _source.location);
             default:
                 return null;

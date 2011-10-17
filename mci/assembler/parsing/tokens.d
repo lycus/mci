@@ -18,6 +18,7 @@ public enum TokenType : ubyte
     comma,
     equals,
     star,
+    slash,
     type,
     value,
     automatic,
@@ -78,6 +79,8 @@ public TokenType charToType(dchar chr)
             return TokenType.equals;
         case '*':
             return TokenType.star;
+        case '/':
+            return TokenType.slash;
         default:
             assert(false);
     }
