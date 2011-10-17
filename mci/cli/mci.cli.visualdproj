@@ -271,6 +271,10 @@
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="mci.cli">
+  <Folder name="tools">
+   <File path="tools\assembler.d" />
+  </Folder>
   <File path="main.d" />
+  <File path="tool.d" />
  </Folder>
 </DProject>
