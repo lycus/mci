@@ -260,7 +260,6 @@ public final class Lexer
             case ')':
             case ':':
             case ';':
-            case '.':
             case ',':
             case '=':
             case '*':
@@ -279,19 +278,23 @@ public final class Lexer
         // Until we encounter white space, we construct an identifier.
         while (true)
         {
-            auto idChr = _source.moveNext();
+            auto idChr = _source.next();
             
             if (std.uni.isWhite(idChr))
                 break;
             
             auto isDot = idChr == '.';
             
-            if (idChr == dchar.init || (!isIdentifierChar(idChr) && !isDot))
+            if (idChr == dchar.init)
                 errorGot("identifier character (a-z, A-Z, _)", _source.location, idChr);
+
+            if (!isIdentifierChar(idChr) && !isDigit(idChr) && !isDot)
+                break;
             
             if (isDot)
                 hasDot = true;
             
+            _source.moveNext();
             id ~= idChr;
         }
         
@@ -328,7 +331,7 @@ public final class Lexer
             else
             {
                 if (digChr == dchar.init || !isDigit(digChr))
-                    errorGot("base-10 digit" ~ (!hasDot ? "or decimal point" : ""),
+                    errorGot("base-10 digit" ~ (!hasDot ? " or decimal point" : ""),
                              _source.location, digChr);
                 
                 if (hasDot)

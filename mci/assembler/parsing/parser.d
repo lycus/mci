@@ -351,7 +351,7 @@ public final class Parser
     {
         auto type = parseStructureTypeReference();
 
-        consume(".");
+        consume(":");
 
         auto name = parseSimpleName();
 

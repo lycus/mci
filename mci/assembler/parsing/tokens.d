@@ -15,7 +15,6 @@ public enum TokenType : ubyte
     closeParen,
     colon,
     semicolon,
-    dot,
     comma,
     equals,
     star,
@@ -73,8 +72,6 @@ public TokenType charToType(dchar chr)
             return TokenType.colon;
         case ';':
             return TokenType.semicolon;
-        case '.':
-            return TokenType.dot;
         case ',':
             return TokenType.comma;
         case '=':
