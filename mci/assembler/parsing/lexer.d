@@ -314,8 +314,9 @@ public final class Lexer
         while (true)
         {
             auto digChr = _source.next();
+            auto isDot = digChr == '.';
             
-            if (std.uni.isWhite(digChr))
+            if (!isDigit(digChr) && !isDot)
             {
                 // Don't allow a decimal point with no trailing digit.
                 if (hasDot && !hasDecimal)
@@ -324,7 +325,7 @@ public final class Lexer
                 break;
             }
             
-            if (digChr == '.')
+            if (isDot)
                 hasDot = true;
             else
             {
