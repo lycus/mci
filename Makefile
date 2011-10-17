@@ -123,7 +123,9 @@ mci.cli: libmci.core.a libmci.assembler.a
 	dmd $(MCI_CLI_DFLAGS) -of$@ $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS);
 
 MCI_CLI_SOURCES = \
-	mci/tester/main.d
+	mci/cli/main.d \
+	mci/cli/tool.d \
+	mci/cli/tools\assembler.d
 
 MCI_CLI_DEPS = \
 	libmci.core.a \
