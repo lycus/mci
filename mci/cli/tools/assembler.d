@@ -30,7 +30,7 @@ public final class AssemblerTool : Tool
             }
             catch (UtfException ex)
             {
-                writefln("UTF-8 decoding error: %s", ex.msg);
+                writeln("UTF-8 decoding failed; file is probably not plain text.");
                 return false;
             }
             catch (LexerException ex)
