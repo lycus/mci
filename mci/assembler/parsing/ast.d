@@ -362,9 +362,10 @@ public class FieldDeclarationNode : Node
     private SimpleNameNode _name;
     private FieldAttributes _attributes;
     private LiteralValueNode _value;
+    private LiteralValueNode _offset;
 
     public this(SourceLocation location, TypeReferenceNode type, SimpleNameNode name,
-                FieldAttributes attributes, LiteralValueNode value)
+                FieldAttributes attributes, LiteralValueNode value, LiteralValueNode offset)
     in
     {
         assert(location);
@@ -399,6 +400,11 @@ public class FieldDeclarationNode : Node
     @property public final LiteralValueNode value()
     {
         return _value;
+    }
+
+    @property public final LiteralValueNode offset()
+    {
+        return _offset;
     }
 }
 
