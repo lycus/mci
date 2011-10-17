@@ -653,15 +653,31 @@ public final class Parser
             if (op.name == opCodeTok.value)
                 opCode = op;
 
+        if (target is null && opCode.hasTarget)
+            error("Opcode " ~ opCode.name ~ " expects a target register", opCodeTok.location);
+
+        if (target !is null && !opCode.hasTarget)
+            error("Opcode " ~ opCode.name ~ " does not expect a target register", target.location);
+
         RegisterReferenceNode source1;
         RegisterReferenceNode source2;
 
-        if (peek().type == TokenType.identifier)
+        auto reg1 = peek();
+
+        if (reg1.type == TokenType.identifier)
         {
+            if (opCode.registers == 0)
+                error("Opcode " ~ opCode.name ~ " takes no source registers", reg1.location);
+
             source1 = parseRegisterReference();
 
-            if (peek().type == TokenType.comma)
+            auto reg2 = peek();
+
+            if (reg2.type == TokenType.comma)
             {
+                if (opCode.registers != 2)
+                    error("Opcode " ~ opCode.name ~ " does not take two source registers", reg2.location);
+
                 next();
                 source2 = parseRegisterReference();
             }
