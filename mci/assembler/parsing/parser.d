@@ -768,7 +768,22 @@ public final class Parser
 
         while (peek().type != TokenType.closeParen)
         {
-            values.add(parseLiteralValue());
+            auto literal = parseLiteralValue();
+
+            try
+            {
+                to!ubyte(literal.value);
+            }
+            catch (ConvOverflowException)
+            {
+                error("8-bit unsigned integer literal overflow", literal.location);
+            }
+            catch (ConvException)
+            {
+                error("invalid 8-bit unsigned integer literal", literal.location);
+            }
+
+            values.add(literal);
 
             if (peek().type == TokenType.comma)
             {
