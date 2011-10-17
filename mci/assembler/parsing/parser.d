@@ -400,6 +400,8 @@ public final class Parser
 
     private FieldDeclarationNode parseFieldDeclaration()
     {
+        consume("field");
+
         FieldAttributes attributes;
 
         auto attrTok = peek();
@@ -428,7 +430,33 @@ public final class Parser
             value = parseLiteralValue();
         }
 
-        return new FieldDeclarationNode(_stream.previous.location, type, name, attributes, value);
+        LiteralValueNode offset;
+
+        if (peek().type == TokenType.openParen)
+        {
+            next();
+
+            offset = parseLiteralValue();
+
+            try
+            {
+                to!uint(offset.value);
+            }
+            catch (ConvOverflowException)
+            {
+                error("32-bit unsigned integer literal overflow", offset.location);
+            }
+            catch (ConvException)
+            {
+                error("invalid 32-bit unsigned integer literal", offset.location);
+            }
+
+            consume(")");
+        }
+
+        consume(";");
+
+        return new FieldDeclarationNode(_stream.previous.location, type, name, attributes, value, offset);
     }
 
     private LiteralValueNode parseLiteralValue()
