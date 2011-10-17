@@ -11,12 +11,12 @@ public abstract class StatementNode : TreeNode
 public class BlockNode : StatementNode
 {
     private NoNullList!StatementNode _statements;
-    
+
     public this()
     {
         _statements = new NoNullList!StatementNode();
     }
-    
+
     @property public NoNullList!StatementNode statements()
     {
         return _statements;
@@ -26,7 +26,7 @@ public class BlockNode : StatementNode
 public class RawCodeNode : StatementNode
 {
     private NoNullList!Instruction _instructions;
-    
+
     @property public NoNullList!Instruction instructions()
     {
         return _instructions;

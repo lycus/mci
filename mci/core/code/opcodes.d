@@ -91,7 +91,7 @@ public final class OpCode
     private OperandType _operandType;
     private uint _registers;
     private bool _hasTarget;
-    
+
     private this(string name, ubyte code, OpCodeType type, OperandType operandType,
                  uint registers, bool hasTarget)
     in
@@ -108,32 +108,32 @@ public final class OpCode
         _registers = registers;
         _hasTarget = hasTarget;
     }
-    
+
     @property public string name()
     {
         return _name;
     }
-    
+
     @property public ubyte code()
     {
         return _code;
     }
-    
+
     @property public OpCodeType type()
     {
         return _type;
     }
-    
+
     @property public OperandType operandType()
     {
         return _operandType;
     }
-    
+
     @property public uint registers()
     {
         return _registers;
     }
-    
+
     @property public bool hasTarget()
     {
         return _hasTarget;
@@ -218,17 +218,17 @@ static this()
 {
     ubyte valueCount;
     auto opCodes = new List!OpCode();
-    
+
     OpCode create(string name, OpCodeType type, OperandType operandType,
                   uint registers, bool hasTarget)
     {
         auto op = new OpCode(name, valueCount++, type, operandType,
                              registers, hasTarget);
-        
+
         opCodes.add(op);
         return op;
     }
-    
+
     opNop = create("nop", OpCodeType.noOperation, OperandType.none, 0, false);
     opComment = create("comment", OpCodeType.annotation, OperandType.bytes, 0, false);
     opDead = create("dead", OpCodeType.annotation, OperandType.none, 0, false);
@@ -298,6 +298,6 @@ static this()
     opLeave = create("leave", OpCodeType.controlFlow, OperandType.none, 0, false);
     opReturn = create("return", OpCodeType.controlFlow, OperandType.none, 1, false);
     opPhi = create("phi", OpCodeType.normal, OperandType.selector, 0, true);
-    
+
     allOpCodes = opCodes;
 }

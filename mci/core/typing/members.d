@@ -31,7 +31,7 @@ public class Field
     private Nullable!uint _offset;
     public FieldAttributes attributes;
     public FieldValue value;
-    
+
     public this(string name, Type type)
     in
     {
@@ -43,12 +43,12 @@ public class Field
         _name = name;
         _type = type;
     }
-    
+
     @property public string name()
     {
         return _name;
     }
-    
+
     @property public void name(string name)
     in
     {
@@ -58,12 +58,12 @@ public class Field
     {
         _name = name;
     }
-    
+
     @property public Type type()
     {
         return _type;
     }
-    
+
     @property public void type(Type type)
     in
     {
@@ -73,12 +73,12 @@ public class Field
     {
         _type = type;
     }
-    
+
     @property public Nullable!uint offset()
     {
         return _offset;
     }
-    
+
     @property public void offset(Nullable!uint offset)
     {
         _offset = offset;

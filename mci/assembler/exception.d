@@ -16,7 +16,7 @@ public class AssemblerException : CompilerException
     {
         super(msg, file, line);
     }
-    
+
     public this(string msg, Throwable next, string file = __FILE__,
                 size_t line = __LINE__)
     in
@@ -35,7 +35,7 @@ public class AssemblerException : CompilerException
 public class LexerException : AssemblerException
 {
     private SourceLocation _location;
-    
+
     public this(string msg, SourceLocation location, string file = __FILE__,
                 size_t line = __LINE__)
     in
@@ -48,10 +48,10 @@ public class LexerException : AssemblerException
     body
     {
         super(msg, file, line);
-        
+
         _location = location;
     }
-    
+
     public this(string msg, Throwable next, SourceLocation location,
                 string file = __FILE__, size_t line = __LINE__)
     in
@@ -65,10 +65,10 @@ public class LexerException : AssemblerException
     body
     {
         super(msg, next, file, line);
-        
+
         _location = location;
     }
-    
+
     @property public SourceLocation location()
     {
         return _location;

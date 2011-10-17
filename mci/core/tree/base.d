@@ -8,29 +8,29 @@ import mci.core.container,
 public abstract class TreeNode
 {
     private DebuggingInfo _debugInfo;
-    
+
     @property public abstract Type type();
-    
+
     @property public Countable!TreeNode children()
     {
         return new List!TreeNode();
     }
-    
+
     @property public final DebuggingInfo debugInfo()
     {
         return _debugInfo;
     }
-    
+
     @property public final void debugInfo(DebuggingInfo debugInfo)
     {
         _debugInfo = debugInfo;
     }
-    
+
     @property public bool isReducible()
     {
         return false;
     }
-    
+
     public TreeNode reduce()
     in
     {
@@ -40,7 +40,7 @@ public abstract class TreeNode
     {
         assert(false);
     }
-    
+
     public Countable!Instruction generateCode()
     {
         return new List!Instruction();

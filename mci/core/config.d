@@ -26,7 +26,7 @@ else
 version (DigitalMars)
 {
     pragma(msg, "- Compiler: Digital Mars D (DMD)");
-    
+
     public enum bool isDMD = true;
     public enum bool isGDC = false;
     public enum bool isLDC = false;
@@ -35,7 +35,7 @@ version (DigitalMars)
 else version (GNU)
 {
     pragma(msg, "- Compiler: GNU D Compiler (GDC)");
-    
+
     public enum bool isDMD = false;
     public enum bool isGDC = true;
     public enum bool isLDC = false;
@@ -44,7 +44,7 @@ else version (GNU)
 else version (LDC)
 {
     pragma(msg, "- Compiler: LLVM D Compiler (LDC)");
-    
+
     public enum bool isDMD = false;
     public enum bool isGDC = false;
     public enum bool isLDC = true;
@@ -53,7 +53,7 @@ else version (LDC)
 else version (SDC)
 {
     pragma(msg, "- Compiler: Stupid D Compiler (SDC)");
-    
+
     public enum bool isDMD = false;
     public enum bool isGDC = false;
     public enum bool isLDC = false;
@@ -62,7 +62,7 @@ else version (SDC)
 else
 {
     pragma(msg, "- Compiler: Unknown");
-    
+
     public enum bool isDMD = false;
     public enum bool isGDC = false;
     public enum bool isLDC = false;
@@ -72,14 +72,14 @@ else
 version (X86)
 {
     pragma(msg, "- Architecture: x86");
-    
+
     public enum bool is32Bit = true;
     public enum bool is64Bit = false;
 }
 else version (X86_64)
 {
     pragma(msg, "- Architecture: x86-64");
-    
+
     public enum bool is32Bit = false;
     public enum bool is64Bit = true;
 }
@@ -91,14 +91,14 @@ else
 version (LittleEndian)
 {
     pragma(msg, "- Byte Order: Little Endian (LE)");
-    
+
     public enum bool isLittleEndian = true;
     public enum bool isBigEndian = false;
 }
 else version (BigEndian)
 {
     pragma(msg, "- Byte Order: Big Endian (BE)");
-    
+
     public enum bool isLittleEndian = false;
     public enum bool isBigEndian = true;
 }
@@ -110,7 +110,7 @@ else
 version (D_InlineAsm_X86_64)
 {
     pragma(msg, "- Inline Assembly: x86-64 & x86");
-    
+
     public enum bool hasAsm = true;
     public enum bool hasX86Asm = true;
     public enum bool hasX64Asm = true;
@@ -118,7 +118,7 @@ version (D_InlineAsm_X86_64)
 else version (D_InlineAsm_X86)
 {
     pragma(msg, "- Inline Assembly: x86");
-    
+
     public enum bool hasAsm = true;
     public enum bool hasX86Asm = true;
     public enum bool hasX64Asm = false;
@@ -126,7 +126,7 @@ else version (D_InlineAsm_X86)
 else
 {
     pragma(msg, "- Inline Assembly: None");
-    
+
     public enum bool hasAsm = false;
     public enum bool hasX86Asm = false;
     public enum bool hasX64Asm = false;
@@ -146,7 +146,7 @@ version (Windows)
     {
         static assert(false, "Unknown Windows bitness.");
     }
-    
+
     public enum bool isWindows = true;
     public enum bool isPosix = false;
 }
@@ -172,7 +172,7 @@ else version (Posix)
     {
         static assert(false, "Unknown Posix operating system.");
     }
-    
+
     public enum bool isWindows = false;
     public enum bool isPosix = true;
 }

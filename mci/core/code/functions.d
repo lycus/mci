@@ -8,12 +8,11 @@ import mci.core.container,
 public final class BasicBlock
 {
     private NoNullList!Instruction _instructions;
-    
     public this()
     {
         _instructions = new NoNullList!Instruction();
     }
-    
+
     @property public NoNullList!Instruction instructions()
     {
         return _instructions;
@@ -24,7 +23,7 @@ public class Parameter
 {
     private string _name;
     private Type _type;
-    
+
     public this(string name, Type type)
     in
     {
@@ -36,12 +35,12 @@ public class Parameter
         _name = name;
         _type = type;
     }
-    
+
     @property public final string name()
     {
         return _name;
     }
-    
+
     @property public final void name(string name)
     in
     {
@@ -51,12 +50,12 @@ public class Parameter
     {
         _name = name;
     }
-    
+
     @property public final Type type()
     {
         return _type;
     }
-    
+
     @property public final void type(Type type)
     in
     {
@@ -94,7 +93,7 @@ public abstract class Function
     private string _name;
     private NoNullList!Parameter _parameters;
     private Type _returnType;
-    
+
     protected this(string name, Type returnType)
     in
     {
@@ -107,12 +106,12 @@ public abstract class Function
         _returnType = returnType;
         _parameters = new NoNullList!Parameter();
     }
-    
+
     @property public string name()
     {
         return _name;
     }
-    
+
     @property public void name(string name)
     in
     {
@@ -122,7 +121,7 @@ public abstract class Function
     {
         _name = name;
     }
-    
+
     @property public final NoNullList!Parameter parameters()
     {
         return _parameters;
@@ -132,7 +131,7 @@ public abstract class Function
 public class CodeFunction : Function
 {
     private NoNullList!BasicBlock _blocks;
-    
+
     public this(string name, Type returnType)
     in
     {
@@ -142,10 +141,10 @@ public class CodeFunction : Function
     body
     {
         super(name, returnType);
-        
+
         _blocks = new NoNullList!BasicBlock();
     }
-    
+
     @property public final NoNullList!BasicBlock blocks()
     {
         return _blocks;
@@ -155,7 +154,7 @@ public class CodeFunction : Function
 public class TreeFunction : Function
 {
     private BlockNode _tree;
-    
+
     public this(string name, Type returnType, BlockNode tree)
     in
     {
@@ -167,12 +166,12 @@ public class TreeFunction : Function
     {
         super(name, returnType);
     }
-    
+
     @property public final BlockNode tree()
     {
         return _tree;
     }
-    
+
     @property public void tree(BlockNode tree)
     in
     {

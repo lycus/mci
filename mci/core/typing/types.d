@@ -30,7 +30,7 @@ public class StructureType : Type
     private string _name;
     private Nullable!uint _packingSize;
     private NoNullList!Field _fields;
-    
+
     public this(string name)
     in
     {
@@ -41,12 +41,12 @@ public class StructureType : Type
         _name = name;
         _fields = new NoNullList!Field();
     }
-    
+
     @property public final Nullable!uint packingSize()
     {
         return _packingSize;
     }
-    
+
     @property public final void packingSize(Nullable!uint packingSize)
     in
     {
@@ -56,17 +56,17 @@ public class StructureType : Type
     {
         _packingSize = packingSize;
     }
-    
+
     @property public final NoNullList!Field fields()
     {
         return _fields;
     }
-    
+
     @property public override string name()
     {
         return _name;
     }
-    
+
     @property public void name(string name)
     in
     {
@@ -169,7 +169,7 @@ unittest
 {
     auto int32 = Int32Type.instance;
     auto ptr = new PointerType(int32);
-    
+
     assert(ptr.name == "int32*");
 }
 
@@ -177,7 +177,7 @@ unittest
 {
     auto st = new StructureType("foo_bar_baz");
     auto ptr = new PointerType(st);
-    
+
     assert(ptr.name == "foo_bar_baz*");
 }
 

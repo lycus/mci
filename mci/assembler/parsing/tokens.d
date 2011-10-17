@@ -163,11 +163,11 @@ body
         default:
             break;
     }
-    
+
     foreach (opCode; allOpCodes)
         if (identifier == opCode.name)
             return TokenType.opCode;
-    
+
     return TokenType.identifier;
 }
 
@@ -176,7 +176,7 @@ public final class Token
     private TokenType _type;
     private string _value;
     private SourceLocation _location;
-    
+
     public this(TokenType type, string value, SourceLocation location)
     in
     {
@@ -197,17 +197,17 @@ public final class Token
         _value = value;
         _location = location;
     }
-    
+
     @property public TokenType type()
     {
         return _type;
     }
-    
+
     @property public string value()
     {
         return _value;
     }
-    
+
     @property public SourceLocation location()
     {
         return _location;
@@ -217,15 +217,15 @@ public final class Token
 public interface TokenStream
 {
     @property public Token current();
-    
+
     @property public Token previous();
-    
+
     @property public Token next();
 
     @property public bool done();
-    
+
     public Token movePrevious();
-    
+
     public Token moveNext();
 
     public void reset();
@@ -235,7 +235,7 @@ public final class MemoryTokenStream : TokenStream
 {
     private NoNullList!Token _stream;
     private size_t _position;
-    
+
     public this(NoNullList!Token stream)
     in
     {
@@ -248,17 +248,17 @@ public final class MemoryTokenStream : TokenStream
     {
         _stream = stream;
     }
-    
+
     @property public Token current()
     {
         return _stream.get(_position);
     }
-    
+
     @property public Token previous()
     {
         return _stream.get(_position - 1);
     }
-    
+
     @property public Token next()
     {
         return _stream.get(_position + 1);
@@ -268,12 +268,12 @@ public final class MemoryTokenStream : TokenStream
     {
         return _position == _stream.count - 1;
     }
-    
+
     public Token movePrevious()
     {
         return _stream.get(--_position);
     }
-    
+
     public Token moveNext()
     {
         return _stream.get(++_position);

@@ -6,7 +6,7 @@ public final class SourceLocation
 {
     private uint _line;
     private uint _column;
-    
+
     public this(uint line)
     in
     {
@@ -16,7 +16,7 @@ public final class SourceLocation
     {
         this(line, 0);
     }
-    
+
     public this(uint line, uint column)
     in
     {
@@ -27,12 +27,12 @@ public final class SourceLocation
         _line = line;
         _column = column;
     }
-    
+
     @property public uint line()
     {
         return _line;
     }
-    
+
     @property public uint column()
     {
         return _column;
@@ -44,7 +44,7 @@ public final class DebuggingInfo
     private string _documentName;
     private SourceLocation _location;
     private string _languageName;
-    
+
     public this(string documentName, SourceLocation location, string languageName)
     in
     {
@@ -58,17 +58,17 @@ public final class DebuggingInfo
         _location = location;
         _languageName = languageName;
     }
-    
+
     @property public string documentName()
     {
         return _documentName;
     }
-    
+
     @property public SourceLocation location()
     {
         return _location;
     }
-    
+
     @property public string languageName()
     {
         return _languageName;
