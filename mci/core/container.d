@@ -10,9 +10,9 @@ import core.exception,
 
 public interface Iterable(T)
 {
-    public int opApply(int delegate(ref T) dg);
+    public int opApply(scope int delegate(ref T) dg);
 
-    public int opApply(int delegate(ref size_t, ref T) dg);
+    public int opApply(scope int delegate(ref size_t, ref T) dg);
 }
 
 public interface Countable(T) : Iterable!T
@@ -150,7 +150,7 @@ public class List(T) : Collection!T
     // For compatibility with std.container and similar.
     alias _array this;
 
-    public final int opApply(int delegate(ref T) dg)
+    public final int opApply(scope int delegate(ref T) dg)
     {
         foreach (item; _array)
         {
@@ -163,7 +163,7 @@ public class List(T) : Collection!T
         return 0;
     }
 
-    public final int opApply(int delegate(ref size_t, ref T) dg)
+    public final int opApply(scope int delegate(ref size_t, ref T) dg)
     {
         foreach (i, item; _array)
         {
@@ -366,7 +366,7 @@ public class Dictionary(K, V) : Map!(K, V)
     // For compatibility with std.container and similar.
     alias _aa this;
 
-    public final int opApply(int delegate(ref Tuple!(K, V)) dg)
+    public final int opApply(scope int delegate(ref Tuple!(K, V)) dg)
     {
         foreach (k, v; _aa)
         {
@@ -379,7 +379,7 @@ public class Dictionary(K, V) : Map!(K, V)
         return 0;
     }
 
-    public final int opApply(int delegate(ref size_t, ref Tuple!(K, V)) dg)
+    public final int opApply(scope int delegate(ref size_t, ref Tuple!(K, V)) dg)
     {
         size_t i = 0;
 
