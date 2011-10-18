@@ -426,13 +426,10 @@ public final class Parser
         auto type = parseTypeSpecification();
         auto name = parseSimpleName();
 
-        LiteralValueNode value;
+        FieldValueNode value;
 
         if (peek().type == TokenType.equals)
-        {
-            next();
-            value = parseAnyLiteralValue();
-        }
+            value = parseFieldValue();
 
         LiteralValueNode offset;
 
@@ -448,6 +445,29 @@ public final class Parser
         consume(";");
 
         return new FieldDeclarationNode(_stream.previous.location, type, name, attributes, value, offset);
+    }
+
+    private FieldValueNode parseFieldValue()
+    {
+        consume("=");
+
+        mci.assembler.parsing.ast.FieldValue value;
+        SourceLocation location;
+
+        if (peek().type == TokenType.openParen)
+        {
+            auto val = parseByteArrayLiteral();
+            value = val;
+            location = val.location;
+        }
+        else
+        {
+            auto arr = parseAnyLiteralValue();
+            value = arr;
+            location = arr.location;
+        }
+
+        return new FieldValueNode(location, value);
     }
 
     private LiteralValueNode parseLiteralValue(T)()

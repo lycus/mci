@@ -361,11 +361,11 @@ public class FieldDeclarationNode : Node
     private TypeReferenceNode _type;
     private SimpleNameNode _name;
     private FieldAttributes _attributes;
-    private LiteralValueNode _value;
+    private FieldValueNode _value;
     private LiteralValueNode _offset;
 
     public this(SourceLocation location, TypeReferenceNode type, SimpleNameNode name,
-                FieldAttributes attributes, LiteralValueNode value, LiteralValueNode offset)
+                FieldAttributes attributes, FieldValueNode value, LiteralValueNode offset)
     in
     {
         assert(location);
@@ -397,7 +397,7 @@ public class FieldDeclarationNode : Node
         return _attributes;
     }
 
-    @property public final LiteralValueNode value()
+    @property public final FieldValueNode value()
     {
         return _value;
     }
@@ -693,6 +693,32 @@ public class ByteArrayLiteralNode : Node
     @property public final NoNullList!LiteralValueNode values()
     {
         return _values;
+    }
+}
+
+alias Algebraic!(LiteralValueNode,
+                 ByteArrayLiteralNode) FieldValue;
+
+public class FieldValueNode : Node
+{
+    private FieldValue _value;
+
+    public this(SourceLocation location, FieldValue value)
+    in
+    {
+        assert(location);
+        assert(value.hasValue);
+    }
+    body
+    {
+        super(location);
+
+        _value = value;
+    }
+
+    @property public final FieldValue value()
+    {
+        return _value;
     }
 }
 
