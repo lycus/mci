@@ -724,17 +724,52 @@ public final class Parser
             case OperandType.none:
                 assert(false);
             case OperandType.int8:
+                auto literal = parseLiteralValue!byte();
+                operand = literal;
+                location = literal.location;
+                break;
             case OperandType.uint8:
+                auto literal = parseLiteralValue!ubyte();
+                operand = literal;
+                location = literal.location;
+                break;
             case OperandType.int16:
+                auto literal = parseLiteralValue!short();
+                operand = literal;
+                location = literal.location;
+                break;
             case OperandType.uint16:
+                auto literal = parseLiteralValue!ushort();
+                operand = literal;
+                location = literal.location;
+                break;
             case OperandType.int32:
+                auto literal = parseLiteralValue!int();
+                operand = literal;
+                location = literal.location;
+                break;
             case OperandType.uint32:
+                auto literal = parseLiteralValue!uint();
+                operand = literal;
+                location = literal.location;
+                break;
             case OperandType.int64:
+                auto literal = parseLiteralValue!long();
+                operand = literal;
+                location = literal.location;
+                break;
             case OperandType.uint64:
+                auto literal = parseLiteralValue!ulong();
+                operand = literal;
+                location = literal.location;
+                break;
             case OperandType.float32:
+                auto literal = parseLiteralValue!float();
+                operand = literal;
+                location = literal.location;
+                break;
             case OperandType.float64:
-                // TODO: Verify this value.
-                auto literal = parseAnyLiteralValue();
+                auto literal = parseLiteralValue!double();
                 operand = literal;
                 location = literal.location;
                 break;
