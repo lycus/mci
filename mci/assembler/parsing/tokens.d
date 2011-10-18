@@ -25,9 +25,9 @@ public enum TokenType : ubyte
     sequential,
     explicit,
     field,
-    global,
+    static_,
     constant,
-    method,
+    function_,
     queueCall,
     cdecl,
     stdCall,
@@ -108,11 +108,11 @@ body
         case "field":
             return TokenType.field;
         case "static":
-            return TokenType.global;
+            return TokenType.static_;
         case "const":
             return TokenType.constant;
         case "function":
-            return TokenType.method;
+            return TokenType.function_;
         case "qcall":
             return TokenType.queueCall;
         case "ccall":

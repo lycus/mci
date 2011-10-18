@@ -144,7 +144,7 @@ public final class Parser
                 case TokenType.type:
                     ast.add(parseTypeDeclaration());
                     break;
-                case TokenType.method:
+                case TokenType.function_:
                     ast.add(parseFunctionDeclaration());
                     break;
                 default:
@@ -412,10 +412,10 @@ public final class Parser
 
         // The static and const keywords are mutually exclusive, because
         // constant implies static.
-        if (attrTok.type == TokenType.global)
+        if (attrTok.type == TokenType.static_)
         {
             next();
-            attributes |= FieldAttributes.global;
+            attributes |= FieldAttributes.static_;
         }
         else if (attrTok.type == TokenType.constant)
         {

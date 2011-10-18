@@ -8,7 +8,7 @@ import std.variant,
 public enum FieldAttributes : ubyte
 {
     none = 0x00,
-    global = 0x01,
+    static_ = 0x01,
     constant = 0x02,
 }
 
