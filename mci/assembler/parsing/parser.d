@@ -11,6 +11,7 @@ import std.conv,
        mci.core.typing.types,
        mci.assembler.exception,
        mci.assembler.parsing.ast,
+       mci.assembler.parsing.exception,
        mci.assembler.parsing.tokens;
 
 public final class CompilationUnit

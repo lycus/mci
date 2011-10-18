@@ -6,6 +6,7 @@ import std.conv,
        std.utf,
        mci.core.io,
        mci.assembler.exception,
+       mci.assembler.parsing.exception,
        mci.assembler.parsing.lexer,
        mci.assembler.parsing.parser,
        mci.cli.tool;

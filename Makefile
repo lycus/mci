@@ -93,6 +93,7 @@ MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/all.d \
 	mci/assembler/exception.d \
 	mci/assembler/parsing/ast.d \
+	mci/assembler/parsing/exception.d \
 	mci/assembler/parsing/lexer.d \
 	mci/assembler/parsing/parser.d \
 	mci/assembler/parsing/tokens.d

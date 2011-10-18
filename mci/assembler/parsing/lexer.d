@@ -8,6 +8,7 @@ import std.ascii,
        mci.core.container,
        mci.core.diagnostics.debugging,
        mci.assembler.exception,
+       mci.assembler.parsing.exception,
        mci.assembler.parsing.tokens;
 
 public final class Source
