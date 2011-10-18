@@ -10,19 +10,18 @@ import std.variant,
 
 public final class Register
 {
-    private uint _number;
     private Type _type;
     private string _name;
 
-    public this(uint number, Type type)
+    public this(string name, Type type)
     in
     {
-        assert(number < maxRegister);
+        assert(name);
         assert(type);
     }
     body
     {
-        _number = number;
+        _name = name;
         _type = type;
     }
 
@@ -31,23 +30,12 @@ public final class Register
         return _type;
     }
 
-    @property public uint number()
-    {
-        return _number;
-    }
-
     @property public string name()
     {
         return _name;
     }
-
-    @property public void name(string name)
-    {
-        _name = name;
-    }
 }
 
-public enum uint maxRegister = uint.max / 2;
 public enum uint maxSourceRegisters = 2;
 
 alias Algebraic!(byte,
