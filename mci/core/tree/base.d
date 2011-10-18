@@ -26,23 +26,8 @@ public abstract class TreeNode
         _debugInfo = debugInfo;
     }
 
-    @property public bool isReducible()
-    {
-        return false;
-    }
-
     public TreeNode reduce()
-    in
     {
-        assert(isReducible);
-    }
-    body
-    {
-        assert(false);
-    }
-
-    public Countable!Instruction generateCode()
-    {
-        return new List!Instruction();
+        return null;
     }
 }
