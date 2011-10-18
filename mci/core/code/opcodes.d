@@ -45,7 +45,7 @@ public static TypeInfo operandToTypeInfo(OperandType operandType)
         case OperandType.none:
             return null;
         case OperandType.bytes:
-            return typeid(Object);
+            return typeid(Countable!ubyte);
         case OperandType.int8:
             return typeid(byte);
         case OperandType.uint8:
