@@ -8,11 +8,33 @@ import mci.core.container,
 
 public final class BasicBlock
 {
+    private string _name;
     private NoNullList!Instruction _instructions;
 
-    public this()
+    public this(string name)
+    in
     {
+        assert(name);
+    }
+    body
+    {
+        _name = name;
         _instructions = new NoNullList!Instruction();
+    }
+
+    @property public string name()
+    {
+        return _name;
+    }
+
+    @property public void name(string name)
+    in
+    {
+        assert(name);
+    }
+    body
+    {
+        _name = name;
     }
 
     @property public NoNullList!Instruction instructions()
@@ -20,6 +42,8 @@ public final class BasicBlock
         return _instructions;
     }
 }
+
+public enum string entryBlockName = "entry";
 
 public class Parameter
 {
