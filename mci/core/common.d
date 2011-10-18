@@ -1,6 +1,6 @@
 module mci.core.common;
 
-public bool isType(T)(Object obj)
+public bool isType(T, U)(U obj)
 {
     return cast(T)obj !is null;
 }

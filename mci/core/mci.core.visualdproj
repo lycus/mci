@@ -281,7 +281,6 @@
   <Folder name="diagnostics">
    <File path="diagnostics\debugging.d" />
   </Folder>
-  <Folder name="translation" />
   <Folder name="tree">
    <File path="tree\base.d" />
    <File path="tree\expressions.d" />
