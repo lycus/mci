@@ -69,6 +69,7 @@ MCI_CORE_SOURCES = \
 	mci/core/meta.d \
 	mci/core/nullable.d \
 	mci/core/tuple.d \
+	mci/core/code/emit.d \
 	mci/core/code/functions.d \
 	mci/core/code/instructions.d \
 	mci/core/code/modules.d \
