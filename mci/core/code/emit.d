@@ -173,7 +173,3 @@ public class BasicBlockEmitter
         return this;
     }
 }
-
-unittest
-{
-}
