@@ -1,9 +1,8 @@
 module mci.tester.main;
 
-import mci.assembler.all,
+import std.stdio,
+       mci.assembler.all,
        mci.core.all;
-
-import std.stdio;
 
 private void main()
 {
