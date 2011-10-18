@@ -12,6 +12,7 @@ public final class Register
 {
     private uint _number;
     private Type _type;
+    private string _name;
 
     public this(uint number, Type type)
     in
@@ -34,6 +35,16 @@ public final class Register
     {
         return _number;
     }
+
+    @property public string name()
+    {
+        return _name;
+    }
+
+    @property public void name(string name)
+    {
+        _name = name;
+    }
 }
 
 public enum uint maxRegister = uint.max / 2;
@@ -54,7 +65,7 @@ alias Algebraic!(byte,
                  Type,
                  StructureType,
                  Field,
-                 CodeFunction,
+                 Function,
                  FunctionPointerType,
                  Tuple!(Register, Countable!BasicBlock)) InstructionOperand;
 

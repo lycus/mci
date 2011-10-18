@@ -88,7 +88,7 @@ public enum FunctionAttributes : ubyte
     noCallInlining = 0x10,
 }
 
-public abstract class Function
+public class Function
 {
     public FunctionAttributes attributes;
     public CallingConvention callingConvention;
@@ -96,6 +96,8 @@ public abstract class Function
     private string _name;
     private NoNullList!Parameter _parameters;
     private Type _returnType;
+    private NoNullList!BasicBlock _blocks;
+    private NoNullList!Register _registers;
 
     protected this(Module module_, string name, Type returnType)
     in
@@ -110,6 +112,8 @@ public abstract class Function
         _name = name;
         _returnType = returnType;
         _parameters = new NoNullList!Parameter();
+        _blocks = new NoNullList!BasicBlock();
+        _registers = new NoNullList!Register();
     }
 
     @property public final Module module_()
@@ -152,61 +156,14 @@ public abstract class Function
     {
         return _parameters;
     }
-}
-
-public class CodeFunction : Function
-{
-    private NoNullList!BasicBlock _blocks;
-
-    public this(Module module_, string name, Type returnType)
-    in
-    {
-        assert(module_);
-        assert(name);
-        assert(returnType);
-    }
-    body
-    {
-        super(module_, name, returnType);
-
-        _blocks = new NoNullList!BasicBlock();
-    }
 
     @property public final NoNullList!BasicBlock blocks()
     {
         return _blocks;
     }
-}
 
-public class TreeFunction : Function
-{
-    private BlockNode _tree;
-
-    public this(Module module_, string name, Type returnType, BlockNode tree)
-    in
+    @property public final NoNullList!Register registers()
     {
-        assert(module_);
-        assert(name);
-        assert(returnType);
-        assert(tree);
-    }
-    body
-    {
-        super(module_, name, returnType);
-    }
-
-    @property public final BlockNode tree()
-    {
-        return _tree;
-    }
-
-    @property public void tree(BlockNode tree)
-    in
-    {
-        assert(tree);
-    }
-    body
-    {
-        _tree = tree;
+        return _registers;
     }
 }

@@ -73,7 +73,7 @@ public static TypeInfo operandToTypeInfo(OperandType operandType)
         case OperandType.field:
             return typeid(Field);
         case OperandType.method:
-            return typeid(CodeFunction);
+            return typeid(Function);
         case OperandType.signature:
             return typeid(FunctionPointerType);
         case OperandType.label:
