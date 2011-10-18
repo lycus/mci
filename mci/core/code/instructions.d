@@ -30,9 +30,29 @@ public final class Register
         return _type;
     }
 
+    @property public void type(Type type)
+    in
+    {
+        assert(type);
+    }
+    body
+    {
+        _type = type;
+    }
+
     @property public string name()
     {
         return _name;
+    }
+
+    @property public void name(string name)
+    in
+    {
+        assert(name);
+    }
+    body
+    {
+        _name = name;
     }
 }
 

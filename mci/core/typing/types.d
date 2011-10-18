@@ -23,7 +23,7 @@ public enum TypeLayout : ubyte
     explicit = 2,
 }
 
-public class StructureType : Type
+public final class StructureType : Type
 {
     public TypeAttributes attributes;
     public TypeLayout layout;
@@ -45,7 +45,7 @@ public class StructureType : Type
         _fields = new NoNullList!Field();
     }
 
-    @property public final Module module_()
+    @property public Module module_()
     {
         return _module;
     }
@@ -66,12 +66,12 @@ public class StructureType : Type
         _module = module_;
     }
 
-    @property public final Nullable!uint packingSize()
+    @property public Nullable!uint packingSize()
     {
         return _packingSize;
     }
 
-    @property public final void packingSize(Nullable!uint packingSize)
+    @property public void packingSize(Nullable!uint packingSize)
     in
     {
         assert(!packingSize.hasValue || packingSize.value);
@@ -81,7 +81,7 @@ public class StructureType : Type
         _packingSize = packingSize;
     }
 
-    @property public final NoNullList!Field fields()
+    @property public NoNullList!Field fields()
     {
         return _fields;
     }
@@ -102,7 +102,7 @@ public class StructureType : Type
     }
 }
 
-public class PointerType : Type
+public final class PointerType : Type
 {
     private Type _elementType;
 
@@ -116,12 +116,12 @@ public class PointerType : Type
         _elementType = elementType;
     }
 
-    @property public final Type elementType()
+    @property public Type elementType()
     {
         return _elementType;
     }
 
-    @property public final void elementType(Type elementType)
+    @property public void elementType(Type elementType)
     in
     {
         assert(elementType);
@@ -137,7 +137,7 @@ public class PointerType : Type
     }
 }
 
-public class FunctionPointerType : Type
+public final class FunctionPointerType : Type
 {
     private Type _returnType;
     private NoNullList!Type _parameterTypes;
@@ -153,12 +153,12 @@ public class FunctionPointerType : Type
         _parameterTypes = new NoNullList!Type();
     }
 
-    @property public final Type returnType()
+    @property public Type returnType()
     {
         return _returnType;
     }
 
-    @property public final void returnType(Type returnType)
+    @property public void returnType(Type returnType)
     in
     {
         assert(returnType);
@@ -168,7 +168,7 @@ public class FunctionPointerType : Type
         _returnType = returnType;
     }
 
-    @property public final NoNullList!Type parameterTypes()
+    @property public NoNullList!Type parameterTypes()
     {
         return _parameterTypes;
     }

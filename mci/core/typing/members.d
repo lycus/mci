@@ -24,7 +24,7 @@ alias Algebraic!(byte,
                  double,
                  Iterable!ubyte) FieldValue;
 
-public class Field
+public final class Field
 {
     private string _name;
     private Type _type;

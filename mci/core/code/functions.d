@@ -45,7 +45,7 @@ public final class BasicBlock
 
 public enum string entryBlockName = "entry";
 
-public class Parameter
+public final class Parameter
 {
     private Register _register;
 
@@ -59,12 +59,12 @@ public class Parameter
         _register = register;
     }
 
-    @property public final Register register()
+    @property public Register register()
     {
         return _register;
     }
 
-    @property public final void register(Register register)
+    @property public void register(Register register)
     in
     {
         assert(register);
@@ -94,7 +94,7 @@ public enum FunctionAttributes : ubyte
     noCallInlining = 0x10,
 }
 
-public class Function
+public final class Function
 {
     public FunctionAttributes attributes;
     public CallingConvention callingConvention;
@@ -122,12 +122,12 @@ public class Function
         _registers = new NoNullList!Register();
     }
 
-    @property public final Module module_()
+    @property public Module module_()
     {
         return _module;
     }
 
-    @property package final void module_(Module module_)
+    @property package void module_(Module module_)
     in
     {
         assert(module_);
@@ -143,12 +143,12 @@ public class Function
         _module = module_;
     }
 
-    @property public final string name()
+    @property public string name()
     {
         return _name;
     }
 
-    @property public final void name(string name)
+    @property public void name(string name)
     in
     {
         assert(name);
@@ -158,17 +158,17 @@ public class Function
         _name = name;
     }
 
-    @property public final NoNullList!Parameter parameters()
+    @property public NoNullList!Parameter parameters()
     {
         return _parameters;
     }
 
-    @property public final NoNullList!BasicBlock blocks()
+    @property public NoNullList!BasicBlock blocks()
     {
         return _blocks;
     }
 
-    @property public final NoNullList!Register registers()
+    @property public NoNullList!Register registers()
     {
         return _registers;
     }
