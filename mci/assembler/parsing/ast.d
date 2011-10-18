@@ -210,20 +210,20 @@ private mixin template CoreTypeReferenceNode(string type)
           "}");
 }
 
-mixin CoreTypeReferenceNode!("Unit");
-mixin CoreTypeReferenceNode!("Int8");
-mixin CoreTypeReferenceNode!("UInt8");
-mixin CoreTypeReferenceNode!("Int16");
-mixin CoreTypeReferenceNode!("UInt16");
-mixin CoreTypeReferenceNode!("Int32");
-mixin CoreTypeReferenceNode!("UInt32");
-mixin CoreTypeReferenceNode!("Int64");
-mixin CoreTypeReferenceNode!("UInt64");
-mixin CoreTypeReferenceNode!("NativeInt");
-mixin CoreTypeReferenceNode!("NativeUInt");
-mixin CoreTypeReferenceNode!("Float32");
-mixin CoreTypeReferenceNode!("Float64");
-mixin CoreTypeReferenceNode!("NativeFloat");
+mixin CoreTypeReferenceNode!"Unit";
+mixin CoreTypeReferenceNode!"Int8";
+mixin CoreTypeReferenceNode!"UInt8";
+mixin CoreTypeReferenceNode!"Int16";
+mixin CoreTypeReferenceNode!"UInt16";
+mixin CoreTypeReferenceNode!"Int32";
+mixin CoreTypeReferenceNode!"UInt32";
+mixin CoreTypeReferenceNode!"Int64";
+mixin CoreTypeReferenceNode!"UInt64";
+mixin CoreTypeReferenceNode!"NativeInt";
+mixin CoreTypeReferenceNode!"NativeUInt";
+mixin CoreTypeReferenceNode!"Float32";
+mixin CoreTypeReferenceNode!"Float64";
+mixin CoreTypeReferenceNode!"NativeFloat";
 
 public class FieldReferenceNode : Node
 {
