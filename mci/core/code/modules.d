@@ -1,6 +1,7 @@
 module mci.core.code.modules;
 
-import mci.core.container,
+import mci.core.common,
+       mci.core.container,
        mci.core.code.functions,
        mci.core.typing.types;
 
@@ -45,4 +46,12 @@ public final class Module
     {
         return _types;
     }
+}
+
+unittest
+{
+    auto mod = new Module("stuff");
+
+    assert(isType!(NoNullList!Function)(mod.functions));
+    assert(isType!(NoNullList!StructureType)(mod.types));
 }
