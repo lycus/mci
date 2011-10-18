@@ -194,7 +194,7 @@ public final class Parser
         {
             next();
 
-            packingSize = parseLiteralValue();
+            packingSize = parseLiteralValue!uint();
 
             try
             {
@@ -431,7 +431,7 @@ public final class Parser
         if (peek().type == TokenType.equals)
         {
             next();
-            value = parseLiteralValue();
+            value = parseAnyLiteralValue();
         }
 
         LiteralValueNode offset;
@@ -440,20 +440,7 @@ public final class Parser
         {
             next();
 
-            offset = parseLiteralValue();
-
-            try
-            {
-                to!uint(offset.value);
-            }
-            catch (ConvOverflowException)
-            {
-                error("32-bit unsigned integer literal overflow", offset.location);
-            }
-            catch (ConvException)
-            {
-                error("invalid 32-bit unsigned integer literal", offset.location);
-            }
+            offset = parseLiteralValue!uint();
 
             consume(")");
         }
@@ -463,7 +450,27 @@ public final class Parser
         return new FieldDeclarationNode(_stream.previous.location, type, name, attributes, value, offset);
     }
 
-    private LiteralValueNode parseLiteralValue()
+    private LiteralValueNode parseLiteralValue(T)()
+    {
+        auto literal = parseAnyLiteralValue();
+
+        try
+        {
+            to!T(literal.value);
+        }
+        catch (ConvOverflowException)
+        {
+            error(T.stringof ~ " literal overflow", literal.location);
+        }
+        catch (ConvException)
+        {
+            error("invalid " ~ T.stringof ~ " literal", literal.location);
+        }
+
+        return literal;
+    }
+
+    private LiteralValueNode parseAnyLiteralValue()
     {
         auto literal = next();
 
@@ -727,7 +734,7 @@ public final class Parser
             case OperandType.float32:
             case OperandType.float64:
                 // TODO: Verify this value.
-                auto literal = parseLiteralValue();
+                auto literal = parseAnyLiteralValue();
                 operand = literal;
                 location = literal.location;
                 break;
@@ -822,20 +829,7 @@ public final class Parser
 
         while (peek().type != TokenType.closeParen)
         {
-            auto literal = parseLiteralValue();
-
-            try
-            {
-                to!ubyte(literal.value);
-            }
-            catch (ConvOverflowException)
-            {
-                error("8-bit unsigned integer literal overflow", literal.location);
-            }
-            catch (ConvException)
-            {
-                error("invalid 8-bit unsigned integer literal", literal.location);
-            }
+            auto literal = parseLiteralValue!ubyte();
 
             values.add(literal);
 
