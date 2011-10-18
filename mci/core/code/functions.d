@@ -47,49 +47,31 @@ public enum string entryBlockName = "entry";
 
 public class Parameter
 {
-    private string _name;
-    private Type _type;
+    private Register _register;
 
-    public this(string name, Type type)
+    public this(Register register)
     in
     {
-        assert(name);
-        assert(type);
+        assert(register);
     }
     body
     {
-        _name = name;
-        _type = type;
+        _register = register;
     }
 
-    @property public final string name()
+    @property public final Register register()
     {
-        return _name;
+        return _register;
     }
 
-    @property public final void name(string name)
+    @property public final void register(Register register)
     in
     {
-        assert(name);
+        assert(register);
     }
     body
     {
-        _name = name;
-    }
-
-    @property public final Type type()
-    {
-        return _type;
-    }
-
-    @property public final void type(Type type)
-    in
-    {
-        assert(type);
-    }
-    body
-    {
-        _type = type;
+        _register = register;
     }
 }
 
