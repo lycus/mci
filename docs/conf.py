@@ -15,6 +15,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 pygments_style = 'sphinx'
+highlight_language = 'd'
 
 html_theme = 'default'
 html_static_path = ['_static']
