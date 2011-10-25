@@ -17,6 +17,15 @@ In addition, the MCI puts high emphasis on treating code as data. Code is
 generally represented in its original form, and the object model is fully
 extensible for new languages.
 
+You can reach the MCI community in several ways:
+
+    * IRC channel
+      - #lycus @ irc.freenode.net
+    * Mailing lists
+      - mci-announce: http://groups.google.com/group/mci-announce
+      - mci-discuss: http://groups.google.com/group/mci-discuss
+      - mci-develop: http://groups.google.com/group/mci-develop
+
 For further information, see:
 
     * LICENSE
