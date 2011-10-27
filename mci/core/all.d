@@ -9,6 +9,7 @@ public import mci.core.meta;
 public import mci.core.nullable;
 public import mci.core.tuple;
 
+public import mci.core.code.emit;
 public import mci.core.code.functions;
 public import mci.core.code.opcodes;
 public import mci.core.code.modules;
