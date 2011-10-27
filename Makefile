@@ -1,5 +1,6 @@
 MODEL ?= 64
 BUILD ?= debug
+DPLC ?= dmd
 
 ifneq ($(MODEL), 32)
 	ifneq ($(MODEL), 64)
@@ -57,7 +58,7 @@ clean:
 MCI_CORE_DFLAGS = $(DFLAGS) -lib -Xf"libmci.core.json" -deps="libmci.core.deps"
 
 libmci.core.a:
-	dmd $(MCI_CORE_DFLAGS) -of$@ $(MCI_CORE_SOURCES);
+	$(DPLC) $(MCI_CORE_DFLAGS) -of$@ $(MCI_CORE_SOURCES);
 
 MCI_CORE_SOURCES = \
 	mci/core/all.d \
@@ -87,7 +88,7 @@ MCI_CORE_SOURCES = \
 MCI_ASSEMBLER_DFLAGS = $(DFLAGS) -lib -Xf"libmci.assembler.json" -deps="libmci.assembler.deps"
 
 libmci.assembler.a: libmci.core.a
-	dmd $(MCI_ASSEMBLER_DFLAGS) -of$@ $(MCI_ASSEMBLER_SOURCES) $(MCI_ASSEMBLER_DEPS);
+	$(DPLC) $(MCI_ASSEMBLER_DFLAGS) -of$@ $(MCI_ASSEMBLER_SOURCES) $(MCI_ASSEMBLER_DEPS);
 
 MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/all.d \
@@ -106,7 +107,7 @@ MCI_ASSEMBLER_DEPS = \
 MCI_TESTER_DFLAGS = $(DFLAGS) -Xf"mci.tester.json" -deps="mci.tester.deps"
 
 mci.tester: libmci.core.a libmci.assembler.a
-	dmd $(MCI_TESTER_DFLAGS) -of$@ $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS);
+	$(DPLC) $(MCI_TESTER_DFLAGS) -of$@ $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS);
 	if [ ${BUILD} = "test" ]; then \
 		gdb --command=mci.gdb mci.tester; \
 	fi;
@@ -123,7 +124,7 @@ MCI_TESTER_DEPS = \
 MCI_CLI_DFLAGS = $(DFLAGS) -Xf"mci.cli.json" -deps="mci.cli.deps"
 
 mci.cli: libmci.core.a libmci.assembler.a
-	dmd $(MCI_CLI_DFLAGS) -of$@ $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS);
+	$(DPLC) $(MCI_CLI_DFLAGS) -of$@ $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS);
 
 MCI_CLI_SOURCES = \
 	mci/cli/main.d \
