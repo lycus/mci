@@ -32,5 +32,9 @@ For further information, see:
       - Licensing and Copyright information.
     * COMPATIBILITY
       - Supported compilers, architectures, operating systems, etc.
+    * INSTALL
+      - Instructions on building and installing the MCI.
     * AUTHORS
       - Names and contact information for MCI developers.
+
+See also the documentation in the 'docs' directory.

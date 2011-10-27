@@ -1,0 +1,36 @@
+            == MCI: Managed Compiler Infrastructure ==
+
+                -- Installation --
+
+Installation on Linux works through a single Makefile:
+
+    $ make
+
+If you have a working compiler installed, this should just work.
+
+There are some variables that you can override when building with
+the Makefile:
+
+    * MODEL (= 64)
+      - Which pointer size to build for (32 or 64).
+    * BUILD (= debug)
+      - The build mode (debug, release, or test). The test mode will
+        run the unit test suite after the build completes.
+    * DPLC (= dmd)
+      - The compiler to be used. See the COMPATIBILITY file for a
+        list of supported compilers.
+
+For example, to do a 32-bit release build:
+
+    $ make BUILD=release MODEL=32
+
+The resulting libraries and executables will be placed in the root
+directory of the source distribution.
+
+Building on Windows is only supported via Visual D. Simply install
+your compiler of choice, configure Visual D to use it, and compile
+MCI.sln with the desired configuration.
+
+Note that the MCI cannot currently be compiled for 64-bit on Windows
+with DMD, due to limitations in Optlink (among other things). It is
+not a limitation in the MCI itself, however.
