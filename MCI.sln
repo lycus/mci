@@ -25,6 +25,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{9956EC64-ACD3-4F73-A4E9-DEC06207DC54}"
 	ProjectSection(SolutionItems) = preProject
 		docs\index.rst = docs\index.rst
+		introduction.rst = introduction.rst
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{20057E24-56A3-437A-AC7A-0919CADB78BE}"
