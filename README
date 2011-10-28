@@ -9,12 +9,15 @@ write a complete compiler infrastructure and JIT (just-in-time) compiler
 in the D 2.0 language.
 
 The rationale for such a project is that developing and maintaining such
-systems in C/C++ (or similar languages) is tedious and error-prone. Also,
-such native implementations usually cannot expose a clean object-oriented
-API.
+systems in C/C++ (or similar languages) is tedious and error-prone. Other
+languages also don't offer the possibility to expose a clean and simple
+API, particularly due to the lack of a garbage collector and an exhaustive
+standard library.
 
-In addition, the MCI puts high emphasis on treating code as data. Code is
-generally represented in its original form, and the object model is fully
+The MCI puts emphasis on treating code as data. A tree model is used as
+the primary point of entry into the MCI, rather than an assembly-like
+intermediate representation. This makes it easy to transform parsed source
+code into MCI data structures. Additionally, the tree model is fully
 extensible for new languages.
 
 You can reach the MCI community in several ways:
