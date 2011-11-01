@@ -283,9 +283,6 @@ public final class Lexer
 
             auto isDot = idChr == '.';
 
-            if (idChr == dchar.init)
-                errorGot("identifier character (a-z, A-Z, _)", _source.location, idChr);
-
             if (!isIdentifierChar(idChr) && !isDigit(idChr) && !isDot)
                 break;
 
@@ -308,41 +305,60 @@ public final class Lexer
     private Token lexLiteral(dchar chr)
     {
         string str = [cast(char)chr];
-        bool hasDot;
-        bool hasDecimal;
+        bool isHexLiteral;
+
+        // To support hex literals.
+        if (chr == '0' && _source.next() == 'x')
+        {
+            isHexLiteral = true;
+            str ~= 'x';
+            _source.moveNext();
+        }
 
         while (true)
         {
             auto digChr = _source.next();
             auto isDot = digChr == '.';
 
-            if (!isDigit(digChr) && !isDot)
-            {
-                // Don't allow a decimal point with no trailing digit.
-                if (hasDot && !hasDecimal)
-                    error("base-10 digit", _source.location);
-
-                break;
-            }
-
             if (isDot)
-                hasDot = true;
-            else
             {
-                if (digChr == dchar.init)
-                    errorGot("base-10 digit" ~ (!hasDot ? " or decimal point" : ""),
-                             _source.location, digChr);
-
-                if (!isDigit(digChr))
-                    break;
-
-                if (hasDot)
-                    hasDecimal = true;
+                if (isHexLiteral)
+                    error("base-16 digit", _source.location);
+                else
+                {
+                    _source.moveNext();
+                    return lexFloatingPoint(str ~ '.');
+                }
             }
+
+            if (!(isHexLiteral ? isHexDigit(digChr) : isDigit(digChr)))
+                break;
 
             _source.moveNext();
             str ~= digChr;
         }
+
+        return new Token(TokenType.literal, str, _source.location);
+    }
+
+    private Token lexFloatingPoint(string str)
+    {
+        bool hasTrailingDigit;
+
+        while (true)
+        {
+            auto digChr = _source.next();
+
+            if (!isDigit(digChr))
+                break;
+
+            hasTrailingDigit = true;
+            _source.moveNext();
+            str ~= digChr;
+        }
+
+        if (!hasTrailingDigit)
+            error("base-10 digit", _source.location);
 
         return new Token(TokenType.literal, str, _source.location);
     }
