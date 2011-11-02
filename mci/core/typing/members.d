@@ -12,25 +12,12 @@ public enum FieldAttributes : ubyte
     constant = 0x02,
 }
 
-alias Algebraic!(byte,
-                 ubyte,
-                 short,
-                 ushort,
-                 int,
-                 uint,
-                 long,
-                 ulong,
-                 float,
-                 double,
-                 Iterable!ubyte) FieldValue;
-
 public final class Field
 {
     private string _name;
     private Type _type;
     private Nullable!uint _offset;
     public FieldAttributes attributes;
-    public FieldValue value;
 
     public this(string name, Type type)
     in
