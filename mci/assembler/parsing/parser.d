@@ -791,7 +791,7 @@ public final class Parser
                 operand = field;
                 location = field.location;
                 break;
-            case OperandType.method:
+            case OperandType.function_:
                 auto method = parseFunctionReference();
                 operand = method;
                 location = method.location;
