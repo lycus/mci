@@ -135,7 +135,7 @@ public class BasicBlockEmitter
     mixin Emit!"Field";
     mixin Emit!"Function";
     mixin Emit!"FunctionPointerType";
-    mixin Emit!"Tuple!(Register, Countable!BasicBlock)";
+    mixin Emit!"Countable!Register";
 
     public final BasicBlockEmitter emitTarget(OpCode opCode, Register source1, Register source2, Register target)
     {

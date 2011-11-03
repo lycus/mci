@@ -79,7 +79,7 @@ public static TypeInfo operandToTypeInfo(OperandType operandType)
         case OperandType.label:
             return typeid(BasicBlock);
         case OperandType.selector:
-            return typeid((Tuple!(Register, Countable!BasicBlock)));
+            return typeid(Countable!Register);
     }
 }
 

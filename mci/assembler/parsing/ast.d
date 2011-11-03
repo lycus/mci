@@ -614,32 +614,24 @@ public class BasicBlockReferenceNode : Node
 
 public class RegisterSelectorNode : Node
 {
-    private RegisterReferenceNode _register;
-    private NoNullList!BasicBlockReferenceNode _blocks;
+    private NoNullList!RegisterReferenceNode _registers;
 
-    public this(SourceLocation location, RegisterReferenceNode register, NoNullList!BasicBlockReferenceNode blocks)
+    public this(SourceLocation location, NoNullList!RegisterReferenceNode registers)
     in
     {
         assert(location);
-        assert(register);
-        assert(blocks);
+        assert(registers);
     }
     body
     {
         super(location);
 
-        _register = register;
-        _blocks = blocks;
+        _registers = registers;
     }
 
-    @property public final RegisterReferenceNode register()
+    @property public final Countable!RegisterReferenceNode registers()
     {
-        return _register;
-    }
-
-    @property public final Countable!BasicBlockReferenceNode blocks()
-    {
-        return _blocks;
+        return _registers;
     }
 }
 

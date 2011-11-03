@@ -75,7 +75,7 @@ alias Algebraic!(byte,
                  Field,
                  Function,
                  FunctionPointerType,
-                 Tuple!(Register, Countable!BasicBlock)) InstructionOperand;
+                 Countable!Register) InstructionOperand;
 
 public final class Instruction
 {

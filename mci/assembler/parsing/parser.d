@@ -691,14 +691,14 @@ public final class Parser
         {
             consume("(");
 
-            // If we're parsing a byte array, bring the opening parenthesis
-            // back in.
-            if (operandType == OperandType.bytes)
+            // If we're parsing a byte array or register selector, bring the
+            // opening parenthesis back in.
+            if (operandType == OperandType.bytes || operandType == OperandType.selector)
                 _stream.movePrevious();
 
             operand = parseInstructionOperand(operandType);
 
-            if (operandType != OperandType.bytes)
+            if (operandType != OperandType.bytes && operandType != OperandType.selector)
                 consume(")");
         }
 
@@ -813,26 +813,28 @@ public final class Parser
 
     private RegisterSelectorNode parseRegisterSelector()
     {
-        auto register = parseRegisterReference();
+        auto open = consume("(");
 
-        consume(":");
+        auto registers = new NoNullList!RegisterReferenceNode();
 
-        auto blocks = new NoNullList!BasicBlockReferenceNode();
-
-        while (true)
+        do
         {
-            blocks.add(parseBasicBlockReference());
+            registers.add(parseRegisterReference());
 
             if (peek().type == TokenType.comma)
             {
                 next();
-                continue;
+
+                auto peek = peek();
+
+                if (peek.type == TokenType.closeParen)
+                    errorGot("register reference", peek.location, peek.value);
             }
+        } while (peek().type != TokenType.closeParen);
 
-            break;
-        }
+        consume(")");
 
-        return new RegisterSelectorNode(register.location, register, blocks);
+        return new RegisterSelectorNode(open.location, registers);
     }
 
     private RegisterReferenceNode parseRegisterReference()
