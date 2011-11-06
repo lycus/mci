@@ -40,7 +40,7 @@ public final class StructureType : Type
     }
     body
     {
-        _module = module_;
+        module_ = module_;
         _name = name;
         _fields = new NoNullList!Field();
     }

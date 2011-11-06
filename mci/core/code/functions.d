@@ -114,7 +114,7 @@ public final class Function
     }
     body
     {
-        _module = module_;
+        module_ = module_;
         _name = name;
         _returnType = returnType;
         _parameters = new NoNullList!Parameter();
