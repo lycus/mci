@@ -106,9 +106,9 @@ unittest
 
     addRange(list, [1, 2, 3]);
 
-    assert(list[0] == 1);
-    assert(list[1] == 2);
-    assert(list[2] == 3);
+    assert(list.get(0) == 1);
+    assert(list.get(1) == 2);
+    assert(list.get(2) == 3);
     assert(list.count == 3);
 }
 
@@ -132,8 +132,8 @@ unittest
     addRange(list, [1, 2, 3, 4, 5, 6]);
     removeRange(list, [2, 3, 4, 5]);
 
-    assert(list[0] == 1);
-    assert(list[1] == 6);
+    assert(list.get(0) == 1);
+    assert(list.get(1) == 6);
     assert(list.count == 2);
 }
 
@@ -177,9 +177,6 @@ unittest
 public class List(T) : Indexable!T
 {
     private T[] _array;
-
-    // For compatibility with std.container and similar.
-    alias _array this;
 
     public final int opApply(scope int delegate(ref T) dg)
     {
@@ -308,8 +305,8 @@ unittest
 
     list.remove(2);
 
-    assert(list[0] == 1);
-    assert(list[1] == 3);
+    assert(list.get(0) == 1);
+    assert(list.get(1) == 3);
 }
 
 unittest
@@ -339,9 +336,9 @@ unittest
 {
     auto list = toList(1, 2, 3);
 
-    assert(list[0] == 1);
-    assert(list[1] == 2);
-    assert(list[2] == 3);
+    assert(list.get(0) == 1);
+    assert(list.get(1) == 2);
+    assert(list.get(2) == 3);
 }
 
 public Countable!T toCountable(T)(T[] items ...)
@@ -409,9 +406,6 @@ unittest
 public class Dictionary(K, V) : Map!(K, V)
 {
     private V[K] _aa;
-
-    // For compatibility with std.container and similar.
-    alias _aa this;
 
     public final int opApply(scope int delegate(ref Tuple!(K, V)) dg)
     {
@@ -572,7 +566,7 @@ unittest
 
     dict.remove(2);
 
-    assert(dict[1] == "a");
-    assert(dict[3] == "c");
+    assert(dict.get(1) == "a");
+    assert(dict.get(3) == "c");
     assert(dict.count == 2);
 }
