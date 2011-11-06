@@ -40,6 +40,20 @@ public interface Indexable(T) : Collection!T
 
 public interface Map(K, V) : Collection!(Tuple!(K, V))
 {
+    public override void add(Tuple!(K, V) item)
+    in
+    {
+        static if (isNullable!K)
+            assert(item.x);
+    }
+
+    public override void remove(Tuple!(K, V) item)
+    in
+    {
+        static if (isNullable!K)
+            assert(item.x);
+    }
+
     public void add(K key, V value)
     in
     {
@@ -48,6 +62,20 @@ public interface Map(K, V) : Collection!(Tuple!(K, V))
     }
 
     public void remove(K key)
+    in
+    {
+        static if (isNullable!K)
+            assert(key);
+    }
+
+    public V get(K key)
+    in
+    {
+        static if (isNullable!K)
+            assert(key);
+    }
+
+    public void set(K key, V value)
     in
     {
         static if (isNullable!K)
@@ -465,6 +493,16 @@ public class Dictionary(K, V) : Map!(K, V)
         onRemove(key);
 
         _aa.remove(key);
+    }
+
+    public final V get(K key)
+    {
+        return _aa[key];
+    }
+
+    public void set(K key, V value)
+    {
+        _aa[key] = value;
     }
 
     public final Iterable!K keys()
