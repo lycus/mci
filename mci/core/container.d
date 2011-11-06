@@ -31,6 +31,13 @@ public interface Collection(T) : Countable!T
     public void clear();
 }
 
+public interface Indexable(T) : Collection!T
+{
+    public T get(size_t index);
+
+    public void set(size_t index, T item);
+}
+
 public interface Map(K, V) : Collection!(Tuple!(K, V))
 {
     public void add(K key, V value)
@@ -139,7 +146,7 @@ unittest
     assert(!contains(list, 1));
 }
 
-public class List(T) : Collection!T
+public class List(T) : Indexable!T
 {
     private T[] _array;
 
@@ -220,6 +227,11 @@ public class List(T) : Collection!T
     public final T get(size_t index)
     {
         return _array[index];
+    }
+
+    public final void set(size_t index, T item)
+    {
+        _array[index] = item;
     }
 
     protected void onAdd(T item)
