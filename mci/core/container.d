@@ -17,11 +17,7 @@ public interface Iterable(T)
 
 public interface Countable(T) : Iterable!T
 {
-    @property public size_t count()
-    out (result)
-    {
-        assert(result >= 0);
-    }
+    @property public size_t count();
 
     @property public bool empty();
 }
