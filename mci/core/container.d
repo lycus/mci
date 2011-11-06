@@ -176,6 +176,17 @@ public class List(T) : Collection!T
         return 0;
     }
 
+    public override bool opEquals(Object o)
+    {
+        if (this is o)
+            return true;
+
+        if (auto list = cast(List!T)o)
+            return _array == list._array;
+
+        return false;
+    }
+
     @property public final size_t count()
     {
         return _array.length;
@@ -394,6 +405,17 @@ public class Dictionary(K, V) : Map!(K, V)
         }
 
         return 0;
+    }
+
+    public override bool opEquals(Object o)
+    {
+        if (this is o)
+            return true;
+
+        if (auto dict = cast(Dictionary!(K, V))o)
+            return _aa == dict._aa;
+
+        return false;
     }
 
     @property public final size_t count()
