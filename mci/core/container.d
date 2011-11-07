@@ -24,6 +24,8 @@ public interface Countable(T) : Iterable!T
 
 public interface Collection(T) : Countable!T
 {
+    public T* opBinaryRight(string op : "in")(T item);
+
     public void add(T item);
 
     public void remove(T item);
@@ -35,11 +37,18 @@ public interface Indexable(T) : Collection!T
 {
     public T opIndex(size_t index);
 
-    public void opIndexAssign(T item, size_t index);
+    public T opIndexAssign(T item, size_t index);
 }
 
 public interface Map(K, V) : Collection!(Tuple!(K, V))
 {
+    public V* opBinaryRight(string op : "in")(K key)
+    in
+    {
+        static if (isNullable!K)
+            assert(key);
+    }
+
     public V opIndex(K key)
     in
     {
@@ -47,7 +56,7 @@ public interface Map(K, V) : Collection!(Tuple!(K, V))
             assert(key);
     }
 
-    public void opIndexAssign(V value, K key)
+    public V opIndexAssign(V value, K key)
     in
     {
         static if (isNullable!K)
@@ -82,9 +91,9 @@ public interface Map(K, V) : Collection!(Tuple!(K, V))
             assert(key);
     }
 
-    public Iterable!K keys();
+    public Countable!K keys();
 
-    public Iterable!V values();
+    public Countable!V values();
 }
 
 public void addRange(T, V)(Collection!T col, V values)
@@ -204,14 +213,23 @@ public class List(T) : Indexable!T
         return 0;
     }
 
+    public final T* opBinaryRight(string op : "in")(T item)
+    {
+        foreach (obj; _array)
+            if (obj == item)
+                return &obj;
+
+        return null;
+    }
+
     public final T opIndex(size_t index)
     {
         return _array[index];
     }
 
-    public final void opIndexAssign(T item, size_t index)
+    public final T opIndexAssign(T item, size_t index)
     {
-        _array[index] = item;
+        return _array[index] = item;
     }
 
     public final override bool opEquals(Object o)
@@ -442,9 +460,9 @@ public class Dictionary(K, V) : Map!(K, V)
         return _aa[key];
     }
 
-    public void opIndexAssign(V value, K key)
+    public V opIndexAssign(V value, K key)
     {
-        _aa[key] = value;
+        return _aa[key] = value;
     }
 
     public override bool opEquals(Object o)
@@ -456,6 +474,11 @@ public class Dictionary(K, V) : Map!(K, V)
             return _aa == dict._aa;
 
         return false;
+    }
+
+    public final V* opBinaryRight(string op : "in")(K key)
+    {
+        return key in _aa;
     }
 
     @property public final size_t count()
@@ -499,7 +522,7 @@ public class Dictionary(K, V) : Map!(K, V)
         _aa.remove(key);
     }
 
-    public final Iterable!K keys()
+    public final Countable!K keys()
     {
         auto arr = new List!K();
 
@@ -509,7 +532,7 @@ public class Dictionary(K, V) : Map!(K, V)
         return arr;
     }
 
-    public final Iterable!V values()
+    public final Countable!V values()
     {
         auto arr = new List!V();
 
