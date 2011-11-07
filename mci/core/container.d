@@ -33,13 +33,27 @@ public interface Collection(T) : Countable!T
 
 public interface Indexable(T) : Collection!T
 {
-    public T get(size_t index);
+    public T opIndex(size_t index);
 
-    public void set(size_t index, T item);
+    public void opIndexAssign(T item, size_t index);
 }
 
 public interface Map(K, V) : Collection!(Tuple!(K, V))
 {
+    public V opIndex(K key)
+    in
+    {
+        static if (isNullable!K)
+            assert(key);
+    }
+
+    public void opIndexAssign(V value, K key)
+    in
+    {
+        static if (isNullable!K)
+            assert(key);
+    }
+
     public override void add(Tuple!(K, V) item)
     in
     {
@@ -62,20 +76,6 @@ public interface Map(K, V) : Collection!(Tuple!(K, V))
     }
 
     public void remove(K key)
-    in
-    {
-        static if (isNullable!K)
-            assert(key);
-    }
-
-    public V get(K key)
-    in
-    {
-        static if (isNullable!K)
-            assert(key);
-    }
-
-    public void set(K key, V value)
     in
     {
         static if (isNullable!K)
@@ -106,9 +106,9 @@ unittest
 
     addRange(list, [1, 2, 3]);
 
-    assert(list.get(0) == 1);
-    assert(list.get(1) == 2);
-    assert(list.get(2) == 3);
+    assert(list[0] == 1);
+    assert(list[1] == 2);
+    assert(list[2] == 3);
     assert(list.count == 3);
 }
 
@@ -132,8 +132,8 @@ unittest
     addRange(list, [1, 2, 3, 4, 5, 6]);
     removeRange(list, [2, 3, 4, 5]);
 
-    assert(list.get(0) == 1);
-    assert(list.get(1) == 6);
+    assert(list[0] == 1);
+    assert(list[1] == 6);
     assert(list.count == 2);
 }
 
@@ -204,7 +204,17 @@ public class List(T) : Indexable!T
         return 0;
     }
 
-    public override bool opEquals(Object o)
+    public final T opIndex(size_t index)
+    {
+        return _array[index];
+    }
+
+    public final void opIndexAssign(T item, size_t index)
+    {
+        _array[index] = item;
+    }
+
+    public final override bool opEquals(Object o)
     {
         if (this is o)
             return true;
@@ -247,16 +257,6 @@ public class List(T) : Indexable!T
         onClear();
 
         _array.clear();
-    }
-
-    public final T get(size_t index)
-    {
-        return _array[index];
-    }
-
-    public final void set(size_t index, T item)
-    {
-        _array[index] = item;
     }
 
     protected void onAdd(T item)
@@ -305,8 +305,8 @@ unittest
 
     list.remove(2);
 
-    assert(list.get(0) == 1);
-    assert(list.get(1) == 3);
+    assert(list[0] == 1);
+    assert(list[1] == 3);
 }
 
 unittest
@@ -336,9 +336,9 @@ unittest
 {
     auto list = toList(1, 2, 3);
 
-    assert(list.get(0) == 1);
-    assert(list.get(1) == 2);
-    assert(list.get(2) == 3);
+    assert(list[0] == 1);
+    assert(list[1] == 2);
+    assert(list[2] == 3);
 }
 
 public Countable!T toCountable(T)(T[] items ...)
@@ -437,6 +437,16 @@ public class Dictionary(K, V) : Map!(K, V)
         return 0;
     }
 
+    public V opIndex(K key)
+    {
+        return _aa[key];
+    }
+
+    public void opIndexAssign(V value, K key)
+    {
+        _aa[key] = value;
+    }
+
     public override bool opEquals(Object o)
     {
         if (this is o)
@@ -487,16 +497,6 @@ public class Dictionary(K, V) : Map!(K, V)
         onRemove(key);
 
         _aa.remove(key);
-    }
-
-    public final V get(K key)
-    {
-        return _aa[key];
-    }
-
-    public void set(K key, V value)
-    {
-        _aa[key] = value;
     }
 
     public final Iterable!K keys()
@@ -566,7 +566,7 @@ unittest
 
     dict.remove(2);
 
-    assert(dict.get(1) == "a");
-    assert(dict.get(3) == "c");
+    assert(dict[1] == "a");
+    assert(dict[3] == "c");
     assert(dict.count == 2);
 }

@@ -244,8 +244,8 @@ public final class MemoryTokenStream : TokenStream
     {
         assert(stream);
         assert(stream.count >= 2);
-        assert(stream.get(0).type == TokenType.begin);
-        assert(stream.get(stream.count - 1).type == TokenType.end);
+        assert(stream[0].type == TokenType.begin);
+        assert(stream[stream.count - 1].type == TokenType.end);
     }
     body
     {
@@ -254,17 +254,17 @@ public final class MemoryTokenStream : TokenStream
 
     @property public Token current()
     {
-        return _stream.get(_position);
+        return _stream[_position];
     }
 
     @property public Token previous()
     {
-        return _stream.get(_position - 1);
+        return _stream[_position - 1];
     }
 
     @property public Token next()
     {
-        return _stream.get(_position + 1);
+        return _stream[_position + 1];
     }
 
     @property public bool done()
@@ -274,12 +274,12 @@ public final class MemoryTokenStream : TokenStream
 
     public Token movePrevious()
     {
-        return _stream.get(--_position);
+        return _stream[--_position];
     }
 
     public Token moveNext()
     {
-        return _stream.get(++_position);
+        return _stream[++_position];
     }
 
     public void reset()
