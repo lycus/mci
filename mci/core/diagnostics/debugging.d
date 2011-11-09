@@ -1,6 +1,7 @@
 module mci.core.diagnostics.debugging;
 
-import mci.core.nullable;
+import mci.core.common,
+       mci.core.nullable;
 
 public final class SourceLocation
 {
@@ -41,11 +42,11 @@ public final class SourceLocation
 
 public final class DebuggingInfo
 {
-    private string _documentName;
+    private istring _documentName;
     private SourceLocation _location;
-    private string _languageName;
+    private istring _languageName;
 
-    public this(string documentName, SourceLocation location, string languageName)
+    public this(istring documentName, SourceLocation location, istring languageName)
     in
     {
         assert(documentName);
@@ -59,7 +60,7 @@ public final class DebuggingInfo
         _languageName = languageName;
     }
 
-    @property public string documentName()
+    @property public istring documentName()
     {
         return _documentName;
     }
@@ -69,7 +70,7 @@ public final class DebuggingInfo
         return _location;
     }
 
-    @property public string languageName()
+    @property public istring languageName()
     {
         return _languageName;
     }
