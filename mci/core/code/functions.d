@@ -96,7 +96,7 @@ public final class Function
     }
     body
     {
-        module_ = module_;
+        _module = module_;
         _name = name;
         _returnType = returnType;
         _attributes = attributes;
@@ -104,27 +104,13 @@ public final class Function
         _parameters = new typeof(_parameters)();
         _blocks = new typeof(_blocks)();
         _registers = new typeof(_registers)();
+
+        (cast(NoNullList!Function)module_.functions).add(this);
     }
 
     @property public Module module_()
     {
         return _module;
-    }
-
-    @property package void module_(Module module_)
-    in
-    {
-        assert(module_);
-    }
-    body
-    {
-        if (module_ !is _module)
-        {
-            (cast(NoNullList!Function)_module.functions).remove(this);
-            (cast(NoNullList!Function)module_.functions).add(this);
-        }
-
-        _module = module_;
     }
 
     @property public istring name()

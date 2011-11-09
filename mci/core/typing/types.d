@@ -46,12 +46,14 @@ public final class StructureType : Type
     }
     body
     {
-        module_ = module_;
+        _module = module_;
         _name = name;
         _attributes = attributes;
         _layout = layout;
         _fields = fields;
         _packingSize = packingSize;
+
+        (cast(NoNullList!StructureType)module_.types).add(this);
     }
 
     @property public TypeAttributes attributes()
@@ -67,22 +69,6 @@ public final class StructureType : Type
     @property public Module module_()
     {
         return _module;
-    }
-
-    @property package void module_(Module module_)
-    in
-    {
-        assert(module_);
-    }
-    body
-    {
-        if (module_ !is _module)
-        {
-            (cast(NoNullList!StructureType)_module.types).remove(this);
-            (cast(NoNullList!StructureType)module_.types).add(this);
-        }
-
-        _module = module_;
     }
 
     @property public Nullable!uint packingSize()
