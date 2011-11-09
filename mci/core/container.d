@@ -20,6 +20,8 @@ public interface Countable(T) : Iterable!T
     @property public size_t count();
 
     @property public bool empty();
+
+    public Countable!T duplicate();
 }
 
 public interface Collection(T) : Countable!T
@@ -253,6 +255,14 @@ public class List(T) : Indexable!T
         return _array.empty;
     }
 
+    public List!T duplicate()
+    {
+        auto l = new List!T();
+        l._array = _array.dup;
+
+        return l;
+    }
+
     public final void add(T item)
     {
         onAdd(item);
@@ -385,6 +395,14 @@ unittest
 
 public class NoNullList(T) : List!T
 {
+    public override NoNullList!T duplicate()
+    {
+        auto l = new NoNullList!T();
+        l._array = _array;
+
+        return l;
+    }
+
     protected override void onAdd(T item)
     {
         static if (isNullable!T)
@@ -489,6 +507,14 @@ public class Dictionary(K, V) : Map!(K, V)
     @property public final bool empty()
     {
         return _aa.length == 0;
+    }
+
+    public Dictionary!(K, V) duplicate()
+    {
+        auto d = new Dictionary!(K, V)();
+        d._aa = _aa.dup;
+
+        return d;
     }
 
     public final void add(Tuple!(K, V) item)
