@@ -1,6 +1,6 @@
 module mci.core.tuple;
 
-public final struct Tuple(X)
+public struct Tuple(X)
 {
     private X _x;
 
@@ -15,7 +15,7 @@ public final struct Tuple(X)
     }
 }
 
-public final struct Tuple(X, Y)
+public struct Tuple(X, Y)
 {
     private X _x;
     private Y _y;
@@ -37,7 +37,7 @@ public final struct Tuple(X, Y)
     }
 }
 
-public final struct Tuple(X, Y, Z)
+public struct Tuple(X, Y, Z)
 {
     private X _x;
     private Y _y;
