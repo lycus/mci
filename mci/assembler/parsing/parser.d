@@ -25,7 +25,7 @@ public final class CompilationUnit
     }
     body
     {
-        _nodes = nodes;
+        _nodes = nodes.duplicate();
     }
 
     @property public Countable!DeclarationNode nodes()

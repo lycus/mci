@@ -1,6 +1,7 @@
 module mci.assembler.parsing.tokens;
 
-import mci.core.container,
+import mci.core.common,
+       mci.core.container,
        mci.core.code.opcodes,
        mci.core.diagnostics.debugging;
 
@@ -177,7 +178,7 @@ body
 public final class Token
 {
     private TokenType _type;
-    private string _value;
+    private istring _value;
     private SourceLocation _location;
 
     public this(TokenType type, string value, SourceLocation location)
@@ -206,7 +207,7 @@ public final class Token
         return _type;
     }
 
-    @property public string value()
+    @property public istring value()
     {
         return _value;
     }
@@ -249,7 +250,7 @@ public final class MemoryTokenStream : TokenStream
     }
     body
     {
-        _stream = stream;
+        _stream = stream.duplicate();
     }
 
     @property public Token current()

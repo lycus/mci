@@ -5,6 +5,7 @@ import std.ascii,
        std.uni,
        std.utf,
        mci.core.io,
+       mci.core.common,
        mci.core.container,
        mci.core.diagnostics.debugging,
        mci.assembler.exception,
@@ -25,7 +26,7 @@ public final class Source
     }
     body
     {
-        initialize(removeByteOrderMark(source));
+        initialize(source);
     }
 
     public this(BinaryReader reader, size_t length)
@@ -35,15 +36,16 @@ public final class Source
     }
     body
     {
-        initialize(removeByteOrderMark(reader.readString(length)));
+        initialize(reader.readString(length));
     }
 
     private void initialize(string source)
     {
+        source = removeByteOrderMark(source);
         validate(source);
 
         _source = source;
-        _location = new SourceLocation(1, 0);
+        _location = new typeof(_location)(1, 0);
     }
 
     @property public dchar current()
@@ -73,7 +75,7 @@ public final class Source
         else
             column++;
 
-        _location = new SourceLocation(line, column);
+        _location = new typeof(_location)(line, column);
 
         return _current = decode(_source, _position);
     }
@@ -92,7 +94,7 @@ public final class Source
     {
         _position = 0;
         _current = dchar.init;
-        _location = new SourceLocation(1, 1);
+        _location = new typeof(_location)(1, 1);
     }
 }
 
