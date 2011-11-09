@@ -1,6 +1,7 @@
 module mci.assembler.parsing.ast;
 
 import std.variant,
+       mci.core.common,
        mci.core.container,
        mci.core.nullable,
        mci.core.tuple,
@@ -23,7 +24,7 @@ public abstract class Node
     body
     {
         _location = location;
-        _tags = new Dictionary!(string, Object)();
+        _tags = new typeof(_tags)();
     }
 
     @property public final SourceLocation location()
@@ -67,7 +68,7 @@ public class SimpleNameNode : Node
         _name = name;
     }
 
-    @property public string name()
+    @property public final istring name()
     {
         return _name;
     }
@@ -180,7 +181,7 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
         super(location);
 
         _returnType = returnType;
-        _parameterTypes = parameterTypes;
+        _parameterTypes = parameterTypes.duplicate();
     }
 
     @property public final TypeReferenceNode returnType()
@@ -279,7 +280,7 @@ public class FunctionReferenceNode : Node
         _moduleName = moduleName;
         _name = name;
         _returnType = returnType;
-        _parameterTypes = parameterTypes;
+        _parameterTypes = parameterTypes.duplicate();
     }
 
     @property public final ModuleReferenceNode moduleName()
@@ -292,12 +293,12 @@ public class FunctionReferenceNode : Node
         return _name;
     }
 
-    @property public TypeReferenceNode returnType()
+    @property public final TypeReferenceNode returnType()
     {
         return _returnType;
     }
 
-    @property public Countable!TypeReferenceNode parameterTypes()
+    @property public final Countable!TypeReferenceNode parameterTypes()
     {
         return _parameterTypes;
     }
@@ -327,7 +328,7 @@ public class TypeDeclarationNode : DeclarationNode
         _attributes = attributes;
         _layout = layout;
         _packingSize = packingSize;
-        _fields = fields;
+        _fields = fields.duplicate();
     }
 
     @property public final SimpleNameNode name()
@@ -462,10 +463,10 @@ public class FunctionDeclarationNode : DeclarationNode
         _name = name;
         _attributes = attributes;
         _callingConvention = callingConvention;
-        _parameters = parameters;
+        _parameters = parameters.duplicate();
         _returnType = returnType;
-        _registers = registers;
-        _blocks = blocks;
+        _registers = registers.duplicate();
+        _blocks = blocks.duplicate();
     }
 
     @property public final SimpleNameNode name()
@@ -552,7 +553,7 @@ public class BasicBlockDeclarationNode : Node
         super(location);
 
         _name = name;
-        _instructions = instructions;
+        _instructions = instructions.duplicate();
     }
 
     @property public final Countable!InstructionNode instructions()
@@ -626,7 +627,7 @@ public class RegisterSelectorNode : Node
     {
         super(location);
 
-        _registers = registers;
+        _registers = registers.duplicate();
     }
 
     @property public final Countable!RegisterReferenceNode registers()
@@ -652,7 +653,7 @@ public class LiteralValueNode : Node
         _value = value;
     }
 
-    @property public final string value()
+    @property public final istring value()
     {
         return _value;
     }
@@ -672,10 +673,10 @@ public class ByteArrayLiteralNode : Node
     {
         super(location);
 
-        _values = values;
+        _values = values.duplicate();
     }
 
-    @property public final NoNullList!LiteralValueNode values()
+    @property public final Countable!LiteralValueNode values()
     {
         return _values;
     }
@@ -734,6 +735,11 @@ public class InstructionNode : Node
         super(location);
 
         _opCode = opCode;
+        _target = target;
+        _source1 = source1;
+        _source2 = source2;
         _operand = operand;
     }
+
+    // TODO: Expose properties.
 }
