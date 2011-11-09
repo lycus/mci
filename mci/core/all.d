@@ -21,6 +21,7 @@ public import mci.core.tree.base;
 public import mci.core.tree.expressions;
 public import mci.core.tree.statements;
 
+public import mci.core.typing.cache;
 public import mci.core.typing.core;
 public import mci.core.typing.members;
 public import mci.core.typing.types;

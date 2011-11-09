@@ -287,6 +287,7 @@
    <File path="tree\statements.d" />
   </Folder>
   <Folder name="typing">
+   <File path="typing\cache.d" />
    <File path="typing\core.d" />
    <File path="typing\members.d" />
    <File path="typing\types.d" />

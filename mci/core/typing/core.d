@@ -33,6 +33,7 @@ private mixin template DefineCoreType(string type, string name)
           "}");
 }
 
+// Remember to keep these in sync with TypeCache's constructor.
 mixin DefineCoreType!("Unit", "unit");
 mixin DefineCoreType!("Int8", "int8");
 mixin DefineCoreType!("UInt8", "uint8");

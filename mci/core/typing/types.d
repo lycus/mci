@@ -33,8 +33,9 @@ public final class StructureType : Type
     private Nullable!uint _packingSize;
     private NoNullList!Field _fields;
 
-    public this(Module module_, string name, NoNullList!Field fields, TypeAttributes attributes = TypeAttributes.none,
-                TypeLayout layout = TypeLayout.automatic, Nullable!uint packingSize = Nullable!uint())
+    package this(Module module_, string name, NoNullList!Field fields = new NoNullList!Field(),
+                 TypeAttributes attributes = TypeAttributes.none, TypeLayout layout = TypeLayout.automatic,
+                 Nullable!uint packingSize = Nullable!uint())
     in
     {
         assert(module_);
@@ -91,7 +92,7 @@ public final class PointerType : Type
 {
     private Type _elementType;
 
-    public this(Type elementType)
+    package this(Type elementType)
     in
     {
         assert(elementType);
@@ -117,7 +118,7 @@ public final class FunctionPointerType : Type
     private Type _returnType;
     private NoNullList!Type _parameterTypes;
 
-    public this(Type returnType, NoNullList!Type parameterTypes)
+    package this(Type returnType, NoNullList!Type parameterTypes)
     in
     {
         assert(returnType);
@@ -158,7 +159,7 @@ public final class FunctionPointerType : Type
 unittest
 {
     auto mod = new Module("foo");
-    auto st = new StructureType(mod, "bar", new NoNullList!Field());
+    auto st = new StructureType(mod, "bar");
     auto ptr = new PointerType(st);
 
     assert(ptr.name == "bar*");
@@ -167,7 +168,7 @@ unittest
 unittest
 {
     auto mod = new Module("foo");
-    auto st = new StructureType(mod, "foo_bar_baz", new NoNullList!Field());
+    auto st = new StructureType(mod, "foo_bar_baz");
     auto ptr = new PointerType(st);
 
     assert(ptr.name == "foo_bar_baz*");
@@ -176,8 +177,8 @@ unittest
 unittest
 {
     auto mod = new Module("foo");
-    auto st1 = new StructureType(mod, "bar", new NoNullList!Field());
-    auto st2 = new StructureType(mod, "baz", new NoNullList!Field());
+    auto st1 = new StructureType(mod, "bar");
+    auto st2 = new StructureType(mod, "baz");
 
     auto params = new NoNullList!Type();
     params.add(st2);

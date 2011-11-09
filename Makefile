@@ -79,6 +79,7 @@ MCI_CORE_SOURCES = \
 	mci/core/tree/base.d \
 	mci/core/tree/expressions.d \
 	mci/core/tree/statements.d \
+	mci/core/typing/cache.d \
 	mci/core/typing/core.d \
 	mci/core/typing/members.d \
 	mci/core/typing/types.d
