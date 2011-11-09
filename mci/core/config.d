@@ -170,7 +170,7 @@ else version (Posix)
     }
     else
     {
-        static assert(false, "Unknown Posix operating system.");
+        static assert(false, "Unknown POSIX operating system.");
     }
 
     public enum bool isWindows = false;
