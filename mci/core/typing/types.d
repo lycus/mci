@@ -1,13 +1,14 @@
 module mci.core.typing.types;
 
-import mci.core.container,
+import mci.core.common,
+       mci.core.container,
        mci.core.nullable,
        mci.core.code.modules,
        mci.core.typing.members;
 
 public abstract class Type
 {
-    @property public abstract string name();
+    @property public abstract istring name();
 }
 
 public enum TypeAttributes : ubyte
@@ -25,24 +26,42 @@ public enum TypeLayout : ubyte
 
 public final class StructureType : Type
 {
-    public TypeAttributes attributes;
-    public TypeLayout layout;
+    private TypeAttributes _attributes;
+    private TypeLayout _layout;
     private Module _module;
     private string _name;
     private Nullable!uint _packingSize;
     private NoNullList!Field _fields;
 
-    public this(Module module_, string name)
+    public this(Module module_, string name, NoNullList!Field fields, TypeAttributes attributes = TypeAttributes.none,
+                TypeLayout layout = TypeLayout.automatic, Nullable!uint packingSize = Nullable!uint())
     in
     {
         assert(module_);
         assert(name);
+        assert(fields);
+
+        if (packingSize.hasValue)
+            assert(packingSize.value);
     }
     body
     {
         module_ = module_;
         _name = name;
-        _fields = new NoNullList!Field();
+        _attributes = attributes;
+        _layout = layout;
+        _fields = fields;
+        _packingSize = packingSize;
+    }
+
+    @property public TypeAttributes attributes()
+    {
+        return _attributes;
+    }
+
+    @property public TypeLayout layout()
+    {
+        return _layout;
     }
 
     @property public Module module_()
@@ -71,34 +90,14 @@ public final class StructureType : Type
         return _packingSize;
     }
 
-    @property public void packingSize(Nullable!uint packingSize)
-    in
-    {
-        assert(!packingSize.hasValue || packingSize.value);
-    }
-    body
-    {
-        _packingSize = packingSize;
-    }
-
-    @property public NoNullList!Field fields()
+    @property public Countable!Field fields()
     {
         return _fields;
     }
 
-    @property public override string name()
+    @property public override istring name()
     {
         return _name;
-    }
-
-    @property public void name(string name)
-    in
-    {
-        assert(name);
-    }
-    body
-    {
-        _name = name;
     }
 }
 
@@ -121,17 +120,7 @@ public final class PointerType : Type
         return _elementType;
     }
 
-    @property public void elementType(Type elementType)
-    in
-    {
-        assert(elementType);
-    }
-    body
-    {
-        _elementType = elementType;
-    }
-
-    @property public override string name()
+    @property public override istring name()
     {
         return elementType.name ~ "*";
     }
@@ -142,15 +131,16 @@ public final class FunctionPointerType : Type
     private Type _returnType;
     private NoNullList!Type _parameterTypes;
 
-    public this(Type returnType)
+    public this(NoNullList!Type parameterTypes, Type returnType)
     in
     {
+        assert(parameterTypes);
         assert(returnType);
     }
     body
     {
+        _parameterTypes = parameterTypes;
         _returnType = returnType;
-        _parameterTypes = new NoNullList!Type();
     }
 
     @property public Type returnType()
@@ -158,22 +148,12 @@ public final class FunctionPointerType : Type
         return _returnType;
     }
 
-    @property public void returnType(Type returnType)
-    in
-    {
-        assert(returnType);
-    }
-    body
-    {
-        _returnType = returnType;
-    }
-
-    @property public NoNullList!Type parameterTypes()
+    @property public Countable!Type parameterTypes()
     {
         return _parameterTypes;
     }
 
-    @property public override string name()
+    @property public override istring name()
     {
         auto s = _returnType.name ~ " *(";
 
@@ -192,7 +172,7 @@ public final class FunctionPointerType : Type
 unittest
 {
     auto mod = new Module("foo");
-    auto st = new StructureType(mod, "bar");
+    auto st = new StructureType(mod, "bar", new NoNullList!Field());
     auto ptr = new PointerType(st);
 
     assert(ptr.name == "bar*");
@@ -201,7 +181,7 @@ unittest
 unittest
 {
     auto mod = new Module("foo");
-    auto st = new StructureType(mod, "foo_bar_baz");
+    auto st = new StructureType(mod, "foo_bar_baz", new NoNullList!Field());
     auto ptr = new PointerType(st);
 
     assert(ptr.name == "foo_bar_baz*");
@@ -210,13 +190,14 @@ unittest
 unittest
 {
     auto mod = new Module("foo");
-    auto st1 = new StructureType(mod, "bar");
-    auto st2 = new StructureType(mod, "baz");
+    auto st1 = new StructureType(mod, "bar", new NoNullList!Field());
+    auto st2 = new StructureType(mod, "baz", new NoNullList!Field());
 
-    auto fpt = new FunctionPointerType(st1);
+    auto params = new NoNullList!Type();
+    params.add(st2);
+    params.add(st1);
 
-    fpt.parameterTypes.add(st2);
-    fpt.parameterTypes.add(st1);
+    auto fpt = new FunctionPointerType(params, st1);
 
     assert(fpt.name == "bar *(baz, bar)");
 }

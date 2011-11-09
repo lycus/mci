@@ -1,6 +1,6 @@
 module mci.core.typing.members;
 
-import std.variant,
+import mci.core.common,
        mci.core.container,
        mci.core.nullable,
        mci.core.typing.types;
@@ -17,9 +17,10 @@ public final class Field
     private string _name;
     private Type _type;
     private Nullable!uint _offset;
-    public FieldAttributes attributes;
+    private FieldAttributes _attributes;
 
-    public this(string name, Type type)
+    public this(string name, Type type, FieldAttributes attributes = FieldAttributes.none,
+                Nullable!uint offset = Nullable!uint())
     in
     {
         assert(name);
@@ -29,21 +30,13 @@ public final class Field
     {
         _name = name;
         _type = type;
+        _attributes = attributes;
+        _offset = offset;
     }
 
-    @property public string name()
+    @property public istring name()
     {
         return _name;
-    }
-
-    @property public void name(string name)
-    in
-    {
-        assert(name);
-    }
-    body
-    {
-        _name = name;
     }
 
     @property public Type type()
@@ -51,23 +44,13 @@ public final class Field
         return _type;
     }
 
-    @property public void type(Type type)
-    in
+    @property public FieldAttributes attributes()
     {
-        assert(type);
-    }
-    body
-    {
-        _type = type;
+        return _attributes;
     }
 
     @property public Nullable!uint offset()
     {
         return _offset;
-    }
-
-    @property public void offset(Nullable!uint offset)
-    {
-        _offset = offset;
     }
 }
