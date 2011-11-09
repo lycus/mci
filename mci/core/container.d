@@ -439,6 +439,16 @@ unittest
     list.add("baz");
 }
 
+public NoNullList!T toNoNullList(T)(Iterable!T iter)
+{
+    auto l = new NoNullList!T();
+
+    foreach (obj; iter)
+        l.add(obj);
+
+    return l;
+}
+
 public class Dictionary(K, V) : Map!(K, V)
 {
     private V[K] _aa;
