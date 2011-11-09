@@ -1,6 +1,7 @@
 module mci.core.code.functions;
 
-import mci.core.container,
+import mci.core.common,
+       mci.core.container,
        mci.core.code.instructions,
        mci.core.code.modules,
        mci.core.tree.statements,
@@ -19,22 +20,12 @@ public final class BasicBlock
     body
     {
         _name = name;
-        _instructions = new NoNullList!Instruction();
+        _instructions = new typeof(_instructions)();
     }
 
-    @property public string name()
+    @property public istring name()
     {
         return _name;
-    }
-
-    @property public void name(string name)
-    in
-    {
-        assert(name);
-    }
-    body
-    {
-        _name = name;
     }
 
     @property public NoNullList!Instruction instructions()
@@ -63,16 +54,6 @@ public final class Parameter
     {
         return _register;
     }
-
-    @property public void register(Register register)
-    in
-    {
-        assert(register);
-    }
-    body
-    {
-        _register = register;
-    }
 }
 
 public enum CallingConvention : ubyte
@@ -96,8 +77,8 @@ public enum FunctionAttributes : ubyte
 
 public final class Function
 {
-    public FunctionAttributes attributes;
-    public CallingConvention callingConvention;
+    private FunctionAttributes _attributes;
+    private CallingConvention _callingConvention;
     private Module _module;
     private string _name;
     private NoNullList!Parameter _parameters;
@@ -105,7 +86,8 @@ public final class Function
     private NoNullList!BasicBlock _blocks;
     private NoNullList!Register _registers;
 
-    protected this(Module module_, string name, Type returnType)
+    protected this(Module module_, string name, Type returnType, FunctionAttributes attributes,
+                   CallingConvention callingConvention)
     in
     {
         assert(module_);
@@ -117,9 +99,11 @@ public final class Function
         module_ = module_;
         _name = name;
         _returnType = returnType;
-        _parameters = new NoNullList!Parameter();
-        _blocks = new NoNullList!BasicBlock();
-        _registers = new NoNullList!Register();
+        _attributes = attributes;
+        _callingConvention = callingConvention;
+        _parameters = new typeof(_parameters)();
+        _blocks = new typeof(_blocks)();
+        _registers = new typeof(_registers)();
     }
 
     @property public Module module_()
@@ -143,19 +127,24 @@ public final class Function
         _module = module_;
     }
 
-    @property public string name()
+    @property public istring name()
     {
         return _name;
     }
 
-    @property public void name(string name)
-    in
+    @property public Type returnType()
     {
-        assert(name);
+        return _returnType;
     }
-    body
+
+    @property public FunctionAttributes attributes()
     {
-        _name = name;
+        return _attributes;
+    }
+
+    @property public CallingConvention callingConvention()
+    {
+        return _callingConvention;
     }
 
     @property public NoNullList!Parameter parameters()

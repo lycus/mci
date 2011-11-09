@@ -18,23 +18,13 @@ public final class Module
     }
     body
     {
-        _functions = new NoNullList!Function();
-        _types = new NoNullList!StructureType();
+        _functions = new typeof(_functions)();
+        _types = new typeof(_types)();
     }
 
-    @property public string name()
+    @property public istring name()
     {
         return _name;
-    }
-
-    @property public void name(string name)
-    in
-    {
-        assert(name);
-    }
-    body
-    {
-        _name = name;
     }
 
     @property public Countable!Function functions()

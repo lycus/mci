@@ -1,6 +1,7 @@
 module mci.core.code.opcodes;
 
-import mci.core.container,
+import mci.core.common,
+       mci.core.container,
        mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.instructions,
@@ -38,7 +39,7 @@ public enum OperandType : ubyte
     selector,
 }
 
-public static TypeInfo operandToTypeInfo(OperandType operandType)
+public TypeInfo operandToTypeInfo(OperandType operandType)
 {
     final switch (operandType)
     {
@@ -109,7 +110,7 @@ public final class OpCode
         _hasTarget = hasTarget;
     }
 
-    @property public string name()
+    @property public istring name()
     {
         return _name;
     }
