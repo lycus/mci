@@ -457,7 +457,8 @@ public class Dictionary(K, V) : Map!(K, V)
     {
         foreach (k, v; _aa)
         {
-            auto status = dg(Tuple!(K, V)(k, v));
+            auto tup = tuple(k, v);
+            auto status = dg(tup);
 
             if (status != 0)
                 return status;
@@ -472,7 +473,8 @@ public class Dictionary(K, V) : Map!(K, V)
 
         foreach (k, v; _aa)
         {
-            auto status = dg(i, Tuple!(K, V)(k, v));
+            auto tup = tuple(k, v);
+            auto status = dg(i, tup);
 
             if (status != 0)
                 return status;
