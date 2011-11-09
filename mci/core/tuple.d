@@ -15,6 +15,11 @@ public struct Tuple(X)
     }
 }
 
+public Tuple!X tuple(X)(X x)
+{
+    return Tuple!X(x);
+}
+
 public struct Tuple(X, Y)
 {
     private X _x;
@@ -35,6 +40,11 @@ public struct Tuple(X, Y)
     {
         return _y;
     }
+}
+
+public Tuple!(X, Y) tuple(X, Y)(X x, Y y)
+{
+    return Tuple!(X, Y)(x, y);
 }
 
 public struct Tuple(X, Y, Z)
@@ -64,4 +74,9 @@ public struct Tuple(X, Y, Z)
     {
         return _z;
     }
+}
+
+public Tuple!(X, Y, Z) tuple(X, Y, Z)(X x, Y y, Z z)
+{
+    return Tuple!(X, Y, Z)(x, y, z);
 }
