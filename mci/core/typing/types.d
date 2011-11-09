@@ -131,16 +131,16 @@ public final class FunctionPointerType : Type
     private Type _returnType;
     private NoNullList!Type _parameterTypes;
 
-    public this(NoNullList!Type parameterTypes, Type returnType)
+    public this(Type returnType, NoNullList!Type parameterTypes)
     in
     {
-        assert(parameterTypes);
         assert(returnType);
+        assert(parameterTypes);
     }
     body
     {
-        _parameterTypes = parameterTypes;
         _returnType = returnType;
+        _parameterTypes = parameterTypes;
     }
 
     @property public Type returnType()
@@ -197,7 +197,7 @@ unittest
     params.add(st2);
     params.add(st1);
 
-    auto fpt = new FunctionPointerType(params, st1);
+    auto fpt = new FunctionPointerType(st1, params);
 
     assert(fpt.name == "bar *(baz, bar)");
 }
