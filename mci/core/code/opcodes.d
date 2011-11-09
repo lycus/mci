@@ -284,7 +284,7 @@ static this()
     opMemAddr = create("mem.addr", OpCodeType.normal, OperandType.none, 1, true);
     opFieldGet = create("field.get", OpCodeType.normal, OperandType.field, 1, true);
     opFieldSet = create("field.set", OpCodeType.normal, OperandType.field, 2, false);
-    opFieldAddr = create("field.addr", OpCodeType.normal, OperandType.field, 0, true);
+    opFieldAddr = create("field.addr", OpCodeType.normal, OperandType.field, 1, true);
     opFieldGGet = create("field.gget", OpCodeType.normal, OperandType.field, 0, true);
     opFieldGSet = create("field.gset", OpCodeType.normal, OperandType.field, 1, false);
     opFieldGAddr = create("field.gaddr", OpCodeType.normal, OperandType.field, 0, true);
