@@ -152,9 +152,6 @@ public bool contains(T)(Iterable!T iter, T value)
 in
 {
     assert(iter);
-
-    static if (isNullable!T)
-        assert(value);
 }
 body
 {
