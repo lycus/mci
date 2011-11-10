@@ -3,7 +3,7 @@ module mci.cli.main;
 import std.stdio,
        mci.cli.tool;
 
-public enum ExitCode : ubyte
+private enum ExitCode : ubyte
 {
     success = 0,
     error = 1,
