@@ -86,22 +86,24 @@ public final class Function
     private NoNullList!BasicBlock _blocks;
     private NoNullList!Register _registers;
 
-    protected this(Module module_, string name, Type returnType, FunctionAttributes attributes = FunctionAttributes.none,
+    protected this(Module module_, string name, Type returnType, NoNullList!Parameter parameters,
+                   FunctionAttributes attributes = FunctionAttributes.none,
                    CallingConvention callingConvention = CallingConvention.queueCall)
     in
     {
         assert(module_);
         assert(name);
         assert(returnType);
+        assert(parameters);
     }
     body
     {
         _module = module_;
         _name = name;
         _returnType = returnType;
+        _parameters = parameters.duplicate();
         _attributes = attributes;
         _callingConvention = callingConvention;
-        _parameters = new typeof(_parameters)();
         _blocks = new typeof(_blocks)();
         _registers = new typeof(_registers)();
 
@@ -133,7 +135,7 @@ public final class Function
         return _callingConvention;
     }
 
-    @property public NoNullList!Parameter parameters()
+    @property public Countable!Parameter parameters()
     {
         return _parameters;
     }
