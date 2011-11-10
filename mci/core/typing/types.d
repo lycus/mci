@@ -127,7 +127,7 @@ public final class FunctionPointerType : Type
     body
     {
         _returnType = returnType;
-        _parameterTypes = parameterTypes;
+        _parameterTypes = parameterTypes.duplicate();
     }
 
     @property public Type returnType()

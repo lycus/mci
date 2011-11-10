@@ -97,7 +97,7 @@ public final class TypeCache
     }
     body
     {
-        auto tup = tuple(returnType, parameterTypes);
+        auto tup = tuple(returnType, parameterTypes.duplicate());
 
         if (auto fpType = tup in _functionPointerTypes)
             return *fpType;
