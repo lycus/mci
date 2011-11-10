@@ -42,11 +42,11 @@ public final class SourceLocation
 
 public final class DebuggingInfo
 {
-    private istring _documentName;
+    private string _documentName;
     private SourceLocation _location;
-    private istring _languageName;
+    private string _languageName;
 
-    public this(istring documentName, SourceLocation location, istring languageName)
+    public this(string documentName, SourceLocation location, string languageName)
     in
     {
         assert(documentName);

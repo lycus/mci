@@ -76,7 +76,7 @@ public class BasicBlockEmitter
         return _block;
     }
 
-    private mixin template Emit(string OperandType)
+    private mixin template DefineEmit(string OperandType)
     {
         mixin("public final BasicBlockEmitter emitTarget(OpCode opCode, " ~ OperandType ~ " operand, Register source1," ~
               "                                          Register source2, Register target)" ~
@@ -118,24 +118,24 @@ public class BasicBlockEmitter
               "}");
     }
 
-    mixin Emit!"byte";
-    mixin Emit!"ubyte";
-    mixin Emit!"short";
-    mixin Emit!"ushort";
-    mixin Emit!"int";
-    mixin Emit!"uint";
-    mixin Emit!"long";
-    mixin Emit!"ulong";
-    mixin Emit!"float";
-    mixin Emit!"double";
-    mixin Emit!"Countable!ubyte";
-    mixin Emit!"BasicBlock";
-    mixin Emit!"Type";
-    mixin Emit!"StructureType";
-    mixin Emit!"Field";
-    mixin Emit!"Function";
-    mixin Emit!"FunctionPointerType";
-    mixin Emit!"Countable!Register";
+    mixin DefineEmit!"byte";
+    mixin DefineEmit!"ubyte";
+    mixin DefineEmit!"short";
+    mixin DefineEmit!"ushort";
+    mixin DefineEmit!"int";
+    mixin DefineEmit!"uint";
+    mixin DefineEmit!"long";
+    mixin DefineEmit!"ulong";
+    mixin DefineEmit!"float";
+    mixin DefineEmit!"double";
+    mixin DefineEmit!"Countable!ubyte";
+    mixin DefineEmit!"BasicBlock";
+    mixin DefineEmit!"Type";
+    mixin DefineEmit!"StructureType";
+    mixin DefineEmit!"Field";
+    mixin DefineEmit!"Function";
+    mixin DefineEmit!"FunctionPointerType";
+    mixin DefineEmit!"Countable!Register";
 
     public final BasicBlockEmitter emitTarget(OpCode opCode, Register source1, Register source2, Register target)
     {
