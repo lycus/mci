@@ -36,6 +36,27 @@ public final class Module
     {
         return _types;
     }
+
+    public Function createFunction(string name, Type returnType, NoNullList!Parameter parameters,
+                                   FunctionAttributes attributes = FunctionAttributes.none,
+                                   CallingConvention callingConvention = CallingConvention.queueCall)
+    in
+    {
+        assert(name);
+        assert(returnType);
+        assert(parameters);
+    }
+    body
+    {
+        foreach (func; _functions)
+            if (func.name == name)
+                assert(false);
+
+        auto func = new Function(this, name, returnType, parameters, attributes, callingConvention);
+        _functions.add(func);
+
+        return func;
+    }
 }
 
 unittest

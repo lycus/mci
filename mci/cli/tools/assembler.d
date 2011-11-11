@@ -36,19 +36,19 @@ public final class AssemblerTool : Tool
             }
             catch (LexerException ex)
             {
-                writefln("Lexer error at %s (%s%s): %s", file, ex.location.line,
+                writefln("Lexer error in %s (%s%s): %s", file, ex.location.line,
                          ex.location.column == 0 ? "" : ", " ~ to!string(ex.location.column), ex.msg);
                 return false;
             }
             catch (ParserException ex)
             {
-                writefln("Parser error at %s (%s%s): %s", file, ex.location.line,
+                writefln("Parser error in %s (%s%s): %s", file, ex.location.line,
                          ex.location.column == 0 ? "" : ", " ~ to!string(ex.location.column), ex.msg);
                 return false;
             }
             catch (AssemblerException ex)
             {
-                writefln("Assembler error at %s: %s", file, ex.msg);
+                writefln("Assembler error in %s: %s", file, ex.msg);
                 return false;
             }
         }

@@ -86,9 +86,9 @@ public final class Function
     private NoNullList!BasicBlock _blocks;
     private NoNullList!Register _registers;
 
-    protected this(Module module_, string name, Type returnType, NoNullList!Parameter parameters,
-                   FunctionAttributes attributes = FunctionAttributes.none,
-                   CallingConvention callingConvention = CallingConvention.queueCall)
+    package this(Module module_, string name, Type returnType, NoNullList!Parameter parameters,
+                 FunctionAttributes attributes = FunctionAttributes.none,
+                 CallingConvention callingConvention = CallingConvention.queueCall)
     in
     {
         assert(module_);
