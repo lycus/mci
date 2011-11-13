@@ -32,6 +32,7 @@ public final class StructureType : Type
     private string _name;
     private Nullable!uint _packingSize;
     private NoNullList!Field _fields;
+    private bool _isClosed;
 
     package this(Module module_, string name, TypeAttributes attributes = TypeAttributes.none,
                  TypeLayout layout = TypeLayout.automatic, Nullable!uint packingSize = Nullable!uint())
@@ -50,6 +51,7 @@ public final class StructureType : Type
         _attributes = attributes;
         _layout = layout;
         _packingSize = packingSize;
+        _fields = new typeof(_fields)();
 
         (cast(NoNullList!StructureType)module_.types).add(this);
     }
@@ -77,7 +79,7 @@ public final class StructureType : Type
     @property public Countable!Field fields()
     in
     {
-        assert(isClosed);
+        assert(_isClosed);
     }
     body
     {
@@ -86,7 +88,7 @@ public final class StructureType : Type
 
     @property public bool isClosed()
     {
-        return _fields !is null;
+        return _isClosed;
     }
 
     @property public override istring name()
@@ -94,14 +96,28 @@ public final class StructureType : Type
         return _name;
     }
 
-    public void close(NoNullList!Field fields = new NoNullList!Field())
+    public Field createField(string name, Type type, FieldAttributes attributes = FieldAttributes.none,
+                             Nullable!uint offset = Nullable!uint())
     in
     {
-        assert(fields);
+        assert(!_isClosed);
     }
     body
     {
-        _fields = fields;
+        auto field = new Field(name, type, attributes, offset);
+        _fields.add(field);
+
+        return field;
+    }
+
+    public void close()
+    in
+    {
+        assert(!_isClosed);
+    }
+    body
+    {
+        _isClosed = true;
     }
 }
 

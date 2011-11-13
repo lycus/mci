@@ -19,8 +19,8 @@ public final class Field
     private Nullable!uint _offset;
     private FieldAttributes _attributes;
 
-    public this(string name, Type type, FieldAttributes attributes = FieldAttributes.none,
-                Nullable!uint offset = Nullable!uint())
+    package this(string name, Type type, FieldAttributes attributes = FieldAttributes.none,
+                 Nullable!uint offset = Nullable!uint())
     in
     {
         assert(name);
