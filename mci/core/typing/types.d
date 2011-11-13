@@ -87,7 +87,7 @@ public final class StructureType : Type
 
     @property public bool isClosed()
     {
-        return fields !is null;
+        return _fields !is null;
     }
 
     @property public override istring name()
