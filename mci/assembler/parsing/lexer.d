@@ -36,7 +36,7 @@ public final class Source
     }
     body
     {
-        initialize(reader.readString(length));
+        initialize(reader.readArray!string(length));
     }
 
     private void initialize(string source)
