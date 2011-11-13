@@ -39,7 +39,6 @@ public final class StructureType : Type
     {
         assert(module_);
         assert(name);
-        assert(fields);
 
         if (packingSize.hasValue)
             assert(packingSize.value);
