@@ -4,10 +4,19 @@ import mci.cli.tools.assembler;
 
 public interface Tool
 {
-    public abstract bool run(string[] args);
+    public abstract bool run(string[] args)
+    in
+    {
+        assert(args);
+    }
 }
 
 public Tool getTool(string name)
+in
+{
+    assert(name);
+}
+body
 {
     switch (name)
     {

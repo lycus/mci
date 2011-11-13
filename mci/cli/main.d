@@ -11,6 +11,14 @@ private enum ExitCode : ubyte
 }
 
 private ExitCode run(string[] args)
+in
+{
+    assert(args);
+
+    foreach (arg; args)
+        assert(arg);
+}
+body
 {
     if (args.length < 2)
     {
