@@ -16,7 +16,7 @@ public abstract class Stream
 
     @property public abstract bool canWrite();
 
-    @property public abstract bool isOpen();
+    @property public abstract bool isClosed();
 
     public abstract ubyte read();
 
@@ -58,6 +58,11 @@ public final class FileStream : Stream
 
     public this(string fileName, FileAccess access = FileAccess.read,
                 FileMode mode = FileMode.open)
+    in
+    {
+        assert(fileName);
+    }
+    body
     {
         _file = File(fileName, accessAndModeToString(access, mode) ~ 'b');
         _access = access;
@@ -94,9 +99,9 @@ public final class FileStream : Stream
         return (_access & FileAccess.write) != 0;
     }
 
-    @property public override bool isOpen()
+    @property public override bool isClosed()
     {
-        return _file.isOpen;
+        return !_file.isOpen;
     }
 
     public override ubyte read()
@@ -108,8 +113,7 @@ public final class FileStream : Stream
 
     public override void write(ubyte value)
     {
-        auto b = [value];
-        _file.rawWrite(b);
+        _file.rawWrite([value]);
     }
 
     public override void close()
@@ -121,12 +125,12 @@ public final class FileStream : Stream
 public final class MemoryStream : Stream
 {
     private ubyte[] _data;
+    private bool _isClosed;
     private size_t _position;
     private bool _canWrite;
 
     public this(bool canWrite = true)
     {
-        _data = new ubyte[0];
         _canWrite = canWrite;
     }
 
@@ -171,9 +175,9 @@ public final class MemoryStream : Stream
         return _canWrite;
     }
 
-    @property public override bool isOpen()
+    @property public override bool isClosed()
     {
-        return _data !is null;
+        return _isClosed;
     }
 
     public override ubyte read()
@@ -189,6 +193,7 @@ public final class MemoryStream : Stream
     public override void close()
     {
         _data = null;
+        _isClosed = true;
     }
 }
 
