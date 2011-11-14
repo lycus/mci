@@ -19,4 +19,9 @@ public final class Program
     {
         return _modules;
     }
+
+    @property public TypeCache typeCache()
+    {
+        return _typeCache;
+    }
 }
