@@ -195,10 +195,27 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
     }
 }
 
-private mixin template DefineCoreTypeNode(string type)
+public abstract class CoreTypeReferenceNode : TypeReferenceNode
 {
-    mixin("public class " ~ type ~ "TypeReferenceNode : TypeReferenceNode" ~
+    public this(SourceLocation location)
+    in
+    {
+        assert(location);
+    }
+    body
+    {
+        super(location);
+    }
+
+    @property public abstract SimpleNameNode name();
+}
+
+private mixin template DefineCoreTypeNode(string type, string name)
+{
+    mixin("public class " ~ type ~ "TypeReferenceNode : CoreTypeReferenceNode" ~
           "{" ~
+          "    private SimpleNameNode _name;" ~
+          "" ~
           "    public this(SourceLocation location)" ~
           "    in" ~
           "    {" ~
@@ -207,24 +224,31 @@ private mixin template DefineCoreTypeNode(string type)
           "    body" ~
           "    {" ~
           "        super(location);" ~
+          "" ~
+          "        _name = new SimpleNameNode(location, \"" ~ name ~ "\");" ~
+          "    }" ~
+          "" ~
+          "    @property public final override SimpleNameNode name()" ~
+          "    {" ~
+          "        return _name;" ~
           "    }" ~
           "}");
 }
 
-mixin DefineCoreTypeNode!"Unit";
-mixin DefineCoreTypeNode!"Int8";
-mixin DefineCoreTypeNode!"UInt8";
-mixin DefineCoreTypeNode!"Int16";
-mixin DefineCoreTypeNode!"UInt16";
-mixin DefineCoreTypeNode!"Int32";
-mixin DefineCoreTypeNode!"UInt32";
-mixin DefineCoreTypeNode!"Int64";
-mixin DefineCoreTypeNode!"UInt64";
-mixin DefineCoreTypeNode!"NativeInt";
-mixin DefineCoreTypeNode!"NativeUInt";
-mixin DefineCoreTypeNode!"Float32";
-mixin DefineCoreTypeNode!"Float64";
-mixin DefineCoreTypeNode!"NativeFloat";
+mixin DefineCoreTypeNode!("Unit", "unit");
+mixin DefineCoreTypeNode!("Int8", "int8");
+mixin DefineCoreTypeNode!("UInt8", "uint8");
+mixin DefineCoreTypeNode!("Int16", "int16");
+mixin DefineCoreTypeNode!("UInt16", "uint16");
+mixin DefineCoreTypeNode!("Int32", "int32");
+mixin DefineCoreTypeNode!("UInt32", "uint32");
+mixin DefineCoreTypeNode!("Int64", "int64");
+mixin DefineCoreTypeNode!("UInt64", "uint64");
+mixin DefineCoreTypeNode!("NativeInt", "int");
+mixin DefineCoreTypeNode!("NativeUInt", "uint");
+mixin DefineCoreTypeNode!("Float32", "float32");
+mixin DefineCoreTypeNode!("Float64", "float64");
+mixin DefineCoreTypeNode!("NativeFloat", "float");
 
 public class FieldReferenceNode : Node
 {
