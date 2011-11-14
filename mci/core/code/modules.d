@@ -18,6 +18,7 @@ public final class Module
     }
     body
     {
+        _name = name;
         _functions = new typeof(_functions)();
         _types = new typeof(_types)();
     }
