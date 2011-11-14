@@ -10,9 +10,17 @@ import core.exception,
 
 public interface Iterable(T)
 {
-    public int opApply(scope int delegate(ref T) dg);
+    public int opApply(scope int delegate(ref T) dg)
+    in
+    {
+        assert(dg);
+    }
 
-    public int opApply(scope int delegate(ref size_t, ref T) dg);
+    public int opApply(scope int delegate(ref size_t, ref T) dg)
+    in
+    {
+        assert(dg);
+    }
 }
 
 public interface Countable(T) : Iterable!T
