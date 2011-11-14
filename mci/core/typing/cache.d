@@ -13,7 +13,7 @@ public final class TypeCache
 {
     private Dictionary!(Tuple!(string, string), Type) _types;
     private Dictionary!(Tuple!(Type, NoNullList!Type), FunctionPointerType) _functionPointerTypes;
-    private Dictionary!(Type, PointerType) _pointerTypes;
+    private NoNullDictionary!(Type, PointerType) _pointerTypes;
 
     public this()
     {
