@@ -13,6 +13,26 @@ public struct Tuple(X)
     {
         return _x;
     }
+
+    public equals_t opEquals(ref const Tuple!(X, Y) rhs) const
+    {
+        return typeid(X).equals(&_x, &rhs._x);
+    }
+
+    public int opCmp(ref const Tuple!(X, Y) rhs) const
+    {
+        // There is no doubt that this could be sanitized, but it seems to be the best
+        // generic way to call these built-in functions.
+        if (!typeid(X).equals(&_x, &rhs._x))
+            return typeid(X).compare(&_x, &rhs._x);
+
+        return 0;
+    }
+
+    public hash_t toHash() const
+    {
+        return typeid(X).getHash(&_x);
+    }
 }
 
 public Tuple!X tuple(X)(X x)
@@ -39,6 +59,27 @@ public struct Tuple(X, Y)
     @property public Y y()
     {
         return _y;
+    }
+
+    public equals_t opEquals(ref const Tuple!(X, Y) rhs) const
+    {
+        return typeid(X).equals(&_x, &rhs._x) && typeid(Y).equals(&_x, &rhs._x);
+    }
+
+    public int opCmp(ref const Tuple!(X, Y) rhs) const
+    {
+        if (!typeid(X).equals(&_x, &rhs._x))
+            return typeid(X).compare(&_x, &rhs._x);
+
+        if (!typeid(Y).equals(&_y, &rhs._y))
+            return typeid(Y).compare(&_y, &rhs._y);
+
+        return 0;
+    }
+
+    public hash_t toHash() const
+    {
+        return typeid(X).getHash(&_x) + typeid(Y).getHash(&_y);
     }
 }
 
@@ -73,6 +114,30 @@ public struct Tuple(X, Y, Z)
     @property public Z z()
     {
         return _z;
+    }
+
+    public equals_t opEquals(ref const Tuple!(X, Y) rhs) const
+    {
+        return typeid(X).equals(&_x, &rhs._x) && typeid(Y).equals(&_x, &rhs._x) && typeid(Z).equals(&_x, &rhs._x);
+    }
+
+    public int opCmp(ref const Tuple!(X, Y) rhs) const
+    {
+        if (!typeid(X).equals(&_x, &rhs._x))
+            return typeid(X).compare(&_x, &rhs._x);
+
+        if (!typeid(Y).equals(&_y, &rhs._y))
+            return typeid(Y).compare(&_y, &rhs._y);
+
+        if (!typeid(Z).equals(&_y, &rhs._y))
+            return typeid(Z).compare(&_z, &rhs._z);
+
+        return 0;
+    }
+
+    public hash_t toHash() const
+    {
+        return typeid(X).getHash(&_x) + typeid(Y).getHash(&_y) + typeid(Z).getHash(&_z);
     }
 }
 
