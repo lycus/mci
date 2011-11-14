@@ -271,7 +271,25 @@ public class List(T) : Indexable!T
     {
         onRemove(item);
 
-        auto index = _array.countUntil(item);
+        size_t index;
+
+        for (size_t i = 0; i < _array.length; i++)
+        {
+            bool eq;
+
+            // Here's an ugly hack for interfaces because, for whatever reason, one cannot
+            // compare interface instances without casting them to a concrete type.
+            static if (is(T == interface))
+                eq = cast(Object)_array[i] == cast(Object)item;
+            else
+                eq = _array[i] == item;
+
+            if (eq)
+            {
+                index = i;
+                break;
+            }
+        }
 
         if (index != -1)
             _array = _array[0 .. index] ~ _array[index + 1 .. $];
