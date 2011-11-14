@@ -4,27 +4,27 @@ import std.range,
        std.stdio,
        std.traits;
 
-public abstract class Stream
+public interface Stream
 {
-    @property public abstract size_t position();
+    @property public size_t position();
 
-    @property public abstract void position(size_t position);
+    @property public void position(size_t position);
 
-    @property public abstract size_t length();
+    @property public size_t length();
 
-    @property public abstract void length(size_t length);
+    @property public void length(size_t length);
 
-    @property public abstract bool canRead();
+    @property public bool canRead();
 
-    @property public abstract bool canWrite();
+    @property public bool canWrite();
 
-    @property public abstract bool isClosed();
+    @property public bool isClosed();
 
-    public abstract ubyte read();
+    public ubyte read();
 
-    public abstract void write(ubyte value);
+    public void write(ubyte value);
 
-    public abstract void close();
+    public void close();
 }
 
 public enum FileAccess : ubyte
@@ -70,55 +70,55 @@ public final class FileStream : Stream
         _access = access;
     }
 
-    @property public override size_t position()
+    @property public size_t position()
     {
         return cast(size_t)_file.tell;
     }
 
-    @property public override void position(size_t position)
+    @property public void position(size_t position)
     {
         _file.seek(position);
     }
 
-    @property public override size_t length()
+    @property public size_t length()
     {
         return cast(size_t)_file.size;
     }
 
-    @property public override void length(size_t length)
+    @property public void length(size_t length)
     {
         // We cannot just set the length of a file stream.
         assert(false);
     }
 
-    @property public override bool canRead()
+    @property public bool canRead()
     {
         return (_access & FileAccess.read) != 0;
     }
 
-    @property public override bool canWrite()
+    @property public bool canWrite()
     {
         return (_access & FileAccess.write) != 0;
     }
 
-    @property public override bool isClosed()
+    @property public bool isClosed()
     {
         return !_file.isOpen;
     }
 
-    public override ubyte read()
+    public ubyte read()
     {
         ubyte[1] b;
         _file.rawRead(b);
         return b[0];
     }
 
-    public override void write(ubyte value)
+    public void write(ubyte value)
     {
         _file.rawWrite([value]);
     }
 
-    public override void close()
+    public void close()
     {
         _file.close();
     }
@@ -147,52 +147,52 @@ public final class MemoryStream : Stream
         _canWrite = canWrite;
     }
 
-    @property public override size_t position()
+    @property public size_t position()
     {
         return _position;
     }
 
-    @property public override void position(size_t position)
+    @property public void position(size_t position)
     {
         _position = position;
     }
 
-    @property public override size_t length()
+    @property public size_t length()
     {
         return _data.length;
     }
 
-    @property public override void length(size_t length)
+    @property public void length(size_t length)
     {
         _data.length = length;
     }
 
-    @property public override bool canRead()
+    @property public bool canRead()
     {
         return true;
     }
 
-    @property public override bool canWrite()
+    @property public bool canWrite()
     {
         return _canWrite;
     }
 
-    @property public override bool isClosed()
+    @property public bool isClosed()
     {
         return _isClosed;
     }
 
-    public override ubyte read()
+    public ubyte read()
     {
         return _data[_position++];
     }
 
-    public override void write(ubyte value)
+    public void write(ubyte value)
     {
         _data[_position++] = value;
     }
 
-    public override void close()
+    public void close()
     {
         _data = null;
         _isClosed = true;
