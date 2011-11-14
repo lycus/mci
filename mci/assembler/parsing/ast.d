@@ -285,17 +285,12 @@ public class FunctionReferenceNode : Node
 {
     private ModuleReferenceNode _moduleName;
     private SimpleNameNode _name;
-    private TypeReferenceNode _returnType;
-    private NoNullList!TypeReferenceNode _parameterTypes;
 
-    public this(SourceLocation location, ModuleReferenceNode moduleName, SimpleNameNode name,
-                TypeReferenceNode returnType, NoNullList!TypeReferenceNode parameterTypes)
+    public this(SourceLocation location, ModuleReferenceNode moduleName, SimpleNameNode name)
     in
     {
         assert(location);
         assert(name);
-        assert(returnType);
-        assert(parameterTypes);
     }
     body
     {
@@ -303,8 +298,6 @@ public class FunctionReferenceNode : Node
 
         _moduleName = moduleName;
         _name = name;
-        _returnType = returnType;
-        _parameterTypes = parameterTypes.duplicate();
     }
 
     @property public final ModuleReferenceNode moduleName()
@@ -315,16 +308,6 @@ public class FunctionReferenceNode : Node
     @property public final SimpleNameNode name()
     {
         return _name;
-    }
-
-    @property public final TypeReferenceNode returnType()
-    {
-        return _returnType;
-    }
-
-    @property public final Countable!TypeReferenceNode parameterTypes()
-    {
-        return _parameterTypes;
     }
 }
 

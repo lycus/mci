@@ -376,31 +376,9 @@ public final class Parser
         else
             _stream.movePrevious();
 
-        auto returnType = parseTypeSpecification();
         auto name = parseSimpleName();
 
-        consume("(");
-
-        auto params = new NoNullList!TypeReferenceNode();
-
-        while (peek().type != TokenType.closeParen)
-        {
-            params.add(parseTypeSpecification());
-
-            if (peek().type == TokenType.comma)
-            {
-                next();
-
-                auto peek = peek();
-
-                if (peek.type == TokenType.closeParen)
-                    errorGot("type specification", peek.location, peek.value);
-            }
-        }
-
-        next();
-
-        return new FunctionReferenceNode(name.location, moduleName, name, returnType, params);
+        return new FunctionReferenceNode(name.location, moduleName, name);
     }
 
     private FieldDeclarationNode parseFieldDeclaration()
