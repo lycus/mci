@@ -100,6 +100,8 @@ public final class StructureType : Type
                              Nullable!uint offset = Nullable!uint())
     in
     {
+        assert(name);
+        assert(type);
         assert(!_isClosed);
     }
     body
