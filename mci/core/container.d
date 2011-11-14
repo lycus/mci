@@ -228,6 +228,8 @@ public class List(T) : Indexable!T
 
     public final T opIndexAssign(T item, size_t index)
     {
+        onAdd(item);
+
         return _array[index] = item;
     }
 
@@ -507,6 +509,8 @@ public class Dictionary(K, V) : Map!(K, V)
 
     public V opIndexAssign(V value, K key)
     {
+        onAdd(key, value);
+
         return _aa[key] = value;
     }
 
