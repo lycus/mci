@@ -92,14 +92,17 @@ public final class AssemblerTool : Tool
             }
         }
 
+        auto driver = new GeneratorDriver(units);
+
         try
         {
-            auto driver = new GeneratorDriver(units);
             auto program = driver.run();
         }
         catch (GenerationException ex)
         {
-            writefln("%s", ex.msg);
+            writefln("Generator error in %s (%s%s): %s", driver.currentModule ~ fileExtension, ex.location.line,
+                     ex.location.column == 0 ? "" : ", " ~ to!string(ex.location.column), ex.msg);
+            return false;
         }
 
         return true;

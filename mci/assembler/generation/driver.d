@@ -17,6 +17,7 @@ public final class GeneratorState
     private NoNullDictionary!(string, CompilationUnit) _units;
     private NoNullDictionary!(Module, CompilationUnit) _moduleUnits;
     private NoNullDictionary!(TypeDeclarationNode, StructureType) _types;
+    private string _currentModule;
 
     public this(NoNullDictionary!(string, CompilationUnit) units)
     in
@@ -49,6 +50,21 @@ public final class GeneratorState
     @property public NoNullDictionary!(TypeDeclarationNode, StructureType) types()
     {
         return _types;
+    }
+
+    @property public string currentModule()
+    {
+        return _currentModule;
+    }
+
+    @property public void currentModule(string currentModule)
+    in
+    {
+        assert(currentModule);
+    }
+    body
+    {
+        _currentModule = currentModule;
     }
 }
 
@@ -88,6 +104,11 @@ public final class GeneratorDriver
 
         return _state.program;
     }
+
+    @property public istring currentModule()
+    {
+        return _state.currentModule;
+    }
 }
 
 public interface GeneratorPass
@@ -105,6 +126,8 @@ public final class ModuleCreationPass : GeneratorPass
     {
         foreach (unit; state.units)
         {
+            state.currentModule = unit.x;
+
             auto mod = new Module(unit.x);
 
             state.moduleUnits.add(mod, unit.y);
@@ -118,9 +141,13 @@ public final class TypeCreationPass : GeneratorPass
     public void run(GeneratorState state)
     {
         foreach (unit; state.moduleUnits)
+        {
+            state.currentModule = unit.x.name;
+
             foreach (node; unit.y.nodes)
                 if (auto type = cast(TypeDeclarationNode)node)
                     state.types.add(type, generateType(type, unit.x, state.program.typeCache));
+        }
     }
 }
 
@@ -130,6 +157,8 @@ public final class TypeClosurePass : GeneratorPass
     {
         foreach (type; state.types)
         {
+            state.currentModule = type.y.module_.name;
+
             foreach (field; type.x.fields)
                 generateField(field, type.y, state.program);
 
@@ -143,8 +172,12 @@ public final class FunctionCreationPass : GeneratorPass
     public void run(GeneratorState state)
     {
         foreach (unit; state.moduleUnits)
+        {
+            state.currentModule = unit.x.name;
+
             foreach (node; unit.y.nodes)
                 if (auto func = cast(FunctionDeclarationNode)node)
                     generateFunction(func, unit.x, state.program);
+        }
     }
 }
