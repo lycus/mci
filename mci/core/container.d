@@ -650,3 +650,20 @@ unittest
     assert(dict[3] == "c");
     assert(dict.count == 2);
 }
+
+public class NoNullDictionary(K, V) : Dictionary!(K, V)
+{
+    public override NoNullDictionary!(K, V) duplicate()
+    {
+        auto d = new NoNullDictionary!(K, V)();
+        d._aa = _aa.dup;
+
+        return d;
+    }
+
+    protected override void onAdd(K key, V value)
+    {
+        static if (isNullable!V)
+            assert(value);
+    }
+}
