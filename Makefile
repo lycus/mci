@@ -95,6 +95,11 @@ libmci.assembler.a: libmci.core.a
 MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/all.d \
 	mci/assembler/exception.d \
+	mci/assembler/generation/driver.d \
+	mci/assembler/generation/exception.d \
+	mci/assembler/generation/functions.d \
+	mci/assembler/generation/modules.d \
+	mci/assembler/generation/types.d \
 	mci/assembler/parsing/ast.d \
 	mci/assembler/parsing/exception.d \
 	mci/assembler/parsing/lexer.d \

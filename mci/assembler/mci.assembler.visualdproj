@@ -271,6 +271,13 @@
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="mci.assembler">
+  <Folder name="generation">
+   <File path="generation\driver.d" />
+   <File path="generation\exception.d" />
+   <File path="generation\functions.d" />
+   <File path="generation\modules.d" />
+   <File path="generation\types.d" />
+  </Folder>
   <Folder name="parsing">
    <File path="parsing\ast.d" />
    <File path="parsing\exception.d" />
