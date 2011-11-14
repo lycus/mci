@@ -14,7 +14,6 @@ import std.variant,
 public abstract class Node
 {
     private SourceLocation _location;
-    private Dictionary!(string, Object) _tags;
 
     protected this(SourceLocation location)
     in
@@ -24,17 +23,11 @@ public abstract class Node
     body
     {
         _location = location;
-        _tags = new typeof(_tags)();
     }
 
     @property public final SourceLocation location()
     {
         return _location;
-    }
-
-    @property public final Dictionary!(string, Object) tags()
-    {
-        return _tags;
     }
 }
 
