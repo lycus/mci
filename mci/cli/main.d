@@ -1,6 +1,7 @@
 module mci.cli.main;
 
 import std.stdio,
+       mci.core.container,
        mci.cli.tool;
 
 private enum ExitCode : ubyte
@@ -34,7 +35,7 @@ body
         return ExitCode.failure;
     }
 
-    return tool.run(args[2 .. $]) ? ExitCode.success : ExitCode.error;
+    return tool.run(toNoNullList(args[2 .. $])) ? ExitCode.success : ExitCode.error;
 }
 
 private int main(string[] args)

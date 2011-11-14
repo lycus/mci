@@ -1,10 +1,11 @@
 module mci.cli.tool;
 
-import mci.cli.tools.assembler;
+import mci.core.container,
+       mci.cli.tools.assembler;
 
 public interface Tool
 {
-    public abstract bool run(string[] args)
+    public abstract bool run(NoNullList!string args)
     in
     {
         assert(args);
