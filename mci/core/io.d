@@ -2,7 +2,9 @@ module mci.core.io;
 
 import std.range,
        std.stdio,
-       std.traits;
+       std.traits,
+       mci.core.common,
+       mci.core.config;
 
 public interface Stream
 {
@@ -206,19 +208,39 @@ private template isValidType(T)
 
 public class BinaryReader
 {
-    private File _file;
+    private FileStream _file;
+    private Endianness _endianness;
 
-    public this(File file)
+    public this(FileStream file, Endianness endianness = Endianness.littleEndian)
+    in
+    {
+        assert(file);
+        assert(file.canRead);
+        assert(!file.isClosed);
+    }
+    body
     {
         _file = file;
+        _endianness = endianness;
     }
 
     public final T read(T)()
         if (isValidType!T)
     {
-        T[1] arr;
-        _file.rawRead(arr);
-        return arr[0];
+        T value;
+
+        if (endianness != _endianness)
+        {
+            for (size_t i = T.sizeof; i > 0; i--)
+                (cast(ubyte*)&value)[i] = _file.read();
+        }
+        else
+        {
+            for (size_t i = 0; i < T.sizeof; i++)
+                (cast(ubyte*)&value)[i] = _file.read();
+        }
+
+        return value;
     }
 
     public final T readArray(T)(size_t length)
@@ -235,17 +257,35 @@ public class BinaryReader
 
 public class BinaryWriter
 {
-    private File _file;
+    private FileStream _file;
+    private Endianness _endianness;
 
-    public this(File file)
+    public this(FileStream file, Endianness endianness = Endianness.littleEndian)
+    in
+    {
+        assert(file);
+        assert(file.canWrite);
+        assert(!file.isClosed);
+    }
+    body
     {
         _file = file;
+        _endianness = endianness;
     }
 
     public final void write(T)(T value)
         if (isValidType!T)
     {
-        _file.rawWrite([value]);
+        if (endianness != _endianness)
+        {
+            for (size_t i = T.sizeof; i > 0; i--)
+                _file.write((cast(ubyte*)&value)[i]);
+        }
+        else
+        {
+            for (size_t i = 0; i < T.sizeof; i++)
+                _file.write((cast(ubyte*)&value)[i]);
+        }
     }
 
     public final void writeArray(T)(T value)
