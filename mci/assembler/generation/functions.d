@@ -25,25 +25,13 @@ body
             throw new GenerationException("Function " ~ module_.name ~ "/" ~ node.name.name ~ " already defined.", node.location);
 
     auto returnType = resolveType(node.returnType, module_, program);
-    auto registers = new NoNullList!Register();
-    auto parameters = new NoNullList!Parameter();
+    auto func = module_.createFunction(node.name.name, returnType, node.attributes, node.callingConvention);
 
     foreach (param; node.parameters)
     {
-        foreach (par; parameters)
-            if (param.name.name == par.register.name)
-                throw new GenerationException("Parameter " ~ param.name.name ~ " already defined.", param.location);
-
-        auto reg = new Register(param.name.name, resolveType(param.type, module_, program));
-
-        registers.add(reg);
-        parameters.add(new Parameter(reg));
+        auto paramType = resolveType(param.type, module_, program);
+        func.createParameter(paramType);
     }
-
-    auto func = module_.createFunction(node.name.name, returnType, parameters, node.attributes, node.callingConvention);
-
-    foreach (reg; registers)
-        func.registers.add(reg);
 
     foreach (reg; node.registers)
     {

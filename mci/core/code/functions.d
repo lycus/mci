@@ -38,21 +38,21 @@ public enum string entryBlockName = "entry";
 
 public final class Parameter
 {
-    private Register _register;
+    private Type _type;
 
-    public this(Register register)
+    package this(Type type)
     in
     {
-        assert(register);
+        assert(type);
     }
     body
     {
-        _register = register;
+        _type = type;
     }
 
-    @property public Register register()
+    @property public Type type()
     {
-        return _register;
+        return _type;
     }
 }
 
@@ -69,7 +69,7 @@ public enum FunctionAttributes : ubyte
 {
     none = 0x00,
     intrinsic = 0x01,
-    readOnly = 0x02,
+    pure_ = 0x02,
     noOptimization = 0x04,
     noInlining = 0x08,
     noCallInlining = 0x10,
@@ -85,27 +85,26 @@ public final class Function
     private Type _returnType;
     private NoNullList!BasicBlock _blocks;
     private NoNullList!Register _registers;
+    private bool _isClosed;
 
-    package this(Module module_, string name, Type returnType, NoNullList!Parameter parameters,
-                 FunctionAttributes attributes = FunctionAttributes.none,
+    package this(Module module_, string name, Type returnType, FunctionAttributes attributes = FunctionAttributes.none,
                  CallingConvention callingConvention = CallingConvention.queueCall)
     in
     {
         assert(module_);
         assert(name);
         assert(returnType);
-        assert(parameters);
     }
     body
     {
         _module = module_;
         _name = name;
         _returnType = returnType;
-        _parameters = parameters.duplicate();
         _attributes = attributes;
         _callingConvention = callingConvention;
         _blocks = new typeof(_blocks)();
         _registers = new typeof(_registers)();
+        _parameters = new typeof(_parameters)();
 
         (cast(NoNullList!Function)module_.functions).add(this);
     }
@@ -136,8 +135,18 @@ public final class Function
     }
 
     @property public Countable!Parameter parameters()
+    in
+    {
+        assert(_isClosed);
+    }
+    body
     {
         return _parameters;
+    }
+
+    @property public bool isClosed()
+    {
+        return _isClosed;
     }
 
     @property public NoNullList!BasicBlock blocks()
@@ -148,5 +157,29 @@ public final class Function
     @property public NoNullList!Register registers()
     {
         return _registers;
+    }
+
+    public Parameter createParameter(Type type)
+    in
+    {
+        assert(type);
+        assert(!_isClosed);
+    }
+    body
+    {
+        auto param = new Parameter(type);
+        _parameters.add(param);
+
+        return param;
+    }
+
+    public void close()
+    in
+    {
+        assert(!_isClosed);
+    }
+    body
+    {
+        _isClosed = true;
     }
 }

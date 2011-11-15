@@ -34,7 +34,7 @@ public enum TokenType : ubyte
     stdCall,
     thisCall,
     fastCall,
-    readOnly,
+    pure_,
     noOptimization,
     noInlining,
     noCallInlining,
@@ -49,11 +49,11 @@ public enum TokenType : ubyte
     uint32,
     int64,
     uint64,
-    nativeInt,
-    nativeUInt,
+    int_,
+    uint_,
     float32,
     float64,
-    nativeFloat,
+    float_,
     opCode,
     literal,
 }
@@ -125,7 +125,7 @@ body
         case "fcall":
             return TokenType.fastCall;
         case "pure":
-            return TokenType.readOnly;
+            return TokenType.pure_;
         case "nooptimize":
             return TokenType.noOptimization;
         case "noinline":
@@ -155,15 +155,15 @@ body
         case "uint64":
             return TokenType.uint64;
         case "int":
-            return TokenType.nativeInt;
+            return TokenType.int_;
         case "uint":
-            return TokenType.nativeUInt;
+            return TokenType.uint_;
         case "float32":
             return TokenType.float32;
         case "float64":
             return TokenType.float64;
         case "float":
-            return TokenType.nativeFloat;
+            return TokenType.float_;
         default:
             break;
     }

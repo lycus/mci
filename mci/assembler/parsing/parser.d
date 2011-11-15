@@ -334,15 +334,15 @@ public final class Parser
                 return new Int64TypeReferenceNode(tok.location);
             case TokenType.uint64:
                 return new UInt64TypeReferenceNode(tok.location);
-            case TokenType.nativeInt:
+            case TokenType.int_:
                 return new NativeIntTypeReferenceNode(tok.location);
-            case TokenType.nativeUInt:
+            case TokenType.uint_:
                 return new NativeUIntTypeReferenceNode(tok.location);
             case TokenType.float32:
                 return new Float32TypeReferenceNode(tok.location);
             case TokenType.float64:
                 return new Float64TypeReferenceNode(tok.location);
-            case TokenType.nativeFloat:
+            case TokenType.float_:
                 return new NativeFloatTypeReferenceNode(tok.location);
             default:
                 _stream.movePrevious();
@@ -467,10 +467,10 @@ public final class Parser
 
         FunctionAttributes attributes;
 
-        if (peek().type == TokenType.readOnly)
+        if (peek().type == TokenType.pure_)
         {
             next();
-            attributes |= FunctionAttributes.readOnly;
+            attributes |= FunctionAttributes.pure_;
         }
 
         if (peek().type == TokenType.noOptimization)
@@ -526,9 +526,8 @@ public final class Parser
         while (peek().type != TokenType.closeParen)
         {
             auto paramType = parseTypeSpecification();
-            auto paramName = parseSimpleName();
 
-            params.add(new ParameterNode(paramName.location, paramType, paramName));
+            params.add(new ParameterNode(paramType.location, paramType));
 
             if (peek().type == TokenType.comma)
             {

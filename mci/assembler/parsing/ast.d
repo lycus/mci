@@ -405,31 +405,23 @@ public class FieldDeclarationNode : Node
 public class ParameterNode : Node
 {
     private TypeReferenceNode _type;
-    private SimpleNameNode _name;
 
-    public this(SourceLocation location, TypeReferenceNode type, SimpleNameNode name)
+    public this(SourceLocation location, TypeReferenceNode type)
     in
     {
         assert(location);
         assert(type);
-        assert(name);
     }
     body
     {
         super(location);
 
         _type = type;
-        _name = name;
     }
 
     @property public final TypeReferenceNode type()
     {
         return _type;
-    }
-
-    @property public final SimpleNameNode name()
-    {
-        return _name;
     }
 }
 
