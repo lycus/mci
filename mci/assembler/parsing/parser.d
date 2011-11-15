@@ -241,7 +241,7 @@ public final class Parser
 
     private FunctionPointerTypeReferenceNode parseFunctionPointerTypeReference()
     {
-        auto returnType = parseTypeReference();
+        auto returnType = parseTypeSpecification();
 
         consume("(");
 
