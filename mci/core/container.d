@@ -399,6 +399,11 @@ public Countable!T toCountable(T)(T[] items ...)
     return toList(items);
 }
 
+public Countable!T asCountable(T)(Countable!T items)
+{
+    return items;
+}
+
 unittest
 {
     auto list = toCountable(1, 2, 3);
