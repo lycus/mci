@@ -201,7 +201,7 @@ public final class MemoryStream : Stream
 
 private template isValidType(T)
 {
-    public enum bool isValidType = is(T == bool) || is(T == size_t) || isNumeric!T || isSomeChar!T;
+    public enum bool isValidType = is(T == bool) || isNumeric!T || isSomeChar!T;
 }
 
 public class BinaryReader
