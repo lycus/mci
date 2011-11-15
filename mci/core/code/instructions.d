@@ -83,10 +83,8 @@ public final class Instruction
 
         if (opCode.operandType == OperandType.none)
             assert(!operand.hasValue);
-
-        auto type = operandToTypeInfo(opCode.operandType);
-
-        assert(!operand.hasValue || type != operand.type);
+        else
+            assert(operand.type == operandToTypeInfo(opCode.operandType));
     }
     body
     {

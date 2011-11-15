@@ -755,7 +755,7 @@ public final class Parser
                 location = type.location;
                 break;
             case OperandType.structure:
-                auto type = parseTypeReference();
+                auto type = parseStructureTypeReference();
                 operand = type;
                 location = type.location;
                 break;

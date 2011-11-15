@@ -1,0 +1,68 @@
+type value automatic Vector3
+{
+	field float64 x;
+	field float64 y;
+	field float64 z;
+}
+
+function qcall Vector3 Cross(Vector3, Vector3)
+{
+    register Vector3 arg1;
+    register Vector3 arg2;
+
+    register float64 v1_x;
+    register float64 v1_y;
+    register float64 v1_z;
+
+    register float64 v2_x;
+    register float64 v2_y;
+    register float64 v2_z;
+
+    register float64 v1_y_v2_z;
+    register float64 v1_z_v2_y;
+    register float64 v1_z_v2_x;
+    register float64 v1_x_v2_z;
+    register float64 v1_x_v2_y;
+    register float64 v1_y_v2_x;
+
+    register float64 x;
+    register float64 y;
+    register float64 z;
+
+    register Vector3 result;
+
+    block entry
+    {
+        arg1 = arg.pop;
+        arg2 = arg.pop;
+
+        v1_x = field.get arg1 (Vector3:x);
+        v1_y = field.get arg1 (Vector3:y);
+        v1_z = field.get arg1 (Vector3:z);
+
+        v2_x = field.get arg2 (Vector3:x);
+        v2_y = field.get arg2 (Vector3:y);
+        v2_z = field.get arg2 (Vector3:z);
+
+        v1_y_v2_z = mul v1_y, v2_z;
+        v1_z_v2_y = mul v1_z, v2_y;
+        v1_z_v2_x = mul v1_z, v2_x;
+
+        v1_x_v2_z = mul v1_x, v2_z;
+        v1_x_v2_y = mul v1_x, v2_y;
+        v1_y_v2_x = mul v1_y, v2_x;
+
+        x = sub v1_y_v2_z, v1_z_v2_y;
+        y = sub v1_z_v2_x, v1_x_v2_z;
+        z = sub v1_x_v2_y, v1_y_v2_x;
+
+        result = mem.new (Vector3);
+
+        field.set result, x (Vector3:x);
+        field.set result, y (Vector3:y);
+        field.set result, z (Vector3:z);
+
+        return result;
+    }
+}
+
