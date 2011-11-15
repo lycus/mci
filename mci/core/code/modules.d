@@ -48,8 +48,7 @@ public final class Module
     body
     {
         foreach (func; _functions)
-            if (func.name == name)
-                assert(false);
+            assert(name != func.name);
 
         auto func = new Function(this, name, returnType, attributes, callingConvention);
         _functions.add(func);

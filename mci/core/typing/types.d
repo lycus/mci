@@ -106,6 +106,9 @@ public final class StructureType : Type
     }
     body
     {
+        foreach (f; _fields)
+            assert(name != f.name);
+
         auto field = new Field(name, type, attributes, offset);
         _fields.add(field);
 
