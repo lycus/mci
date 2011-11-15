@@ -14,7 +14,7 @@ public final class Register
     private Type _type;
     private string _name;
 
-    public this(string name, Type type)
+    package this(string name, Type type)
     in
     {
         assert(name);

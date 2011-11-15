@@ -28,10 +28,7 @@ body
     auto func = module_.createFunction(node.name.name, returnType, node.attributes, node.callingConvention);
 
     foreach (param; node.parameters)
-    {
-        auto paramType = resolveType(param.type, module_, program);
-        func.createParameter(paramType);
-    }
+        func.createParameter(resolveType(param.type, module_, program));
 
     foreach (reg; node.registers)
     {
@@ -39,7 +36,7 @@ body
             if (reg.name.name == register.name)
                 throw new GenerationException("Register " ~ reg.name.name ~ " already defined.", reg.location);
 
-        func.registers.add(new Register(reg.name.name, resolveType(reg.type, module_, program)));
+        func.createRegister(reg.name.name, resolveType(reg.type, module_, program));
     }
 
     foreach (block; node.blocks)
@@ -49,7 +46,7 @@ body
                 throw new GenerationException("Basic block " ~ block.name.name ~ " already defined.", block.location);
 
         // TODO: Emit instructions too.
-        func.blocks.add(new BasicBlock(block.name.name));
+        func.createBasicBlock(block.name.name);
     }
 
     return func;

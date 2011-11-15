@@ -12,7 +12,7 @@ public final class BasicBlock
     private string _name;
     private NoNullList!Instruction _instructions;
 
-    public this(string name)
+    package this(string name)
     in
     {
         assert(name);
@@ -181,5 +181,38 @@ public final class Function
     body
     {
         _isClosed = true;
+    }
+
+    public BasicBlock createBasicBlock(string name)
+    in
+    {
+        assert(name);
+    }
+    body
+    {
+        foreach (bb; _blocks)
+            assert(name != bb.name);
+
+        auto block = new BasicBlock(name);
+        _blocks.add(block);
+
+        return block;
+    }
+
+    public Register createRegister(string name, Type type)
+    in
+    {
+        assert(name);
+        assert(type);
+    }
+    body
+    {
+        foreach (register; _registers)
+            assert(name != register.name);
+
+        auto reg = new Register(name, type);
+        _registers.add(reg);
+
+        return reg;
     }
 }

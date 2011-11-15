@@ -35,11 +35,7 @@ public class FunctionEmitter
     }
     body
     {
-        auto reg = new Register(name, type);
-
-        _function.registers.add(reg);
-
-        return reg;
+        return _function.createRegister(name, type);
     }
 
     public final BasicBlockEmitter block(string name)
@@ -49,11 +45,7 @@ public class FunctionEmitter
     }
     body
     {
-        auto block = new BasicBlock(name);
-
-        _function.blocks.add(block);
-
-        return new BasicBlockEmitter(block);
+        return new BasicBlockEmitter(_function.createBasicBlock(name));
     }
 }
 
