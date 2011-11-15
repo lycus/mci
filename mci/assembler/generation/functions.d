@@ -56,79 +56,83 @@ body
             auto source1 = instrNode.source1 ? resolveRegister(instrNode.source1, func) : null;
             auto source2 = instrNode.source2 ? resolveRegister(instrNode.source2, func) : null;
             auto target = instrNode.target ? resolveRegister(instrNode.target, func) : null;
-            auto instrOperand = instrNode.operand.operand;
 
             mci.core.code.instructions.InstructionOperand operand;
 
-            final switch (instrNode.opCode.operandType)
+            if (instrNode.operand)
             {
-                case OperandType.none:
-                    break;
-                case OperandType.int8:
-                    operand = to!byte(instrOperand.peek!LiteralValueNode().value);
-                    break;
-                case OperandType.uint8:
-                    operand = to!ubyte(instrOperand.peek!LiteralValueNode().value);
-                    break;
-                case OperandType.int16:
-                    operand = to!short(instrOperand.peek!LiteralValueNode().value);
-                    break;
-                case OperandType.uint16:
-                    operand = to!ushort(instrOperand.peek!LiteralValueNode().value);
-                    break;
-                case OperandType.int32:
-                    operand = to!int(instrOperand.peek!LiteralValueNode().value);
-                    break;
-                case OperandType.uint32:
-                    operand = to!uint(instrOperand.peek!LiteralValueNode().value);
-                    break;
-                case OperandType.int64:
-                    operand = to!long(instrOperand.peek!LiteralValueNode().value);
-                    break;
-                case OperandType.uint64:
-                    operand = to!ulong(instrOperand.peek!LiteralValueNode().value);
-                    break;
-                case OperandType.float32:
-                    operand = to!float(instrOperand.peek!LiteralValueNode().value);
-                    break;
-                case OperandType.float64:
-                    operand = to!double(instrOperand.peek!LiteralValueNode().value);
-                    break;
-                case OperandType.bytes:
-                    auto bytes = new NoNullList!ubyte();
+                auto instrOperand = instrNode.operand.operand;
 
-                    foreach (literal; instrOperand.peek!ByteArrayLiteralNode().values)
-                        bytes.add(to!ubyte(literal.value));
+                final switch (instrNode.opCode.operandType)
+                {
+                    case OperandType.none:
+                        assert(false);
+                    case OperandType.int8:
+                        operand = to!byte(instrOperand.peek!LiteralValueNode().value);
+                        break;
+                    case OperandType.uint8:
+                        operand = to!ubyte(instrOperand.peek!LiteralValueNode().value);
+                        break;
+                    case OperandType.int16:
+                        operand = to!short(instrOperand.peek!LiteralValueNode().value);
+                        break;
+                    case OperandType.uint16:
+                        operand = to!ushort(instrOperand.peek!LiteralValueNode().value);
+                        break;
+                    case OperandType.int32:
+                        operand = to!int(instrOperand.peek!LiteralValueNode().value);
+                        break;
+                    case OperandType.uint32:
+                        operand = to!uint(instrOperand.peek!LiteralValueNode().value);
+                        break;
+                    case OperandType.int64:
+                        operand = to!long(instrOperand.peek!LiteralValueNode().value);
+                        break;
+                    case OperandType.uint64:
+                        operand = to!ulong(instrOperand.peek!LiteralValueNode().value);
+                        break;
+                    case OperandType.float32:
+                        operand = to!float(instrOperand.peek!LiteralValueNode().value);
+                        break;
+                    case OperandType.float64:
+                        operand = to!double(instrOperand.peek!LiteralValueNode().value);
+                        break;
+                    case OperandType.bytes:
+                        auto bytes = new NoNullList!ubyte();
 
-                    operand = asCountable(bytes);
-                    break;
-                case OperandType.label:
-                    operand = resolveBasicBlock(*instrOperand.peek!BasicBlockReferenceNode(), func);
-                    break;
-                case OperandType.type:
-                    operand = resolveType(*instrOperand.peek!TypeReferenceNode(), module_, program);
-                    break;
-                case OperandType.structure:
-                    operand = resolveStructureType(*instrOperand.peek!StructureTypeReferenceNode(), module_, program);
-                    break;
-                case OperandType.field:
-                    operand = resolveField(*instrOperand.peek!FieldReferenceNode(), module_, program);
-                    break;
-                case OperandType.function_:
-                    operand = resolveFunction(*instrOperand.peek!FunctionReferenceNode(), module_, program);
-                    break;
-                case OperandType.signature:
-                    operand = resolveFunctionPointerType(*instrOperand.peek!FunctionPointerTypeReferenceNode(), module_, program);
-                    break;
-                case OperandType.selector:
-                    auto regs = instrOperand.peek!RegisterSelectorNode().registers;
-                    auto registers = new NoNullList!Register();
+                        foreach (literal; instrOperand.peek!ByteArrayLiteralNode().values)
+                            bytes.add(to!ubyte(literal.value));
 
-                    foreach (reg; regs)
-                        registers.add(resolveRegister(reg, func));
+                        operand = asCountable(bytes);
+                        break;
+                    case OperandType.label:
+                        operand = resolveBasicBlock(*instrOperand.peek!BasicBlockReferenceNode(), func);
+                        break;
+                    case OperandType.type:
+                        operand = resolveType(*instrOperand.peek!TypeReferenceNode(), module_, program);
+                        break;
+                    case OperandType.structure:
+                        operand = resolveStructureType(*instrOperand.peek!StructureTypeReferenceNode(), module_, program);
+                        break;
+                    case OperandType.field:
+                        operand = resolveField(*instrOperand.peek!FieldReferenceNode(), module_, program);
+                        break;
+                    case OperandType.function_:
+                        operand = resolveFunction(*instrOperand.peek!FunctionReferenceNode(), module_, program);
+                        break;
+                    case OperandType.signature:
+                        operand = resolveFunctionPointerType(*instrOperand.peek!FunctionPointerTypeReferenceNode(), module_, program);
+                        break;
+                    case OperandType.selector:
+                        auto regs = instrOperand.peek!RegisterSelectorNode().registers;
+                        auto registers = new NoNullList!Register();
 
-                    operand = asCountable(registers);
-                    break;
+                        foreach (reg; regs)
+                            registers.add(resolveRegister(reg, func));
+
+                        operand = asCountable(registers);
+                        break;
+                }
             }
 
             bb.instructions.add(new Instruction(instrNode.opCode, operand, target, source1, source2));
