@@ -1,58 +1,10 @@
 module mci.core.config;
 
+import mci.core.common;
+
 // This file figures out what kind of environment we're running
 // in and sets appropriate constants. Reliance on these constants
 // should be avoided if possible.
-
-public enum Compiler : ubyte
-{
-    unknown,
-    dmd,
-    gdc,
-    ldc,
-    sdc,
-}
-
-public enum Architecture : ubyte
-{
-    x86,
-    arm,
-    ppc,
-    ia64,
-    mips,
-    sparc,
-    s390,
-    hppa,
-    sh,
-    alpha,
-}
-
-public enum Endianness : ubyte
-{
-    littleEndian,
-    bigEndian,
-}
-
-public enum OperatingSystem : ubyte
-{
-    windows,
-    linux,
-    osx,
-    bsd,
-    freebsd,
-    openbsd,
-    solaris,
-    aix,
-    skyos,
-    hurd,
-}
-
-public enum EmulationLayer : ubyte
-{
-    none,
-    cygwin,
-    mingw,
-}
 
 pragma(msg, "------------------------------------------------------------");
 pragma(msg, "Managed Compiler Infrastructure configuration information:");
