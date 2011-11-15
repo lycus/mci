@@ -251,13 +251,11 @@ public final class Parser
         {
             params.add(parseTypeSpecification());
 
-            if (peek().type == TokenType.comma)
+            if (peek().type != TokenType.closeParen)
             {
-                next();
+                consume(",");
 
-                auto peek = peek();
-
-                if (peek.type == TokenType.closeParen)
+                if (peek().type == TokenType.closeParen)
                     errorGot("type specification", peek.location, peek.value);
             }
         }
@@ -529,14 +527,12 @@ public final class Parser
 
             params.add(new ParameterNode(paramType.location, paramType));
 
-            if (peek().type == TokenType.comma)
+            if (peek().type != TokenType.closeParen)
             {
-                next();
+                consume(",");
 
-                auto peek = peek();
-
-                if (peek.type == TokenType.closeParen)
-                    errorGot("parameter declaration", peek.location, peek.value);
+                if (peek().type == TokenType.closeParen)
+                    errorGot("type specification", peek.location, peek.value);
             }
         }
 
@@ -794,20 +790,18 @@ public final class Parser
 
         auto registers = new NoNullList!RegisterReferenceNode();
 
-        do
+        while (peek().type != TokenType.closeParen)
         {
             registers.add(parseRegisterReference());
 
-            if (peek().type == TokenType.comma)
+            if (peek().type != TokenType.closeParen)
             {
-                next();
+                consume(",");
 
-                auto peek = peek();
-
-                if (peek.type == TokenType.closeParen)
+                if (peek().type == TokenType.closeParen)
                     errorGot("register reference", peek.location, peek.value);
             }
-        } while (peek().type != TokenType.closeParen);
+        }
 
         consume(")");
 
@@ -836,17 +830,13 @@ public final class Parser
 
         while (peek().type != TokenType.closeParen)
         {
-            auto literal = parseLiteralValue!ubyte();
+            values.add(parseLiteralValue!ubyte());
 
-            values.add(literal);
-
-            if (peek().type == TokenType.comma)
+            if (peek().type != TokenType.closeParen)
             {
-                next();
+                consume(",");
 
-                auto peek = peek();
-
-                if (peek.type == TokenType.closeParen)
+                if (peek().type == TokenType.closeParen)
                     errorGot("literal value", peek.location, peek.value);
             }
         }
