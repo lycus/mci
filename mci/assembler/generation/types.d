@@ -55,31 +55,51 @@ in
 body
 {
     if (auto structType = cast(StructureTypeReferenceNode)node)
-    {
-        // If no module is specified, default to the module the type reference is in.
-        auto mod = structType.moduleName ? resolveModule(structType.moduleName, program) : module_;
-
-        foreach (type; mod.types)
-            if (type.name == structType.name.name)
-                return type;
-
-        throw new GenerationException("Unknown type " ~ mod.name ~ "/" ~ structType.name.name ~ ".",
-                                      node.location);
-    }
+        return resolveStructureType(structType, module_, program);
     else if (auto fpType = cast(FunctionPointerTypeReferenceNode)node)
-    {
-        auto returnType = resolveType(fpType.returnType, module_, program);
-        auto parameterTypes = new NoNullList!Type();
-
-        foreach (paramType; fpType.parameterTypes)
-            parameterTypes.add(resolveType(paramType, module_, program));
-
-        return program.typeCache.getFunctionPointerType(returnType, parameterTypes);
-    }
+        return resolveFunctionPointerType(fpType, module_, program);
     else if (auto ptrType = cast(PointerTypeReferenceNode)node)
         return program.typeCache.getPointerType(resolveType(ptrType.elementType, module_, program));
     else
         return program.typeCache.getType(null, (cast(CoreTypeReferenceNode)node).name.name);
+}
+
+public StructureType resolveStructureType(StructureTypeReferenceNode node, Module module_, Program program)
+in
+{
+    assert(node);
+    assert(module_);
+    assert(program);
+}
+body
+{
+    // If no module is specified, default to the module the type reference is in.
+    auto mod = node.moduleName ? resolveModule(node.moduleName, program) : module_;
+
+    foreach (type; mod.types)
+        if (type.name == node.name.name)
+            return type;
+
+    throw new GenerationException("Unknown type " ~ mod.name ~ "/" ~ node.name.name ~ ".",
+                                  node.location);
+}
+
+public FunctionPointerType resolveFunctionPointerType(FunctionPointerTypeReferenceNode node, Module module_, Program program)
+in
+{
+    assert(node);
+    assert(module_);
+    assert(program);
+}
+body
+{
+    auto returnType = resolveType(node.returnType, module_, program);
+    auto parameterTypes = new NoNullList!Type();
+
+    foreach (paramType; node.parameterTypes)
+        parameterTypes.add(resolveType(paramType, module_, program));
+
+    return program.typeCache.getFunctionPointerType(returnType, parameterTypes);
 }
 
 public Field resolveField(FieldReferenceNode node, Module module_, Program program)
