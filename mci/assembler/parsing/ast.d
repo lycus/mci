@@ -733,5 +733,28 @@ public class InstructionNode : Node
         _operand = operand;
     }
 
-    // TODO: Expose properties.
+    @property public final OpCode opCode()
+    {
+        return _opCode;
+    }
+
+    @property public final RegisterReferenceNode target()
+    {
+        return _target;
+    }
+
+    @property public final RegisterReferenceNode source1()
+    {
+        return _source1;
+    }
+
+    @property public final RegisterReferenceNode source2()
+    {
+        return _source2;
+    }
+
+    @property public final InstructionOperandNode operand()
+    {
+        return _operand;
+    }
 }
