@@ -38,7 +38,6 @@ in
 }
 body
 {
-    // FIXME: Detect duplicate field definitions.
     auto fieldType = resolveType(node.type, type.module_, program);
     auto offset = node.offset ? Nullable!uint(to!uint(node.offset.value)) : Nullable!uint();
 
