@@ -177,7 +177,7 @@ public final class ProgramWriter
     }
     body
     {
-        _writer.write(instruction.opCode.code);
+        _writer.write(cast(ubyte)instruction.opCode.code);
 
         if (instruction.targetRegister)
             writeRegisterReference(instruction.targetRegister);
