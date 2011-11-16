@@ -37,9 +37,9 @@ endif
 all: \
 	libmci.core.a \
 	libmci.assembler.a \
-	libmci.vm \
-	libmci.interpreter \
-	libmci.jit \
+	libmci.vm.a \
+	libmci.interpreter.a \
+	libmci.jit.a \
 	mci.cli \
 	$(MCI_TESTER)
 
