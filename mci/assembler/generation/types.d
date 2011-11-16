@@ -75,9 +75,8 @@ body
     // If no module is specified, default to the module the type reference is in.
     auto mod = node.moduleName ? resolveModule(node.moduleName, program) : module_;
 
-    foreach (type; mod.types)
-        if (type.name == node.name.name)
-            return type;
+    if (auto type = find(mod.types, (StructureType t) { return t.name == node.name.name; }))
+        return type;
 
     throw new GenerationException("Unknown type " ~ mod.name ~ "/" ~ node.name.name ~ ".",
                                   node.location);
@@ -112,9 +111,8 @@ body
 {
     auto type = cast(StructureType)resolveType(node.typeName, module_, program);
 
-    foreach (field; type.fields)
-        if (field.name == node.name.name)
-            return field;
+    if (auto field = find(type.fields, (Field f) { return f.name == node.name.name; }))
+        return field;
 
     throw new GenerationException("Unknown field " ~ type.module_.name ~ "/" ~ type.name ~ ":" ~ node.name.name ~ ".",
                                   node.location);

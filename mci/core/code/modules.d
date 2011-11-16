@@ -44,12 +44,10 @@ public final class Module
     {
         assert(name);
         assert(returnType);
+        assert(!contains(_functions, (Function f) { return f.name == name; }));
     }
     body
     {
-        foreach (func; _functions)
-            assert(name != func.name);
-
         auto func = new Function(this, name, returnType, attributes, callingConvention);
         _functions.add(func);
 

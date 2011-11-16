@@ -22,9 +22,8 @@ in
 }
 body
 {
-    foreach (func; module_.functions)
-        if (node.name.name == func.name)
-            throw new GenerationException("Function " ~ module_.name ~ "/" ~ node.name.name ~ " already defined.", node.location);
+    if (contains(module_.functions, (Function f) { return f.name == node.name.name; }))
+        throw new GenerationException("Function " ~ module_.name ~ "/" ~ node.name.name ~ " already defined.", node.location);
 
     auto returnType = resolveType(node.returnType, module_, program);
     auto func = module_.createFunction(node.name.name, returnType, node.attributes, node.callingConvention);
@@ -36,18 +35,16 @@ body
 
     foreach (reg; node.registers)
     {
-        foreach (register; func.registers)
-            if (reg.name.name == register.name)
-                throw new GenerationException("Register " ~ reg.name.name ~ " already defined.", reg.location);
+        if (contains(func.registers, (Register r) { return r.name == reg.name.name; }))
+            throw new GenerationException("Register " ~ reg.name.name ~ " already defined.", reg.location);
 
         func.createRegister(reg.name.name, resolveType(reg.type, module_, program));
     }
 
     foreach (block; node.blocks)
     {
-        foreach (bb; func.blocks)
-            if (block.name.name == bb.name)
-                throw new GenerationException("Basic block " ~ block.name.name ~ " already defined.", block.location);
+        if (contains(func.blocks, (BasicBlock bb) { return bb.name == block.name.name; }))
+            throw new GenerationException("Basic block " ~ block.name.name ~ " already defined.", block.location);
 
         auto bb = func.createBasicBlock(block.name.name);
 
@@ -153,9 +150,8 @@ body
 {
     auto mod = node.moduleName ? resolveModule(node.moduleName, program) : module_;
 
-    foreach (func; mod.functions)
-        if (func.name == node.name.name)
-            return func;
+    if (auto func = find(mod.functions, (Function f) { return f.name == node.name.name; }))
+        return func;
 
     throw new GenerationException("Unknown function " ~ mod.name ~ "/" ~ node.name.name ~ ".",
                                   node.location);
@@ -169,9 +165,8 @@ in
 }
 body
 {
-    foreach (reg; function_.registers)
-        if (node.name.name == reg.name)
-            return reg;
+    if (auto reg = find(function_.registers, (Register r) { return r.name == node.name.name; }))
+        return reg;
 
     throw new GenerationException("Unknown register " ~ node.name.name ~ ".", node.location);
 }
@@ -184,9 +179,8 @@ in
 }
 body
 {
-    foreach (bb; function_.blocks)
-        if (node.name.name == bb.name)
-            return bb;
+    if (auto bb = find(function_.blocks, (BasicBlock bb) { return bb.name == node.name.name; }))
+        return bb;
 
     throw new GenerationException("Unknown basic block " ~ node.name.name ~ ".", node.location);
 }

@@ -165,6 +165,8 @@ public final class Function
     }
     body
     {
+        // We keep the Parameter class around for now, since it may
+        // come in handy later for specifying attributes.
         auto param = new Parameter(type);
         _parameters.add(param);
 
@@ -185,12 +187,10 @@ public final class Function
     in
     {
         assert(name);
+        assert(!contains(_blocks, (BasicBlock bb) { return bb.name == name; }));
     }
     body
     {
-        foreach (bb; _blocks)
-            assert(name != bb.name);
-
         auto block = new BasicBlock(name);
         _blocks.add(block);
 
@@ -202,12 +202,10 @@ public final class Function
     {
         assert(name);
         assert(type);
+        assert(!contains(_registers, (Register r) { return r.name == name; }));
     }
     body
     {
-        foreach (register; _registers)
-            assert(name != register.name);
-
         auto reg = new Register(name, type);
         _registers.add(reg);
 

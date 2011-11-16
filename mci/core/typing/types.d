@@ -89,13 +89,11 @@ public final class StructureType : Type
     {
         assert(name);
         assert(type);
+        assert(!contains(_fields, (Field f) { return f.name == name; }));
         assert(!_isClosed);
     }
     body
     {
-        foreach (f; _fields)
-            assert(name != f.name);
-
         auto field = new Field(this, name, type, attributes, offset);
         _fields.add(field);
 
