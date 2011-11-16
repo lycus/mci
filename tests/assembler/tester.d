@@ -49,7 +49,7 @@ private bool invoke(string file, string cli, int expected, bool error)
 
     if (result != expected)
     {
-        writefln("%s: Failed ('%d')", file[2 .. $], result);
+        writefln("%s\t\tFailed ('%d')", file[2 .. $], result);
 
         if (error)
         {
@@ -61,7 +61,7 @@ private bool invoke(string file, string cli, int expected, bool error)
     }
     else
     {
-        writefln("%s: Passed ('%d')", file[2 .. $], result);
+        writefln("%s\t\tPassed ('%d')", file[2 .. $], result);
         return true;
     }
 }
