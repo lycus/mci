@@ -14,24 +14,32 @@ public enum FieldAttributes : ubyte
 
 public final class Field
 {
+    private StructureType _declaringType;
     private string _name;
     private Type _type;
     private Nullable!uint _offset;
     private FieldAttributes _attributes;
 
-    package this(string name, Type type, FieldAttributes attributes = FieldAttributes.none,
+    package this(StructureType declaringType, string name, Type type, FieldAttributes attributes = FieldAttributes.none,
                  Nullable!uint offset = Nullable!uint())
     in
     {
+        assert(declaringType);
         assert(name);
         assert(type);
     }
     body
     {
+        _declaringType = declaringType;
         _name = name;
         _type = type;
         _attributes = attributes;
         _offset = offset;
+    }
+
+    @property public StructureType declaringType()
+    {
+        return _declaringType;
     }
 
     @property public istring name()

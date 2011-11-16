@@ -96,7 +96,7 @@ public final class StructureType : Type
         foreach (f; _fields)
             assert(name != f.name);
 
-        auto field = new Field(name, type, attributes, offset);
+        auto field = new Field(this, name, type, attributes, offset);
         _fields.add(field);
 
         return field;
