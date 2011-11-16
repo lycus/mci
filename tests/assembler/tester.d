@@ -21,7 +21,7 @@ private int main()
         return 1;
     }
 
-    return test("pass", cli, 0, true) && test("fail", cli, 1, false);
+    return !(test("pass", cli, 0, true) && test("fail", cli, 1, false));
 }
 
 private bool test(string directory, string cli, int expected, bool error)
