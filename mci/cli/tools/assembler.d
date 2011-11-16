@@ -22,26 +22,34 @@ public enum string outputFileExtension = ".mci";
 
 public final class AssemblerTool : Tool
 {
+    private bool _silent;
+    private string _output = "out.mci";
+
+    private void log(T...)(T args)
+    {
+        if (!_silent)
+            writefln(args);
+    }
+
     public bool run(string[] args)
     {
-        string output = "out.mci";
-
         try
         {
             getopt(args,
                    config.caseSensitive,
                    config.bundling,
-                   "output|o", &output);
+                   "output|o", &_output,
+                   "silent|s", &_silent);
         }
         catch (Exception ex)
         {
-            writefln("Error parsing command line: %s", ex.msg);
+            log("Error parsing command line: %s", ex.msg);
             return false;
         }
 
-        if (!endsWith(output, outputFileExtension))
+        if (!endsWith(_output, outputFileExtension))
         {
-            writefln("Output file %s does not end in \".mci\".", output);
+            log("Output file %s does not end in \".mci\".", _output);
             return false;
         }
 
@@ -49,7 +57,7 @@ public final class AssemblerTool : Tool
 
         if (args.length == 0)
         {
-            writeln("Error: No modules given.");
+            log("Error: No modules given.");
             return false;
         }
 
@@ -59,13 +67,13 @@ public final class AssemblerTool : Tool
         {
             if (!endsWith(file, inputFileExtension))
             {
-                writefln("Error: File %s does not end in \".ial\".", file);
+                log("Error: File %s does not end in \".ial\".", file);
                 return false;
             }
 
             if (file.length <= inputFileExtension.length)
             {
-                writefln("Error: File %s is missing a module name.", file);
+                log("Error: File %s is missing a module name.", file);
                 return false;
             }
 
@@ -75,7 +83,7 @@ public final class AssemblerTool : Tool
             {
                 if (modName == mod)
                 {
-                    writefln("Error: File %s specified multiple times.", file);
+                    log("Error: File %s specified multiple times.", file);
                     return false;
                 }
             }
@@ -91,29 +99,29 @@ public final class AssemblerTool : Tool
             }
             catch (FileException ex)
             {
-                writefln("Error: Could not open file: %s", ex.msg);
+                log("Error: Could not open file: %s", ex.msg);
                 return false;
             }
             catch (UtfException ex)
             {
-                writeln("Error: UTF-8 decoding failed; file is probably not plain text.");
+                log("Error: UTF-8 decoding failed; file is probably not plain text.");
                 return false;
             }
             catch (LexerException ex)
             {
-                writefln("Lexer error in %s (%s%s): %s", file, ex.location.line,
-                         ex.location.column == 0 ? "" : ", " ~ to!string(ex.location.column), ex.msg);
+                log("Lexer error in %s (%s%s): %s", file, ex.location.line,
+                    ex.location.column == 0 ? "" : ", " ~ to!string(ex.location.column), ex.msg);
                 return false;
             }
             catch (ParserException ex)
             {
-                writefln("Parser error in %s (%s%s): %s", file, ex.location.line,
-                         ex.location.column == 0 ? "" : ", " ~ to!string(ex.location.column), ex.msg);
+                log("Parser error in %s (%s%s): %s", file, ex.location.line,
+                    ex.location.column == 0 ? "" : ", " ~ to!string(ex.location.column), ex.msg);
                 return false;
             }
             catch (AssemblerException ex)
             {
-                writefln("Assembler error in %s: %s", file, ex.msg);
+                log("Assembler error in %s: %s", file, ex.msg);
                 return false;
             }
         }
@@ -123,15 +131,15 @@ public final class AssemblerTool : Tool
         try
         {
             auto program = driver.run();
-            auto file = new FileStream(output, FileAccess.write, FileMode.truncate);
+            auto file = new FileStream(_output, FileAccess.write, FileMode.truncate);
             auto writer = new ProgramWriter(file);
 
             writer.write(program);
         }
         catch (GenerationException ex)
         {
-            writefln("Generator error in %s (%s%s): %s", driver.currentModule ~ inputFileExtension, ex.location.line,
-                     ex.location.column == 0 ? "" : ", " ~ to!string(ex.location.column), ex.msg);
+            log("Generator error in %s (%s%s): %s", driver.currentModule ~ inputFileExtension, ex.location.line,
+                ex.location.column == 0 ? "" : ", " ~ to!string(ex.location.column), ex.msg);
             return false;
         }
 
