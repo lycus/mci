@@ -160,14 +160,6 @@ public final class Parser
     {
         consume("type");
 
-        TypeAttributes attributes;
-
-        if (peek().type == TokenType.value)
-        {
-            next();
-            attributes |= TypeAttributes.value;
-        }
-
         TypeLayout layout;
 
         auto layoutTok = next();
@@ -229,7 +221,7 @@ public final class Parser
 
         consume("}");
 
-        return new TypeDeclarationNode(name.location, name, attributes, layout, packingSize, fields);
+        return new TypeDeclarationNode(name.location, name, layout, packingSize, fields);
     }
 
     private ModuleReferenceNode parseModuleReference()

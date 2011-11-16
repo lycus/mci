@@ -26,7 +26,7 @@ body
 
     auto packingSize = node.packingSize ? Nullable!uint(to!uint(node.packingSize.value)) : Nullable!uint();
 
-    return cache.addStructureType(module_, node.name.name, node.attributes, node.layout, packingSize);
+    return cache.addStructureType(module_, node.name.name, node.layout, packingSize);
 }
 
 public Field generateField(FieldDeclarationNode node, StructureType type, Program program)

@@ -21,7 +21,6 @@ public enum TokenType : ubyte
     star,
     slash,
     type,
-    value,
     automatic,
     sequential,
     explicit,
@@ -98,8 +97,6 @@ body
     {
         case "type":
             return TokenType.type;
-        case "value":
-            return TokenType.value;
         case "automatic":
             return TokenType.automatic;
         case "sequential":

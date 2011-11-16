@@ -307,13 +307,12 @@ public class FunctionReferenceNode : Node
 public class TypeDeclarationNode : DeclarationNode
 {
     private SimpleNameNode _name;
-    private TypeAttributes _attributes;
     private TypeLayout _layout;
     private LiteralValueNode _packingSize;
     private NoNullList!FieldDeclarationNode _fields;
 
-    public this(SourceLocation location, SimpleNameNode name, TypeAttributes attributes,
-                TypeLayout layout, LiteralValueNode packingSize, NoNullList!FieldDeclarationNode fields)
+    public this(SourceLocation location, SimpleNameNode name, TypeLayout layout, LiteralValueNode packingSize,
+                NoNullList!FieldDeclarationNode fields)
     in
     {
         assert(location);
@@ -325,7 +324,6 @@ public class TypeDeclarationNode : DeclarationNode
         super(location);
 
         _name = name;
-        _attributes = attributes;
         _layout = layout;
         _packingSize = packingSize;
         _fields = fields.duplicate();
@@ -334,11 +332,6 @@ public class TypeDeclarationNode : DeclarationNode
     @property public final SimpleNameNode name()
     {
         return _name;
-    }
-
-    @property public final TypeAttributes attributes()
-    {
-        return _attributes;
     }
 
     @property public final TypeLayout layout()

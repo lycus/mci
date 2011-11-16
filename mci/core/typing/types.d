@@ -11,12 +11,6 @@ public abstract class Type
     @property public abstract istring name();
 }
 
-public enum TypeAttributes : ubyte
-{
-    none = 0x00,
-    value = 0x01,
-}
-
 public enum TypeLayout : ubyte
 {
     automatic = 0,
@@ -26,7 +20,6 @@ public enum TypeLayout : ubyte
 
 public final class StructureType : Type
 {
-    private TypeAttributes _attributes;
     private TypeLayout _layout;
     private Module _module;
     private string _name;
@@ -34,8 +27,8 @@ public final class StructureType : Type
     private NoNullList!Field _fields;
     private bool _isClosed;
 
-    package this(Module module_, string name, TypeAttributes attributes = TypeAttributes.none,
-                 TypeLayout layout = TypeLayout.automatic, Nullable!uint packingSize = Nullable!uint())
+    package this(Module module_, string name, TypeLayout layout = TypeLayout.automatic,
+                 Nullable!uint packingSize = Nullable!uint())
     in
     {
         assert(module_);
@@ -48,17 +41,11 @@ public final class StructureType : Type
     {
         _module = module_;
         _name = name;
-        _attributes = attributes;
         _layout = layout;
         _packingSize = packingSize;
         _fields = new typeof(_fields)();
 
         (cast(NoNullList!StructureType)module_.types).add(this);
-    }
-
-    @property public TypeAttributes attributes()
-    {
-        return _attributes;
     }
 
     @property public TypeLayout layout()
