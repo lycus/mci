@@ -37,6 +37,9 @@ endif
 all: \
 	libmci.core.a \
 	libmci.assembler.a \
+	libmci.vm \
+	libmci.interpreter \
+	libmci.jit \
 	mci.cli \
 	$(MCI_TESTER)
 
@@ -50,6 +53,9 @@ clean:
 	-rm -f trace.log;
 	-rm -f libmci.core;
 	-rm -f libmci.assembler;
+	-rm -f libmci.vm \
+	-rm -f libmci.interpreter \
+	-rm -f libmci.jit \
 	-rm -f mci.cli;
 	-rm -f mci.tester;
 
@@ -112,7 +118,7 @@ MCI_ASSEMBLER_SOURCES = \
 MCI_ASSEMBLER_DEPS = \
 	libmci.core.a
 
-#################### mci.tester #######################
+#################### mci.tester ####################
 
 MCI_TESTER_DFLAGS = $(DFLAGS) -Xf"mci.tester.json" -deps="mci.tester.deps"
 
@@ -131,7 +137,7 @@ MCI_TESTER_DEPS = \
 	libmci.core.a \
 	libmci.assembler.a
 
-#################### mci.cli #######################
+#################### mci.cli ####################
 
 MCI_CLI_DFLAGS = $(DFLAGS) -Xf"mci.cli.json" -deps="mci.cli.deps"
 
@@ -147,3 +153,43 @@ MCI_CLI_DEPS = \
 	libmci.core.a \
 	libmci.assembler.a
 
+#################### mci.vm ####################
+
+MCI_VM_DFLAGS = $(DFLAGS) -lib -Xf"libmci.vm.json" -deps="libmci.vm.deps"
+
+libmci.vm.a: libmci.core.a
+	$(DPLC) $(MCI_VM_DFLAGS) -of$@ $(MCI_VM_SOURCES) $(MCI_VM_DEPS);
+
+MCI_VM_SOURCES = \
+	mci/vm/all.d
+
+MCI_VM_DEPS = \
+	libmci.core.a
+
+#################### mci.interpreter ####################
+
+MCI_INTERPRETER_DFLAGS = $(DFLAGS) -lib -Xf"libmci.interpreter.json" -deps="libmci.interpreter.deps"
+
+libmci.interpreter.a: libmci.core.a libmci.vm.a
+	$(DPLC) $(MCI_INTERPRETER_DFLAGS) -of$@ $(MCI_INTERPRETER_SOURCES) $(MCI_INTERPRETER_DEPS);
+
+MCI_INTERPRETER_SOURCES = \
+	mci/vm/all.d
+
+MCI_INTERPRETER_DEPS = \
+	libmci.core.a \
+	libmci.vm.a
+
+#################### mci.jit ####################
+
+MCI_JIT_DFLAGS = $(DFLAGS) -lib -Xf"libmci.jit.json" -deps="libmci.jit.deps"
+
+libmci.jit.a: libmci.core.a libmci.vm.a
+	$(DPLC) $(MCI_JIT_DFLAGS) -of$@ $(MCI_JIT_SOURCES) $(MCI_JIT_DEPS);
+
+MCI_JIT_SOURCES = \
+	mci/vm/all.d
+
+MCI_JIT_DEPS = \
+	libmci.core.a \
+	libmci.vm.a
