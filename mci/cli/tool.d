@@ -1,7 +1,8 @@
 module mci.cli.tool;
 
 import mci.core.container,
-       mci.cli.tools.assembler;
+       mci.cli.tools.assembler,
+       mci.cli.tools.interpreter;
 
 public interface Tool
 {
@@ -26,6 +27,8 @@ body
     {
         case "asm":
             return new AssemblerTool();
+        case "interp":
+            return new InterpreterTool();
         default:
             return null;
     }

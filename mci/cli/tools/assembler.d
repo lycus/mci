@@ -24,6 +24,9 @@ public final class AssemblerTool : Tool
 {
     private bool _silent;
     private string _output = "out.mci";
+    private bool _verify;
+    private bool _optimize;
+    private bool _interpret;
 
     private void log(T...)(T args)
     {
@@ -38,8 +41,11 @@ public final class AssemblerTool : Tool
             getopt(args,
                    config.caseSensitive,
                    config.bundling,
+                   "silent|s", &_silent,
                    "output|o", &_output,
-                   "silent|s", &_silent);
+                   "verify|v", &_verify,
+                   "optimize|p", &_optimize,
+                   "interpret|i", &_interpret);
         }
         catch (Exception ex)
         {

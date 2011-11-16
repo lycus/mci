@@ -147,7 +147,8 @@ mci.cli: libmci.core.a libmci.assembler.a
 MCI_CLI_SOURCES = \
 	mci/cli/main.d \
 	mci/cli/tool.d \
-	mci/cli/tools/assembler.d
+	mci/cli/tools/assembler.d \
+	mci/cli/tools/interpreter.d
 
 MCI_CLI_DEPS = \
 	libmci.core.a \

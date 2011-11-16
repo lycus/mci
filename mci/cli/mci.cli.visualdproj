@@ -273,6 +273,7 @@
  <Folder name="mci.cli">
   <Folder name="tools">
    <File path="tools\assembler.d" />
+   <File path="tools\interpreter.d" />
   </Folder>
   <File path="main.d" />
   <File path="tool.d" />
