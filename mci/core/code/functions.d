@@ -105,8 +105,6 @@ public final class Function
         _blocks = new typeof(_blocks)();
         _registers = new typeof(_registers)();
         _parameters = new typeof(_parameters)();
-
-        (cast(NoNullList!Function)module_.functions).add(this);
     }
 
     @property public Module module_()

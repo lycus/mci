@@ -61,6 +61,5 @@ unittest
 {
     auto mod = new Module("stuff");
 
-    assert(isType!(NoNullList!Function)(mod.functions));
     assert(isType!(NoNullList!StructureType)(mod.types));
 }
