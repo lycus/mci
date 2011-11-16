@@ -292,6 +292,6 @@ public class BinaryWriter
         if (isArray!T && isValidType!(ElementType!T))
     {
         foreach (item; value)
-            write(value);
+            write(item);
     }
 }
