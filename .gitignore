@@ -21,5 +21,8 @@ docs/_build
 
 libmci.core
 libmci.assembler
+libmci.interpreter
+libmci.jit
+libmci.vm
 mci.cli
 mci.tester
