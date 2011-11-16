@@ -8,7 +8,7 @@ docs/_build
 *.suo
 *.user
 
-*.rf
+*.mci
 *.o
 *.a
 *.deps
