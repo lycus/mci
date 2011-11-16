@@ -1,0 +1,4 @@
+type automatic Foo
+{
+    field static const int32 bar;
+}

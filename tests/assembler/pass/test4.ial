@@ -1,0 +1,4 @@
+type automatic Foo
+{
+    field int32 bar;
+}
