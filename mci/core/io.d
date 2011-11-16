@@ -60,8 +60,7 @@ public final class FileStream : Stream
     private File _file;
     private FileAccess _access;
 
-    public this(string fileName, FileAccess access = FileAccess.read,
-                FileMode mode = FileMode.open)
+    public this(string fileName, FileAccess access = FileAccess.read, FileMode mode = FileMode.open)
     in
     {
         assert(fileName);
@@ -95,12 +94,12 @@ public final class FileStream : Stream
 
     @property public bool canRead()
     {
-        return (_access & FileAccess.read) != 0;
+        return _access == FileAccess.read || _access == FileAccess.write;
     }
 
     @property public bool canWrite()
     {
-        return (_access & FileAccess.write) != 0;
+        return _access == FileAccess.write;
     }
 
     @property public bool isClosed()
