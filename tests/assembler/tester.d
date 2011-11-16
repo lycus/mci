@@ -21,37 +21,47 @@ private int main()
         return 1;
     }
 
-    return test("pass", cli, 0) && test("fail", cli, 1);
+    return test("pass", cli, 0, true) && test("fail", cli, 1, false);
 }
 
-private bool test(string directory, string cli, int expected)
+private bool test(string directory, string cli, int expected, bool error)
 {
     scope (exit)
         chdir("..");
+
+    writefln("-- Testing '%s' (Expecting '%d') --", directory, expected);
 
     chdir(directory);
 
     foreach (file; dirEntries(".", "*.ial", SpanMode.shallow, false))
     {
-        if (!invoke(file.name, cli, expected))
+        if (!invoke(file.name, cli, expected, error))
             return false;
     }
 
     return true;
 }
 
-private bool invoke(string file, string cli, int expected)
+private bool invoke(string file, string cli, int expected, bool error)
 {
-    auto result = system(cli ~ " asm " ~ file ~ " -o " ~ file[0 .. $ - 4] ~ ".mci");
+    auto command = cli ~ " asm " ~ file ~ " -o " ~ file[0 .. $ - 4] ~ ".mci";
+    auto result = system(command ~ " -s");
 
     if (result != expected)
     {
-        writefln("%s: Failed (%d)", file[2 .. $], result);
+        writefln("%s: Failed ('%d')", file[2 .. $], result);
+
+        if (error)
+        {
+            writefln("Error was:");
+            system(command);
+        }
+
         return false;
     }
     else
     {
-        writefln("%s: Passed (%d)", file[2 .. $], result);
+        writefln("%s: Passed ('%d')", file[2 .. $], result);
         return true;
     }
 }
