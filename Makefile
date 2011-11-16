@@ -120,7 +120,7 @@ mci.tester: libmci.core.a libmci.assembler.a
 	$(DPLC) $(MCI_TESTER_DFLAGS) -of$@ $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS);
 	if [ ${BUILD} = "test" ]; then \
 		gdb --command=mci.gdb mci.tester; \
-	fi;
+	fi; \
     cd tests/assembler; \
     rdmd tester.d;
 
