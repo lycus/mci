@@ -35,7 +35,7 @@ body
         return ExitCode.failure;
     }
 
-    return tool.run(toNoNullList(args[2 .. $])) ? ExitCode.success : ExitCode.error;
+    return tool.run(args[0 .. 1] ~ args[2 .. $]) ? ExitCode.success : ExitCode.error;
 }
 
 private int main(string[] args)

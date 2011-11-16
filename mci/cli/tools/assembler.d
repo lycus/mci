@@ -3,6 +3,7 @@ module mci.cli.tools.assembler;
 import std.algorithm,
        std.conv,
        std.file,
+       std.getopt,
        std.stdio,
        std.utf,
        mci.core.container,
@@ -10,18 +11,43 @@ import std.algorithm,
        mci.assembler.exception,
        mci.assembler.generation.driver,
        mci.assembler.generation.exception,
+       mci.assembler.io.writer,
        mci.assembler.parsing.exception,
        mci.assembler.parsing.lexer,
        mci.assembler.parsing.parser,
        mci.cli.tool;
 
-public enum string fileExtension = ".ial";
+public enum string inputFileExtension = ".ial";
+public enum string outputFileExtension = ".mci";
 
 public final class AssemblerTool : Tool
 {
-    public bool run(NoNullList!string args)
+    public bool run(string[] args)
     {
-        if (args.count == 0)
+        string output = "out.mci";
+
+        try
+        {
+            getopt(args,
+                   config.caseSensitive,
+                   config.bundling,
+                   "output|o", &output);
+        }
+        catch (Exception ex)
+        {
+            writefln("Error parsing command line: %s", ex.msg);
+            return false;
+        }
+
+        if (!endsWith(output, outputFileExtension))
+        {
+            writefln("Output file %s does not end in \".mci\".", output);
+            return false;
+        }
+
+        args = args[1 .. $];
+
+        if (args.length == 0)
         {
             writeln("Error: No modules given.");
             return false;
@@ -31,19 +57,19 @@ public final class AssemblerTool : Tool
 
         foreach (file; args)
         {
-            if (!endsWith(file, fileExtension))
+            if (!endsWith(file, inputFileExtension))
             {
                 writefln("Error: File %s does not end in \".ial\".", file);
                 return false;
             }
 
-            if (file.length <= fileExtension.length)
+            if (file.length <= inputFileExtension.length)
             {
                 writefln("Error: File %s is missing a module name.", file);
                 return false;
             }
 
-            auto modName = file[0 .. $ - fileExtension.length];
+            auto modName = file[0 .. $ - inputFileExtension.length];
 
             foreach (mod; units.keys)
             {
@@ -97,10 +123,14 @@ public final class AssemblerTool : Tool
         try
         {
             auto program = driver.run();
+            auto file = new FileStream(output, FileAccess.write, FileMode.truncate);
+            auto writer = new ProgramWriter(file);
+
+            writer.write(program);
         }
         catch (GenerationException ex)
         {
-            writefln("Generator error in %s (%s%s): %s", driver.currentModule ~ fileExtension, ex.location.line,
+            writefln("Generator error in %s (%s%s): %s", driver.currentModule ~ inputFileExtension, ex.location.line,
                      ex.location.column == 0 ? "" : ", " ~ to!string(ex.location.column), ex.msg);
             return false;
         }

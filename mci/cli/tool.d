@@ -5,10 +5,13 @@ import mci.core.container,
 
 public interface Tool
 {
-    public abstract bool run(NoNullList!string args)
+    public abstract bool run(string[] args)
     in
     {
         assert(args);
+
+        foreach (arg; args)
+            assert(arg);
     }
 }
 

@@ -100,6 +100,9 @@ MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/generation/functions.d \
 	mci/assembler/generation/modules.d \
 	mci/assembler/generation/types.d \
+	mci/assembler/io/common.d \
+	mci/assembler/io/reader.d \
+	mci/assembler/io/writer.d \
 	mci/assembler/parsing/ast.d \
 	mci/assembler/parsing/exception.d \
 	mci/assembler/parsing/lexer.d \
