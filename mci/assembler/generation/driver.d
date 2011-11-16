@@ -5,9 +5,11 @@ import mci.core.common,
        mci.core.program,
        mci.core.tuple,
        mci.core.code.modules,
+       mci.core.typing.members,
        mci.core.typing.types,
        mci.assembler.parsing.ast,
        mci.assembler.parsing.parser,
+       mci.assembler.generation.exception,
        mci.assembler.generation.functions,
        mci.assembler.generation.types;
 
@@ -159,8 +161,17 @@ public final class TypeClosurePass : GeneratorPass
         {
             state.currentModule = type.y.module_.name;
 
+            auto fields = new NoNullList!Field();
+
             foreach (field; type.x.fields)
-                generateField(field, type.y, state.program);
+            {
+                foreach (f; fields)
+                    if (field.name.name == f.name)
+                        throw new GenerationException("Field " ~ type.y.module_.name ~ "/" ~ type.y.name ~ ":" ~
+                                                      field.name.name ~ " already defined.", field.location);
+
+                fields.add(generateField(field, type.y, state.program));
+            }
 
             type.y.close();
         }
