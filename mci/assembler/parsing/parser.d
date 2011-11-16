@@ -233,7 +233,7 @@ public final class Parser
 
     private FunctionPointerTypeReferenceNode parseFunctionPointerTypeReference()
     {
-        auto returnType = parseTypeSpecification();
+        auto returnType = parseTypeSpecification(true);
 
         consume("(");
 
@@ -257,12 +257,12 @@ public final class Parser
         return new FunctionPointerTypeReferenceNode(returnType.location, returnType, params);
     }
 
-    private TypeReferenceNode parseTypeSpecification()
+    private TypeReferenceNode parseTypeSpecification(bool insideFunctionPointer = false)
     {
         auto type = parseTypeReference();
 
         // Handle function pointer types.
-        if (peek().type == TokenType.openParen)
+        if (!insideFunctionPointer && peek().type == TokenType.openParen)
         {
             _stream.movePrevious();
             return parseFunctionPointerTypeReference();
