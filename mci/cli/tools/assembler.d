@@ -90,7 +90,9 @@ public final class AssemblerTool : Tool
 
             try
             {
-                auto source = new Source(cast(string)read(file));
+                auto stream = new FileStream(file, FileAccess.read, FileMode.open);
+                auto reader = new BinaryReader(stream);
+                auto source = new Source(reader, stream.length);
                 auto lexer = new Lexer(source);
                 auto parser = new Parser(lexer.lex());
                 auto unit = parser.parse();
