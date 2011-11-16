@@ -274,6 +274,7 @@
   <Folder name="tools">
    <File path="tools\assembler.d" />
    <File path="tools\interpreter.d" />
+   <File path="tools\verifier.d" />
   </Folder>
   <File path="main.d" />
   <File path="tool.d" />

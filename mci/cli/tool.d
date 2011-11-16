@@ -2,7 +2,8 @@ module mci.cli.tool;
 
 import mci.core.container,
        mci.cli.tools.assembler,
-       mci.cli.tools.interpreter;
+       mci.cli.tools.interpreter,
+       mci.cli.tools.verifier;
 
 public interface Tool
 {
@@ -29,6 +30,8 @@ body
             return new AssemblerTool();
         case "interp":
             return new InterpreterTool();
+        case "verify":
+            return new VerifierTool();
         default:
             return null;
     }
