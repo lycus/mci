@@ -20,11 +20,6 @@ public final class Source
     private SourceLocation _location;
 
     public this(string source)
-    in
-    {
-        assert(source);
-    }
-    body
     {
         initialize(source);
     }
@@ -135,11 +130,6 @@ unittest
 }
 
 private string removeByteOrderMark(string text)
-in
-{
-    assert(text);
-}
-body
 {
     // Stolen from Bernard Helyer's SDC. Thanks!
     if (text.length >= 2 && text[0 .. 2] == [0xfe, 0xff] ||
