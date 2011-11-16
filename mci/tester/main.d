@@ -2,7 +2,10 @@ module mci.tester.main;
 
 import std.stdio,
        mci.assembler.all,
-       mci.core.all;
+       mci.core.all,
+       mci.interpreter.all,
+       mci.jit.all,
+       mci.vm.all;
 
 private int main()
 {
