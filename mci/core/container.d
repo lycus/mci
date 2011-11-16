@@ -190,7 +190,7 @@ unittest
     assert(!contains(list, 1));
 }
 
-public bool contains(T)(Iterable!T iter, bool function(T) criteria)
+public bool contains(T)(Iterable!T iter, scope bool delegate(T) criteria)
 in
 {
     assert(iter);
@@ -211,11 +211,11 @@ unittest
 
     list.add(2);
 
-    assert(contains(list, function(int x) { return x == 2; }));
-    assert(!contains(list, function(int x) { return x == 3; }));
+    assert(contains(list, (int x) { return x == 2; }));
+    assert(!contains(list, (int x) { return x == 3; }));
 }
 
-public T find(T)(Iterable!T iter, bool function(T) criteria, lazy T defaultValue = T.init)
+public T find(T)(Iterable!T iter, scope bool delegate(T) criteria, lazy T defaultValue = T.init)
 in
 {
     assert(iter);
@@ -238,11 +238,11 @@ unittest
     list.add(2);
     list.add(3);
 
-    assert(find(list, function(int x) { return x == 1; }) == 1);
-    assert(find(list, function(int x) { return x == 2; }) == 2);
-    assert(find(list, function(int x) { return x == 3; }) == 3);
-    assert(find(list, function(int x) { return x == 4; }) == int.init);
-    assert(find(list, function(int x) { return x == 5; }, 6) == 6);
+    assert(find(list, (int x) { return x == 1; }) == 1);
+    assert(find(list, (int x) { return x == 2; }) == 2);
+    assert(find(list, (int x) { return x == 3; }) == 3);
+    assert(find(list, (int x) { return x == 4; }) == int.init);
+    assert(find(list, (int x) { return x == 5; }, 6) == 6);
 }
 
 public class List(T) : Indexable!T
