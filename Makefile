@@ -121,6 +121,8 @@ mci.tester: libmci.core.a libmci.assembler.a
 	if [ ${BUILD} = "test" ]; then \
 		gdb --command=mci.gdb mci.tester; \
 	fi;
+    cd tests/assembler; \
+    rdmd tester.d;
 
 MCI_TESTER_SOURCES = \
 	mci/tester/main.d
