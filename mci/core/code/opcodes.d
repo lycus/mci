@@ -141,7 +141,6 @@ public final class OpCode
     }
 }
 
-// TODO: Add exception handling opcodes.
 public __gshared OpCode opNop;
 public __gshared OpCode opComment;
 public __gshared OpCode opDead;
@@ -214,6 +213,10 @@ public __gshared OpCode opJumpFalse;
 public __gshared OpCode opLeave;
 public __gshared OpCode opReturn;
 public __gshared OpCode opPhi;
+public __gshared OpCode opExThrow;
+public __gshared OpCode opExTry;
+public __gshared OpCode opExHandle;
+public __gshared OpCode opExEnd;
 
 public __gshared Countable!OpCode allOpCodes;
 
@@ -304,6 +307,10 @@ static this()
     opLeave = create("leave", OpCodeType.controlFlow, OperandType.none, 0, false);
     opReturn = create("return", OpCodeType.controlFlow, OperandType.none, 1, false);
     opPhi = create("phi", OpCodeType.normal, OperandType.selector, 0, true);
+    opExThrow = create("ex.throw", OpCodeType.controlFlow, OperandType.uint32, 1, false);
+    opExTry = create("ex.try", OpCodeType.annotation, OperandType.none, 0, false);
+    opExHandle = create("ex.handle", OpCodeType.controlFlow, OperandType.uint32, 0, true);
+    opExEnd = create("ex.end", OpCodeType.annotation, OperandType.none, 0, false);
 
     allOpCodes = opCodes;
 }
