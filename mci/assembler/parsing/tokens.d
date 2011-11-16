@@ -59,31 +59,16 @@ public enum TokenType : ubyte
 
 public TokenType charToType(dchar chr)
 {
-    switch (chr)
-    {
-        case '{':
-            return TokenType.openBrace;
-        case '}':
-            return TokenType.closeBrace;
-        case '(':
-            return TokenType.openParen;
-        case ')':
-            return TokenType.closeParen;
-        case ':':
-            return TokenType.colon;
-        case ';':
-            return TokenType.semicolon;
-        case ',':
-            return TokenType.comma;
-        case '=':
-            return TokenType.equals;
-        case '*':
-            return TokenType.star;
-        case '/':
-            return TokenType.slash;
-        default:
-            assert(false);
-    }
+    return ['{' : TokenType.openBrace,
+            '}' : TokenType.closeBrace,
+            '(' : TokenType.openParen,
+            ')' : TokenType.closeParen,
+            ':' : TokenType.colon,
+            ';' : TokenType.semicolon,
+            ',' : TokenType.comma,
+            '=' : TokenType.equals,
+            '*' : TokenType.star,
+            '/' : TokenType.slash][cast(char)chr];
 }
 
 public TokenType identifierToType(string identifier)
@@ -93,77 +78,42 @@ in
 }
 body
 {
-    switch (identifier)
-    {
-        case "type":
-            return TokenType.type;
-        case "automatic":
-            return TokenType.automatic;
-        case "sequential":
-            return TokenType.sequential;
-        case "explicit":
-            return TokenType.explicit;
-        case "field":
-            return TokenType.field;
-        case "static":
-            return TokenType.static_;
-        case "const":
-            return TokenType.constant;
-        case "function":
-            return TokenType.function_;
-        case "qcall":
-            return TokenType.queueCall;
-        case "ccall":
-            return TokenType.cdecl;
-        case "scall":
-            return TokenType.stdCall;
-        case "tcall":
-            return TokenType.thisCall;
-        case "fcall":
-            return TokenType.fastCall;
-        case "pure":
-            return TokenType.pure_;
-        case "nooptimize":
-            return TokenType.noOptimization;
-        case "noinline":
-            return TokenType.noInlining;
-        case "nocallinline":
-            return TokenType.noCallInlining;
-        case "register":
-            return TokenType.register;
-        case "block":
-            return TokenType.block;
-        case "unit":
-            return TokenType.unit;
-        case "int8":
-            return TokenType.int8;
-        case "uint8":
-            return TokenType.uint8;
-        case "int16":
-            return TokenType.int16;
-        case "uint16":
-            return TokenType.uint16;
-        case "int32":
-            return TokenType.int32;
-        case "uint32":
-            return TokenType.uint32;
-        case "int64":
-            return TokenType.int64;
-        case "uint64":
-            return TokenType.uint64;
-        case "int":
-            return TokenType.int_;
-        case "uint":
-            return TokenType.uint_;
-        case "float32":
-            return TokenType.float32;
-        case "float64":
-            return TokenType.float64;
-        case "float":
-            return TokenType.float_;
-        default:
-            break;
-    }
+    auto keywordsToTypes = ["type" : TokenType.type,
+                            "automatic" : TokenType.automatic,
+                            "sequential" : TokenType.sequential,
+                            "explicit" : TokenType.explicit,
+                            "field" : TokenType.field,
+                            "static" : TokenType.static_,
+                            "const" : TokenType.constant,
+                            "function" : TokenType.function_,
+                            "qcall" : TokenType.queueCall,
+                            "ccall" : TokenType.cdecl,
+                            "scall" : TokenType.stdCall,
+                            "tcall" : TokenType.thisCall,
+                            "fcall" : TokenType.fastCall,
+                            "pure" : TokenType.pure_,
+                            "nooptimize" : TokenType.noOptimization,
+                            "noinline" : TokenType.noInlining,
+                            "nocallinline" : TokenType.noCallInlining,
+                            "register" : TokenType.register,
+                            "block" : TokenType.block,
+                            "unit" : TokenType.unit,
+                            "int8" : TokenType.int8,
+                            "uint8" : TokenType.uint8,
+                            "int16" : TokenType.int16,
+                            "uint16" : TokenType.uint16,
+                            "int32" : TokenType.int32,
+                            "uint32" : TokenType.uint32,
+                            "int64" : TokenType.int64,
+                            "uint64" : TokenType.uint64,
+                            "int" : TokenType.int_,
+                            "uint" : TokenType.uint_,
+                            "float32" : TokenType.float32,
+                            "float64" : TokenType.float64,
+                            "float" : TokenType.float_];
+
+    if (auto type = identifier in keywordsToTypes)
+        return *type;
 
     foreach (opCode; allOpCodes)
         if (identifier == opCode.name)
