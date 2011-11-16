@@ -190,6 +190,61 @@ unittest
     assert(!contains(list, 1));
 }
 
+public bool contains(T)(Iterable!T iter, bool function(T) criteria)
+in
+{
+    assert(iter);
+    assert(criteria);
+}
+body
+{
+    foreach (item; iter)
+        if (criteria(item))
+            return true;
+
+    return false;
+}
+
+unittest
+{
+    auto list = new List!int();
+
+    list.add(2);
+
+    assert(contains(list, function(int x) { return x == 2; }));
+    assert(!contains(list, function(int x) { return x == 3; }));
+}
+
+public T find(T)(Iterable!T iter, bool function(T) criteria, lazy T defaultValue = T.init)
+in
+{
+    assert(iter);
+    assert(criteria);
+}
+body
+{
+    foreach (item; iter)
+        if (criteria(item))
+            return item;
+
+    return defaultValue;
+}
+
+unittest
+{
+    auto list = new List!int();
+
+    list.add(1);
+    list.add(2);
+    list.add(3);
+
+    assert(find(list, function(int x) { return x == 1; }) == 1);
+    assert(find(list, function(int x) { return x == 2; }) == 2);
+    assert(find(list, function(int x) { return x == 3; }) == 3);
+    assert(find(list, function(int x) { return x == 4; }) == int.init);
+    assert(find(list, function(int x) { return x == 5; }, 6) == 6);
+}
+
 public class List(T) : Indexable!T
 {
     private T[] _array;
