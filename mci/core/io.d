@@ -1,10 +1,10 @@
 module mci.core.io;
 
-import std.range,
-       std.stdio,
+import std.stdio,
        std.traits,
        mci.core.common,
-       mci.core.config;
+       mci.core.config,
+       mci.core.meta;
 
 public interface Stream
 {
@@ -243,12 +243,14 @@ public class BinaryReader
     }
 
     public final T readArray(T)(size_t length)
-        if (isArray!T && isValidType!(ElementType!T))
+        if (isArray!T && isValidType!(ArrayElementType!T))
     {
         T arr;
 
+        // We have to unqualify the element type, as writing elements with
+        // immutable or const will fail.
         for (size_t i = 0; i < length; i++)
-            arr ~= read!(ElementType!T)();
+            arr ~= read!(Unqual!(ArrayElementType!T))();
 
         return arr;
     }
@@ -288,7 +290,7 @@ public class BinaryWriter
     }
 
     public final void writeArray(T)(T value)
-        if (isArray!T && isValidType!(ElementType!T))
+        if (isArray!T && isValidType!(ArrayElementType!T))
     {
         foreach (item; value)
             write(item);
