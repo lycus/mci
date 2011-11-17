@@ -122,7 +122,7 @@ MCI_ASSEMBLER_DEPS = \
 
 MCI_TESTER_DFLAGS = $(DFLAGS) -Xf"mci.tester.json" -deps="mci.tester.deps"
 
-mci.tester: libmci.core.a libmci.assembler.a
+mci.tester: libmci.core.a libmci.assembler.a libmci.vm.a libmci.interpreter.a libmci.jit.a
 	$(DPLC) $(MCI_TESTER_DFLAGS) -of$@ $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS);
 	if [ ${BUILD} = "test" ]; then \
 		gdb --command=mci.gdb mci.tester; \
@@ -135,7 +135,10 @@ MCI_TESTER_SOURCES = \
 
 MCI_TESTER_DEPS = \
 	libmci.core.a \
-	libmci.assembler.a
+	libmci.assembler.a \
+	libmci.vm.a \
+	libmci.interpreter.a \
+	libmci.jit.a
 
 #################### mci.cli ####################
 
