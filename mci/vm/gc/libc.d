@@ -59,18 +59,18 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
 
     public RuntimeObject allocate(Type type, size_t size)
     {
-        // TODO: We'll want to use emplace here, instead of calling __ctor manually.
-        auto mem = cast(RuntimeObject)malloc(__traits(classInstanceSize, RuntimeObject) + size);
-        mem.__ctor(type, _generation);
+        auto length = __traits(classInstanceSize, RuntimeObject) + size;
+        auto mem = malloc(length);
+        auto obj = emplace!RuntimeObject(mem[0 .. length], type, _generation);
 
         synchronized (_lock)
             _objectCount++;
 
         synchronized (_cbLock)
             foreach (cb; _allocCallbacks)
-                cb(mem);
+                cb(obj);
 
-        return mem;
+        return obj;
     }
 
     public void free(RuntimeObject data)

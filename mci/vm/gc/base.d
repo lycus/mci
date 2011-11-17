@@ -8,7 +8,7 @@ public final class RuntimeObject
     private Type _type;
     private GCGeneration _generation;
 
-    package this(Type type, GCGeneration generation)
+    public this(Type type, GCGeneration generation)
     in
     {
         assert(type);

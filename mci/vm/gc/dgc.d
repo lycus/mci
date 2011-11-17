@@ -1,6 +1,7 @@
 module mci.vm.gc.dgc;
 
 import core.memory,
+       std.conv,
        mci.core.container,
        mci.core.typing.types,
        mci.vm.gc.base;
@@ -44,10 +45,11 @@ public final class DGarbageCollector : GarbageCollector
 
     public RuntimeObject allocate(Type type, size_t size)
     {
-        auto mem = cast(RuntimeObject)GC.malloc(__traits(classInstanceSize, RuntimeObject) + size);
-        mem.__ctor(type, _generation);
+        auto length = __traits(classInstanceSize, RuntimeObject) + size;
+        auto mem = GC.malloc(length);
+        auto obj = emplace!RuntimeObject(mem[0 .. length], type, _generation);
 
-        return mem;
+        return obj;
     }
 
     public void free(RuntimeObject data)
