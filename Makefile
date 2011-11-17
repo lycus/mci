@@ -53,9 +53,9 @@ clean:
 	-rm -f trace.log;
 	-rm -f libmci.core;
 	-rm -f libmci.assembler;
-	-rm -f libmci.vm \
-	-rm -f libmci.interpreter \
-	-rm -f libmci.jit \
+	-rm -f libmci.vm;
+	-rm -f libmci.interpreter;
+	-rm -f libmci.jit;
 	-rm -f mci.cli;
 	-rm -f mci.tester;
 
