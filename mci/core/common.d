@@ -85,11 +85,7 @@ public enum Architecture : ubyte
     ppc,
     ia64,
     mips,
-    sparc,
     s390,
-    hppa,
-    sh,
-    alpha,
 }
 
 public enum Endianness : ubyte
@@ -108,7 +104,6 @@ public enum OperatingSystem : ubyte
     openbsd,
     solaris,
     aix,
-    skyos,
     hurd,
 }
 

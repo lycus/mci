@@ -116,18 +116,6 @@ else version (MIPS64)
 
     public enum Architecture architecture = Architecture.mips;
 }
-else version (SPARC)
-{
-    pragma(msg, "- Architecture: SPARC (32-bit)");
-
-    public enum Architecture architecture = Architecture.sparc;
-}
-else version (SPARC64)
-{
-    pragma(msg, "- Architecture: SPARC (64-bit)");
-
-    public enum Architecture architecture = Architecture.sparc;
-}
 else version (S390)
 {
     pragma(msg, "- Architecture: System/390 (32-bit)");
@@ -140,35 +128,33 @@ else version (S390X)
 
     public enum Architecture architecture = Architecture.s390;
 }
+else version (SPARC)
+{
+    static assert(false, "The SPARC architecture is not supported.");
+}
+else version (SPARC64)
+{
+    static assert(false, "The SPARC architecture is not supported.");
+}
 else version (HPPA)
 {
-    pragma(msg, "- Architecture: PA-RISC (32-bit)");
-
-    public enum Architecture architecture = Architecture.hppa;
+    static assert(false, "The PA-RISC architecture is not supported.");
 }
 else version (HPPA64)
 {
-    pragma(msg, "- Architecture: PA-RISC (64-bit)");
-
-    public enum Architecture architecture = Architecture.hppa;
+    static assert(false, "The PA-RISC architecture is not supported.");
 }
 else version (SH)
 {
-    pragma(msg, "- Architecture: SuperH (32-bit)");
-
-    public enum Architecture architecture = Architecture.sh;
+    static assert(false, "The SuperH architecture is not supported.");
 }
 else version (SH64)
 {
-    pragma(msg, "- Architecture: SuperH (64-bit)");
-
-    public enum Architecture architecture = Architecture.sh;
+    static assert(false, "The SuperH architecture is not supported.");
 }
 else version (Alpha)
 {
-    pragma(msg, "- Architecture: Alpha (64-bit)");
-
-    public enum Architecture architecture = Architecture.alpha;
+    static assert(false, "The Alpha architecture is not supported.");
 }
 else
 {
@@ -254,12 +240,6 @@ else version (Posix)
 
         public enum OperatingSystem operatingSystem = OperatingSystem.solaris;
     }
-    else version (SkyOS)
-    {
-        pragma(msg, "- Operating System: SkyOS");
-
-        public enum OperatingSystem operatingSystem = OperatingSystem.skyos;
-    }
     else version (Hurd)
     {
         pragma(msg, "- Operating System: Hurd");
@@ -277,6 +257,10 @@ else version (Posix)
         pragma(msg, "- Operating System: OS X");
 
         public enum OperatingSystem operatingSystem = OperatingSystem.osx;
+    }
+    else version (SkyOS)
+    {
+        static assert(false, "SkyOS is not supported.");
     }
     else version (SysV3)
     {
