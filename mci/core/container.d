@@ -886,16 +886,6 @@ public NoNullList!T toNoNullList(T)(Iterable!T iter)
     return l;
 }
 
-public NoNullList!T toNoNullList(T)(T[] items ...)
-{
-    auto list = new NoNullList!T();
-
-    foreach (item; items)
-        list.add(item);
-
-    return list;
-}
-
 public class Dictionary(K, V) : Map!(K, V)
 {
     private V[K] _aa;
