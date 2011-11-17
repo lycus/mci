@@ -190,7 +190,10 @@ libmci.jit.a: libmci.core.a libmci.vm.a
 	$(DPLC) $(MCI_JIT_DFLAGS) -of$@ $(MCI_JIT_SOURCES) $(MCI_JIT_DEPS);
 
 MCI_JIT_SOURCES = \
-	mci/vm/all.d
+	mci/vm/all.d \
+	mci/vm/gc/base.d \
+	mci/vm/gc/dgc.d \
+	mci/vm/gc/libc.d
 
 MCI_JIT_DEPS = \
 	libmci.core.a \

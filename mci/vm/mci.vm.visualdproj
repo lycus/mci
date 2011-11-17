@@ -1,5 +1,5 @@
 <DProject>
- <ProjectGuid>{97197E6E-6919-4743-9637-DF02DE3E4667}</ProjectGuid>
+ <ProjectGuid>{267FCE98-95C1-4C1C-90CE-56E0D903CAA7}</ProjectGuid>
  <Config name="Debug">
   <obj>0</obj>
   <link>0</link>
@@ -271,6 +271,11 @@
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="mci.vm">
+  <Folder name="gc">
+   <File path="gc\base.d" />
+   <File path="gc\dgc.d" />
+   <File path="gc\libc.d" />
+  </Folder>
   <File path="all.d" />
  </Folder>
 </DProject>
