@@ -49,9 +49,9 @@ public interface Indexable(T) : Collection!T
 
     public T opIndexAssign(T item, size_t index);
 
-    public Countable!T opSlice();
+    public Indexable!T opSlice();
 
-    public Countable!T opSlice(size_t x, size_t y);
+    public Indexable!T opSlice(size_t x, size_t y);
 }
 
 public interface Map(K, V) : Collection!(Tuple!(K, V))
