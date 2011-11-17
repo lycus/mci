@@ -106,6 +106,31 @@ public interface Map(K, V) : Collection!(Tuple!(K, V))
     public Countable!V values();
 }
 
+public Iterable!T asIterable(T)(Iterable!T items)
+{
+    return items;
+}
+
+public Countable!T asCountable(T)(Countable!T items)
+{
+    return items;
+}
+
+public Collection!T asCollection(T)(Collection!T items)
+{
+    return items;
+}
+
+public Indexable!T asIndexable(T)(Indexable!T items)
+{
+    return items;
+}
+
+public Map!(K, V) asMap(K, V)(Map!(K, V) items)
+{
+    return items;
+}
+
 public void addRange(T, V)(Collection!T col, V values)
     if (isIterable!V)
 in
@@ -215,6 +240,33 @@ unittest
     assert(!contains(list, (int x) { return x == 3; }));
 }
 
+public bool all(T)(Iterable!T iter, scope bool delegate(T) criteria)
+in
+{
+    assert(iter);
+    assert(criteria);
+}
+body
+{
+    foreach (item; iter)
+        if (!criteria(item))
+            return false;
+
+    return true;
+}
+
+unittest
+{
+    auto list = new List!int();
+
+    list.add(1);
+    list.add(2);
+    list.add(3);
+
+    assert(all(list, (int x) { return x != 0; }));
+    assert(!all(list, (int x) { return x == 2; }));
+}
+
 public T find(T)(Iterable!T iter, scope bool delegate(T) criteria, lazy T defaultValue = T.init)
 in
 {
@@ -245,9 +297,304 @@ unittest
     assert(find(list, (int x) { return x == 5; }, 6) == 6);
 }
 
+public Iterable!R map(T, R)(Iterable!T iter, scope R delegate(T) selector)
+in
+{
+    assert(iter);
+    assert(selector);
+}
+body
+{
+    auto results = new List!R();
+
+    foreach (item; iter)
+        results.add(selector(item));
+
+    return results;
+}
+
+unittest
+{
+    auto list = new List!int();
+
+    list.add(1);
+    list.add(2);
+    list.add(3);
+
+    auto list2 = new List!int((map(list, (int x) { return x * x; })));
+
+    assert(list2[0] == 1);
+    assert(list2[1] == 4);
+    assert(list2[2] == 9);
+}
+
+public R aggregate(T, R)(Iterable!T iter, scope R delegate(R, T) selector, R seed = R.init)
+in
+{
+    assert(iter);
+    assert(selector);
+}
+body
+{
+    auto result = seed;
+
+    foreach (item; iter)
+        result = selector(result, item);
+
+    return result;
+}
+
+unittest
+{
+    auto list = new List!int();
+
+    list.add(1);
+    list.add(2);
+    list.add(3);
+
+    assert(aggregate(list, (int x, int y) { return x + y; }) == 6);
+}
+
+public Iterable!T concat(T)(Iterable!T iter, Iterable!T other)
+in
+{
+    assert(iter);
+    assert(other);
+}
+body
+{
+    auto list = new List!T();
+
+    foreach (item; iter)
+        list.add(item);
+
+    foreach (item; other)
+        list.add(item);
+
+    return list;
+}
+
+unittest
+{
+    auto list1 = new List!int();
+
+    list1.add(1);
+    list1.add(2);
+    list1.add(3);
+
+    auto list2 = new List!int();
+
+    list2.add(4);
+    list2.add(5);
+
+    auto list3 = new List!int(concat(list1, list2));
+
+    assert(list3[0] == 1);
+    assert(list3[1] == 2);
+    assert(list3[2] == 3);
+    assert(list3[3] == 4);
+    assert(list3[4] == 5);
+}
+
+public Iterable!T filter(T)(Iterable!T iter, scope bool delegate(T) filter)
+in
+{
+    assert(iter);
+    assert(filter);
+}
+body
+{
+    auto list = new List!T();
+
+    foreach (item; iter)
+        if (filter(item))
+            list.add(item);
+
+    return list;
+}
+
+unittest
+{
+    auto list = new List!string();
+
+    list.add("foo");
+    list.add(null);
+    list.add("bar");
+    list.add("baz");
+    list.add(null);
+
+    auto list2 = filter(list, (string s) { return s != null; });
+
+    assert(all(list2, (string s) { return s != null; }));
+}
+
+public bool isEmpty(T)(Iterable!T iter)
+in
+{
+    assert(iter);
+}
+body
+{
+    foreach (item; iter)
+        return false;
+
+    return true;
+}
+
+unittest
+{
+    auto list1 = new List!int();
+
+    assert(isEmpty(list1));
+}
+
+unittest
+{
+    auto list2 = new List!int();
+
+    list2.add(2);
+    list2.add(5);
+
+    assert(!isEmpty(list2));
+}
+
+public size_t count(T)(Iterable!T iter)
+in
+{
+    assert(iter);
+}
+body
+{
+    size_t count;
+
+    foreach (item; iter)
+        count++;
+
+    return count;
+}
+
+unittest
+{
+    auto list1 = new List!int();
+
+    assert(count(list1) == 0);
+}
+
+unittest
+{
+    auto list2 = new List!int();
+
+    list2.add(1);
+    list2.add(2);
+    list2.add(3);
+
+    assert(count(list2) == 3);
+}
+
+public Iterable!R castItems(R, T)(Iterable!T iter)
+in
+{
+    assert(iter);
+}
+body
+{
+    auto list = new List!R();
+
+    foreach (item; iter)
+        list.add(cast(R)item);
+
+    return list;
+}
+
+unittest
+{
+    auto list = new List!int();
+
+    list.add(1);
+    list.add(2);
+    list.add(3);
+
+    auto list2 = new List!float(castItems!float(list));
+
+    assert(list2[0] == 1.0f);
+    assert(list2[1] == 2.0f);
+    assert(list2[2] == 3.0f);
+}
+
+public Iterable!R ofType(R, T)(Iterable!T iter)
+in
+{
+    assert(iter);
+}
+body
+{
+    auto list = new List!R();
+
+    foreach (item; iter)
+        if (auto casted = cast(R)item)
+            list.add(casted);
+
+    return list;
+}
+
+public bool equal(T)(Iterable!T iter, Iterable!T other)
+in
+{
+    assert(iter);
+    assert(other);
+}
+body
+{
+    auto list1 = new List!T(iter);
+    auto list2 = new List!T(other);
+
+    if (list1.count != list2.count)
+        return false;
+
+    for (size_t i = 0; i < list1.count; i++)
+        if (list1[i] != list2[i])
+            return false;
+
+    return true;
+}
+
+unittest
+{
+    auto list1 = toList(1, 2, 3);
+    auto list2 = toList(1, 2, 3);
+
+    assert(equal(list1, list2));
+}
+
+unittest
+{
+    auto list1 = toList(1, 2, 3);
+    auto list2 = toList(4, 5, 6);
+
+    assert(!equal(list1, list2));
+}
+
+unittest
+{
+    auto list1 = toList(1, 2, 3);
+    auto list2 = toList(4, 5);
+
+    assert(!equal(list1, list2));
+}
+
 public class List(T) : Indexable!T
 {
     private T[] _array;
+
+    public this()
+    {
+    }
+
+    public this(Iterable!T items)
+    {
+        foreach (item; items)
+            add(item);
+    }
 
     public final int opApply(scope int delegate(ref T) dg)
     {
@@ -454,11 +801,6 @@ public Countable!T toCountable(T)(T[] items ...)
     return toList(items);
 }
 
-public Countable!T asCountable(T)(Countable!T items)
-{
-    return items;
-}
-
 unittest
 {
     auto list = toCountable(1, 2, 3);
@@ -480,6 +822,16 @@ unittest
 
 public class NoNullList(T) : List!T
 {
+    public this()
+    {
+    }
+
+    public this(Iterable!T items)
+    {
+        foreach (item; items)
+            add(item);
+    }
+
     public override NoNullList!T duplicate()
     {
         auto l = new NoNullList!T();
@@ -547,6 +899,16 @@ public NoNullList!T toNoNullList(T)(T[] items ...)
 public class Dictionary(K, V) : Map!(K, V)
 {
     private V[K] _aa;
+
+    public this()
+    {
+    }
+
+    public this(Map!(K, V) items)
+    {
+        foreach (item; items)
+            add(item);
+    }
 
     public final int opApply(scope int delegate(ref Tuple!(K, V)) dg)
     {
@@ -744,4 +1106,14 @@ public class NoNullDictionary(K, V) : Dictionary!(K, V)
         static if (isNullable!V)
             assert(value);
     }
+}
+
+public NoNullDictionary!(K, V) toNullDictionary(K, V)(Iterable!(Tuple!(K, V)) iter)
+{
+    auto d = new NoNullDictionary!(K, V)();
+
+    foreach (item; iter)
+        d.add(item);
+
+    return d;
 }
