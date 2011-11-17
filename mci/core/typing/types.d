@@ -109,6 +109,7 @@ public final class StructureType : Type
     {
         assert(name);
         assert(type);
+        assert(layout == TypeLayout.explicit ? offset.hasValue : !offset.hasValue);
         assert(!contains(_fields, (Field f) { return f.name == name; }));
         assert(!_isClosed);
     }

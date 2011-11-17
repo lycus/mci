@@ -25,6 +25,7 @@ public final class Field
         assert(_declaringType);
         assert(_name);
         assert(_type);
+        assert(_declaringType.layout == TypeLayout.explicit ? _offset.hasValue : !_offset.hasValue);
     }
 
     package this(StructureType declaringType, string name, Type type, FieldAttributes attributes = FieldAttributes.none,
@@ -34,6 +35,7 @@ public final class Field
         assert(declaringType);
         assert(name);
         assert(type);
+        assert(declaringType.layout == TypeLayout.explicit ? offset.hasValue : !offset.hasValue);
     }
     body
     {
