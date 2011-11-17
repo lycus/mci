@@ -1,10 +1,10 @@
-module mci.vm.gc.dgc;
+module mci.vm.memory.dgc;
 
 import core.memory,
        std.conv,
        mci.core.container,
        mci.core.typing.types,
-       mci.vm.gc.base;
+       mci.vm.memory.base;
 
 public final class DGeneration : GCGeneration
 {

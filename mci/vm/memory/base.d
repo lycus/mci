@@ -1,4 +1,4 @@
-module mci.vm.gc.base;
+module mci.vm.memory.base;
 
 import mci.core.container,
        mci.core.typing.types;

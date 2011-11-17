@@ -194,10 +194,10 @@ libmci.jit.a: libmci.core.a libmci.vm.a
 
 MCI_JIT_SOURCES = \
 	mci/vm/all.d \
-	mci/vm/gc/base.d \
-	mci/vm/gc/dgc.d \
-	mci/vm/gc/layout.d \
-	mci/vm/gc/libc.d
+	mci/vm/memory/base.d \
+	mci/vm/memory/dgc.d \
+	mci/vm/memory/layout.d \
+	mci/vm/memory/libc.d
 
 MCI_JIT_DEPS = \
 	libmci.core.a \

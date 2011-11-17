@@ -1,4 +1,4 @@
-module mci.vm.gc.layout;
+module mci.vm.memory.layout;
 
 import mci.core.common,
        mci.core.container,

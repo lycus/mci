@@ -1,10 +1,10 @@
-module mci.vm.gc.libc;
+module mci.vm.memory.libc;
 
 import core.stdc.stdlib,
        std.conv,
        mci.core.container,
        mci.core.typing.types,
-       mci.vm.gc.base;
+       mci.vm.memory.base;
 
 public final class LibCGeneration : GCGeneration
 {
