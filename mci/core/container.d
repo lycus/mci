@@ -514,21 +514,6 @@ body
     return list;
 }
 
-unittest
-{
-    auto list = new List!int();
-
-    list.add(1);
-    list.add(2);
-    list.add(3);
-
-    auto list2 = new List!float(castItems!float(list));
-
-    assert(list2[0] == 1.0f);
-    assert(list2[1] == 2.0f);
-    assert(list2[2] == 3.0f);
-}
-
 public Iterable!R ofType(R, T)(Iterable!T iter)
 in
 {
