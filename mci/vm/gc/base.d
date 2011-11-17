@@ -8,6 +8,12 @@ public final class RuntimeObject
     private Type _type;
     private GCGeneration _generation;
 
+    invariant()
+    {
+        assert(_type);
+        assert(_generation);
+    }
+
     public this(Type type, GCGeneration generation)
     in
     {
@@ -21,11 +27,21 @@ public final class RuntimeObject
     }
 
     @property public Type type()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _type;
     }
 
     @property public GCGeneration generation()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _generation;
     }
