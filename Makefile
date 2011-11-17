@@ -196,6 +196,7 @@ MCI_JIT_SOURCES = \
 	mci/vm/all.d \
 	mci/vm/gc/base.d \
 	mci/vm/gc/dgc.d \
+	mci/vm/gc/layout.d \
 	mci/vm/gc/libc.d
 
 MCI_JIT_DEPS = \

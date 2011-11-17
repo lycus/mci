@@ -274,6 +274,7 @@
   <Folder name="gc">
    <File path="gc\base.d" />
    <File path="gc\dgc.d" />
+   <File path="gc\layout.d" />
    <File path="gc\libc.d" />
   </Folder>
   <File path="all.d" />
