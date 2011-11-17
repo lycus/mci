@@ -128,6 +128,20 @@ public final class Token
     private istring _value;
     private SourceLocation _location;
 
+    invariant()
+    {
+        if (_type == TokenType.begin || _type == TokenType.end)
+        {
+            assert(!_value);
+            assert(!_location);
+        }
+        else
+        {
+            assert(_value);
+            assert(_location);
+        }
+    }
+
     public this(TokenType type, string value, SourceLocation location)
     in
     {
@@ -155,11 +169,27 @@ public final class Token
     }
 
     @property public istring value()
+    out (result)
+    {
+        if (_type == TokenType.begin || _type == TokenType.end)
+            assert(!result);
+        else
+            assert(result);
+    }
+    body
     {
         return _value;
     }
 
     @property public SourceLocation location()
+    out (result)
+    {
+        if (_type == TokenType.begin || _type == TokenType.end)
+            assert(!result);
+        else
+            assert(result);
+    }
+    body
     {
         return _location;
     }
@@ -167,17 +197,37 @@ public final class Token
 
 public interface TokenStream
 {
-    @property public Token current();
+    @property public Token current()
+    out (result)
+    {
+        assert(result);
+    }
 
-    @property public Token previous();
+    @property public Token previous()
+    out (result)
+    {
+        assert(result);
+    }
 
-    @property public Token next();
+    @property public Token next()
+    out (result)
+    {
+        assert(result);
+    }
 
     @property public bool done();
 
-    public Token movePrevious();
+    public Token movePrevious()
+    out (result)
+    {
+        assert(result);
+    }
 
-    public Token moveNext();
+    public Token moveNext()
+    out (result)
+    {
+        assert(result);
+    }
 
     public void reset();
 }
@@ -186,6 +236,14 @@ public final class MemoryTokenStream : TokenStream
 {
     private NoNullList!Token _stream;
     private size_t _position;
+
+    invariant()
+    {
+        assert(_stream);
+        assert(_stream.count >= 2);
+        assert(_stream[0].type == TokenType.begin);
+        assert(_stream[_stream.count - 1].type == TokenType.end);
+    }
 
     public this(NoNullList!Token stream)
     in

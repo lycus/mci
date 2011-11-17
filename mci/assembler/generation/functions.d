@@ -20,6 +20,10 @@ in
     assert(module_);
     assert(program);
 }
+out (result)
+{
+    assert(result);
+}
 body
 {
     if (contains(module_.functions, (Function f) { return f.name == node.name.name; }))
@@ -146,6 +150,10 @@ in
     assert(module_);
     assert(program);
 }
+out (result)
+{
+    assert(result);
+}
 body
 {
     auto mod = node.moduleName ? resolveModule(node.moduleName, program) : module_;
@@ -163,6 +171,10 @@ in
     assert(node);
     assert(function_);
 }
+out (result)
+{
+    assert(result);
+}
 body
 {
     if (auto reg = find(function_.registers, (Register r) { return r.name == node.name.name; }))
@@ -176,6 +188,10 @@ in
 {
     assert(node);
     assert(function_);
+}
+out (result)
+{
+    assert(result);
 }
 body
 {

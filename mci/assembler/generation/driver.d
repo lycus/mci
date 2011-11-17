@@ -21,6 +21,14 @@ public final class GeneratorState
     private NoNullDictionary!(TypeDeclarationNode, StructureType) _types;
     private string _currentModule;
 
+    invariant()
+    {
+        assert(_program);
+        assert(_units);
+        assert(_moduleUnits);
+        assert(_types);
+    }
+
     public this(NoNullDictionary!(string, CompilationUnit) units)
     in
     {
@@ -35,21 +43,41 @@ public final class GeneratorState
     }
 
     @property public Program program()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _program;
     }
 
     @property public Countable!(Tuple!(string, CompilationUnit)) units()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _units;
     }
 
     @property public NoNullDictionary!(Module, CompilationUnit) moduleUnits()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _moduleUnits;
     }
 
     @property public NoNullDictionary!(TypeDeclarationNode, StructureType) types()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _types;
     }
@@ -76,6 +104,12 @@ public final class GeneratorDriver
     private NoNullList!GeneratorPass _passes;
     private bool _run;
 
+    invariant()
+    {
+        assert(_state);
+        assert(_passes);
+    }
+
     public this(NoNullDictionary!(string, CompilationUnit) units)
     in
     {
@@ -96,6 +130,10 @@ public final class GeneratorDriver
     in
     {
         assert(!_run);
+    }
+    out (result)
+    {
+        assert(result);
     }
     body
     {

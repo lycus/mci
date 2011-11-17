@@ -18,6 +18,14 @@ public final class ProgramWriter
     private BinaryWriter _writer;
     private bool _done;
 
+    invariant()
+    {
+        assert(_file);
+        assert(_file.canWrite);
+        assert(!_file.isClosed);
+        assert(_writer);
+    }
+
     public this(FileStream file)
     in
     {
@@ -40,7 +48,6 @@ public final class ProgramWriter
     body
     {
         writeProgram(program);
-        _file.close();
     }
 
     private void writeProgram(Program program)

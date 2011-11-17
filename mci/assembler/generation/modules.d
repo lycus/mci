@@ -12,6 +12,10 @@ in
     assert(node);
     assert(program);
 }
+out (result)
+{
+    assert(result);
+}
 body
 {
     if (auto mod = find(program.modules, (Module m) { return m.name == node.name.name; }))

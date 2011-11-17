@@ -18,6 +18,11 @@ public final class CompilationUnit
 {
     private NoNullList!DeclarationNode _nodes;
 
+    invariant()
+    {
+        assert(_nodes);
+    }
+
     public this(NoNullList!DeclarationNode nodes)
     in
     {
@@ -29,6 +34,11 @@ public final class CompilationUnit
     }
 
     @property public Countable!DeclarationNode nodes()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _nodes;
     }
@@ -37,6 +47,11 @@ public final class CompilationUnit
 public final class Parser
 {
     private TokenStream _stream;
+
+    invariant()
+    {
+        assert(_stream);
+    }
 
     public this(TokenStream stream)
     in
@@ -53,6 +68,10 @@ public final class Parser
     {
         assert(!_stream.done);
     }
+    out (result)
+    {
+        assert(result);
+    }
     body
     {
         if (_stream.next.type == TokenType.end)
@@ -66,6 +85,10 @@ public final class Parser
     {
         assert(!_stream.done);
     }
+    out (result)
+    {
+        assert(result);
+    }
     body
     {
         return _stream.next;
@@ -75,6 +98,10 @@ public final class Parser
     in
     {
         assert(!_stream.done);
+    }
+    out (result)
+    {
+        assert(result);
     }
     body
     {
@@ -92,6 +119,10 @@ public final class Parser
     {
         assert(!_stream.done);
     }
+    out (result)
+    {
+        assert(result);
+    }
     body
     {
         return _stream.moveNext();
@@ -101,6 +132,10 @@ public final class Parser
     in
     {
         assert(!_stream.done);
+    }
+    out (result)
+    {
+        assert(result);
     }
     body
     {
@@ -113,21 +148,44 @@ public final class Parser
     }
 
     private static void error(string error, SourceLocation location)
+    in
+    {
+        assert(error);
+        assert(location);
+    }
+    body
     {
         throw new ParserException(error ~ ".", location);
     }
 
     private static void errorExpected(string expected, SourceLocation location)
+    in
+    {
+        assert(expected);
+        assert(location);
+    }
+    body
     {
         throw new ParserException("Expected " ~ expected ~ ".", location);
     }
 
     private static void errorGot(T)(string expected, SourceLocation location, T got)
+    in
+    {
+        assert(expected);
+        assert(location);
+    }
+    body
     {
         throw new ParserException("Expected " ~ expected ~ ", but got '" ~ to!string(got) ~ "'.", location);
     }
 
     public CompilationUnit parse()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         _stream.reset();
 
@@ -157,6 +215,11 @@ public final class Parser
     }
 
     private TypeDeclarationNode parseTypeDeclaration()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         consume("type");
 
@@ -225,6 +288,11 @@ public final class Parser
     }
 
     private ModuleReferenceNode parseModuleReference()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         auto name = parseSimpleName();
 
@@ -232,6 +300,11 @@ public final class Parser
     }
 
     private FunctionPointerTypeReferenceNode parseFunctionPointerTypeReference()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         auto returnType = parseTypeSpecification(true);
 
@@ -258,6 +331,11 @@ public final class Parser
     }
 
     private TypeReferenceNode parseTypeSpecification(bool insideFunctionPointer = false)
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         auto type = parseTypeReference();
 
@@ -278,6 +356,11 @@ public final class Parser
     }
 
     private StructureTypeReferenceNode parseStructureTypeReference()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         next();
 
@@ -298,6 +381,11 @@ public final class Parser
     }
 
     private TypeReferenceNode parseTypeReference()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         // We could just peek here and avoid the movePrevious call,
         // but it would result in having to call next in all the
@@ -341,6 +429,11 @@ public final class Parser
     }
 
     private FieldReferenceNode parseFieldReference()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         auto type = parseStructureTypeReference();
 
@@ -352,6 +445,11 @@ public final class Parser
     }
 
     private FunctionReferenceNode parseFunctionReference()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         next();
 
@@ -372,6 +470,11 @@ public final class Parser
     }
 
     private FieldDeclarationNode parseFieldDeclaration()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         consume("field");
 
@@ -412,6 +515,11 @@ public final class Parser
     }
 
     private LiteralValueNode parseLiteralValue(T)()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         auto literal = parseAnyLiteralValue();
 
@@ -432,6 +540,11 @@ public final class Parser
     }
 
     private LiteralValueNode parseAnyLiteralValue()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         auto literal = next();
 
@@ -442,6 +555,11 @@ public final class Parser
     }
 
     private SimpleNameNode parseSimpleName()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         auto name = next();
 
@@ -452,6 +570,11 @@ public final class Parser
     }
 
     private FunctionDeclarationNode parseFunctionDeclaration()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         consume("function");
 
@@ -558,6 +681,11 @@ public final class Parser
     }
 
     private RegisterDeclarationNode parseRegisterDeclaration()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         consume("register");
 
@@ -570,6 +698,11 @@ public final class Parser
     }
 
     private BasicBlockDeclarationNode parseBasicBlockDeclaration()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         consume("block");
 
@@ -590,6 +723,11 @@ public final class Parser
     }
 
     private InstructionNode parseInstruction()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         RegisterReferenceNode target;
 
@@ -673,6 +811,11 @@ public final class Parser
     }
 
     private InstructionOperandNode parseInstructionOperand(OperandType operandType)
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         InstructionOperand operand;
         SourceLocation location;
@@ -777,6 +920,11 @@ public final class Parser
     }
 
     private RegisterSelectorNode parseRegisterSelector()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         auto open = consume("(");
 
@@ -801,6 +949,11 @@ public final class Parser
     }
 
     private RegisterReferenceNode parseRegisterReference()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         auto name = parseSimpleName();
 
@@ -808,6 +961,11 @@ public final class Parser
     }
 
     private BasicBlockReferenceNode parseBasicBlockReference()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         auto name = parseSimpleName();
 
@@ -815,6 +973,11 @@ public final class Parser
     }
 
     private ByteArrayLiteralNode parseByteArrayLiteral()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         auto open = consume("(");
 

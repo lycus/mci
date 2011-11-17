@@ -19,6 +19,11 @@ public final class Source
     private dchar _current;
     private SourceLocation _location;
 
+    invariant()
+    {
+        assert(_location);
+    }
+
     public this(string source)
     {
         initialize(source);
@@ -49,6 +54,11 @@ public final class Source
     }
 
     @property public SourceLocation location()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _location;
     }
@@ -148,6 +158,11 @@ public final class Lexer
 {
     private Source _source;
 
+    invariant()
+    {
+        assert(_source);
+    }
+
     public this(Source source)
     in
     {
@@ -159,6 +174,11 @@ public final class Lexer
     }
 
     public MemoryTokenStream lex()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         _source.reset();
 
@@ -176,6 +196,12 @@ public final class Lexer
     }
 
     private static void errorGot(T)(string expected, SourceLocation location, T got)
+    in
+    {
+        assert(expected);
+        assert(location);
+    }
+    body
     {
         string s;
 
@@ -188,11 +214,23 @@ public final class Lexer
     }
 
     private static void error(string expected, SourceLocation location)
+    in
+    {
+        assert(expected);
+        assert(location);
+    }
+    body
     {
         throw new LexerException("Expected " ~ expected ~ ".", location);
     }
 
     private Token lexNext()
+    out (result)
+    {
+        if (_source.current != dchar.init)
+            assert(result);
+    }
+    body
     {
         dchar chr;
 
@@ -265,6 +303,11 @@ public final class Lexer
     }
 
     private Token lexIdentifier(dchar chr)
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         auto idLoc = _source.location;
         string id = [cast(char)chr];
@@ -300,6 +343,11 @@ public final class Lexer
     }
 
     private Token lexLiteral(dchar chr)
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         string str = [cast(char)chr];
         bool isHexLiteral;
@@ -339,6 +387,11 @@ public final class Lexer
     }
 
     private Token lexFloatingPoint(string str)
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         bool hasTrailingDigit;
 

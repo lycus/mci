@@ -138,11 +138,12 @@ public final class AssemblerTool : Tool
         }
 
         auto driver = new GeneratorDriver(units);
+        FileStream file;
 
         try
         {
             auto program = driver.run();
-            auto file = new FileStream(_output, FileAccess.write, FileMode.truncate);
+            file = new FileStream(_output, FileAccess.write, FileMode.truncate);
             auto writer = new ProgramWriter(file);
 
             writer.write(program);
@@ -152,6 +153,11 @@ public final class AssemblerTool : Tool
             log("Generator error in %s (%s%s): %s", driver.currentModule ~ inputFileExtension, ex.location.line,
                 ex.location.column == 0 ? "" : ", " ~ to!string(ex.location.column), ex.msg);
             return false;
+        }
+        finally
+        {
+            if (file)
+                file.close();
         }
 
         return true;

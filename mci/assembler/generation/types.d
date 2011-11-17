@@ -19,6 +19,10 @@ in
     assert(module_);
     assert(cache);
 }
+out (result)
+{
+    assert(result);
+}
 body
 {
     if (cache.getType(module_.name, node.name.name))
@@ -36,6 +40,10 @@ in
     assert(type);
     assert(program);
 }
+out (result)
+{
+    assert(result);
+}
 body
 {
     auto fieldType = resolveType(node.type, type.module_, program);
@@ -50,6 +58,10 @@ in
     assert(node);
     assert(module_);
     assert(program);
+}
+out (result)
+{
+    assert(result);
 }
 body
 {
@@ -70,6 +82,10 @@ in
     assert(module_);
     assert(program);
 }
+out (result)
+{
+    assert(result);
+}
 body
 {
     // If no module is specified, default to the module the type reference is in.
@@ -89,6 +105,10 @@ in
     assert(module_);
     assert(program);
 }
+out (result)
+{
+    assert(result);
+}
 body
 {
     auto returnType = resolveType(node.returnType, module_, program);
@@ -106,6 +126,10 @@ in
     assert(node);
     assert(module_);
     assert(program);
+}
+out (result)
+{
+    assert(result);
 }
 body
 {

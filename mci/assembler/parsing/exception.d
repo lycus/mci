@@ -7,6 +7,11 @@ public class LexerException : AssemblerException
 {
     private SourceLocation _location;
 
+    invariant()
+    {
+        assert(_location);
+    }
+
     public this(string msg, SourceLocation location, string file = __FILE__,
                 size_t line = __LINE__)
     in
@@ -41,6 +46,11 @@ public class LexerException : AssemblerException
     }
 
     @property public SourceLocation location()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _location;
     }
@@ -50,6 +60,11 @@ public class ParserException : AssemblerException
 {
     private SourceLocation _location;
 
+    invariant()
+    {
+        assert(_location);
+    }
+
     public this(string msg, SourceLocation location, string file = __FILE__,
                 size_t line = __LINE__)
     in
@@ -84,6 +99,11 @@ public class ParserException : AssemblerException
     }
 
     @property public SourceLocation location()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _location;
     }
