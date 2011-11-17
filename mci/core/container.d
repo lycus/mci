@@ -48,6 +48,10 @@ public interface Indexable(T) : Collection!T
     public T opIndex(size_t index);
 
     public T opIndexAssign(T item, size_t index);
+
+    public Countable!T opSlice();
+
+    public Countable!T opSlice(size_t x, size_t y);
 }
 
 public interface Map(K, V) : Collection!(Tuple!(K, V))
@@ -643,6 +647,21 @@ public class List(T) : Indexable!T
         return _array[index] = item;
     }
 
+    public List!T opSlice()
+    {
+        return duplicate();
+    }
+
+    public List!T opSlice(size_t x, size_t y)
+    {
+        auto list = new List!T();
+
+        for (size_t i = x; i < y; i++)
+            list._array ~= this[i];
+
+        return list;
+    }
+
     public final override bool opEquals(Object o)
     {
         if (this is o)
@@ -832,10 +851,25 @@ public class NoNullList(T) : List!T
             add(item);
     }
 
+    public override NoNullList!T opSlice()
+    {
+        return duplicate();
+    }
+
+    public override NoNullList!T opSlice(size_t x, size_t y)
+    {
+        auto list = new List!T();
+
+        for (size_t i = x; i < y; i++)
+            list._array ~= this[i];
+
+        return list;
+    }
+
     public override NoNullList!T duplicate()
     {
         auto l = new NoNullList!T();
-        l._array = _array;
+        l._array = _array.dup;
 
         return l;
     }
