@@ -405,7 +405,7 @@ static this()
     opPhi = create("phi", OperationCode.phi, OpCodeType.normal, OperandType.selector, 0, true);
     opExThrow = create("ex.throw", OperationCode.exThrow, OpCodeType.controlFlow, OperandType.uint32, 1, false);
     opExTry = create("ex.try", OperationCode.exTry, OpCodeType.annotation, OperandType.none, 0, false);
-    opExHandle = create("ex.handle", OperationCode.exHandle, OpCodeType.controlFlow, OperandType.uint32, 0, true);
+    opExHandle = create("ex.handle", OperationCode.exHandle, OpCodeType.normal, OperandType.uint32, 0, true);
     opExEnd = create("ex.end", OperationCode.exEnd, OpCodeType.annotation, OperandType.none, 0, false);
 
     allOpCodes = opCodes;
