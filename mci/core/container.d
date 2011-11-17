@@ -657,7 +657,7 @@ public class List(T) : Indexable!T
         auto list = new List!T();
 
         for (size_t i = x; i < y; i++)
-            list._array ~= this[i];
+            list.add(this[i]);
 
         return list;
     }
@@ -861,7 +861,7 @@ public class NoNullList(T) : List!T
         auto list = new List!T();
 
         for (size_t i = x; i < y; i++)
-            list._array ~= this[i];
+            list.add(this[i]);
 
         return list;
     }
