@@ -15,7 +15,8 @@ import std.algorithm,
        mci.assembler.parsing.exception,
        mci.assembler.parsing.lexer,
        mci.assembler.parsing.parser,
-       mci.cli.tool;
+       mci.cli.tool,
+       mci.cli.tools.interpreter;
 
 public enum string inputFileExtension = ".ial";
 public enum string outputFileExtension = ".mci";
@@ -27,6 +28,7 @@ public final class AssemblerTool : Tool
     private bool _verify;
     private bool _optimize;
     private bool _interpret;
+    private GarbageCollectorType _gcType;
 
     private void log(T...)(T args)
     {
@@ -45,7 +47,8 @@ public final class AssemblerTool : Tool
                    "output|o", &_output,
                    "verify|v", &_verify,
                    "optimize|p", &_optimize,
-                   "interpret|i", &_interpret);
+                   "interpret|i", &_interpret,
+                   "collector|c", &_gcType);
         }
         catch (Exception ex)
         {
