@@ -353,10 +353,8 @@ public final class ProgramWriter
                 _writer.write(cast(ubyte)CoreTypeIdentifier.uint_);
             else if (isType!Float32Type(type))
                 _writer.write(cast(ubyte)CoreTypeIdentifier.float32);
-            else if (isType!Float64Type(type))
-                _writer.write(cast(ubyte)CoreTypeIdentifier.float64);
             else
-                _writer.write(cast(ubyte)CoreTypeIdentifier.float_);
+                _writer.write(cast(ubyte)CoreTypeIdentifier.float64);
         }
     }
 

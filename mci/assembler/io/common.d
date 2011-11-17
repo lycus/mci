@@ -27,5 +27,4 @@ public enum CoreTypeIdentifier : ubyte
     uint_ = 10,
     float32 = 11,
     float64 = 12,
-    float_ = 13,
 }

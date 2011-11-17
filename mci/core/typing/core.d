@@ -52,4 +52,3 @@ mixin DefineCoreType!("NativeInt", "int");
 mixin DefineCoreType!("NativeUInt", "uint");
 mixin DefineCoreType!("Float32", "float32");
 mixin DefineCoreType!("Float64", "float64");
-mixin DefineCoreType!("NativeFloat", "float");

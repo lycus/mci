@@ -241,7 +241,6 @@ mixin DefineCoreTypeNode!("NativeInt", "int");
 mixin DefineCoreTypeNode!("NativeUInt", "uint");
 mixin DefineCoreTypeNode!("Float32", "float32");
 mixin DefineCoreTypeNode!("Float64", "float64");
-mixin DefineCoreTypeNode!("NativeFloat", "float");
 
 public class FieldReferenceNode : Node
 {

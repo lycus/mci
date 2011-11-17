@@ -55,7 +55,6 @@ public final class TypeCache
         addCoreType(NativeUIntType.instance);
         addCoreType(Float32Type.instance);
         addCoreType(Float64Type.instance);
-        addCoreType(NativeFloatType.instance);
     }
 
     public Type getType(string module_, string name)

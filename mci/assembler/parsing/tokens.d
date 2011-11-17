@@ -52,7 +52,6 @@ public enum TokenType : ubyte
     uint_,
     float32,
     float64,
-    float_,
     opCode,
     literal,
 }
@@ -109,8 +108,7 @@ body
                             "int" : TokenType.int_,
                             "uint" : TokenType.uint_,
                             "float32" : TokenType.float32,
-                            "float64" : TokenType.float64,
-                            "float" : TokenType.float_];
+                            "float64" : TokenType.float64];
 
     if (auto type = identifier in keywordsToTypes)
         return *type;

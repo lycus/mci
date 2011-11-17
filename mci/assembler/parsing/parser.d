@@ -420,8 +420,6 @@ public final class Parser
                 return new Float32TypeReferenceNode(tok.location);
             case TokenType.float64:
                 return new Float64TypeReferenceNode(tok.location);
-            case TokenType.float_:
-                return new NativeFloatTypeReferenceNode(tok.location);
             default:
                 _stream.movePrevious();
                 return parseStructureTypeReference();
