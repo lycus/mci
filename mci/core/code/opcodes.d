@@ -40,6 +40,11 @@ public enum OperandType : ubyte
 }
 
 public TypeInfo operandToTypeInfo(OperandType operandType)
+out (result)
+{
+    assert(result);
+}
+body
 {
     final switch (operandType)
     {
@@ -93,6 +98,12 @@ public final class OpCode
     private uint _registers;
     private bool _hasTarget;
 
+    invariant()
+    {
+        assert(_name);
+        assert(_registers <= maxSourceRegisters);
+    }
+
     private this(string name, OperationCode code, OpCodeType type, OperandType operandType,
                  uint registers, bool hasTarget)
     in
@@ -111,6 +122,11 @@ public final class OpCode
     }
 
     @property public istring name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
@@ -131,6 +147,11 @@ public final class OpCode
     }
 
     @property public uint registers()
+    out (result)
+    {
+        assert(result <= maxSourceRegisters);
+    }
+    body
     {
         return _registers;
     }
@@ -318,6 +339,10 @@ static this()
     {
         assert(name);
         assert(registers <= maxSourceRegisters);
+    }
+    out (result)
+    {
+        assert(result);
     }
     body
     {

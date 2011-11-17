@@ -11,6 +11,13 @@ public final class Module
     private NoNullList!Function _functions;
     private NoNullList!StructureType _types;
 
+    invariant()
+    {
+        assert(_name);
+        assert(_functions);
+        assert(_types);
+    }
+
     public this(string name)
     in
     {
@@ -24,16 +31,31 @@ public final class Module
     }
 
     @property public istring name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
 
     @property public Countable!Function functions()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _functions;
     }
 
     @property public Countable!StructureType types()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _types;
     }
@@ -45,6 +67,10 @@ public final class Module
         assert(name);
         assert(returnType);
         assert(!contains(_functions, (Function f) { return f.name == name; }));
+    }
+    out (result)
+    {
+        assert(result);
     }
     body
     {

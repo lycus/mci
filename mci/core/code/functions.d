@@ -12,6 +12,12 @@ public final class BasicBlock
     private string _name;
     private NoNullList!Instruction _instructions;
 
+    invariant()
+    {
+        assert(_name);
+        assert(_instructions);
+    }
+
     package this(string name)
     in
     {
@@ -24,11 +30,21 @@ public final class BasicBlock
     }
 
     @property public istring name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
 
     @property public NoNullList!Instruction instructions()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _instructions;
     }
@@ -39,6 +55,11 @@ public enum string entryBlockName = "entry";
 public final class Parameter
 {
     private Type _type;
+
+    invariant()
+    {
+        assert(_type);
+    }
 
     package this(Type type)
     in
@@ -51,6 +72,11 @@ public final class Parameter
     }
 
     @property public Type type()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _type;
     }
@@ -87,6 +113,16 @@ public final class Function
     private NoNullList!Register _registers;
     private bool _isClosed;
 
+    invariant()
+    {
+        assert(_module);
+        assert(_name);
+        assert(_parameters);
+        assert(_returnType);
+        assert(_blocks);
+        assert(_registers);
+    }
+
     package this(Module module_, string name, Type returnType, FunctionAttributes attributes = FunctionAttributes.none,
                  CallingConvention callingConvention = CallingConvention.queueCall)
     in
@@ -108,16 +144,31 @@ public final class Function
     }
 
     @property public Module module_()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _module;
     }
 
     @property public istring name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
 
     @property public Type returnType()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _returnType;
     }
@@ -137,6 +188,10 @@ public final class Function
     {
         assert(_isClosed);
     }
+    out (result)
+    {
+        assert(result);
+    }
     body
     {
         return _parameters;
@@ -148,11 +203,21 @@ public final class Function
     }
 
     @property public NoNullList!BasicBlock blocks()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _blocks;
     }
 
     @property public NoNullList!Register registers()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _registers;
     }
@@ -162,6 +227,10 @@ public final class Function
     {
         assert(type);
         assert(!_isClosed);
+    }
+    out (result)
+    {
+        assert(result);
     }
     body
     {
@@ -189,6 +258,10 @@ public final class Function
         assert(name);
         assert(!contains(_blocks, (BasicBlock bb) { return bb.name == name; }));
     }
+    out (result)
+    {
+        assert(result);
+    }
     body
     {
         auto block = new BasicBlock(name);
@@ -203,6 +276,10 @@ public final class Function
         assert(name);
         assert(type);
         assert(!contains(_registers, (Register r) { return r.name == name; }));
+    }
+    out (result)
+    {
+        assert(result);
     }
     body
     {

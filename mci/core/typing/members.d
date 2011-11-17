@@ -20,6 +20,13 @@ public final class Field
     private Nullable!uint _offset;
     private FieldAttributes _attributes;
 
+    invariant()
+    {
+        assert(_declaringType);
+        assert(_name);
+        assert(_type);
+    }
+
     package this(StructureType declaringType, string name, Type type, FieldAttributes attributes = FieldAttributes.none,
                  Nullable!uint offset = Nullable!uint())
     in
@@ -38,16 +45,31 @@ public final class Field
     }
 
     @property public StructureType declaringType()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _declaringType;
     }
 
     @property public istring name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
 
     @property public Type type()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _type;
     }

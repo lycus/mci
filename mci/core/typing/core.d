@@ -13,6 +13,11 @@ private mixin template DefineCoreType(string type, string name)
           "    private static " ~ type ~ "Type _instance;" ~
           "" ~
           "    @property public static " ~ type ~ "Type instance()" ~
+          "    out (result)" ~
+          "    {" ~
+          "        assert(result);" ~
+          "    }" ~
+          "    body" ~
           "    {" ~
           "        return _instance; " ~
           "    }" ~

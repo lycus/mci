@@ -8,17 +8,12 @@ public final class SourceLocation
     private uint _line;
     private uint _column;
 
-    public this(uint line)
-    in
+    invariant()
     {
-        assert(line);
-    }
-    body
-    {
-        this(line, 0);
+        assert(_line);
     }
 
-    public this(uint line, uint column)
+    public this(uint line, uint column = 0)
     in
     {
         assert(line);
@@ -30,6 +25,11 @@ public final class SourceLocation
     }
 
     @property public uint line()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _line;
     }
@@ -46,6 +46,13 @@ public final class DebuggingInfo
     private SourceLocation _location;
     private string _languageName;
 
+    invariant()
+    {
+        assert(_documentName);
+        assert(_location);
+        assert(_languageName);
+    }
+
     public this(string documentName, SourceLocation location, string languageName)
     in
     {
@@ -61,16 +68,31 @@ public final class DebuggingInfo
     }
 
     @property public istring documentName()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _documentName;
     }
 
     @property public SourceLocation location()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _location;
     }
 
     @property public istring languageName()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _languageName;
     }

@@ -15,6 +15,13 @@ public final class TypeCache
     private Dictionary!(Tuple!(Type, NoNullList!Type), FunctionPointerType) _functionPointerTypes;
     private NoNullDictionary!(Type, PointerType) _pointerTypes;
 
+    invariant()
+    {
+        assert(_types);
+        assert(_functionPointerTypes);
+        assert(_pointerTypes);
+    }
+
     public this()
     {
         _types = new typeof(_types)();
@@ -74,6 +81,10 @@ public final class TypeCache
         if (packingSize.hasValue)
             assert(packingSize.value);
     }
+    out (result)
+    {
+        assert(result);
+    }
     body
     {
         auto tup = tuple(cast(string)module_.name, name);
@@ -92,6 +103,10 @@ public final class TypeCache
         assert(returnType);
         assert(parameterTypes);
     }
+    out (result)
+    {
+        assert(result);
+    }
     body
     {
         auto tup = tuple(returnType, parameterTypes.duplicate());
@@ -106,6 +121,10 @@ public final class TypeCache
     in
     {
         assert(elementType);
+    }
+    out (result)
+    {
+        assert(result);
     }
     body
     {

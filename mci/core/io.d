@@ -43,6 +43,11 @@ public enum FileMode : ubyte
 }
 
 private char[] accessAndModeToString(FileAccess access, FileMode mode)
+out (result)
+{
+    assert(result);
+}
+body
 {
     final switch (mode)
     {
@@ -210,6 +215,13 @@ public class BinaryReader
     private FileStream _file;
     private Endianness _endianness;
 
+    invariant()
+    {
+        assert(_file);
+        assert(_file.canRead);
+        assert(!_file.isClosed);
+    }
+
     public this(FileStream file, Endianness endianness = Endianness.littleEndian)
     in
     {
@@ -260,6 +272,13 @@ public class BinaryWriter
 {
     private FileStream _file;
     private Endianness _endianness;
+
+    invariant()
+    {
+        assert(_file);
+        assert(_file.canWrite);
+        assert(!_file.isClosed);
+    }
 
     public this(FileStream file, Endianness endianness = Endianness.littleEndian)
     in

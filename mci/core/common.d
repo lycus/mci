@@ -4,9 +4,14 @@ alias immutable string istring;
 alias immutable wstring iwstring;
 alias immutable dstring idstring;
 
-public bool isType(T, U)(U obj)
+public bool isType(U, T)(T obj)
+in
 {
-    return cast(T)obj !is null;
+    assert(obj);
+}
+body
+{
+    return cast(U)obj !is null;
 }
 
 version (unittest)

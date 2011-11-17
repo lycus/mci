@@ -109,32 +109,85 @@ public interface Map(K, V) : Collection!(Tuple!(K, V))
             assert(key);
     }
 
-    public Countable!K keys();
+    public Countable!K keys()
+    out (result)
+    {
+        assert(result);
+    }
 
-    public Countable!V values();
+    public Countable!V values()
+    out (result)
+    {
+        assert(result);
+    }
 }
 
 public Iterable!T asIterable(T)(Iterable!T items)
+in
+{
+    assert(items);
+}
+out (result)
+{
+    assert(result);
+}
+body
 {
     return items;
 }
 
 public Countable!T asCountable(T)(Countable!T items)
+in
+{
+    assert(items);
+}
+out (result)
+{
+    assert(result);
+}
+body
 {
     return items;
 }
 
 public Collection!T asCollection(T)(Collection!T items)
+in
+{
+    assert(items);
+}
+out (result)
+{
+    assert(result);
+}
+body
 {
     return items;
 }
 
 public Indexable!T asIndexable(T)(Indexable!T items)
+in
+{
+    assert(items);
+}
+out (result)
+{
+    assert(result);
+}
+body
 {
     return items;
 }
 
 public Map!(K, V) asMap(K, V)(Map!(K, V) items)
+in
+{
+    assert(items);
+}
+out (result)
+{
+    assert(result);
+}
+body
 {
     return items;
 }
@@ -311,6 +364,10 @@ in
     assert(iter);
     assert(selector);
 }
+out (result)
+{
+    assert(result);
+}
 body
 {
     auto results = new List!R();
@@ -342,6 +399,10 @@ in
     assert(iter);
     assert(selector);
 }
+out (result)
+{
+    assert(result);
+}
 body
 {
     auto result = seed;
@@ -368,6 +429,10 @@ in
 {
     assert(iter);
     assert(other);
+}
+out (result)
+{
+    assert(result);
 }
 body
 {
@@ -409,6 +474,10 @@ in
 {
     assert(iter);
     assert(filter);
+}
+out (result)
+{
+    assert(result);
 }
 body
 {
@@ -504,6 +573,10 @@ in
 {
     assert(iter);
 }
+out (result)
+{
+    assert(result);
+}
 body
 {
     auto list = new List!R();
@@ -518,6 +591,10 @@ public Iterable!R ofType(R, T)(Iterable!T iter)
 in
 {
     assert(iter);
+}
+out (result)
+{
+    assert(result);
 }
 body
 {
@@ -584,6 +661,11 @@ public class List(T) : Indexable!T
     }
 
     public this(Iterable!T items)
+    in
+    {
+        assert(items);
+    }
+    body
     {
         foreach (item; items)
             add(item);
@@ -804,6 +886,11 @@ unittest
 }
 
 public List!T toList(T)(T[] items ...)
+out (result)
+{
+    assert(result);
+}
+body
 {
     auto list = new List!T();
 
@@ -823,6 +910,11 @@ unittest
 }
 
 public Countable!T toCountable(T)(T[] items ...)
+out (result)
+{
+    assert(result);
+}
+body
 {
     return toList(items);
 }
@@ -835,6 +927,11 @@ unittest
 }
 
 public Iterable!T toIterable(T)(T[] items ...)
+out (result)
+{
+    assert(result);
+}
+body
 {
     return toCountable(items);
 }
@@ -853,6 +950,11 @@ public class NoNullList(T) : List!T
     }
 
     public this(Iterable!T items)
+    in
+    {
+        assert(items);
+    }
+    body
     {
         foreach (item; items)
             add(item);
@@ -936,6 +1038,15 @@ unittest
 }
 
 public NoNullList!T toNoNullList(T)(Iterable!T iter)
+in
+{
+    assert(iter);
+}
+out (result)
+{
+    assert(result);
+}
+body
 {
     auto l = new NoNullList!T();
 
@@ -954,6 +1065,11 @@ public class Dictionary(K, V) : Map!(K, V)
     }
 
     public this(Map!(K, V) items)
+    in
+    {
+        assert(items);
+    }
+    body
     {
         foreach (item; items)
             add(item);
@@ -991,12 +1107,12 @@ public class Dictionary(K, V) : Map!(K, V)
         return 0;
     }
 
-    public V opIndex(K key)
+    public final V opIndex(K key)
     {
         return _aa[key];
     }
 
-    public V opIndexAssign(V value, K key)
+    public final V opIndexAssign(V value, K key)
     {
         onAdd(key, value);
 
@@ -1158,6 +1274,15 @@ public class NoNullDictionary(K, V) : Dictionary!(K, V)
 }
 
 public NoNullDictionary!(K, V) toNullDictionary(K, V)(Iterable!(Tuple!(K, V)) iter)
+in
+{
+    assert(iter);
+}
+out (result)
+{
+    assert(result);
+}
+body
 {
     auto d = new NoNullDictionary!(K, V)();
 

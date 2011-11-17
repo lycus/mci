@@ -12,6 +12,11 @@ public class FunctionEmitter
 {
     private Function _function;
 
+    invariant()
+    {
+        assert(_function);
+    }
+
     public this(Function function_)
     in
     {
@@ -23,6 +28,11 @@ public class FunctionEmitter
     }
 
     @property public final Function function_()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _function;
     }
@@ -32,6 +42,10 @@ public class FunctionEmitter
     {
         assert(name);
         assert(type);
+    }
+    out (result)
+    {
+        assert(result);
     }
     body
     {
@@ -43,6 +57,10 @@ public class FunctionEmitter
     {
         assert(name);
     }
+    out (result)
+    {
+        assert(result);
+    }
     body
     {
         return new BasicBlockEmitter(_function.createBasicBlock(name));
@@ -52,6 +70,11 @@ public class FunctionEmitter
 public class BasicBlockEmitter
 {
     private BasicBlock _block;
+
+    invariant()
+    {
+        assert(_block);
+    }
 
     public this(BasicBlock block)
     in
@@ -64,12 +87,19 @@ public class BasicBlockEmitter
     }
 
     @property public final BasicBlock block()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _block;
     }
 
     private mixin template DefineEmit(string OperandType)
     {
+        // We can neglect adding contracts here, since the Instruction constructor
+        // has contracts that will trigger if something's wrong.
         mixin("public final BasicBlockEmitter emitTarget(OpCode opCode, " ~ OperandType ~ " operand, Register source1," ~
               "                                          Register source2, Register target)" ~
               "{" ~

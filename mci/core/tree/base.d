@@ -12,6 +12,11 @@ public abstract class TreeNode
     @property public abstract Type type();
 
     @property public Countable!TreeNode children()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return new List!TreeNode();
     }

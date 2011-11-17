@@ -14,6 +14,12 @@ public final class Register
     private Type _type;
     private string _name;
 
+    invariant()
+    {
+        assert(_type);
+        assert(_name);
+    }
+
     package this(string name, Type type)
     in
     {
@@ -27,11 +33,21 @@ public final class Register
     }
 
     @property public Type type()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _type;
     }
 
     @property public istring name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }

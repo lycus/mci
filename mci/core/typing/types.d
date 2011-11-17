@@ -27,6 +27,17 @@ public final class StructureType : Type
     private NoNullList!Field _fields;
     private bool _isClosed;
 
+    invariant()
+    {
+        assert(_module);
+        assert(_name);
+
+        if (_packingSize.hasValue)
+            assert(_packingSize.value);
+
+        assert(_fields);
+    }
+
     package this(Module module_, string name, TypeLayout layout = TypeLayout.automatic,
                  Nullable!uint packingSize = Nullable!uint())
     in
@@ -54,6 +65,11 @@ public final class StructureType : Type
     }
 
     @property public Module module_()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _module;
     }
@@ -67,6 +83,10 @@ public final class StructureType : Type
     in
     {
         assert(_isClosed);
+    }
+    out (result)
+    {
+        assert(result);
     }
     body
     {
@@ -92,6 +112,10 @@ public final class StructureType : Type
         assert(!contains(_fields, (Field f) { return f.name == name; }));
         assert(!_isClosed);
     }
+    out (result)
+    {
+        assert(result);
+    }
     body
     {
         auto field = new Field(this, name, type, attributes, offset);
@@ -115,6 +139,11 @@ public final class PointerType : Type
 {
     private Type _elementType;
 
+    invariant()
+    {
+        assert(_elementType);
+    }
+
     package this(Type elementType)
     in
     {
@@ -126,6 +155,11 @@ public final class PointerType : Type
     }
 
     @property public Type elementType()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _elementType;
     }
@@ -141,6 +175,12 @@ public final class FunctionPointerType : Type
     private Type _returnType;
     private NoNullList!Type _parameterTypes;
 
+    invariant()
+    {
+        assert(_returnType);
+        assert(_parameterTypes);
+    }
+
     package this(Type returnType, NoNullList!Type parameterTypes)
     in
     {
@@ -154,11 +194,21 @@ public final class FunctionPointerType : Type
     }
 
     @property public Type returnType()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _returnType;
     }
 
     @property public Countable!Type parameterTypes()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _parameterTypes;
     }
