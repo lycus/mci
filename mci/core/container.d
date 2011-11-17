@@ -52,6 +52,10 @@ public interface Indexable(T) : Collection!T
     public Indexable!T opSlice();
 
     public Indexable!T opSlice(size_t x, size_t y);
+
+    public Indexable!T opCat(Indexable!T rhs);
+
+    public Indexable!T opCatAssign(Indexable!T rhs);
 }
 
 public interface Map(K, V) : Collection!(Tuple!(K, V))
@@ -662,6 +666,24 @@ public class List(T) : Indexable!T
         return list;
     }
 
+    public List!T opCat(Indexable!T rhs)
+    {
+        auto list = duplicate();
+
+        foreach (item; rhs)
+            list.add(item);
+
+        return list;
+    }
+
+    public List!T opCatAssign(Indexable!T rhs)
+    {
+        foreach (item; rhs)
+            add(item);
+
+        return this;
+    }
+
     public final override bool opEquals(Object o)
     {
         if (this is o)
@@ -864,6 +886,24 @@ public class NoNullList(T) : List!T
             list.add(this[i]);
 
         return list;
+    }
+
+    public override NoNullList!T opCat(Indexable!T rhs)
+    {
+        auto list = duplicate();
+
+        foreach (item; rhs)
+            list.add(item);
+
+        return list;
+    }
+
+    public override NoNullList!T opCatAssign(Indexable!T rhs)
+    {
+        foreach (item; rhs)
+            add(item);
+
+        return this;
     }
 
     public override NoNullList!T duplicate()
