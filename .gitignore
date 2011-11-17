@@ -3,7 +3,6 @@ docs/_build
 */*/Debug/*
 */*/Release/*
 */*/Test/*
-*/*/bin/*
 
 *.suo
 *.user
