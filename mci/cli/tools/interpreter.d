@@ -19,7 +19,7 @@ public final class InterpreterTool : Tool
 
     @property public string description()
     {
-        return "Run an assembled program with the Intermediate Assembly Language (IAL) interpreter.";
+        return "Run an assembled program with the IAL interpreter.";
     }
 
     @property public string[] options()

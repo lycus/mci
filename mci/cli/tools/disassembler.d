@@ -6,7 +6,7 @@ public final class DisassemblerTool : Tool
 {
     @property public string description()
     {
-        return "Disassemble an assembled program into Intermediate Assembly Language (IAL) modules.";
+        return "Disassemble an assembled program into IAL modules.";
     }
 
     @property public string[] options()

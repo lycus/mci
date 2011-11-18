@@ -26,7 +26,7 @@ public final class AssemblerTool : Tool
 {
     @property public string description()
     {
-        return "Assemble Intermediate Assembly Language (IAL) modules into a program.";
+        return "Assemble IAL modules into a program.";
     }
 
     @property public string[] options()
