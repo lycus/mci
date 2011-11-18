@@ -63,7 +63,7 @@ body
 
             if (tool.y.options)
             {
-                writeln();
+                log();
 
                 foreach (line; tool.y.options)
                     logf("     %s", line);
