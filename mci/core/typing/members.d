@@ -1,7 +1,6 @@
 module mci.core.typing.members;
 
-import mci.core.common,
-       mci.core.container,
+import mci.core.container,
        mci.core.nullable,
        mci.core.typing.types;
 
@@ -56,7 +55,7 @@ public final class Field
         return _declaringType;
     }
 
-    @property public istring name()
+    @property public string name()
     out (result)
     {
         assert(result);

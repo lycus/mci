@@ -30,7 +30,7 @@ public final class Module
         _types = new typeof(_types)();
     }
 
-    @property public istring name()
+    @property public string name()
     out (result)
     {
         assert(result);

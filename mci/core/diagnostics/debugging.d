@@ -1,8 +1,5 @@
 module mci.core.diagnostics.debugging;
 
-import mci.core.common,
-       mci.core.nullable;
-
 public final class SourceLocation
 {
     private uint _line;
@@ -67,7 +64,7 @@ public final class DebuggingInfo
         _languageName = languageName;
     }
 
-    @property public istring documentName()
+    @property public string documentName()
     out (result)
     {
         assert(result);
@@ -87,7 +84,7 @@ public final class DebuggingInfo
         return _location;
     }
 
-    @property public istring languageName()
+    @property public string languageName()
     out (result)
     {
         assert(result);

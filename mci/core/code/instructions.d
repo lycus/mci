@@ -1,7 +1,6 @@
 module mci.core.code.instructions;
 
 import std.variant,
-       mci.core.common,
        mci.core.container,
        mci.core.tuple,
        mci.core.code.functions,
@@ -42,7 +41,7 @@ public final class Register
         return _type;
     }
 
-    @property public istring name()
+    @property public string name()
     out (result)
     {
         assert(result);

@@ -1,9 +1,5 @@
 module mci.core.common;
 
-alias immutable string istring;
-alias immutable wstring iwstring;
-alias immutable dstring idstring;
-
 public bool isType(U, T)(T obj)
 in
 {

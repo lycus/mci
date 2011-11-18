@@ -1,14 +1,13 @@
 module mci.core.typing.types;
 
-import mci.core.common,
-       mci.core.container,
+import mci.core.container,
        mci.core.nullable,
        mci.core.code.modules,
        mci.core.typing.members;
 
 public abstract class Type
 {
-    @property public abstract istring name();
+    @property public abstract string name();
 }
 
 public enum TypeLayout : ubyte
@@ -98,7 +97,7 @@ public final class StructureType : Type
         return _isClosed;
     }
 
-    @property public override istring name()
+    @property public override string name()
     {
         return _name;
     }
@@ -165,7 +164,7 @@ public final class PointerType : Type
         return _elementType;
     }
 
-    @property public override istring name()
+    @property public override string name()
     {
         return elementType.name ~ "*";
     }
@@ -214,7 +213,7 @@ public final class FunctionPointerType : Type
         return _parameterTypes;
     }
 
-    @property public override istring name()
+    @property public override string name()
     {
         auto s = _returnType.name ~ " *(";
 

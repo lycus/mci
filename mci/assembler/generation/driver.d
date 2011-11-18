@@ -1,7 +1,6 @@
 module mci.assembler.generation.driver;
 
-import mci.core.common,
-       mci.core.container,
+import mci.core.container,
        mci.core.program,
        mci.core.tuple,
        mci.core.code.modules,
@@ -145,7 +144,7 @@ public final class GeneratorDriver
         return _state.program;
     }
 
-    @property public istring currentModule()
+    @property public string currentModule()
     {
         return _state.currentModule;
     }

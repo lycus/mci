@@ -1,7 +1,6 @@
 module mci.core.code.functions;
 
-import mci.core.common,
-       mci.core.container,
+import mci.core.container,
        mci.core.code.instructions,
        mci.core.code.modules,
        mci.core.tree.statements,
@@ -29,7 +28,7 @@ public final class BasicBlock
         _instructions = new typeof(_instructions)();
     }
 
-    @property public istring name()
+    @property public string name()
     out (result)
     {
         assert(result);
@@ -153,7 +152,7 @@ public final class Function
         return _module;
     }
 
-    @property public istring name()
+    @property public string name()
     out (result)
     {
         assert(result);

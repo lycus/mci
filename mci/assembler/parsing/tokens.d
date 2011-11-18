@@ -1,7 +1,6 @@
 module mci.assembler.parsing.tokens;
 
-import mci.core.common,
-       mci.core.container,
+import mci.core.container,
        mci.core.code.opcodes,
        mci.core.diagnostics.debugging;
 
@@ -123,7 +122,7 @@ body
 public final class Token
 {
     private TokenType _type;
-    private istring _value;
+    private string _value;
     private SourceLocation _location;
 
     invariant()
@@ -166,7 +165,7 @@ public final class Token
         return _type;
     }
 
-    @property public istring value()
+    @property public string value()
     out (result)
     {
         if (_type == TokenType.begin || _type == TokenType.end)

@@ -1,7 +1,6 @@
 module mci.assembler.parsing.ast;
 
 import std.variant,
-       mci.core.common,
        mci.core.container,
        mci.core.nullable,
        mci.core.tuple,
@@ -61,7 +60,7 @@ public class SimpleNameNode : Node
         _name = name;
     }
 
-    @property public final istring name()
+    @property public final string name()
     {
         return _name;
     }
@@ -637,7 +636,7 @@ public class LiteralValueNode : Node
         _value = value;
     }
 
-    @property public final istring value()
+    @property public final string value()
     {
         return _value;
     }

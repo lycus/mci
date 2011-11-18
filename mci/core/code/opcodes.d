@@ -1,7 +1,6 @@
 module mci.core.code.opcodes;
 
-import mci.core.common,
-       mci.core.container,
+import mci.core.container,
        mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.instructions,
@@ -121,7 +120,7 @@ public final class OpCode
         _hasTarget = hasTarget;
     }
 
-    @property public istring name()
+    @property public string name()
     out (result)
     {
         assert(result);
