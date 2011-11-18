@@ -11,6 +11,8 @@ private enum ExitCode : ubyte
     failure,
 }
 
+private bool silent;
+
 private ExitCode run(string[] args)
 in
 {
@@ -33,7 +35,8 @@ body
                config.bundling,
                config.passThrough,
                "help|h", &help,
-               "version|v", &version_);
+               "version|v", &version_,
+               "silent|s", &silent);
     }
     catch (Exception ex)
     {
@@ -41,41 +44,41 @@ body
         return ExitCode.failure;
     }
 
-    writeln("Managed Compiler Infrastructure (MCI) 1.0 Command Line Interface");
-    writeln("Copyright (c) 2011 The Lycus Foundation - http://github.com/lycus/mci");
-    writeln("Available under the terms of the MIT License");
-    writeln();
+    log("Managed Compiler Infrastructure (MCI) 1.0 Command Line Interface");
+    log("Copyright (c) 2011 The Lycus Foundation - http://github.com/lycus/mci");
+    log("Available under the terms of the MIT License");
+    log();
 
     if (help)
     {
         usage(cli);
-        writeln();
+        log();
 
-        writeln("Available tools:");
-        writeln();
+        log("Available tools:");
+        log();
 
         foreach (i, tool; allTools)
         {
-            writefln("     %s\t%s", tool.x, tool.y.description);
+            logf("     %s\t%s", tool.x, tool.y.description);
 
             if (tool.y.options)
             {
                 writeln();
 
                 foreach (line; tool.y.options)
-                    writefln("     %s", line);
+                    logf("     %s", line);
             }
 
             if (i < allTools.count)
-                writeln();
+                log();
         }
 
-        writeln("Available garbage collectors:");
-        writeln();
+        log("Available garbage collectors:");
+        log();
 
-        writefln("     dgc\tD Garbage Collector\t\tUses the D runtme's garbage collector.");
-        writefln("     libc\tLibC Garbage Collector\t\tUses malloc/free; performs no actual collection.");
-        writeln();
+        log("     dgc\tD Garbage Collector\t\tUses the D runtme's garbage collector.");
+        log("     libc\tLibC Garbage Collector\t\tUses malloc/free; performs no actual collection.");
+        log();
     }
 
     if (version_ || help)
@@ -95,7 +98,7 @@ body
         return ExitCode.failure;
     }
 
-    return tool.run(args[0 .. 1] ~ args[2 .. $]) ? ExitCode.success : ExitCode.error;
+    return tool.run(args[2 .. $]) ? ExitCode.success : ExitCode.error;
 }
 
 private void usage(string cli)
@@ -105,7 +108,7 @@ in
 }
 body
 {
-    writefln("Usage: %s [--version] [--help] <tool> <args>", cli);
+    logf("Usage: %s [--version|-v] [--help|-h] [--silent|-s] <tool> <args>", cli);
 }
 
 private void help(string cli)
@@ -115,18 +118,30 @@ in
 }
 body
 {
-    writefln("See %s --help", cli);
+    logf("See %s --help", cli);
 }
 
-private void error(T...)(string cli, T args)
+private void error(T ...)(string cli, T args)
 in
 {
     assert(cli);
 }
 body
 {
-    writefln(args);
+    log(args);
     help(cli);
+}
+
+public void log(T ...)(T args)
+{
+    if (!silent)
+        writeln(args);
+}
+
+public void logf(T ...)(T args)
+{
+    if (!silent)
+        writefln(args);
 }
 
 private int main(string[] args)

@@ -10,7 +10,7 @@ private int main()
 {
     string cli;
 
-    // Figure out where mci.cli is located.
+    // Figure out where mci.cli(.exe) is located.
     if (exists(posixPath))
         cli = buildPath("..", posixPath);
     else if (exists(windowsPath))

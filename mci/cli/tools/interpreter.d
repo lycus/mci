@@ -2,6 +2,7 @@ module mci.cli.tools.interpreter;
 
 import std.getopt,
        std.stdio,
+       mci.cli.main,
        mci.cli.tool;
 
 public enum GarbageCollectorType : ubyte
@@ -41,7 +42,7 @@ public final class InterpreterTool : Tool
         }
         catch (Exception ex)
         {
-            writefln("Error parsing command line: %s", ex.msg);
+            logf("Error parsing command line: %s", ex.msg);
             return false;
         }
 
