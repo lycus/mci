@@ -30,10 +30,19 @@ public final class AssemblerTool : Tool
     private bool _interpret;
     private GarbageCollectorType _gcType;
 
-    private void log(T...)(T args)
+    @property public string description()
     {
-        if (!_silent)
-            writefln(args);
+        return "Assemble Intermediate Assembly Language (IAL) modules into a program.";
+    }
+
+    @property public string[] options()
+    {
+        return ["\t--silent\t\t-s\t\tSuppress any console output.",
+                "\t--output=<file>\t\t-o <file>\tSpecify program output file.",
+                "\t--verify\t\t-v\t\tRun IAL verifier on input modules.",
+                "\t--optimize\t\t-p\t\tPass the program through the optimization pipeline.",
+                "\t--interpret\t\t-t\t\tRun the program with the IAL interpreter (no output will be generated).",
+                "\t--collector=<type>\t-c <type>\tSpecify which garbage collector to use if running the program."];
     }
 
     public bool run(string[] args)
@@ -161,5 +170,11 @@ public final class AssemblerTool : Tool
         }
 
         return true;
+    }
+
+    private void log(T...)(T args)
+    {
+        if (!_silent)
+            writefln(args);
     }
 }

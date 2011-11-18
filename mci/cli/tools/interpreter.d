@@ -16,6 +16,18 @@ public final class InterpreterTool : Tool
     private bool _optimize;
     private GarbageCollectorType _gcType;
 
+    @property public string description()
+    {
+        return "Run an assembled program with the Intermediate Assembly Language (IAL) interpreter.";
+    }
+
+    @property public string[] options()
+    {
+        return ["\t--verify\t\t-v\t\tRun IAL verifier on input program.",
+                "\t--optimize\t\t-p\t\tPass the program through the optimization pipeline.",
+                "\t--collector=<type>\t-c <type>\tSpecify which garbage collector to use."];
+    }
+
     public bool run(string[] args)
     {
         try

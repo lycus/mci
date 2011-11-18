@@ -151,6 +151,7 @@ MCI_CLI_SOURCES = \
 	mci/cli/main.d \
 	mci/cli/tool.d \
 	mci/cli/tools/assembler.d \
+	mci/cli/tools/disassembler.d \
 	mci/cli/tools/interpreter.d \
 	mci/cli/tools/verifier.d
 

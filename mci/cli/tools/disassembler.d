@@ -1,12 +1,12 @@
-module mci.cli.tools.verifier;
+module mci.cli.tools.disassembler;
 
 import mci.cli.tool;
 
-public final class VerifierTool : Tool
+public final class DisassemblerTool : Tool
 {
     @property public string description()
     {
-        return "Verify the validity of functions and types in an assembled program.";
+        return "Disassemble an assembled program into Intermediate Assembly Language (IAL) modules.";
     }
 
     @property public string[] options()
