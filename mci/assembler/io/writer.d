@@ -94,7 +94,7 @@ public final class ProgramWriter
     {
         _writer.write(cast(uint)type.name.length);
         _writer.writeArray(type.name);
-        _writer.write(cast(ubyte)type.layout);
+        _writer.write(type.layout);
         _writer.write(type.packingSize.hasValue);
 
         if (type.packingSize.hasValue)
@@ -115,7 +115,7 @@ public final class ProgramWriter
     {
         _writer.write(cast(uint)field.name.length);
         _writer.writeArray(field.name);
-        _writer.write(cast(ubyte)field.attributes);
+        _writer.write(field.attributes);
         _writer.write(field.offset.hasValue);
 
         if (field.offset.hasValue)
@@ -133,8 +133,8 @@ public final class ProgramWriter
     {
         _writer.write(cast(uint)function_.name.length);
         _writer.writeArray(function_.name);
-        _writer.write(cast(ubyte)function_.attributes);
-        _writer.write(cast(ubyte)function_.callingConvention);
+        _writer.write(function_.attributes);
+        _writer.write(function_.callingConvention);
         writeTypeReference(function_.returnType);
         _writer.write(cast(uint)function_.parameters.count);
 
@@ -184,7 +184,7 @@ public final class ProgramWriter
     }
     body
     {
-        _writer.write(cast(ubyte)instruction.opCode.code);
+        _writer.write(instruction.opCode.code);
 
         if (instruction.targetRegister)
             writeRegisterReference(instruction.targetRegister);
@@ -288,7 +288,7 @@ public final class ProgramWriter
     }
     body
     {
-        _writer.write(cast(ubyte)TypeReferenceType.structure);
+        _writer.write(TypeReferenceType.structure);
         writeModuleReference(type.module_);
         _writer.write(cast(uint)type.name.length);
         _writer.writeArray(type.name);
@@ -301,7 +301,7 @@ public final class ProgramWriter
     }
     body
     {
-        _writer.write(cast(ubyte)TypeReferenceType.function_);
+        _writer.write(TypeReferenceType.function_);
         writeTypeReference(type.returnType);
         _writer.write(cast(uint)type.parameterTypes.count);
 
@@ -322,39 +322,39 @@ public final class ProgramWriter
             writeFunctionPointerTypeReference(fpType);
         else if (auto ptrType = cast(PointerType)type)
         {
-            _writer.write(cast(ubyte)TypeReferenceType.pointer);
+            _writer.write(TypeReferenceType.pointer);
             writeTypeReference(ptrType.elementType);
         }
         else
         {
-            _writer.write(cast(ubyte)TypeReferenceType.core);
+            _writer.write(TypeReferenceType.core);
 
             if (isType!UnitType(type))
-                _writer.write(cast(ubyte)CoreTypeIdentifier.unit);
+                _writer.write(CoreTypeIdentifier.unit);
             else if (isType!Int8Type(type))
-                _writer.write(cast(ubyte)CoreTypeIdentifier.int8);
+                _writer.write(CoreTypeIdentifier.int8);
             else if (isType!UInt8Type(type))
-                _writer.write(cast(ubyte)CoreTypeIdentifier.uint8);
+                _writer.write(CoreTypeIdentifier.uint8);
             else if (isType!Int16Type(type))
-                _writer.write(cast(ubyte)CoreTypeIdentifier.int16);
+                _writer.write(CoreTypeIdentifier.int16);
             else if (isType!UInt16Type(type))
-                _writer.write(cast(ubyte)CoreTypeIdentifier.uint16);
+                _writer.write(CoreTypeIdentifier.uint16);
             else if (isType!Int32Type(type))
-                _writer.write(cast(ubyte)CoreTypeIdentifier.int32);
+                _writer.write(CoreTypeIdentifier.int32);
             else if (isType!UInt32Type(type))
-                _writer.write(cast(ubyte)CoreTypeIdentifier.uint32);
+                _writer.write(CoreTypeIdentifier.uint32);
             else if (isType!Int64Type(type))
-                _writer.write(cast(ubyte)CoreTypeIdentifier.int64);
+                _writer.write(CoreTypeIdentifier.int64);
             else if (isType!UInt64Type(type))
-                _writer.write(cast(ubyte)CoreTypeIdentifier.uint64);
+                _writer.write(CoreTypeIdentifier.uint64);
             else if (isType!NativeIntType(type))
-                _writer.write(cast(ubyte)CoreTypeIdentifier.int_);
+                _writer.write(CoreTypeIdentifier.int_);
             else if (isType!NativeUIntType(type))
-                _writer.write(cast(ubyte)CoreTypeIdentifier.uint_);
+                _writer.write(CoreTypeIdentifier.uint_);
             else if (isType!Float32Type(type))
-                _writer.write(cast(ubyte)CoreTypeIdentifier.float32);
+                _writer.write(CoreTypeIdentifier.float32);
             else
-                _writer.write(cast(ubyte)CoreTypeIdentifier.float64);
+                _writer.write(CoreTypeIdentifier.float64);
         }
     }
 
