@@ -35,8 +35,7 @@ public final class TypeCache
         }
         body
         {
-            // HACK: These casts are in place to work around an incomprehensible compiler error.
-            auto tup = tuple(cast(string)null, cast(string)type.name);
+            auto tup = tuple(cast(string)null, type.name);
 
             if (tup !in _types)
                 _types[tup] = type;
@@ -86,7 +85,7 @@ public final class TypeCache
     }
     body
     {
-        auto tup = tuple(cast(string)module_.name, name);
+        auto tup = tuple(module_.name, name);
 
         assert(tup !in _types);
 
