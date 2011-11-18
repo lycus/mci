@@ -33,4 +33,4 @@ MCI.sln with the desired configuration.
 
 Note that the MCI cannot currently be compiled for 64-bit on Windows
 with DMD, due to limitations in Optlink (among other things). It is
-not a limitation in the MCI itself, however.
+not a limitation in the MCI itself.
