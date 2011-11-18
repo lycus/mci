@@ -16,30 +16,34 @@ compiler, but we cannot in any way guarantee support.
 
 The following architectures are supported:
 
-    * x86
-    * x86-64
+    * x86 (32-bit and 64-bit)
+    * ARM (32-bit)
+    * PowerPC (32-bit and 64-bit)
+    * Itanium (64-bit)
+    * MIPS (32-bit and 64-bit)
+    * System/390 (32-bit and 64-bit)
 
 Architecture must be determined when compiling, or the compilation
 process will be aborted.
 
-The following forms of inline assembly are supported:
-
-    * x86
-    * x86-64
-
-Inline assembly is not required, but if no assembler is available, no
-low-level optimizations in the MCI will be enabled.
-
 The following operating systems are supported:
 
     * Windows
-    * FreeBSD
-    * Solaris
-    * Mac OS X
     * Linux
+    * Mac OS X
+    * FreeBSD
+    * OpenBSD
+    * Solaris
+    * AIX
+    * Hurd
 
 Operating system must be determined when compiling, or the compilation
 process will be aborted.
+
+The following emulation layers can be used:
+
+    * Cygwin
+    * MinGW
 
 Byte order must also be determined when compiling.
 
