@@ -95,7 +95,7 @@ MCI_CORE_SOURCES = \
 
 MCI_ASSEMBLER_DFLAGS = $(DFLAGS) -lib -Xf"libmci.assembler.json" -deps="libmci.assembler.deps"
 
-libmci.assembler.a: libmci.core.a
+libmci.assembler.a: $(MCI_ASSEMBLER_DEPS)
 	$(DPLC) $(MCI_ASSEMBLER_DFLAGS) -of$@ $(MCI_ASSEMBLER_SOURCES) $(MCI_ASSEMBLER_DEPS);
 
 MCI_ASSEMBLER_SOURCES = \
@@ -119,7 +119,7 @@ MCI_ASSEMBLER_DEPS = \
 
 MCI_TESTER_DFLAGS = $(DFLAGS) -Xf"mci.tester.json" -deps="mci.tester.deps"
 
-mci.tester: libmci.core.a libmci.assembler.a libmci.vm.a libmci.interpreter.a libmci.jit.a
+mci.tester: $(MCI_TESTER_DEPS)
 	$(DPLC) $(MCI_TESTER_DFLAGS) -of$@ $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS);
 	if [ ${BUILD} = "test" ]; then \
 		gdb --command=mci.gdb mci.tester; \
@@ -141,7 +141,7 @@ MCI_TESTER_DEPS = \
 
 MCI_CLI_DFLAGS = $(DFLAGS) -Xf"mci.cli.json" -deps="mci.cli.deps"
 
-mci.cli: libmci.core.a libmci.assembler.a
+mci.cli: $(MCI_CLI_DEPS)
 	$(DPLC) $(MCI_CLI_DFLAGS) -of$@ $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS);
 
 MCI_CLI_SOURCES = \
@@ -154,13 +154,15 @@ MCI_CLI_SOURCES = \
 
 MCI_CLI_DEPS = \
 	libmci.core.a \
-	libmci.assembler.a
+	libmci.assembler.a \
+	libmci.vm.a \
+	libmci.interpreter.a
 
 #################### mci.vm ####################
 
 MCI_VM_DFLAGS = $(DFLAGS) -lib -Xf"libmci.vm.json" -deps="libmci.vm.deps"
 
-libmci.vm.a: libmci.core.a
+libmci.vm.a: $(MCI_VM_DEPS)
 	$(DPLC) $(MCI_VM_DFLAGS) -of$@ $(MCI_VM_SOURCES) $(MCI_VM_DEPS);
 
 MCI_VM_SOURCES = \
@@ -181,7 +183,7 @@ MCI_VM_DEPS = \
 
 MCI_INTERPRETER_DFLAGS = $(DFLAGS) -lib -Xf"libmci.interpreter.json" -deps="libmci.interpreter.deps"
 
-libmci.interpreter.a: libmci.core.a libmci.vm.a
+libmci.interpreter.a: $(MCI_INTERPRETER_DEPS)
 	$(DPLC) $(MCI_INTERPRETER_DFLAGS) -of$@ $(MCI_INTERPRETER_SOURCES) $(MCI_INTERPRETER_DEPS);
 
 MCI_INTERPRETER_SOURCES = \
@@ -195,7 +197,7 @@ MCI_INTERPRETER_DEPS = \
 
 MCI_JIT_DFLAGS = $(DFLAGS) -lib -Xf"libmci.jit.json" -deps="libmci.jit.deps"
 
-libmci.jit.a: libmci.core.a libmci.vm.a
+libmci.jit.a: $(MCI_JIT_DEPS)
 	$(DPLC) $(MCI_JIT_DFLAGS) -of$@ $(MCI_JIT_SOURCES) $(MCI_JIT_DEPS);
 
 MCI_JIT_SOURCES = \
