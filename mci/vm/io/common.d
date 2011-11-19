@@ -1,4 +1,4 @@
-module mci.assembler.io.common;
+module mci.vm.io.common;
 
 public enum string fileMagic = "LAIC"; // Reverse of CIAL (Compiled Intermediate Assembly Language).
 

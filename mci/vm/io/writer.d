@@ -1,4 +1,4 @@
-module mci.assembler.io.writer;
+module mci.vm.io.writer;
 
 import mci.core.common,
        mci.core.container,
@@ -10,7 +10,7 @@ import mci.core.common,
        mci.core.typing.core,
        mci.core.typing.members,
        mci.core.typing.types,
-       mci.assembler.io.common;
+       mci.vm.io.common;
 
 public final class ProgramWriter
 {

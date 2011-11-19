@@ -8,10 +8,6 @@ public import mci.assembler.generation.functions;
 public import mci.assembler.generation.modules;
 public import mci.assembler.generation.types;
 
-public import mci.assembler.io.common;
-public import mci.assembler.io.reader;
-public import mci.assembler.io.writer;
-
 public import mci.assembler.parsing.ast;
 public import mci.assembler.parsing.exception;
 public import mci.assembler.parsing.lexer;

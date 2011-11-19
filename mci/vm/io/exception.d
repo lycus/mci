@@ -1,4 +1,4 @@
-module mci.assembler.io.exception;
+module mci.vm.io.exception;
 
 public import mci.core.exception;
 

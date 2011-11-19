@@ -1,4 +1,4 @@
-module mci.assembler.io.reader;
+module mci.vm.io.reader;
 
 import std.string,
        mci.core.common,
@@ -14,8 +14,8 @@ import std.string,
        mci.core.typing.core,
        mci.core.typing.members,
        mci.core.typing.types,
-       mci.assembler.io.common,
-       mci.assembler.io.exception;
+       mci.vm.io.common,
+       mci.vm.io.exception;
 
 private final class TypeDescriptor
 {

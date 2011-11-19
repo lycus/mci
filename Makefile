@@ -106,10 +106,6 @@ MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/generation/functions.d \
 	mci/assembler/generation/modules.d \
 	mci/assembler/generation/types.d \
-	mci/assembler/io/common.d \
-	mci/assembler/io/exception.d \
-	mci/assembler/io/reader.d \
-	mci/assembler/io/writer.d \
 	mci/assembler/parsing/ast.d \
 	mci/assembler/parsing/exception.d \
 	mci/assembler/parsing/lexer.d \
@@ -168,7 +164,15 @@ libmci.vm.a: libmci.core.a
 	$(DPLC) $(MCI_VM_DFLAGS) -of$@ $(MCI_VM_SOURCES) $(MCI_VM_DEPS);
 
 MCI_VM_SOURCES = \
-	mci/vm/all.d
+	mci/vm/all.d \
+	mci/vm/memory/base.d \
+	mci/vm/memory/dgc.d \
+	mci/vm/memory/layout.d \
+	mci/vm/memory/libc.d \
+	mci/vm/io/common.d \
+	mci/vm/io/exception.d \
+	mci/vm/io/reader.d \
+	mci/vm/io/writer.d \
 
 MCI_VM_DEPS = \
 	libmci.core.a
@@ -181,7 +185,7 @@ libmci.interpreter.a: libmci.core.a libmci.vm.a
 	$(DPLC) $(MCI_INTERPRETER_DFLAGS) -of$@ $(MCI_INTERPRETER_SOURCES) $(MCI_INTERPRETER_DEPS);
 
 MCI_INTERPRETER_SOURCES = \
-	mci/vm/all.d
+	mci/interpreter/all.d
 
 MCI_INTERPRETER_DEPS = \
 	libmci.core.a \
@@ -195,11 +199,7 @@ libmci.jit.a: libmci.core.a libmci.vm.a
 	$(DPLC) $(MCI_JIT_DFLAGS) -of$@ $(MCI_JIT_SOURCES) $(MCI_JIT_DEPS);
 
 MCI_JIT_SOURCES = \
-	mci/vm/all.d \
-	mci/vm/memory/base.d \
-	mci/vm/memory/dgc.d \
-	mci/vm/memory/layout.d \
-	mci/vm/memory/libc.d
+	mci/jit/all.d \
 
 MCI_JIT_DEPS = \
 	libmci.core.a \

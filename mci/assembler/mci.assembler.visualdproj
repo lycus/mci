@@ -278,12 +278,6 @@
    <File path="generation\modules.d" />
    <File path="generation\types.d" />
   </Folder>
-  <Folder name="io">
-   <File path="io\common.d" />
-   <File path="io\exception.d" />
-   <File path="io\reader.d" />
-   <File path="io\writer.d" />
-  </Folder>
   <Folder name="parsing">
    <File path="parsing\ast.d" />
    <File path="parsing\exception.d" />
