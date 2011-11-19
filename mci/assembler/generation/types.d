@@ -28,9 +28,7 @@ body
     if (cache.getType(module_.name, node.name.name))
         throw new GenerationException("Type " ~ module_.name ~ "/" ~ node.name.name ~ " already defined.", node.location);
 
-    auto packingSize = node.packingSize ? Nullable!uint(to!uint(node.packingSize.value)) : Nullable!uint();
-
-    return cache.addStructureType(module_, node.name.name, node.layout, packingSize);
+    return cache.addStructureType(module_, node.name.name, node.layout);
 }
 
 public Field generateField(FieldDeclarationNode node, StructureType type, Program program)

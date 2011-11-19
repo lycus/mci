@@ -306,11 +306,9 @@ public class TypeDeclarationNode : DeclarationNode
 {
     private SimpleNameNode _name;
     private TypeLayout _layout;
-    private LiteralValueNode _packingSize;
     private NoNullList!FieldDeclarationNode _fields;
 
-    public this(SourceLocation location, SimpleNameNode name, TypeLayout layout, LiteralValueNode packingSize,
-                NoNullList!FieldDeclarationNode fields)
+    public this(SourceLocation location, SimpleNameNode name, TypeLayout layout, NoNullList!FieldDeclarationNode fields)
     in
     {
         assert(location);
@@ -323,7 +321,6 @@ public class TypeDeclarationNode : DeclarationNode
 
         _name = name;
         _layout = layout;
-        _packingSize = packingSize;
         _fields = fields.duplicate();
     }
 
@@ -335,11 +332,6 @@ public class TypeDeclarationNode : DeclarationNode
     @property public final TypeLayout layout()
     {
         return _layout;
-    }
-
-    @property public final LiteralValueNode packingSize()
-    {
-        return _packingSize;
     }
 
     @property public final Countable!FieldDeclarationNode fields()

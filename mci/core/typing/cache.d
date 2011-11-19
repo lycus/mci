@@ -69,15 +69,11 @@ public final class TypeCache
         return null;
     }
 
-    public StructureType addStructureType(Module module_, string name, TypeLayout layout = TypeLayout.automatic,
-                                          Nullable!uint packingSize = Nullable!uint())
+    public StructureType addStructureType(Module module_, string name, TypeLayout layout = TypeLayout.automatic)
     in
     {
         assert(module_);
         assert(name);
-
-        if (packingSize.hasValue)
-            assert(packingSize.value);
     }
     out (result)
     {
@@ -89,7 +85,7 @@ public final class TypeCache
 
         assert(tup !in _types);
 
-        auto type = new StructureType(module_, name, layout, packingSize);
+        auto type = new StructureType(module_, name, layout);
         _types[tup] = type;
 
         return type;

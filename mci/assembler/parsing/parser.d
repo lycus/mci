@@ -244,30 +244,6 @@ public final class Parser
 
         auto name = parseSimpleName();
 
-        LiteralValueNode packingSize;
-
-        if (peek().type == TokenType.openParen)
-        {
-            next();
-
-            packingSize = parseLiteralValue!uint();
-
-            try
-            {
-                to!uint(packingSize.value);
-            }
-            catch (ConvOverflowException)
-            {
-                error("32-bit unsigned integer literal overflow", packingSize.location);
-            }
-            catch (ConvException)
-            {
-                error("invalid 32-bit unsigned integer literal", packingSize.location);
-            }
-
-            consume(")");
-        }
-
         consume("{");
 
         auto fields = new NoNullList!FieldDeclarationNode();
@@ -284,7 +260,7 @@ public final class Parser
 
         consume("}");
 
-        return new TypeDeclarationNode(name.location, name, layout, packingSize, fields);
+        return new TypeDeclarationNode(name.location, name, layout, fields);
     }
 
     private ModuleReferenceNode parseModuleReference()

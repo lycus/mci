@@ -22,7 +22,6 @@ public final class StructureType : Type
     private TypeLayout _layout;
     private Module _module;
     private string _name;
-    private Nullable!uint _packingSize;
     private NoNullList!Field _fields;
     private bool _isClosed;
 
@@ -30,29 +29,20 @@ public final class StructureType : Type
     {
         assert(_module);
         assert(_name);
-
-        if (_packingSize.hasValue)
-            assert(_packingSize.value);
-
         assert(_fields);
     }
 
-    package this(Module module_, string name, TypeLayout layout = TypeLayout.automatic,
-                 Nullable!uint packingSize = Nullable!uint())
+    package this(Module module_, string name, TypeLayout layout = TypeLayout.automatic)
     in
     {
         assert(module_);
         assert(name);
-
-        if (packingSize.hasValue)
-            assert(packingSize.value);
     }
     body
     {
         _module = module_;
         _name = name;
         _layout = layout;
-        _packingSize = packingSize;
         _fields = new typeof(_fields)();
 
         (cast(NoNullList!StructureType)module_.types).add(this);
@@ -71,11 +61,6 @@ public final class StructureType : Type
     body
     {
         return _module;
-    }
-
-    @property public Nullable!uint packingSize()
-    {
-        return _packingSize;
     }
 
     @property public Countable!Field fields()
