@@ -2,9 +2,8 @@ module mci.cli.tools.assembler;
 
 import std.algorithm,
        std.conv,
-       std.file,
+       std.exception,
        std.getopt,
-       std.stdio,
        std.utf,
        mci.core.container,
        mci.core.io,
@@ -59,7 +58,7 @@ public final class AssemblerTool : Tool
         }
         catch (Exception ex)
         {
-            logf("Error parsing command line: %s", ex.msg);
+            logf("Error: Could not parse command line: %s", ex.msg);
             return false;
         }
 
@@ -102,18 +101,19 @@ public final class AssemblerTool : Tool
                 }
             }
 
+            FileStream stream;
+
             try
             {
-                auto stream = new FileStream(file, FileAccess.read, FileMode.open);
-                auto reader = new BinaryReader(stream);
-                auto source = new Source(reader, stream.length);
+                stream = new FileStream(file);
+                auto source = new Source(new BinaryReader(stream), stream.length);
                 auto lexer = new Lexer(source);
                 auto parser = new Parser(lexer.lex());
                 auto unit = parser.parse();
 
                 units.add(modName, unit);
             }
-            catch (FileException ex)
+            catch (ErrnoException ex)
             {
                 logf("Error: Could not read %s: %s", file, ex.msg);
                 return false;
@@ -125,43 +125,49 @@ public final class AssemblerTool : Tool
             }
             catch (LexerException ex)
             {
-                logf("Lexer error in %s (%s%s): %s", file, ex.location.line,
-                     ex.location.column == 0 ? "" : ", " ~ to!string(ex.location.column), ex.msg);
+                logf("Error: Lexing failed in %s (line %s%s): %s", file, ex.location.line,
+                     ex.location.column == 0 ? "" : ", column " ~ to!string(ex.location.column), ex.msg);
                 return false;
             }
             catch (ParserException ex)
             {
-                logf("Parser error in %s (%s%s): %s", file, ex.location.line,
-                     ex.location.column == 0 ? "" : ", " ~ to!string(ex.location.column), ex.msg);
+                logf("Error: Parsing failed in %s (line %s%s): %s", file, ex.location.line,
+                     ex.location.column == 0 ? "" : ", column " ~ to!string(ex.location.column), ex.msg);
                 return false;
             }
             catch (AssemblerException ex)
             {
-                logf("Assembler error in %s: %s", file, ex.msg);
+                logf("Error: Internal error in %s: %s", file, ex.msg);
                 return false;
+            }
+            finally
+            {
+                if (stream)
+                    stream.close();
             }
         }
 
-        auto driver = new GeneratorDriver(units);
+        GeneratorDriver driver;
         FileStream file;
 
         try
         {
+            driver = new GeneratorDriver(units);
             auto program = driver.run();
             file = new FileStream(output, FileAccess.write, FileMode.truncate);
             auto writer = new ProgramWriter(file);
 
             writer.write(program);
         }
-        catch (FileException ex)
+        catch (ErrnoException ex)
         {
             logf("Error: Could not write %s: %s", output, ex.msg);
             return false;
         }
         catch (GenerationException ex)
         {
-            logf("Generator error in %s (%s%s): %s", driver.currentModule ~ inputFileExtension, ex.location.line,
-                 ex.location.column == 0 ? "" : ", " ~ to!string(ex.location.column), ex.msg);
+            logf("Error: Generation failed in %s (line %s%s): %s", driver.currentModule ~ inputFileExtension,
+                 ex.location.line, ex.location.column == 0 ? "" : ", column " ~ to!string(ex.location.column), ex.msg);
             return false;
         }
         finally

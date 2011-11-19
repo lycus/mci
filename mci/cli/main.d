@@ -40,7 +40,7 @@ body
     }
     catch (Exception ex)
     {
-        error(cli, "Error parsing command line: %s", ex.msg);
+        logf("Error: Could not parse command line: %s", ex.msg);
         return ExitCode.failure;
     }
 
@@ -94,7 +94,7 @@ body
 
     if (!tool)
     {
-        error(cli, "No such tool: %s", args[1]);
+        logf("Error: No such tool: %s", args[1]);
         return ExitCode.failure;
     }
 
@@ -109,27 +109,6 @@ in
 body
 {
     logf("Usage: %s [--version|-v] [--help|-h] [--silent|-s] <tool> <args>", cli);
-}
-
-private void help(string cli)
-in
-{
-    assert(cli);
-}
-body
-{
-    logf("See %s --help", cli);
-}
-
-private void error(T ...)(string cli, T args)
-in
-{
-    assert(cli);
-}
-body
-{
-    log(args);
-    help(cli);
 }
 
 public void log(T ...)(T args)
