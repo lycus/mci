@@ -946,12 +946,6 @@ unittest
 public class NoNullList(T)
     if (isNullable!T) : List!T
 {
-    invariant()
-    {
-        foreach (item; _array)
-            assert(item);
-    }
-
     public this()
     {
     }
@@ -1264,10 +1258,19 @@ unittest
 public class NoNullDictionary(K, V)
     if (isNullable!V) : Dictionary!(K, V)
 {
-    invariant()
+    public this()
     {
-        foreach (item; _aa)
-            assert(item);
+    }
+
+    public this(Map!(K, V) items)
+    in
+    {
+        assert(items);
+    }
+    body
+    {
+        foreach (item; items)
+            add(item);
     }
 
     public override NoNullDictionary!(K, V) duplicate()
