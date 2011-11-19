@@ -47,6 +47,8 @@ public final class ProgramWriter
     }
     body
     {
+        _done = true;
+
         writeProgram(program);
     }
 
@@ -63,6 +65,36 @@ public final class ProgramWriter
 
         foreach (mod; program.modules)
             writeModule(mod);
+
+        foreach (mod; program.modules)
+        {
+            _writer.write(cast(uint)mod.types.count);
+
+            foreach (type; mod.types)
+                writeType(type);
+        }
+
+        foreach (mod; program.modules)
+        {
+            _writer.write(cast(uint)mod.functions.count);
+
+            foreach (func; mod.functions)
+                writeFunction(func);
+        }
+
+        foreach (mod; program.modules)
+        {
+            foreach (func; mod.functions)
+            {
+                foreach (block; func.blocks)
+                {
+                    _writer.write(cast(uint)block.instructions.count);
+
+                    foreach (instr; block.instructions)
+                        writeInstruction(instr);
+                }
+            }
+        }
     }
 
     private void writeModule(Module module_)
@@ -74,15 +106,6 @@ public final class ProgramWriter
     {
         _writer.write(cast(uint)module_.name.length);
         _writer.writeArray(module_.name);
-        _writer.write(cast(uint)module_.types.count);
-
-        foreach (type; module_.types)
-            writeType(type);
-
-        _writer.write(cast(uint)module_.functions.count);
-
-        foreach (func; module_.functions)
-            writeFunction(func);
     }
 
     private void writeType(StructureType type)
@@ -95,10 +118,6 @@ public final class ProgramWriter
         _writer.write(cast(uint)type.name.length);
         _writer.writeArray(type.name);
         _writer.write(type.layout);
-        _writer.write(type.packingSize.hasValue);
-
-        if (type.packingSize.hasValue)
-            _writer.write(type.packingSize.value);
 
         _writer.write(cast(uint)type.fields.count);
 
@@ -146,6 +165,8 @@ public final class ProgramWriter
         foreach (register; function_.registers)
             writeRegister(register);
 
+        _writer.write(cast(uint)function_.blocks.count);
+
         foreach (block; function_.blocks)
             writeBasicBlock(block);
     }
@@ -171,10 +192,6 @@ public final class ProgramWriter
     {
         _writer.write(cast(uint)block.name.length);
         _writer.writeArray(block.name);
-        _writer.write(cast(uint)block.instructions.count);
-
-        foreach (instr; block.instructions)
-            writeInstruction(instr);
     }
 
     private void writeInstruction(Instruction instruction)
