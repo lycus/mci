@@ -23,6 +23,12 @@ private final class TypeDescriptor
     private TypeLayout _layout;
     private NoNullList!FieldDescriptor _fields;
 
+    invariant()
+    {
+        assert(_name);
+        assert(_fields);
+    }
+
     public this(string name, TypeLayout layout)
     in
     {
@@ -67,6 +73,12 @@ private final class FieldDescriptor
     private FieldAttributes _attributes;
     private Nullable!uint _offset;
     private TypeReferenceDescriptor _type;
+
+    invariant()
+    {
+        assert(_name);
+        assert(_type);
+    }
 
     public this(string name, FieldAttributes attributes, Nullable!uint offset, TypeReferenceDescriptor type)
     in
@@ -122,6 +134,12 @@ private final class StructureTypeReferenceDescriptor : TypeReferenceDescriptor
     private string _name;
     private string _moduleName;
 
+    invariant()
+    {
+        assert(_name);
+        assert(_moduleName);
+    }
+
     public this(string name, string moduleName)
     in
     {
@@ -159,6 +177,11 @@ private final class CoreTypeReferenceDescriptor : TypeReferenceDescriptor
 {
     private CoreType _type;
 
+    invariant()
+    {
+        assert(_type);
+    }
+
     public this(CoreType type)
     in
     {
@@ -183,6 +206,11 @@ private final class CoreTypeReferenceDescriptor : TypeReferenceDescriptor
 private final class PointerTypeReferenceDescriptor : TypeReferenceDescriptor
 {
     private TypeReferenceDescriptor _elementType;
+
+    invariant()
+    {
+        assert(_elementType);
+    }
 
     public this(TypeReferenceDescriptor elementType)
     in
@@ -209,6 +237,12 @@ private final class FunctionPointerTypeReferenceDescriptor : TypeReferenceDescri
 {
     private TypeReferenceDescriptor _returnType;
     private NoNullList!TypeReferenceDescriptor _parameterTypes;
+
+    invariant()
+    {
+        assert(_returnType);
+        assert(_parameterTypes);
+    }
 
     public this(TypeReferenceDescriptor returnType)
     in
