@@ -99,7 +99,7 @@ body
                         operand = to!double(instrOperand.peek!LiteralValueNode().value);
                         break;
                     case OperandType.bytes:
-                        auto bytes = new NoNullList!ubyte();
+                        auto bytes = new List!ubyte();
 
                         foreach (literal; instrOperand.peek!ByteArrayLiteralNode().values)
                             bytes.add(to!ubyte(literal.value));

@@ -943,8 +943,15 @@ unittest
     assert(list);
 }
 
-public class NoNullList(T) : List!T
+public class NoNullList(T)
+    if (isNullable!T) : List!T
 {
+    invariant()
+    {
+        foreach (item; _array)
+            assert(item);
+    }
+
     public this()
     {
     }
@@ -967,7 +974,7 @@ public class NoNullList(T) : List!T
 
     public override NoNullList!T opSlice(size_t x, size_t y)
     {
-        auto list = new List!T();
+        auto list = new NoNullList!T();
 
         for (size_t i = x; i < y; i++)
             list.add(this[i]);
@@ -1003,14 +1010,12 @@ public class NoNullList(T) : List!T
 
     protected override void onAdd(T item)
     {
-        static if (isNullable!T)
-            assert(item);
+        assert(item);
     }
 
     protected override void onRemove(T item)
     {
-        static if (isNullable!T)
-            assert(item);
+        assert(item);
     }
 }
 
@@ -1256,8 +1261,15 @@ unittest
     assert(dict.count == 2);
 }
 
-public class NoNullDictionary(K, V) : Dictionary!(K, V)
+public class NoNullDictionary(K, V)
+    if (isNullable!V) : Dictionary!(K, V)
 {
+    invariant()
+    {
+        foreach (item; _aa)
+            assert(item);
+    }
+
     public override NoNullDictionary!(K, V) duplicate()
     {
         auto d = new NoNullDictionary!(K, V)();
@@ -1268,8 +1280,7 @@ public class NoNullDictionary(K, V) : Dictionary!(K, V)
 
     protected override void onAdd(K key, V value)
     {
-        static if (isNullable!V)
-            assert(value);
+        assert(value);
     }
 }
 
