@@ -55,6 +55,11 @@ public final class RuntimeObject
     {
         _generation = generation;
     }
+
+    @property public void* data()
+    {
+        return cast(ubyte*)&this + __traits(classInstanceSize, RuntimeObject);
+    }
 }
 
 public interface GCGeneration
