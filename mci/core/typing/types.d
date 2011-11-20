@@ -8,6 +8,11 @@ import mci.core.container,
 public abstract class Type
 {
     @property public abstract string name();
+
+    public override string toString()
+    {
+        return name;
+    }
 }
 
 public enum TypeLayout : ubyte
@@ -85,6 +90,11 @@ public final class StructureType : Type
     @property public override string name()
     {
         return _name;
+    }
+
+    public override string toString()
+    {
+        return _module.name ~ "/" ~ _name;
     }
 
     public Field createField(string name, Type type, FieldAttributes attributes = FieldAttributes.none,
