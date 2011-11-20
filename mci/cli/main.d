@@ -77,7 +77,7 @@ body
         log();
 
         log("     dgc\tD Garbage Collector\t\tUses the D runtime's garbage collector.");
-        log("     libc\tLibC Garbage Collector\t\tUses malloc/free; performs no actual collection.");
+        log("     libc\tLibC Garbage Collector\t\tUses calloc/free; performs no actual collection.");
         log();
     }
 
