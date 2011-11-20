@@ -623,6 +623,8 @@ public final class ProgramReader
         for (uint i = 0; i < paramCount; i++)
             func.createParameter(toType(readTypeReference(), cache));
 
+        func.close();
+
         auto regCount = _reader.read!uint();
 
         for (uint j = 0; j < regCount; j++)
