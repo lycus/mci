@@ -97,7 +97,7 @@ public final class StructureType : Type
         return _module.toString() ~ "/" ~ _name;
     }
 
-    public Field createField(string name, Type type, FieldAttributes attributes = FieldAttributes.none,
+    public Field createField(string name, Type type, FieldStorage storage = FieldStorage.instance,
                              Nullable!uint offset = Nullable!uint())
     in
     {
@@ -113,7 +113,7 @@ public final class StructureType : Type
     }
     body
     {
-        auto field = new Field(this, name, type, attributes, offset);
+        auto field = new Field(this, name, type, storage, offset);
         _fields.add(field);
 
         return field;
@@ -210,7 +210,7 @@ public final class FunctionPointerType : Type
 
     @property public override string name()
     {
-        auto s = _returnType.toString() ~ " *(";
+        auto s = _returnType.toString() ~ " (";
 
         foreach (i, param; _parameterTypes)
         {
@@ -233,7 +233,7 @@ unittest
 
     auto ptr = new PointerType(st);
 
-    assert(ptr.name == "bar*");
+    assert(ptr.name == "foo/bar*");
 }
 
 unittest
@@ -245,7 +245,7 @@ unittest
 
     auto ptr = new PointerType(st);
 
-    assert(ptr.name == "foo_bar_baz*");
+    assert(ptr.name == "foo/foo_bar_baz*");
 }
 
 unittest
@@ -264,5 +264,5 @@ unittest
 
     auto fpt = new FunctionPointerType(st1, params);
 
-    assert(fpt.name == "bar *(baz, bar)");
+    assert(fpt.name == "foo/bar (foo/baz, foo/bar)");
 }
