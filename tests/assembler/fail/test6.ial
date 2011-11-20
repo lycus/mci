@@ -1,0 +1,3 @@
+function qcall unit foo()
+{
+}

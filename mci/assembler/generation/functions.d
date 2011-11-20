@@ -140,6 +140,9 @@ body
         }
     }
 
+    if (!contains(func.blocks, (BasicBlock bb) { return bb.name == entryBlockName; }))
+        throw new GenerationException("Function " ~ module_.name ~ "/" ~ node.name.name ~ " has no entry block.", node.location);
+
     return func;
 }
 

@@ -1,3 +1,6 @@
 function qcall int32() main()
 {
+    block entry
+    {
+    }
 }
