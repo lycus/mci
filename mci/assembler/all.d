@@ -2,6 +2,9 @@ module mci.assembler.all;
 
 public import mci.assembler.exception;
 
+public import mci.assembler.disassembly.ast;
+public import mci.assembler.disassembly.modules;
+
 public import mci.assembler.generation.driver;
 public import mci.assembler.generation.exception;
 public import mci.assembler.generation.functions;

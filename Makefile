@@ -101,6 +101,8 @@ libmci.assembler.a: $(MCI_ASSEMBLER_DEPS)
 MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/all.d \
 	mci/assembler/exception.d \
+	mci/assembler/disassembly/ast.d \
+	mci/assembler/disassembly/modules.d \
 	mci/assembler/generation/driver.d \
 	mci/assembler/generation/exception.d \
 	mci/assembler/generation/functions.d \

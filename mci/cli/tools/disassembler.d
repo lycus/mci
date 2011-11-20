@@ -4,6 +4,7 @@ import std.algorithm,
        std.exception,
        std.getopt,
        std.path,
+       mci.assembler.disassembly.modules,
        mci.core.io,
        mci.vm.io.exception,
        mci.vm.io.reader,
@@ -50,7 +51,7 @@ public final class DisassemblerTool : Tool
         {
             if (!endsWith(file, outputFileExtension))
             {
-                logf("Error: File %s does not end in \"%s\".", outputFileExtension, file);
+                logf("Error: File %s does not end in \"%s\".", file, outputFileExtension);
                 return false;
             }
 
@@ -61,6 +62,30 @@ public final class DisassemblerTool : Tool
                 stream = new FileStream(file);
                 auto reader = new ProgramReader(stream);
                 auto program = reader.read();
+
+                foreach (mod; program.modules)
+                {
+                    FileStream file;
+                    auto fileName = buildPath(outputDir, mod.name ~ inputFileExtension);
+
+                    try
+                    {
+                        file = new FileStream(fileName, FileAccess.write, FileMode.truncate);
+                        auto disasm = new ModuleDisassembler(file);
+
+                        disasm.disassemble(mod);
+                    }
+                    catch (ErrnoException ex)
+                    {
+                        logf("Error: Could not write %s: %s", fileName, ex.msg);
+                        return false;
+                    }
+                    finally
+                    {
+                        if (file)
+                            file.close();
+                    }
+                }
             }
             catch (ErrnoException ex)
             {

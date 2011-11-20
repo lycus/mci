@@ -271,6 +271,10 @@
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="mci.assembler">
+  <Folder name="disassembly">
+   <File path="disassembly\ast.d" />
+   <File path="disassembly\modules.d" />
+  </Folder>
   <Folder name="generation">
    <File path="generation\driver.d" />
    <File path="generation\exception.d" />
