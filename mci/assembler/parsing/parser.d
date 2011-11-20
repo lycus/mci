@@ -452,21 +452,24 @@ public final class Parser
     {
         consume("field");
 
-        FieldAttributes attributes;
+        FieldStorage storage;
 
-        auto attrTok = peek();
+        auto storageTok = next();
 
-        // The static and const keywords are mutually exclusive, because
-        // constant implies static.
-        if (attrTok.type == TokenType.static_)
+        switch (storageTok.type)
         {
-            next();
-            attributes |= FieldAttributes.static_;
-        }
-        else if (attrTok.type == TokenType.constant)
-        {
-            next();
-            attributes |= FieldAttributes.constant;
+            case TokenType.instance:
+                storage = FieldStorage.instance;
+                break;
+            case TokenType.static_:
+                storage = FieldStorage.static_;
+                break;
+            case TokenType.constant:
+                storage = FieldStorage.constant;
+                break;
+            default:
+                errorGot("'instance', 'static', or 'const'", storageTok.location, storageTok.value);
+                break;
         }
 
         auto type = parseTypeSpecification();
@@ -485,7 +488,7 @@ public final class Parser
 
         consume(";");
 
-        return new FieldDeclarationNode(_stream.previous.location, type, name, attributes, offset);
+        return new FieldDeclarationNode(_stream.previous.location, type, name, storage, offset);
     }
 
     private LiteralValueNode parseLiteralValue(T)()

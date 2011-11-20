@@ -71,7 +71,7 @@ private final class TypeDescriptor
 private final class FieldDescriptor
 {
     private string _name;
-    private FieldAttributes _attributes;
+    private FieldStorage _storage;
     private Nullable!uint _offset;
     private TypeReferenceDescriptor _type;
 
@@ -81,7 +81,7 @@ private final class FieldDescriptor
         assert(_type);
     }
 
-    public this(string name, FieldAttributes attributes, Nullable!uint offset, TypeReferenceDescriptor type)
+    public this(string name, FieldStorage storage, Nullable!uint offset, TypeReferenceDescriptor type)
     in
     {
         assert(name);
@@ -90,7 +90,7 @@ private final class FieldDescriptor
     body
     {
         _name = name;
-        _attributes = attributes;
+        _storage = storage;
         _offset = offset;
         _type = type;
     }
@@ -105,9 +105,9 @@ private final class FieldDescriptor
         return _name;
     }
 
-    @property public FieldAttributes attributes()
+    @property public FieldStorage storage()
     {
-        return _attributes;
+        return _storage;
     }
 
     @property public Nullable!uint offset()
@@ -406,7 +406,7 @@ public final class ProgramReader
         foreach (tup; _types)
         {
             foreach (field; tup.y.fields)
-                tup.x.createField(field.name, toType(field.type, cache), field.attributes, field.offset);
+                tup.x.createField(field.name, toType(field.type, cache), field.storage, field.offset);
 
             tup.x.close();
         }
@@ -470,7 +470,7 @@ public final class ProgramReader
     body
     {
         auto name = _reader.readString();
-        auto attributes = _reader.read!FieldAttributes();
+        auto attributes = _reader.read!FieldStorage();
         auto offset = _reader.read!bool() ? Nullable!uint(_reader.read!uint()) : Nullable!uint();
         auto type = readTypeReference();
 

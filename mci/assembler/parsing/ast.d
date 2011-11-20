@@ -344,11 +344,11 @@ public class FieldDeclarationNode : Node
 {
     private TypeReferenceNode _type;
     private SimpleNameNode _name;
-    private FieldAttributes _attributes;
+    private FieldStorage _storage;
     private LiteralValueNode _offset;
 
     public this(SourceLocation location, TypeReferenceNode type, SimpleNameNode name,
-                FieldAttributes attributes, LiteralValueNode offset)
+                FieldStorage storage, LiteralValueNode offset)
     in
     {
         assert(location);
@@ -361,7 +361,7 @@ public class FieldDeclarationNode : Node
 
         _type = type;
         _name = name;
-        _attributes = attributes;
+        _storage = storage;
     }
 
     @property public final TypeReferenceNode type()
@@ -374,9 +374,9 @@ public class FieldDeclarationNode : Node
         return _name;
     }
 
-    @property public final FieldAttributes attributes()
+    @property public final FieldStorage storage()
     {
-        return _attributes;
+        return _storage;
     }
 
     @property public final LiteralValueNode offset()

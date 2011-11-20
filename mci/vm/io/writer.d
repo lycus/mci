@@ -132,7 +132,7 @@ public final class ProgramWriter
     body
     {
         _writer.writeString(field.name);
-        _writer.write(field.attributes);
+        _writer.write(field.storage);
         _writer.write(field.offset.hasValue);
 
         if (field.offset.hasValue)

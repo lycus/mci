@@ -4,11 +4,11 @@ import mci.core.container,
        mci.core.nullable,
        mci.core.typing.types;
 
-public enum FieldAttributes : ubyte
+public enum FieldStorage : ubyte
 {
-    none = 0x00,
-    static_ = 0x01,
-    constant = 0x02,
+    instance = 0,
+    static_ = 1,
+    constant = 2,
 }
 
 public final class Field
@@ -17,7 +17,7 @@ public final class Field
     private string _name;
     private Type _type;
     private Nullable!uint _offset;
-    private FieldAttributes _attributes;
+    private FieldStorage _storage;
 
     invariant()
     {
@@ -27,7 +27,7 @@ public final class Field
         assert(_declaringType.layout == TypeLayout.explicit ? _offset.hasValue : !_offset.hasValue);
     }
 
-    package this(StructureType declaringType, string name, Type type, FieldAttributes attributes = FieldAttributes.none,
+    package this(StructureType declaringType, string name, Type type, FieldStorage storage = FieldStorage.instance,
                  Nullable!uint offset = Nullable!uint())
     in
     {
@@ -41,7 +41,7 @@ public final class Field
         _declaringType = declaringType;
         _name = name;
         _type = type;
-        _attributes = attributes;
+        _storage = storage;
         _offset = offset;
     }
 
@@ -75,9 +75,9 @@ public final class Field
         return _type;
     }
 
-    @property public FieldAttributes attributes()
+    @property public FieldStorage storage()
     {
-        return _attributes;
+        return _storage;
     }
 
     @property public Nullable!uint offset()
