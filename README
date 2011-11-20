@@ -7,7 +7,7 @@ Welcome to the MCI!
 The MCI (Managed Compiler Infrastructure) is a project that seeks to
 write a complete compiler infrastructure and JIT (just-in-time) compiler
 in the D language (version 2.0). The goal is a modern, intuitive, and
-future-proof API usable by as many frontends as possible.
+future-proof API usable by as many front ends as possible.
 
 The rationale for such a project is that developing and maintaining such
 systems in C/C++ (or similar languages) is tedious and error-prone. Other
