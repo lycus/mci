@@ -173,6 +173,7 @@ MCI_VM_SOURCES = \
 	mci/vm/memory/libc.d \
 	mci/vm/io/common.d \
 	mci/vm/io/exception.d \
+	mci/vm/io/extended.d \
 	mci/vm/io/reader.d \
 	mci/vm/io/writer.d \
 

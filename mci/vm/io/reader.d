@@ -15,7 +15,8 @@ import std.string,
        mci.core.typing.members,
        mci.core.typing.types,
        mci.vm.io.common,
-       mci.vm.io.exception;
+       mci.vm.io.exception,
+       mci.vm.io.extended;
 
 private final class TypeDescriptor
 {
@@ -279,7 +280,7 @@ private final class FunctionPointerTypeReferenceDescriptor : TypeReferenceDescri
 public final class ProgramReader
 {
     private FileStream _file;
-    private BinaryReader _reader;
+    private VMBinaryReader _reader;
     private bool _done;
     private NoNullDictionary!(StructureType, TypeDescriptor) _types;
 
@@ -392,7 +393,7 @@ public final class ProgramReader
     }
     body
     {
-        return new Module(readString());
+        return new Module(_reader.readString());
     }
 
     private void closeTypes(TypeCache cache)
@@ -450,7 +451,7 @@ public final class ProgramReader
     }
     body
     {
-        auto name = readString();
+        auto name = _reader.readString();
         auto layout = _reader.read!TypeLayout();
         auto type = new TypeDescriptor(name, layout);
         auto fieldCount = _reader.read!uint();
@@ -468,7 +469,7 @@ public final class ProgramReader
     }
     body
     {
-        auto name = readString();
+        auto name = _reader.readString();
         auto attributes = _reader.read!FieldAttributes();
         auto offset = _reader.read!bool() ? Nullable!uint(_reader.read!uint()) : Nullable!uint();
         auto type = readTypeReference();
@@ -524,8 +525,8 @@ public final class ProgramReader
 
                 assert(false);
             case TypeReferenceType.structure:
-                auto mod = readString();
-                auto type = readString();
+                auto mod = _reader.readString();
+                auto type = _reader.readString();
 
                 return new StructureTypeReferenceDescriptor(type, mod);
             case TypeReferenceType.pointer:
@@ -565,7 +566,7 @@ public final class ProgramReader
             error("Structure type expected");
 
         auto type = cast(StructureType)toType(declType, cache);
-        auto name = readString();
+        auto name = _reader.readString();
         auto field = find(type.fields, (Field f) { return f.name == name; });
 
         if (!field)
@@ -585,13 +586,13 @@ public final class ProgramReader
     }
     body
     {
-        auto moduleName = readString();
+        auto moduleName = _reader.readString();
         auto mod = find(program.modules, (Module m) { return m.name == moduleName; });
 
         if (!mod)
             error("Unknown module: %s", moduleName);
 
-        auto name = readString();
+        auto name = _reader.readString();
         auto func = find(mod.functions, (Function fn) { return fn.name == name; });
 
         if (!func)
@@ -612,7 +613,7 @@ public final class ProgramReader
     }
     body
     {
-        auto name = readString();
+        auto name = _reader.readString();
         auto attributes = _reader.read!FunctionAttributes();
         auto callConv = _reader.read!CallingConvention();
         auto returnType = toType(readTypeReference(), cache);
@@ -647,7 +648,7 @@ public final class ProgramReader
     }
     body
     {
-        auto name = readString();
+        auto name = _reader.readString();
         auto type = toType(readTypeReference(), cache);
 
         return function_.createRegister(name, type);
@@ -664,7 +665,7 @@ public final class ProgramReader
     }
     body
     {
-        return function_.createBasicBlock(readString());
+        return function_.createBasicBlock(_reader.readString());
     }
 
     private Instruction readInstruction(Function function_, Program program)
@@ -796,7 +797,7 @@ public final class ProgramReader
     }
     body
     {
-        auto name = readString();
+        auto name = _reader.readString();
         auto reg = find(function_.registers, (Register reg) { return reg.name == name; });
 
         if (!reg)
@@ -816,19 +817,13 @@ public final class ProgramReader
     }
     body
     {
-        auto name = readString();
+        auto name = _reader.readString();
         auto block = find(function_.blocks, (BasicBlock bb) { return bb.name == name; });
 
         if (!block)
             error("Unknown basic block: %s", name);
 
         return block;
-    }
-
-    private string readString()
-    {
-        auto len = _reader.read!uint();
-        return _reader.readArray!string(len);
     }
 
     private static void error(T ...)(T args)

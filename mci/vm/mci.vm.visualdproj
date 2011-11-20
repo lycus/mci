@@ -271,17 +271,18 @@
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="mci.vm">
+  <Folder name="io">
+   <File path="io\common.d" />
+   <File path="io\exception.d" />
+   <File path="io\extended.d" />
+   <File path="io\reader.d" />
+   <File path="io\writer.d" />
+  </Folder>
   <Folder name="memory">
    <File path="memory\base.d" />
    <File path="memory\dgc.d" />
    <File path="memory\layout.d" />
    <File path="memory\libc.d" />
-  </Folder>
-  <Folder name="io">
-   <File path="io\common.d" />
-   <File path="io\exception.d" />
-   <File path="io\reader.d" />
-   <File path="io\writer.d" />
   </Folder>
   <File path="all.d" />
  </Folder>

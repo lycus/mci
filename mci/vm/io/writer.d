@@ -10,12 +10,13 @@ import mci.core.common,
        mci.core.typing.core,
        mci.core.typing.members,
        mci.core.typing.types,
-       mci.vm.io.common;
+       mci.vm.io.common,
+       mci.vm.io.extended;
 
 public final class ProgramWriter
 {
     private FileStream _file;
-    private BinaryWriter _writer;
+    private VMBinaryWriter _writer;
     private bool _done;
 
     invariant()
@@ -104,8 +105,7 @@ public final class ProgramWriter
     }
     body
     {
-        _writer.write(cast(uint)module_.name.length);
-        _writer.writeArray(module_.name);
+        _writer.writeString(module_.name);
     }
 
     private void writeType(StructureType type)
@@ -115,8 +115,7 @@ public final class ProgramWriter
     }
     body
     {
-        _writer.write(cast(uint)type.name.length);
-        _writer.writeArray(type.name);
+        _writer.writeString(type.name);
         _writer.write(type.layout);
 
         _writer.write(cast(uint)type.fields.count);
@@ -132,8 +131,7 @@ public final class ProgramWriter
     }
     body
     {
-        _writer.write(cast(uint)field.name.length);
-        _writer.writeArray(field.name);
+        _writer.writeString(field.name);
         _writer.write(field.attributes);
         _writer.write(field.offset.hasValue);
 
@@ -150,8 +148,7 @@ public final class ProgramWriter
     }
     body
     {
-        _writer.write(cast(uint)function_.name.length);
-        _writer.writeArray(function_.name);
+        _writer.writeString(function_.name);
         _writer.write(function_.attributes);
         _writer.write(function_.callingConvention);
         writeTypeReference(function_.returnType);
@@ -178,8 +175,7 @@ public final class ProgramWriter
     }
     body
     {
-        _writer.write(cast(uint)register.name.length);
-        _writer.writeArray(register.name);
+        _writer.writeString(register.name);
         writeTypeReference(register.type);
     }
 
@@ -190,8 +186,7 @@ public final class ProgramWriter
     }
     body
     {
-        _writer.write(cast(uint)block.name.length);
-        _writer.writeArray(block.name);
+        _writer.writeString(block.name);
     }
 
     private void writeInstruction(Instruction instruction)
@@ -272,8 +267,7 @@ public final class ProgramWriter
     }
     body
     {
-        _writer.write(cast(uint)register.name.length);
-        _writer.writeArray(register.name);
+        _writer.writeString(register.name);
     }
 
     private void writeBasicBlockReference(BasicBlock block)
@@ -283,8 +277,7 @@ public final class ProgramWriter
     }
     body
     {
-        _writer.write(cast(uint)block.name.length);
-        _writer.writeArray(block.name);
+        _writer.writeString(block.name);
     }
 
     private void writeModuleReference(Module module_)
@@ -294,8 +287,7 @@ public final class ProgramWriter
     }
     body
     {
-        _writer.write(cast(uint)module_.name.length);
-        _writer.writeArray(module_.name);
+        _writer.writeString(module_.name);
     }
 
     private void writeStructureTypeReference(StructureType type)
@@ -307,8 +299,7 @@ public final class ProgramWriter
     {
         _writer.write(TypeReferenceType.structure);
         writeModuleReference(type.module_);
-        _writer.write(cast(uint)type.name.length);
-        _writer.writeArray(type.name);
+        _writer.writeString(type.name);
     }
 
     private void writeFunctionPointerTypeReference(FunctionPointerType type)
@@ -383,8 +374,7 @@ public final class ProgramWriter
     body
     {
         writeTypeReference(field.declaringType);
-        _writer.write(cast(uint)field.name.length);
-        _writer.writeArray(field.name);
+        _writer.writeString(field.name);
     }
 
     private void writeFunctionReference(Function function_)
@@ -395,7 +385,6 @@ public final class ProgramWriter
     body
     {
         writeModuleReference(function_.module_);
-        _writer.write(cast(uint)function_.name.length);
-        _writer.writeArray(function_.name);
+        _writer.writeString(function_.name);
     }
 }
