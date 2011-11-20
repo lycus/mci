@@ -58,7 +58,7 @@ public final class RuntimeObject
 
     @property public void* data()
     {
-        return cast(ubyte*)&this + __traits(classInstanceSize, RuntimeObject);
+        return cast(ubyte*)this + __traits(classInstanceSize, RuntimeObject);
     }
 }
 
