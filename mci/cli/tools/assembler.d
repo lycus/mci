@@ -101,13 +101,11 @@ public final class AssemblerTool : Tool
                 }
             }
 
+            FileStream stream;
+
             try
             {
-                scope (exit)
-                    if (stream)
-                        stream.close();
-
-                auto stream = new FileStream(file);
+                stream = new FileStream(file);
                 auto source = new Source(new BinaryReader(stream), stream.length);
                 auto lexer = new Lexer(source);
                 auto parser = new Parser(lexer.lex());
@@ -142,19 +140,21 @@ public final class AssemblerTool : Tool
                 logf("Error: Internal error in %s: %s", file, ex.msg);
                 return false;
             }
+            finally
+            {
+                if (stream)
+                    stream.close();
+            }
         }
 
         GeneratorDriver driver;
+        FileStream file;
 
         try
         {
-            scope (exit)
-                if (file)
-                    file.close();
-
             driver = new GeneratorDriver(units);
             auto program = driver.run();
-            auto file = new FileStream(output, FileAccess.write, FileMode.truncate);
+            file = new FileStream(output, FileAccess.write, FileMode.truncate);
             auto writer = new ProgramWriter(file);
 
             writer.write(program);
@@ -169,6 +169,11 @@ public final class AssemblerTool : Tool
             logf("Error: Generation failed in %s (line %s%s): %s", driver.currentModule ~ inputFileExtension,
                  ex.location.line, ex.location.column == 0 ? "" : ", column " ~ to!string(ex.location.column), ex.msg);
             return false;
+        }
+        finally
+        {
+            if (file)
+                file.close();
         }
 
         return true;
