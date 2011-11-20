@@ -94,7 +94,7 @@ public final class StructureType : Type
 
     public override string toString()
     {
-        return _module.name ~ "/" ~ _name;
+        return _module.toString() ~ "/" ~ _name;
     }
 
     public Field createField(string name, Type type, FieldAttributes attributes = FieldAttributes.none,
@@ -161,7 +161,7 @@ public final class PointerType : Type
 
     @property public override string name()
     {
-        return elementType.name ~ "*";
+        return elementType.toString() ~ "*";
     }
 }
 
@@ -210,11 +210,11 @@ public final class FunctionPointerType : Type
 
     @property public override string name()
     {
-        auto s = _returnType.name ~ " *(";
+        auto s = _returnType.toString() ~ " *(";
 
         foreach (i, param; _parameterTypes)
         {
-            s ~= param.name;
+            s ~= param.toString();
 
             if (i != _parameterTypes.count - 1)
                 s ~= ", ";

@@ -47,6 +47,11 @@ public final class BasicBlock
     {
         return _instructions;
     }
+
+    public override string toString()
+    {
+        return _name;
+    }
 }
 
 public enum string entryBlockName = "entry";
@@ -78,6 +83,11 @@ public final class Parameter
     body
     {
         return _type;
+    }
+
+    public override string toString()
+    {
+        return _type.toString();
     }
 }
 
@@ -219,6 +229,11 @@ public final class Function
     body
     {
         return _registers;
+    }
+
+    public override string toString()
+    {
+        return _module.toString() ~ "/" ~ _name;
     }
 
     public Parameter createParameter(Type type)

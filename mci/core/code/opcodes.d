@@ -159,6 +159,11 @@ public final class OpCode
     {
         return _hasTarget;
     }
+
+    public override string toString()
+    {
+        return _name;
+    }
 }
 
 public enum OperationCode : ubyte

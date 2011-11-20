@@ -50,6 +50,11 @@ public final class Register
     {
         return _name;
     }
+
+    public override string toString()
+    {
+        return _name;
+    }
 }
 
 public enum uint maxSourceRegisters = 2;
@@ -88,13 +93,13 @@ public final class Instruction
         assert(opCode);
 
         if (opCode.hasTarget)
-            assert(targetRegister !is null);
+            assert(targetRegister);
 
         if (opCode.registers >= 1)
-            assert(sourceRegister1 !is null);
+            assert(sourceRegister1);
 
         if (opCode.registers >= 2)
-            assert(sourceRegister2 !is null);
+            assert(sourceRegister2);
 
         if (opCode.operandType == OperandType.none)
             assert(!operand.hasValue);

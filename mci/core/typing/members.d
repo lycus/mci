@@ -84,4 +84,9 @@ public final class Field
     {
         return _offset;
     }
+
+    public override string toString()
+    {
+        return _declaringType.module_.toString() ~ "/" ~ _declaringType.toString() ~ ":" ~ _name;
+    }
 }

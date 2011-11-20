@@ -60,6 +60,11 @@ public final class Module
         return _types;
     }
 
+    public override string toString()
+    {
+        return _name;
+    }
+
     public Function createFunction(string name, Type returnType, FunctionAttributes attributes = FunctionAttributes.none,
                                    CallingConvention callingConvention = CallingConvention.queueCall)
     in
