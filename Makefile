@@ -16,7 +16,7 @@ ifneq ($(BUILD), debug)
 	endif
 endif
 
-DFLAGS = -v -w -wi -ignore -X -m$(MODEL) -L-L.
+DFLAGS = -w -wi -ignore -X -m$(MODEL) -L-L.
 
 ifeq ($(BUILD), release)
 	DFLAGS += -release -O -inline -noboundscheck
