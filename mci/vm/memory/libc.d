@@ -61,7 +61,7 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
     {
         auto length = __traits(classInstanceSize, RuntimeObject) + size;
         auto mem = malloc(length);
-        auto obj = emplace!RuntimeObject(mem[0 .. length], type, _generation);
+        auto obj = emplace!RuntimeObject(mem[0 .. length - size], type, _generation);
 
         synchronized (_lock)
             _objectCount++;
