@@ -47,7 +47,7 @@ public final class DGarbageCollector : GarbageCollector
     {
         auto length = __traits(classInstanceSize, RuntimeObject) + size;
         auto mem = GC.malloc(length);
-        auto obj = emplace!RuntimeObject(mem[0 .. length], type, _generation);
+        auto obj = emplace!RuntimeObject(mem[0 .. length - size], type, _generation);
 
         return obj;
     }
