@@ -216,7 +216,7 @@ public final class FunctionPointerType : Type
         {
             s ~= param.toString();
 
-            if (i != _parameterTypes.count - 1)
+            if (i < _parameterTypes.count - 1)
                 s ~= ", ";
         }
 

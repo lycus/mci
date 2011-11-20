@@ -150,13 +150,13 @@ public final class ModuleDisassembler
                 break;
         }
 
-        writef("%s %s(", function_.returnType, function_.name);
+        writef("%s %s (", function_.returnType, function_.name);
 
         foreach (i, param; function_.parameters)
         {
             write(param.type);
 
-            if (i < function_.parameters.count)
+            if (i < function_.parameters.count - 1)
                 write(", ");
         }
 
@@ -164,7 +164,7 @@ public final class ModuleDisassembler
         writeln("{");
 
         foreach (reg; function_.registers)
-            writef("    register %s %s;", reg.type, reg.name);
+            writefln("    register %s %s;", reg.type, reg.name);
 
         writeln();
 
@@ -203,7 +203,7 @@ public final class ModuleDisassembler
                             {
                                 write(b);
 
-                                if (i < bytes.count)
+                                if (i < bytes.count - 1)
                                     write(", ");
                             }
 
@@ -215,7 +215,7 @@ public final class ModuleDisassembler
                             {
                                 write(reg.name);
 
-                                if (i < regs.count)
+                                if (i < regs.count - 1)
                                     write(", ");
                             }
 

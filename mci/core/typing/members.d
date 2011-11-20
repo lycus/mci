@@ -87,6 +87,6 @@ public final class Field
 
     public override string toString()
     {
-        return _declaringType.module_.toString() ~ "/" ~ _declaringType.toString() ~ ":" ~ _name;
+        return _declaringType.toString() ~ ":" ~ _name;
     }
 }
