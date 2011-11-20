@@ -47,7 +47,7 @@ body
     auto fieldType = resolveType(node.type, type.module_, program);
     auto offset = node.offset ? Nullable!uint(to!uint(node.offset.value)) : Nullable!uint();
 
-    return type.createField(node.name.name, fieldType, node.attributes, offset);
+    return type.createField(node.name.name, fieldType, node.storage, offset);
 }
 
 public Type resolveType(TypeReferenceNode node, Module module_, Program program)
