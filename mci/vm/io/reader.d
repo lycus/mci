@@ -691,6 +691,7 @@ public final class ProgramReader
         Register target;
         Register source1;
         Register source2;
+        Register source3;
 
         if (opCode.hasTarget)
             target = readRegisterReference(function_);
@@ -700,6 +701,9 @@ public final class ProgramReader
 
         if (opCode.registers >= 2)
             source2 = readRegisterReference(function_);
+
+        if (opCode.registers >= 3)
+            source3 = readRegisterReference(function_);
 
         InstructionOperand operand;
 
@@ -785,7 +789,7 @@ public final class ProgramReader
                 break;
         }
 
-        return new Instruction(opCode, operand, target, source1, source2);
+        return new Instruction(opCode, operand, target, source1, source2, source3);
     }
 
     private Register readRegisterReference(Function function_)

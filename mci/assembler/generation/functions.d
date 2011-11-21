@@ -56,6 +56,7 @@ body
         {
             auto source1 = instrNode.source1 ? resolveRegister(instrNode.source1, func) : null;
             auto source2 = instrNode.source2 ? resolveRegister(instrNode.source2, func) : null;
+            auto source3 = instrNode.source3 ? resolveRegister(instrNode.source3, func) : null;
             auto target = instrNode.target ? resolveRegister(instrNode.target, func) : null;
 
             mci.core.code.instructions.InstructionOperand operand;
@@ -136,7 +137,7 @@ body
                 }
             }
 
-            bb.instructions.add(new Instruction(instrNode.opCode, operand, target, source1, source2));
+            bb.instructions.add(new Instruction(instrNode.opCode, operand, target, source1, source2, source3));
         }
     }
 

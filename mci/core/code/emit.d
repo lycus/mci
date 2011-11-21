@@ -101,41 +101,55 @@ public class BasicBlockEmitter
         // We can neglect adding contracts here, since the Instruction constructor
         // has contracts that will trigger if something's wrong.
         mixin("public final BasicBlockEmitter emitTarget(OpCode opCode, " ~ OperandType ~ " operand, Register source1," ~
+              "                                          Register source2, Register source3, Register target)" ~
+              "{" ~
+              "    _block.instructions.add(new Instruction(opCode, InstructionOperand(operand), target, source1, source2, source3));" ~
+              "    return this;" ~
+              "}" ~
+              "" ~
+              "public final BasicBlockEmitter emitTarget(OpCode opCode, " ~ OperandType ~ " operand, Register source1," ~
               "                                          Register source2, Register target)" ~
               "{" ~
-              "    _block.instructions.add(new Instruction(opCode, InstructionOperand(operand), target, source1, source2));" ~
+              "    emitTarget(opCode, operand, source1, source2, null, target);" ~
               "    return this;" ~
               "}" ~
               "" ~
               "public final BasicBlockEmitter emitTarget(OpCode opCode, " ~ OperandType ~ " operand, Register source1," ~
               "                                          Register target)" ~
               "{" ~
-              "    emitTarget(opCode, operand, source1, null, target);" ~
+              "    emitTarget(opCode, operand, source1, null, null, target);" ~
               "    return this;" ~
               "}" ~
               "" ~
               "public final BasicBlockEmitter emitTarget(OpCode opCode, " ~ OperandType ~ " operand, Register target)" ~
               "{" ~
-              "    emitTarget(opCode, operand, null, null, target);" ~
+              "    emitTarget(opCode, operand, null, null, null, target);" ~
+              "    return this;" ~
+              "}" ~
+              "" ~
+              "public final BasicBlockEmitter emit(OpCode opCode, " ~ OperandType ~ " operand, Register source1," ~
+              "                                    Register source2, Register source3)" ~
+              "{" ~
+              "    emitTarget(opCode, operand, source1, source2, source3, null);" ~
               "    return this;" ~
               "}" ~
               "" ~
               "public final BasicBlockEmitter emit(OpCode opCode, " ~ OperandType ~ " operand, Register source1," ~
               "                                    Register source2)" ~
               "{" ~
-              "    emitTarget(opCode, operand, source1, source2, null);" ~
+              "    emitTarget(opCode, operand, source1, source2, null, null);" ~
               "    return this;" ~
               "}" ~
               "" ~
               "public final BasicBlockEmitter emit(OpCode opCode, " ~ OperandType ~ " operand, Register source1)" ~
               "{" ~
-              "    emitTarget(opCode, operand, source1, null, null);" ~
+              "    emitTarget(opCode, operand, source1, null, null, null);" ~
               "    return this;" ~
               "}" ~
               "" ~
               "public final BasicBlockEmitter emit(OpCode opCode, " ~ OperandType ~ " operand)" ~
               "{" ~
-              "    emitTarget(opCode, operand, null, null, null);" ~
+              "    emitTarget(opCode, operand, null, null, null, null);" ~
               "    return this;" ~
               "}");
     }
@@ -159,39 +173,52 @@ public class BasicBlockEmitter
     mixin DefineEmit!"FunctionPointerType";
     mixin DefineEmit!"Countable!Register";
 
+    public final BasicBlockEmitter emitTarget(OpCode opCode, Register source1, Register source2, Register source3,
+                                              Register target)
+    {
+        _block.instructions.add(new Instruction(opCode, InstructionOperand(), source1, source2, source3, target));
+        return this;
+    }
+
     public final BasicBlockEmitter emitTarget(OpCode opCode, Register source1, Register source2, Register target)
     {
-        _block.instructions.add(new Instruction(opCode, InstructionOperand(), source1, source2, target));
+        emitTarget(opCode, source1, source2, null, target);
         return this;
     }
 
     public final BasicBlockEmitter emitTarget(OpCode opCode, Register source1, Register target)
     {
-        emitTarget(opCode, source1, null, target);
+        emitTarget(opCode, source1, null, null, target);
         return this;
     }
 
     public final BasicBlockEmitter emitTarget(OpCode opCode, Register target)
     {
-        emitTarget(opCode, null, null, target);
+        emitTarget(opCode, null, null, null, target);
+        return this;
+    }
+
+    public final BasicBlockEmitter emit(OpCode opCode, Register source1, Register source2, Register source3)
+    {
+        emitTarget(opCode, source1, source2, source3, null);
         return this;
     }
 
     public final BasicBlockEmitter emit(OpCode opCode, Register source1, Register source2)
     {
-        emitTarget(opCode, source1, source2, null);
+        emitTarget(opCode, source1, source2, null, null);
         return this;
     }
 
     public final BasicBlockEmitter emit(OpCode opCode, Register source1)
     {
-        emitTarget(opCode, source1, null, null);
+        emitTarget(opCode, source1, null, null, null);
         return this;
     }
 
     public final BasicBlockEmitter emit(OpCode opCode)
     {
-        emitTarget(opCode, null, null, null);
+        emitTarget(opCode, null, null, null, null);
         return this;
     }
 }

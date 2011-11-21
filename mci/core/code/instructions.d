@@ -57,7 +57,7 @@ public final class Register
     }
 }
 
-public enum uint maxSourceRegisters = 2;
+public enum uint maxSourceRegisters = 3;
 
 alias Algebraic!(byte,
                  ubyte,
@@ -85,9 +85,10 @@ public final class Instruction
     private Register _targetRegister;
     private Register _sourceRegister1;
     private Register _sourceRegister2;
+    private Register _sourceRegister3;
 
     public this(OpCode opCode, InstructionOperand operand, Register targetRegister,
-                Register sourceRegister1, Register sourceRegister2)
+                Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
     in
     {
         assert(opCode);
@@ -101,6 +102,9 @@ public final class Instruction
         if (opCode.registers >= 2)
             assert(sourceRegister2);
 
+        if (opCode.registers >= 3)
+            assert(sourceRegister3);
+
         if (opCode.operandType == OperandType.none)
             assert(!operand.hasValue);
         else
@@ -113,6 +117,7 @@ public final class Instruction
         _targetRegister = targetRegister;
         _sourceRegister1 = sourceRegister1;
         _sourceRegister2 = sourceRegister2;
+        _sourceRegister3 = sourceRegister3;
     }
 
     @property public OpCode opCode()
@@ -138,5 +143,10 @@ public final class Instruction
     @property public Register sourceRegister2()
     {
         return _sourceRegister2;
+    }
+
+    @property public Register sourceRegister3()
+    {
+        return _sourceRegister3;
     }
 }

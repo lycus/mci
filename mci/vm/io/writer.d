@@ -207,6 +207,9 @@ public final class ProgramWriter
         if (instruction.sourceRegister2)
             writeRegisterReference(instruction.sourceRegister2);
 
+        if (instruction.sourceRegister3)
+            writeRegisterReference(instruction.sourceRegister3);
+
         auto operand = instruction.operand;
 
         if (operand.hasValue)

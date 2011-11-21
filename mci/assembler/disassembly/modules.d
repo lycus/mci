@@ -188,6 +188,9 @@ public final class ModuleDisassembler
                 if (instr.sourceRegister2)
                     writef(", %s", instr.sourceRegister2.name);
 
+                if (instr.sourceRegister3)
+                    writef(", %s", instr.sourceRegister3.name);
+
                 auto operand = instr.operand;
 
                 if (operand.hasValue)

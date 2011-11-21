@@ -741,26 +741,21 @@ public final class Parser
 
         RegisterReferenceNode source1;
         RegisterReferenceNode source2;
+        RegisterReferenceNode source3;
 
-        auto reg1 = peek();
-
-        if (reg1.type == TokenType.identifier)
-        {
-            if (opCode.registers == 0)
-                error("Opcode " ~ opCode.name ~ " takes no source registers", reg1.location);
-
+        if (opCode.registers >= 1)
             source1 = parseRegisterReference();
 
-            auto reg2 = peek();
+        if (opCode.registers >= 2)
+        {
+            consume(",");
+            source2 = parseRegisterReference();
+        }
 
-            if (reg2.type == TokenType.comma)
-            {
-                if (opCode.registers != 2)
-                    error("Opcode " ~ opCode.name ~ " does not take two source registers", reg2.location);
-
-                next();
-                source2 = parseRegisterReference();
-            }
+        if (opCode.registers >= 3)
+        {
+            consume(",");
+            source3 = parseRegisterReference();
         }
 
         InstructionOperandNode operand;
@@ -784,7 +779,7 @@ public final class Parser
 
         consume(";");
 
-        return new InstructionNode(opCodeTok.location, opCode, target, source1, source2, operand);
+        return new InstructionNode(opCodeTok.location, opCode, target, source1, source2, source3, operand);
     }
 
     private InstructionOperandNode parseInstructionOperand(OperandType operandType)

@@ -811,6 +811,7 @@ public class InstructionNode : Node
     private RegisterReferenceNode _target;
     private RegisterReferenceNode _source1;
     private RegisterReferenceNode _source2;
+    private RegisterReferenceNode _source3;
     private InstructionOperandNode _operand;
 
     invariant()
@@ -819,7 +820,8 @@ public class InstructionNode : Node
     }
 
     public this(SourceLocation location, OpCode opCode, RegisterReferenceNode target,
-                RegisterReferenceNode source1, RegisterReferenceNode source2, InstructionOperandNode operand)
+                RegisterReferenceNode source1, RegisterReferenceNode source2, RegisterReferenceNode source3,
+                InstructionOperandNode operand)
     in
     {
         assert(location);
@@ -833,6 +835,7 @@ public class InstructionNode : Node
         _target = target;
         _source1 = source1;
         _source2 = source2;
+        _source3 = source3;
         _operand = operand;
     }
 
@@ -854,6 +857,11 @@ public class InstructionNode : Node
     @property public final RegisterReferenceNode source2()
     {
         return _source2;
+    }
+
+    @property public final RegisterReferenceNode source3()
+    {
+        return _source3;
     }
 
     @property public final InstructionOperandNode operand()
