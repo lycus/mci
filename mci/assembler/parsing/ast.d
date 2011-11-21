@@ -124,7 +124,6 @@ public class StructureTypeReferenceNode : TypeReferenceNode
 
     invariant()
     {
-        assert(_moduleName);
         assert(_name);
     }
 
@@ -322,7 +321,6 @@ public class FunctionReferenceNode : Node
 
     invariant()
     {
-        assert(_moduleName);
         assert(_name);
     }
 
