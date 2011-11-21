@@ -2,14 +2,15 @@ module mci.vm.io.common;
 
 public enum string fileMagic = "LAIC"; // Reverse of CIAL (Compiled Intermediate Assembly Language).
 
-public enum uint fileVersion = 3;
+public enum uint fileVersion = 4;
 
 public enum TypeReferenceType : ubyte
 {
     core = 0,
     structure = 1,
     pointer = 2,
-    function_ = 3,
+    array = 3,
+    function_ = 4,
 }
 
 public enum CoreTypeIdentifier : ubyte

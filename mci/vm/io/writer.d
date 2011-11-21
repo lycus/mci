@@ -336,6 +336,11 @@ public final class ProgramWriter
             _writer.write(TypeReferenceType.pointer);
             writeTypeReference(ptrType.elementType);
         }
+        else if (auto arrType = cast(ArrayType)type)
+        {
+            _writer.write(TypeReferenceType.array);
+            writeTypeReference(arrType.elementType);
+        }
         else
         {
             _writer.write(TypeReferenceType.core);

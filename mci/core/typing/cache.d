@@ -14,12 +14,14 @@ public final class TypeCache
     private Dictionary!(Tuple!(string, string), Type) _types;
     private Dictionary!(Tuple!(Type, NoNullList!Type), FunctionPointerType) _functionPointerTypes;
     private NoNullDictionary!(Type, PointerType) _pointerTypes;
+    private NoNullDictionary!(Type, ArrayType) _arrayTypes;
 
     invariant()
     {
         assert(_types);
         assert(_functionPointerTypes);
         assert(_pointerTypes);
+        assert(_arrayTypes);
     }
 
     public this()
@@ -27,6 +29,7 @@ public final class TypeCache
         _types = new typeof(_types)();
         _functionPointerTypes = new typeof(_functionPointerTypes)();
         _pointerTypes = new typeof(_pointerTypes)();
+        _arrayTypes = new typeof(_arrayTypes)();
 
         void addCoreType(CoreType type)
         in
@@ -126,5 +129,22 @@ public final class TypeCache
             return *ptrType;
 
         return _pointerTypes[elementType] = new PointerType(elementType);
+    }
+
+    public ArrayType getArrayType(Type elementType)
+    in
+    {
+        assert(elementType);
+    }
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        if (auto arrType = elementType in _arrayTypes)
+            return *arrType;
+
+        return _arrayTypes[elementType] = new ArrayType(elementType);
     }
 }

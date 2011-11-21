@@ -31,7 +31,7 @@ body
     if (isType!NativeIntType(type) || isType!NativeUIntType(type))
         return is64Bit ? 8 : 4;
 
-    if (isType!PointerType(type) || isType!FunctionPointerType(type))
+    if (isType!PointerType(type) || isType!ArrayType(type) || isType!FunctionPointerType(type))
         return is64Bit ? 8 : 4;
 
     auto structType = cast(StructureType)type;

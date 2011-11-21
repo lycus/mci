@@ -234,6 +234,36 @@ private final class PointerTypeReferenceDescriptor : TypeReferenceDescriptor
     }
 }
 
+private final class ArrayTypeReferenceDescriptor : TypeReferenceDescriptor
+{
+    private TypeReferenceDescriptor _elementType;
+
+    invariant()
+    {
+        assert(_elementType);
+    }
+
+    public this(TypeReferenceDescriptor elementType)
+    in
+    {
+        assert(elementType);
+    }
+    body
+    {
+        _elementType = elementType;
+    }
+
+    @property public TypeReferenceDescriptor elementType()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _elementType;
+    }
+}
+
 private final class FunctionPointerTypeReferenceDescriptor : TypeReferenceDescriptor
 {
     private TypeReferenceDescriptor _returnType;
@@ -435,6 +465,8 @@ public final class ProgramReader
         }
         else if (auto ptrType = cast(PointerTypeReferenceDescriptor)descriptor)
             return cache.getPointerType(toType(ptrType.elementType, cache));
+        else if (auto arrType = cast(ArrayTypeReferenceDescriptor)descriptor)
+            return cache.getArrayType(toType(arrType.elementType, cache));
         else if (auto fpType = cast(FunctionPointerTypeReferenceDescriptor)descriptor)
         {
             auto params = new NoNullList!Type(map(fpType.parameterTypes, (TypeReferenceDescriptor desc) { return toType(desc, cache); }));
@@ -533,6 +565,10 @@ public final class ProgramReader
                 auto element = readTypeReference();
 
                 return new PointerTypeReferenceDescriptor(element);
+            case TypeReferenceType.array:
+                auto element = readTypeReference();
+
+                return new ArrayTypeReferenceDescriptor(element);
             case TypeReferenceType.function_:
                 auto returnType = readTypeReference();
                 auto fpType = new FunctionPointerTypeReferenceDescriptor(returnType);

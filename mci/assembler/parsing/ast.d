@@ -180,6 +180,34 @@ public class PointerTypeReferenceNode : TypeReferenceNode
     }
 }
 
+public class ArrayTypeReferenceNode : TypeReferenceNode
+{
+    private TypeReferenceNode _elementType;
+
+    invariant()
+    {
+        assert(_elementType);
+    }
+
+    public this(SourceLocation location, TypeReferenceNode elementType)
+    in
+    {
+        assert(location);
+        assert(elementType);
+    }
+    body
+    {
+        super(location);
+
+        _elementType = elementType;
+    }
+
+    @property public final TypeReferenceNode elementType()
+    {
+        return _elementType;
+    }
+}
+
 public class FunctionPointerTypeReferenceNode : TypeReferenceNode
 {
     private TypeReferenceNode _returnType;

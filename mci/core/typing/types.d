@@ -165,6 +165,30 @@ public final class PointerType : Type
     }
 }
 
+unittest
+{
+    auto mod = new Module("foo");
+
+    auto st = new StructureType(mod, "bar");
+    st.close();
+
+    auto ptr = new PointerType(st);
+
+    assert(ptr.name == "foo/bar*");
+}
+
+unittest
+{
+    auto mod = new Module("foo");
+
+    auto st = new StructureType(mod, "foo_bar_baz");
+    st.close();
+
+    auto ptr = new PointerType(st);
+
+    assert(ptr.name == "foo/foo_bar_baz*");
+}
+
 public final class FunctionPointerType : Type
 {
     private Type _returnType;
@@ -228,30 +252,6 @@ unittest
 {
     auto mod = new Module("foo");
 
-    auto st = new StructureType(mod, "bar");
-    st.close();
-
-    auto ptr = new PointerType(st);
-
-    assert(ptr.name == "foo/bar*");
-}
-
-unittest
-{
-    auto mod = new Module("foo");
-
-    auto st = new StructureType(mod, "foo_bar_baz");
-    st.close();
-
-    auto ptr = new PointerType(st);
-
-    assert(ptr.name == "foo/foo_bar_baz*");
-}
-
-unittest
-{
-    auto mod = new Module("foo");
-
     auto st1 = new StructureType(mod, "bar");
     st1.close();
 
@@ -265,4 +265,51 @@ unittest
     auto fpt = new FunctionPointerType(st1, params);
 
     assert(fpt.name == "foo/bar (foo/baz, foo/bar)");
+}
+
+public final class ArrayType : Type
+{
+    private Type _elementType;
+
+    invariant()
+    {
+        assert(_elementType);
+    }
+
+    package this(Type elementType)
+    in
+    {
+        assert(elementType);
+    }
+    body
+    {
+        _elementType = elementType;
+    }
+
+    @property public Type elementType()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _elementType;
+    }
+
+    @property public override string name()
+    {
+        return elementType.toString() ~ "[]";
+    }
+}
+
+unittest
+{
+    auto mod = new Module("bar");
+
+    auto st = new StructureType(mod, "baz");
+    st.close();
+
+    auto ptr = new ArrayType(st);
+
+    assert(ptr.name == "bar/baz[]");
 }

@@ -322,10 +322,25 @@ public final class Parser
             return parseFunctionPointerTypeReference();
         }
 
-        while (peek().type == TokenType.star)
+        while (true)
         {
-            next();
-            type = new PointerTypeReferenceNode(type.location, type);
+            auto peek = peek();
+
+            if (peek.type == TokenType.star)
+            {
+                next();
+
+                type = new PointerTypeReferenceNode(type.location, type);
+            }
+            else if (peek.type == TokenType.openBracket)
+            {
+                next();
+                consume("]");
+
+                type = new ArrayTypeReferenceNode(type.location, type);
+            }
+            else
+                break;
         }
 
         return type;

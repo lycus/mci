@@ -69,6 +69,8 @@ body
         return resolveFunctionPointerType(fpType, module_, program);
     else if (auto ptrType = cast(PointerTypeReferenceNode)node)
         return program.typeCache.getPointerType(resolveType(ptrType.elementType, module_, program));
+    else if (auto arrType = cast(ArrayTypeReferenceNode)node)
+        return program.typeCache.getArrayType(resolveType(arrType.elementType, module_, program));
     else
         return program.typeCache.getType(null, (cast(CoreTypeReferenceNode)node).name.name);
 }
