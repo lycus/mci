@@ -14,6 +14,11 @@ public abstract class Node
 {
     private SourceLocation _location;
 
+    invariant()
+    {
+        assert(_location);
+    }
+
     protected this(SourceLocation location)
     in
     {
@@ -47,6 +52,11 @@ public class SimpleNameNode : Node
 {
     private string _name;
 
+    invariant()
+    {
+        assert(_name);
+    }
+
     public this(SourceLocation location, string name)
     in
     {
@@ -69,6 +79,11 @@ public class SimpleNameNode : Node
 public class ModuleReferenceNode : Node
 {
     private SimpleNameNode _name;
+
+    invariant()
+    {
+        assert(_name);
+    }
 
     public this(SourceLocation location, SimpleNameNode name)
     in
@@ -107,6 +122,12 @@ public class StructureTypeReferenceNode : TypeReferenceNode
     private ModuleReferenceNode _moduleName;
     private SimpleNameNode _name;
 
+    invariant()
+    {
+        assert(_moduleName);
+        assert(_name);
+    }
+
     public this(SourceLocation location, ModuleReferenceNode moduleName, SimpleNameNode name)
     in
     {
@@ -136,6 +157,11 @@ public class PointerTypeReferenceNode : TypeReferenceNode
 {
     private TypeReferenceNode _elementType;
 
+    invariant()
+    {
+        assert(_elementType);
+    }
+
     public this(SourceLocation location, TypeReferenceNode elementType)
     in
     {
@@ -159,6 +185,12 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
 {
     private TypeReferenceNode _returnType;
     private NoNullList!TypeReferenceNode _parameterTypes;
+
+    invariant()
+    {
+        assert(_returnType);
+        assert(_parameterTypes);
+    }
 
     public this(SourceLocation location, TypeReferenceNode returnType,
                 NoNullList!TypeReferenceNode parameterTypes)
@@ -208,6 +240,11 @@ private mixin template DefineCoreTypeNode(string type, string name)
           "{" ~
           "    private SimpleNameNode _name;" ~
           "" ~
+          "    invariant()" ~
+          "    {" ~
+          "        assert(_name);" ~
+          "    }" ~
+          "" ~
           "    public this(SourceLocation location)" ~
           "    in" ~
           "    {" ~
@@ -246,6 +283,12 @@ public class FieldReferenceNode : Node
     private StructureTypeReferenceNode _typeName;
     private SimpleNameNode _name;
 
+    invariant()
+    {
+        assert(_typeName);
+        assert(_name);
+    }
+
     public this(SourceLocation location, StructureTypeReferenceNode typeName, SimpleNameNode name)
     in
     {
@@ -277,6 +320,12 @@ public class FunctionReferenceNode : Node
     private ModuleReferenceNode _moduleName;
     private SimpleNameNode _name;
 
+    invariant()
+    {
+        assert(_moduleName);
+        assert(_name);
+    }
+
     public this(SourceLocation location, ModuleReferenceNode moduleName, SimpleNameNode name)
     in
     {
@@ -307,6 +356,12 @@ public class TypeDeclarationNode : DeclarationNode
     private SimpleNameNode _name;
     private TypeLayout _layout;
     private NoNullList!FieldDeclarationNode _fields;
+
+    invariant()
+    {
+        assert(_name);
+        assert(_fields);
+    }
 
     public this(SourceLocation location, SimpleNameNode name, TypeLayout layout, NoNullList!FieldDeclarationNode fields)
     in
@@ -346,6 +401,12 @@ public class FieldDeclarationNode : Node
     private SimpleNameNode _name;
     private FieldStorage _storage;
     private LiteralValueNode _offset;
+
+    invariant()
+    {
+        assert(_type);
+        assert(_name);
+    }
 
     public this(SourceLocation location, TypeReferenceNode type, SimpleNameNode name,
                 FieldStorage storage, LiteralValueNode offset)
@@ -389,6 +450,11 @@ public class ParameterNode : Node
 {
     private TypeReferenceNode _type;
 
+    invariant()
+    {
+        assert(_type);
+    }
+
     public this(SourceLocation location, TypeReferenceNode type)
     in
     {
@@ -417,6 +483,15 @@ public class FunctionDeclarationNode : DeclarationNode
     private TypeReferenceNode _returnType;
     private NoNullList!RegisterDeclarationNode _registers;
     private NoNullList!BasicBlockDeclarationNode _blocks;
+
+    invariant()
+    {
+        assert(_name);
+        assert(_parameters);
+        assert(_returnType);
+        assert(_registers);
+        assert(_blocks);
+    }
 
     public this(SourceLocation location, SimpleNameNode name, FunctionAttributes attributes,
                 CallingConvention callingConvention, NoNullList!ParameterNode parameters,
@@ -485,6 +560,12 @@ public class RegisterDeclarationNode : Node
     private SimpleNameNode _name;
     private TypeReferenceNode _type;
 
+    invariant()
+    {
+        assert(_name);
+        assert(_type);
+    }
+
     public this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type)
     in
     {
@@ -516,6 +597,12 @@ public class BasicBlockDeclarationNode : Node
     private SimpleNameNode _name;
     private NoNullList!InstructionNode _instructions;
 
+    invariant()
+    {
+        assert(_name);
+        assert(_instructions);
+    }
+
     public this(SourceLocation location, SimpleNameNode name, NoNullList!InstructionNode instructions)
     in
     {
@@ -546,6 +633,11 @@ public class RegisterReferenceNode : Node
 {
     private SimpleNameNode _name;
 
+    invariant()
+    {
+        assert(_name);
+    }
+
     public this(SourceLocation location, SimpleNameNode name)
     in
     {
@@ -568,6 +660,11 @@ public class RegisterReferenceNode : Node
 public class BasicBlockReferenceNode : Node
 {
     private SimpleNameNode _name;
+
+    invariant()
+    {
+        assert(_name);
+    }
 
     public this(SourceLocation location, SimpleNameNode name)
     in
@@ -592,6 +689,11 @@ public class RegisterSelectorNode : Node
 {
     private NoNullList!RegisterReferenceNode _registers;
 
+    invariant()
+    {
+        assert(_registers);
+    }
+
     public this(SourceLocation location, NoNullList!RegisterReferenceNode registers)
     in
     {
@@ -615,6 +717,11 @@ public class LiteralValueNode : Node
 {
     private string _value;
 
+    invariant()
+    {
+        assert(_value);
+    }
+
     public this(SourceLocation location, string value)
     in
     {
@@ -637,6 +744,11 @@ public class LiteralValueNode : Node
 public class ByteArrayLiteralNode : Node
 {
     private NoNullList!LiteralValueNode _values;
+
+    invariant()
+    {
+        assert(_values);
+    }
 
     public this(SourceLocation location, NoNullList!LiteralValueNode values)
     in
@@ -671,6 +783,11 @@ public class InstructionOperandNode : Node
 {
     private InstructionOperand _operand;
 
+    invariant()
+    {
+        assert(_operand.hasValue);
+    }
+
     public this(SourceLocation location, InstructionOperand operand)
     in
     {
@@ -697,6 +814,11 @@ public class InstructionNode : Node
     private RegisterReferenceNode _source1;
     private RegisterReferenceNode _source2;
     private InstructionOperandNode _operand;
+
+    invariant()
+    {
+        assert(_opCode);
+    }
 
     public this(SourceLocation location, OpCode opCode, RegisterReferenceNode target,
                 RegisterReferenceNode source1, RegisterReferenceNode source2, InstructionOperandNode operand)
