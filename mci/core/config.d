@@ -118,15 +118,11 @@ else version (MIPS64)
 }
 else version (S390)
 {
-    pragma(msg, "- Architecture: System/390 (32-bit)");
-
-    public enum Architecture architecture = Architecture.s390;
+    static assert(false, "The System/390 architecture is not supported.");
 }
 else version (S390X)
 {
-    pragma(msg, "- Architecture: System/390 (64-bit)");
-
-    public enum Architecture architecture = Architecture.s390;
+    static assert(false, "The System/390 architecture is not supported.");
 }
 else version (SPARC)
 {

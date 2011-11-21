@@ -81,7 +81,6 @@ public enum Architecture : ubyte
     ppc,
     ia64,
     mips,
-    s390,
 }
 
 public enum Endianness : ubyte
