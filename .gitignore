@@ -1,5 +1,6 @@
 *_ReSharper.*/*
 docs/_build
+bin/*
 */*/Debug/*
 */*/Release/*
 */*/Test/*
@@ -12,16 +13,7 @@ docs/_build
 *.a
 *.deps
 *.json
-*.lst
 *.log
 *.def
 
 *.orig
-
-libmci.core
-libmci.assembler
-libmci.interpreter
-libmci.jit
-libmci.vm
-mci.cli
-mci.tester

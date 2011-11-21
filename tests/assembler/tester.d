@@ -4,7 +4,7 @@ import std.file,
        std.stdio;
 
 private string windowsPath = buildPath("..", "..", "mci", "cli", "Test", "mci.cli.exe");
-private string posixPath = buildPath("..", "..", "mci.cli");
+private string posixPath = buildPath("..", "..", "bin", "mci.cli");
 
 private int main()
 {

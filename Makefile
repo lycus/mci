@@ -16,7 +16,7 @@ ifneq ($(BUILD), debug)
 	endif
 endif
 
-DFLAGS = -w -wi -ignore -X -m$(MODEL) -profile
+DFLAGS = -w -wi -ignore -X -m$(MODEL) -profile -Xf$@.json -deps=$@.deps -of$@
 
 ifeq ($(BUILD), release)
 	DFLAGS += -release -O -inline
@@ -29,42 +29,28 @@ else
 endif
 
 ifeq ($(BUILD), test)
-	MCI_TESTER = mci.tester
+	MCI_TESTER = bin/mci.tester
 else
 	MCI_TESTER =
 endif
 
 all: \
-	libmci.core.a \
-	libmci.assembler.a \
-	libmci.vm.a \
-	libmci.interpreter.a \
-	libmci.jit.a \
-	mci.cli \
+	bin/libmci.core.a \
+	bin/libmci.assembler.a \
+	bin/libmci.vm.a \
+	bin/libmci.interpreter.a \
+	bin/libmci.jit.a \
+	bin/mci.cli \
 	$(MCI_TESTER)
 
 clean:
-	-rm -f *.o;
-	-rm -f *.a;
-	-rm -f *.deps;
-	-rm -f *.json;
-	-rm -f *.lst;
-	-rm -f trace.def;
-	-rm -f trace.log;
-	-rm -f libmci.core;
-	-rm -f libmci.assembler;
-	-rm -f libmci.vm;
-	-rm -f libmci.interpreter;
-	-rm -f libmci.jit;
-	-rm -f mci.cli;
-	-rm -f mci.tester;
+	-rm -f bin/*
 
 #################### mci.core ####################
 
-MCI_CORE_DFLAGS = $(DFLAGS) -lib -Xf"libmci.core.json" -deps="libmci.core.deps"
-
-libmci.core.a:
-	$(DPLC) $(MCI_CORE_DFLAGS) -of$@ $(MCI_CORE_SOURCES);
+bin/libmci.core.a:
+	-mkdir -p bin;
+	$(DPLC) $(DFLAGS) -lib $(MCI_CORE_SOURCES);
 
 MCI_CORE_SOURCES = \
 	mci/core/all.d \
@@ -93,10 +79,9 @@ MCI_CORE_SOURCES = \
 
 #################### mci.assembler ####################
 
-MCI_ASSEMBLER_DFLAGS = $(DFLAGS) -lib -Xf"libmci.assembler.json" -deps="libmci.assembler.deps"
-
-libmci.assembler.a:
-	$(DPLC) $(MCI_ASSEMBLER_DFLAGS) -of$@ $(MCI_ASSEMBLER_SOURCES);
+bin/libmci.assembler.a:
+	-mkdir -p bin;
+	$(DPLC) $(DFLAGS) -lib $(MCI_ASSEMBLER_SOURCES);
 
 MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/all.d \
@@ -116,10 +101,9 @@ MCI_ASSEMBLER_SOURCES = \
 
 #################### mci.vm ####################
 
-MCI_VM_DFLAGS = $(DFLAGS) -lib -Xf"libmci.vm.json" -deps="libmci.vm.deps"
-
-libmci.vm.a:
-	$(DPLC) $(MCI_VM_DFLAGS) -of$@ $(MCI_VM_SOURCES);
+bin/libmci.vm.a:
+	-mkdir -p bin;
+	$(DPLC) $(DFLAGS) -lib $(MCI_VM_SOURCES);
 
 MCI_VM_SOURCES = \
 	mci/vm/all.d \
@@ -135,52 +119,28 @@ MCI_VM_SOURCES = \
 
 #################### mci.interpreter ####################
 
-MCI_INTERPRETER_DFLAGS = $(DFLAGS) -lib -Xf"libmci.interpreter.json" -deps="libmci.interpreter.deps"
-
-libmci.interpreter.a:
-	$(DPLC) $(MCI_INTERPRETER_DFLAGS) -of$@ $(MCI_INTERPRETER_SOURCES);
+bin/libmci.interpreter.a:
+	-mkdir -p bin;
+	$(DPLC) $(DFLAGS) -lib $(MCI_INTERPRETER_SOURCES);
 
 MCI_INTERPRETER_SOURCES = \
 	mci/interpreter/all.d
 
 #################### mci.jit ####################
 
-MCI_JIT_DFLAGS = $(DFLAGS) -lib -Xf"libmci.jit.json" -deps="libmci.jit.deps"
-
-libmci.jit.a:
-	$(DPLC) $(MCI_JIT_DFLAGS) -of$@ $(MCI_JIT_SOURCES);
+bin/libmci.jit.a:
+	-mkdir -p bin;
+	$(DPLC) $(DFLAGS) -lib $(MCI_JIT_SOURCES);
 
 MCI_JIT_SOURCES = \
 	mci/jit/all.d \
 
-#################### mci.tester ####################
-
-MCI_TESTER_DFLAGS = $(DFLAGS) -Xf"mci.tester.json" -deps="mci.tester.deps"
-
-mci.tester: $(MCI_TESTER_DEPS)
-	$(DPLC) $(MCI_TESTER_DFLAGS) -of$@ $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS);
-	if [ ${BUILD} = "test" ]; then \
-		gdb --command=mci.gdb mci.tester; \
-	fi; \
-	cd tests/assembler; \
-	rdmd tester.d;
-
-MCI_TESTER_SOURCES = \
-	mci/tester/main.d
-
-MCI_TESTER_DEPS = \
-	libmci.jit.a \
-	libmci.interpreter.a \
-	libmci.vm.a \
-	libmci.assembler.a \
-	libmci.core.a
-
 #################### mci.cli ####################
 
-MCI_CLI_DFLAGS = $(DFLAGS) -Xf"mci.cli.json" -deps="mci.cli.deps"
-
-mci.cli: $(MCI_CLI_DEPS)
-	$(DPLC) $(MCI_CLI_DFLAGS) -of$@ $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS);
+bin/mci.cli: $(MCI_CLI_DEPS)
+	-mkdir -p bin;
+	$(DPLC) $(DFLAGS) $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS);
+	chmod +x $@;
 
 MCI_CLI_SOURCES = \
 	mci/cli/main.d \
@@ -191,8 +151,30 @@ MCI_CLI_SOURCES = \
 	mci/cli/tools/verifier.d
 
 MCI_CLI_DEPS = \
-	libmci.jit.a \
-	libmci.interpreter.a \
-	libmci.vm.a \
-	libmci.assembler.a \
-	libmci.core.a
+	bin/libmci.jit.a \
+	bin/libmci.interpreter.a \
+	bin/libmci.vm.a \
+	bin/libmci.assembler.a \
+	bin/libmci.core.a
+
+#################### mci.tester ####################
+
+bin/mci.tester: $(MCI_TESTER_DEPS)
+	-mkdir -p bin; \
+	$(DPLC) $(DFLAGS) $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS); \
+	chmod +x $@; \
+	if [ ${BUILD} = "test" ]; then \
+		gdb --command=mci.gdb $@; \
+	fi; \
+	cd tests/assembler; \
+	rdmd tester.d;
+
+MCI_TESTER_SOURCES = \
+	mci/tester/main.d
+
+MCI_TESTER_DEPS = \
+	bin/libmci.jit.a \
+	bin/libmci.interpreter.a \
+	bin/libmci.vm.a \
+	bin/libmci.assembler.a \
+	bin/libmci.core.a
