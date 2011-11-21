@@ -133,6 +133,15 @@ public interface Map(K, V) : Collection!(Tuple!(K, V))
     }
 }
 
+public interface Queue(T) : Countable!T
+{
+    public void enqueue(T item);
+
+    public T dequeue();
+
+    public T* peek();
+}
+
 public Iterable!T asIterable(T)(Iterable!T items)
 in
 {
