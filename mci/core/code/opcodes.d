@@ -198,57 +198,46 @@ public enum OperationCode : ubyte
     shL = 27,
     shR = 28,
     conv = 29,
-    convI8 = 30,
-    convUI8 = 31,
-    convI16 = 32,
-    convUI16 = 33,
-    convI32 = 34,
-    convUI32 = 35,
-    convI64 = 36,
-    convUI64 = 37,
-    convIN = 38,
-    convUIN = 39,
-    convF32 = 40,
-    convF64 = 41,
-    convFN = 42,
-    convFunc = 43,
-    memAlloc = 44,
-    memNew = 45,
-    memFree = 46,
-    memDelete = 47,
-    memGet = 48,
-    memSet = 49,
-    memAddr = 50,
-    fieldGet = 51,
-    fieldSet = 52,
-    fieldAddr = 53,
-    fieldGGet = 54,
-    fieldGSet = 55,
-    fieldGAddr = 56,
-    cmpEq = 57,
-    cmpGT = 58,
-    cmpLT = 59,
-    cmpGTEq = 60,
-    cmpLTEq = 61,
-    argPush = 62,
-    argPop = 63,
-    result = 64,
-    invoke = 65,
-    invokeTail = 66,
-    invokeIndirect = 67,
-    call = 68,
-    callTail = 69,
-    callIndirect = 70,
-    jump = 71,
-    jumpTrue = 72,
-    jumpFalse = 73,
-    leave = 74,
-    return_ = 75,
-    phi = 76,
-    exThrow = 77,
-    exTry = 78,
-    exHandle = 79,
-    exEnd = 80,
+    memAlloc = 30,
+    memNew = 31,
+    memFree = 32,
+    memDelete = 33,
+    memGet = 34,
+    memSet = 35,
+    memAddr = 36,
+    arrayGet = 37,
+    arraySet = 38,
+    arrayAddr = 39,
+    fieldGet = 40,
+    fieldSet = 41,
+    fieldAddr = 42,
+    fieldGGet = 43,
+    fieldGSet = 44,
+    fieldGAddr = 45,
+    cmpEq = 46,
+    cmpGT = 47,
+    cmpLT = 48,
+    cmpGTEq = 49,
+    cmpLTEq = 50,
+    argPush = 51,
+    argPop = 52,
+    result = 53,
+    invoke = 54,
+    invokeTail = 55,
+    invokeIndirect = 56,
+    call = 57,
+    callTail = 58,
+    callIndirect = 59,
+    jump = 60,
+    jumpTrue = 61,
+    jumpFalse = 62,
+    leave = 63,
+    return_ = 64,
+    phi = 65,
+    exThrow = 66,
+    exTry = 67,
+    exHandle = 68,
+    exEnd = 69,
 }
 
 public __gshared OpCode opNop;
@@ -281,20 +270,6 @@ public __gshared OpCode opNot;
 public __gshared OpCode opShL;
 public __gshared OpCode opShR;
 public __gshared OpCode opConv;
-public __gshared OpCode opConvI8;
-public __gshared OpCode opConvUI8;
-public __gshared OpCode opConvI16;
-public __gshared OpCode opConvUI16;
-public __gshared OpCode opConvI32;
-public __gshared OpCode opConvUI32;
-public __gshared OpCode opConvI64;
-public __gshared OpCode opConvUI64;
-public __gshared OpCode opConvIN;
-public __gshared OpCode opConvUIN;
-public __gshared OpCode opConvF32;
-public __gshared OpCode opConvF64;
-public __gshared OpCode opConvFN;
-public __gshared OpCode opConvFunc;
 public __gshared OpCode opMemAlloc;
 public __gshared OpCode opMemNew;
 public __gshared OpCode opMemFree;
@@ -302,6 +277,9 @@ public __gshared OpCode opMemDelete;
 public __gshared OpCode opMemGet;
 public __gshared OpCode opMemSet;
 public __gshared OpCode opMemAddr;
+public __gshared OpCode opArrayGet;
+public __gshared OpCode opArraySet;
+public __gshared OpCode opArrayAddr;
 public __gshared OpCode opFieldGet;
 public __gshared OpCode opFieldSet;
 public __gshared OpCode opFieldAddr;
@@ -386,27 +364,16 @@ static this()
     opShL = create("shl", OperationCode.shL, OpCodeType.normal, OperandType.none, 2, true);
     opShR = create("shr", OperationCode.shR, OpCodeType.normal, OperandType.none, 2, true);
     opConv = create("conv", OperationCode.conv, OpCodeType.normal, OperandType.type, 1, true);
-    opConvI8 = create("conv.i8", OperationCode.convI8, OpCodeType.normal, OperandType.none, 1, true);
-    opConvUI8 = create("conv.ui8", OperationCode.convUI8, OpCodeType.normal, OperandType.none, 1, true);
-    opConvI16 = create("conv.i16", OperationCode.convI16, OpCodeType.normal, OperandType.none, 1, true);
-    opConvUI16 = create("conv.ui16", OperationCode.convUI16, OpCodeType.normal, OperandType.none, 1, true);
-    opConvI32 = create("conv.i32", OperationCode.convI32, OpCodeType.normal, OperandType.none, 1, true);
-    opConvUI32 = create("conv.ui32", OperationCode.convUI32, OpCodeType.normal, OperandType.none, 1, true);
-    opConvI64 = create("conv.i64", OperationCode.convI64, OpCodeType.normal, OperandType.none, 1, true);
-    opConvUI64 = create("conv.ui64", OperationCode.convUI64, OpCodeType.normal, OperandType.none, 1, true);
-    opConvIN = create("conv.in", OperationCode.convIN, OpCodeType.normal, OperandType.none, 1, true);
-    opConvUIN = create("conv.uin", OperationCode.convUIN, OpCodeType.normal, OperandType.none, 1, true);
-    opConvF32 = create("conv.f32", OperationCode.convF32, OpCodeType.normal, OperandType.none, 1, true);
-    opConvF64 = create("conv.f64", OperationCode.convF64, OpCodeType.normal, OperandType.none, 1, true);
-    opConvFN = create("conv.fn", OperationCode.convFN, OpCodeType.normal, OperandType.none, 1, true);
-    opConvFunc = create("conv.func", OperationCode.convFunc, OpCodeType.normal, OperandType.signature, 1, true);
-    opMemAlloc = create("mem.alloc", OperationCode.memAlloc, OpCodeType.normal, OperandType.none, 1, true);
+    opMemAlloc = create("mem.alloc", OperationCode.memAlloc, OpCodeType.normal, OperandType.type, 1, true);
     opMemNew = create("mem.new", OperationCode.memNew, OpCodeType.normal, OperandType.structure, 0, true);
     opMemFree = create("mem.free", OperationCode.memFree, OpCodeType.normal, OperandType.none, 1, false);
     opMemDelete = create("mem.delete", OperationCode.memDelete, OpCodeType.normal, OperandType.none, 1, false);
     opMemGet = create("mem.get", OperationCode.memGet, OpCodeType.normal, OperandType.none, 1, true);
     opMemSet = create("mem.set", OperationCode.memSet, OpCodeType.normal, OperandType.none, 2, false);
     opMemAddr = create("mem.addr", OperationCode.memAddr, OpCodeType.normal, OperandType.none, 1, true);
+    opArrayGet = create("array.get", OperationCode.arrayGet, OpCodeType.normal, OperandType.none, 2, true);
+    opArraySet = create("array.set", OperationCode.arraySet, OpCodeType.normal, OperandType.none, 3, false);
+    opArrayAddr = create("array.addr", OperationCode.arrayAddr, OpCodeType.normal, OperandType.none, 2, true);
     opFieldGet = create("field.get", OperationCode.fieldGet, OpCodeType.normal, OperandType.field, 1, true);
     opFieldSet = create("field.set", OperationCode.fieldSet, OpCodeType.normal, OperandType.field, 2, false);
     opFieldAddr = create("field.addr", OperationCode.fieldAddr, OpCodeType.normal, OperandType.field, 1, true);
