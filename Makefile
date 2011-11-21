@@ -45,6 +45,9 @@ all: \
 
 clean:
 	-rm -f bin/*
+	-rm -f tests/*/*/*.mci
+	-rm -f tests/*/*/*.def
+	-rm -f tests/*/*/*.log
 
 #################### mci.core ####################
 
@@ -140,7 +143,6 @@ MCI_JIT_SOURCES = \
 bin/mci.cli: $(MCI_CLI_DEPS)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS);
-	chmod +x $@;
 
 MCI_CLI_SOURCES = \
 	mci/cli/main.d \
@@ -160,12 +162,12 @@ MCI_CLI_DEPS = \
 #################### mci.tester ####################
 
 bin/mci.tester: $(MCI_TESTER_DEPS)
-	-mkdir -p bin; \
-	$(DPLC) $(DFLAGS) $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS); \
-	chmod +x $@; \
+	-mkdir -p bin;
+	$(DPLC) $(DFLAGS) $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS);
+	cd bin; \
 	if [ ${BUILD} = "test" ]; then \
-		gdb --command=mci.gdb $@; \
-	fi; \
+		gdb --command=../mci.gdb ../$@; \
+	fi;
 	cd tests/assembler; \
 	rdmd tester.d;
 
