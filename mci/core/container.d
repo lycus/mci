@@ -726,6 +726,9 @@ public class List(T) : Indexable!T
     {
         onAdd(item);
 
+        if (index >= _array.length)
+            _array.length = index + 1;
+
         return _array[index] = item;
     }
 
