@@ -16,16 +16,16 @@ ifneq ($(BUILD), debug)
 	endif
 endif
 
-DFLAGS = -w -wi -ignore -X -m$(MODEL) -L-L.
+DFLAGS = -w -wi -ignore -X -m$(MODEL) -profile
 
 ifeq ($(BUILD), release)
-	DFLAGS += -release -O -inline -noboundscheck
+	DFLAGS += -release -O -inline
 else
 	ifeq ($(BUILD), test)
 		DFLAGS += -unittest
 	endif
 
-	DFLAGS += -debug -gc -profile
+	DFLAGS += -debug -gc
 endif
 
 ifeq ($(BUILD), test)
@@ -95,8 +95,8 @@ MCI_CORE_SOURCES = \
 
 MCI_ASSEMBLER_DFLAGS = $(DFLAGS) -lib -Xf"libmci.assembler.json" -deps="libmci.assembler.deps"
 
-libmci.assembler.a: $(MCI_ASSEMBLER_DEPS)
-	$(DPLC) $(MCI_ASSEMBLER_DFLAGS) -of$@ $(MCI_ASSEMBLER_SOURCES) $(MCI_ASSEMBLER_DEPS);
+libmci.assembler.a:
+	$(DPLC) $(MCI_ASSEMBLER_DFLAGS) -of$@ $(MCI_ASSEMBLER_SOURCES);
 
 MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/all.d \
@@ -114,8 +114,44 @@ MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/parsing/parser.d \
 	mci/assembler/parsing/tokens.d
 
-MCI_ASSEMBLER_DEPS = \
-	libmci.core.a
+#################### mci.vm ####################
+
+MCI_VM_DFLAGS = $(DFLAGS) -lib -Xf"libmci.vm.json" -deps="libmci.vm.deps"
+
+libmci.vm.a:
+	$(DPLC) $(MCI_VM_DFLAGS) -of$@ $(MCI_VM_SOURCES);
+
+MCI_VM_SOURCES = \
+	mci/vm/all.d \
+	mci/vm/memory/base.d \
+	mci/vm/memory/dgc.d \
+	mci/vm/memory/layout.d \
+	mci/vm/memory/libc.d \
+	mci/vm/io/common.d \
+	mci/vm/io/exception.d \
+	mci/vm/io/extended.d \
+	mci/vm/io/reader.d \
+	mci/vm/io/writer.d \
+
+#################### mci.interpreter ####################
+
+MCI_INTERPRETER_DFLAGS = $(DFLAGS) -lib -Xf"libmci.interpreter.json" -deps="libmci.interpreter.deps"
+
+libmci.interpreter.a:
+	$(DPLC) $(MCI_INTERPRETER_DFLAGS) -of$@ $(MCI_INTERPRETER_SOURCES);
+
+MCI_INTERPRETER_SOURCES = \
+	mci/interpreter/all.d
+
+#################### mci.jit ####################
+
+MCI_JIT_DFLAGS = $(DFLAGS) -lib -Xf"libmci.jit.json" -deps="libmci.jit.deps"
+
+libmci.jit.a:
+	$(DPLC) $(MCI_JIT_DFLAGS) -of$@ $(MCI_JIT_SOURCES);
+
+MCI_JIT_SOURCES = \
+	mci/jit/all.d \
 
 #################### mci.tester ####################
 
@@ -133,11 +169,11 @@ MCI_TESTER_SOURCES = \
 	mci/tester/main.d
 
 MCI_TESTER_DEPS = \
-	libmci.core.a \
-	libmci.assembler.a \
-	libmci.vm.a \
+	libmci.jit.a \
 	libmci.interpreter.a \
-	libmci.jit.a
+	libmci.vm.a \
+	libmci.assembler.a \
+	libmci.core.a
 
 #################### mci.cli ####################
 
@@ -155,57 +191,8 @@ MCI_CLI_SOURCES = \
 	mci/cli/tools/verifier.d
 
 MCI_CLI_DEPS = \
-	libmci.core.a \
-	libmci.assembler.a \
+	libmci.jit.a \
+	libmci.interpreter.a \
 	libmci.vm.a \
-	libmci.interpreter.a
-
-#################### mci.vm ####################
-
-MCI_VM_DFLAGS = $(DFLAGS) -lib -Xf"libmci.vm.json" -deps="libmci.vm.deps"
-
-libmci.vm.a: $(MCI_VM_DEPS)
-	$(DPLC) $(MCI_VM_DFLAGS) -of$@ $(MCI_VM_SOURCES) $(MCI_VM_DEPS);
-
-MCI_VM_SOURCES = \
-	mci/vm/all.d \
-	mci/vm/memory/base.d \
-	mci/vm/memory/dgc.d \
-	mci/vm/memory/layout.d \
-	mci/vm/memory/libc.d \
-	mci/vm/io/common.d \
-	mci/vm/io/exception.d \
-	mci/vm/io/extended.d \
-	mci/vm/io/reader.d \
-	mci/vm/io/writer.d \
-
-MCI_VM_DEPS = \
+	libmci.assembler.a \
 	libmci.core.a
-
-#################### mci.interpreter ####################
-
-MCI_INTERPRETER_DFLAGS = $(DFLAGS) -lib -Xf"libmci.interpreter.json" -deps="libmci.interpreter.deps"
-
-libmci.interpreter.a: $(MCI_INTERPRETER_DEPS)
-	$(DPLC) $(MCI_INTERPRETER_DFLAGS) -of$@ $(MCI_INTERPRETER_SOURCES) $(MCI_INTERPRETER_DEPS);
-
-MCI_INTERPRETER_SOURCES = \
-	mci/interpreter/all.d
-
-MCI_INTERPRETER_DEPS = \
-	libmci.core.a \
-	libmci.vm.a
-
-#################### mci.jit ####################
-
-MCI_JIT_DFLAGS = $(DFLAGS) -lib -Xf"libmci.jit.json" -deps="libmci.jit.deps"
-
-libmci.jit.a: $(MCI_JIT_DEPS)
-	$(DPLC) $(MCI_JIT_DFLAGS) -of$@ $(MCI_JIT_SOURCES) $(MCI_JIT_DEPS);
-
-MCI_JIT_SOURCES = \
-	mci/jit/all.d \
-
-MCI_JIT_DEPS = \
-	libmci.core.a \
-	libmci.vm.a
