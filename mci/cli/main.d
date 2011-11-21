@@ -3,6 +3,7 @@ module mci.cli.main;
 import std.conv,
        std.stdio,
        std.getopt,
+       mci.core.config,
        mci.cli.tool,
        mci.cli.tools.interpreter;
 
@@ -49,6 +50,8 @@ body
     log("Managed Compiler Infrastructure (MCI) 1.0 Command Line Interface");
     log("Copyright (c) 2011 The Lycus Foundation - http://github.com/lycus/mci");
     log("Available under the terms of the MIT License");
+    logf("%s (%s, %s) on %s%s compiled with %s", architectureName, is32Bit ? "32-bit" : "64-bit", endiannessName,
+         operatingSystemName, emulationLayer ? " under " ~ emulationLayer ~ " " : "", compilerName);
     log();
 
     if (help)

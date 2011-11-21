@@ -6,32 +6,25 @@ import mci.core.common;
 // in and sets appropriate constants. Reliance on these constants
 // should be avoided if possible.
 
-pragma(msg, "------------------------------------------------------------");
-pragma(msg, "Managed Compiler Infrastructure configuration information:");
-
 version (DigitalMars)
 {
-    pragma(msg, "- Compiler: Digital Mars D (DMD)");
-
     public enum Compiler compiler = Compiler.dmd;
+    public enum string compilerName = "DMD";
 }
 else version (GNU)
 {
-    pragma(msg, "- Compiler: GNU D Compiler (GDC)");
-
     public enum Compiler compiler = Compiler.gdc;
+    public enum string compilerName = "GDC";
 }
 else version (LDC)
 {
-    pragma(msg, "- Compiler: LLVM D Compiler (LDC)");
-
     public enum Compiler compiler = Compiler.ldc;
+    public enum string compilerName = "LDC";
 }
 else version (SDC)
 {
-    pragma(msg, "- Compiler: Stupid D Compiler (SDC)");
-
     public enum Compiler compiler = Compiler.sdc;
+    public enum string compilerName = "SDC";
 }
 else version (D_NET)
 {
@@ -41,14 +34,11 @@ else version (D_NET)
 }
 else
 {
-    pragma(msg, "- Compiler: Unknown");
-
-    public enum Compiler compiler = Compiler.unknown;
+    static assert(false, "Compiler could not be determined.");
 }
 
 version (D_Version2)
 {
-    pragma(msg, "- Language: D 2.0");
 }
 else
 {
@@ -57,11 +47,9 @@ else
 
 version (D_InlineAsm_X86_64)
 {
-    pragma(msg, "- Inline Assembly: x86-64");
 }
 else version (D_InlineAsm_X86)
 {
-    pragma(msg, "- Inline Assembly: x86");
 }
 else
 {
@@ -70,51 +58,43 @@ else
 
 version (X86)
 {
-    pragma(msg, "- Architecture: x86 (32-bit)");
-
     public enum Architecture architecture = Architecture.x86;
+    public enum string architectureName = "x86";
 }
 else version (X86_64)
 {
-    pragma(msg, "- Architecture: x86 (64-bit)");
-
     public enum Architecture architecture = Architecture.x86;
+    public enum string architectureName = "x86";
 }
 else version (ARM)
 {
-    pragma(msg, "- Architecture: ARM (32-bit)");
-
     public enum Architecture architecture = Architecture.arm;
+    public enum string architectureName = "ARM";
 }
 else version (PPC)
 {
-    pragma(msg, "- Architecture: PowerPC (32-bit)");
-
     public enum Architecture architecture = Architecture.ppc;
+    public enum string architectureName = "PowerPC";
 }
 else version (PPC64)
 {
-    pragma(msg, "- Architecture: PowerPC (64-bit)");
-
     public enum Architecture architecture = Architecture.ppc;
+    public enum string architectureName = "PowerPC";
 }
 else version (IA64)
 {
-    pragma(msg, "- Architecture: Itanium (64-bit)");
-
     public enum Architecture architecture = Architecture.ia64;
+    public enum string architectureName = "Itanium";
 }
 else version (MIPS)
 {
-    pragma(msg, "- Architecture: MIPS (32-bit)");
-
     public enum Architecture architecture = Architecture.mips;
+    public enum string architectureName = "MIPS";
 }
 else version (MIPS64)
 {
-    pragma(msg, "- Architecture: MIPS (64-bit)");
-
     public enum Architecture architecture = Architecture.mips;
+    public enum string architectureName = "MIPS";
 }
 else version (S390)
 {
@@ -159,28 +139,22 @@ else
 
 version (D_LP64)
 {
-    pragma(msg, "- Pointer Length: 64-bit");
-
     public enum bool is32Bit = false;
 }
 else
 {
-    pragma(msg, "- Pointer Length: 32-bit");
-
     public enum bool is32Bit = true;
 }
 
 version (LittleEndian)
 {
-    pragma(msg, "- Byte Order: Little Endian (LE)");
-
     public enum Endianness endianness = Endianness.littleEndian;
+    public string endiannessName = "LE";
 }
 else version (BigEndian)
 {
-    pragma(msg, "- Byte Order: Big Endian (BE)");
-
     public enum Endianness endianness = Endianness.bigEndian;
+    public string endiannessName = "BE";
 }
 else
 {
@@ -189,70 +163,50 @@ else
 
 version (Windows)
 {
-    version (Win32)
-    {
-        pragma(msg, "- Operating System: Windows (32-bit)");
-    }
-    else version (Win64)
-    {
-        pragma(msg, "- Operating System: Windows (64-bit)");
-    }
-    else
-    {
-        static assert(false, "Unknown Windows bit width.");
-    }
-
     public enum OperatingSystem operatingSystem = OperatingSystem.windows;
+    public enum string operatingSystemName = "Windows";
 }
 else version (Posix)
 {
     version (FreeBSD)
     {
-        pragma(msg, "- Operating System: FreeBSD");
-
         public enum OperatingSystem operatingSystem = OperatingSystem.freebsd;
+        public enum string operatingSystemName = "FreeBSD";
     }
     else version (OpenBSD)
     {
-        pragma(msg, "- Operating System: OpenBSD");
-
         public enum OperatingSystem operatingSystem = OperatingSystem.openbsd;
+        public enum string operatingSystemName = "OpenBSD";
     }
     else version (BSD)
     {
-        pragma(msg, "- Operating System: BSD");
-
         public enum OperatingSystem operatingSystem = OperatingSystem.bsd;
+        public enum string operatingSystemName = "BSD";
     }
     else version (AIX)
     {
-        pragma(msg, "- Operating System: AIX");
-
         public enum OperatingSystem operatingSystem = OperatingSystem.aix;
+        public enum string operatingSystemName = "AIX";
     }
     else version (Solaris)
     {
-        pragma(msg, "- Operating System: Solaris");
-
         public enum OperatingSystem operatingSystem = OperatingSystem.solaris;
+        public enum string operatingSystemName = "Solaris";
     }
     else version (Hurd)
     {
-        pragma(msg, "- Operating System: Hurd");
-
         public enum OperatingSystem operatingSystem = OperatingSystem.hurd;
+        public enum string operatingSystemName = "Hurd";
     }
     else version (linux)
     {
-        pragma(msg, "- Operating System: Linux");
-
         public enum OperatingSystem operatingSystem = OperatingSystem.linux;
+        public enum string operatingSystemName = "Linux";
     }
     else version (OSX)
     {
-        pragma(msg, "- Operating System: OS X");
-
         public enum OperatingSystem operatingSystem = OperatingSystem.osx;
+        public enum string operatingSystemName = "OS X";
     }
     else version (SkyOS)
     {
@@ -278,21 +232,16 @@ else
 
 version (Cygwin)
 {
-    pragma(msg, "- Emulation Layer: Cygwin");
-
     public enum EmulationLayer emulationLayer = EmulationLayer.cygwin;
+    public enum string emulationLayerName = "Cygwin";
 }
 else version (MinGW)
 {
-    pragma(msg, "- Emulation Layer: MinGW");
-
     public enum EmulationLayer emulationLayer = EmulationLayer.mingw;
+    public enum string emulationLayerName = "MinGW";
 }
 else
 {
-    pragma(msg, "- Emulation Layer: None");
-
     public enum EmulationLayer emulationLayer = EmulationLayer.none;
+    public enum string emulationLayerName = null;
 }
-
-pragma(msg, "------------------------------------------------------------");
