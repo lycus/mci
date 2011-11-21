@@ -1,0 +1,4 @@
+type automatic BrokenTypeSyntax
+{
+    field instance int32*. foo;
+}
