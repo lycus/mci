@@ -1328,3 +1328,222 @@ body
 
     return d;
 }
+
+public class ArrayQueue(T) : Queue!T
+{
+    private List!T _list;
+    private size_t _size;
+    private size_t _tail;
+    private size_t _head;
+
+    public this()
+    {
+        _list = new typeof(_list);
+    }
+
+    public this(Iterable!T items)
+    in
+    {
+        assert(items);
+    }
+    body
+    {
+        this();
+
+        foreach (item; items)
+            enqueue(item);
+    }
+
+    public final int opApply(scope int delegate(ref T) dg)
+    {
+        for (size_t i = _head; i < _size; i++)
+        {
+            auto item = _list[i];
+            auto status = dg(item);
+
+            if (status != 0)
+                return status;
+        }
+
+        return 0;
+    }
+
+    public final int opApply(scope int delegate(ref size_t, ref T) dg)
+    {
+        for (size_t i = _head; i < _size; i++)
+        {
+            auto item = _list[i];
+            auto status = dg(i, item);
+
+            if (status != 0)
+                return status;
+        }
+
+        return 0;
+    }
+
+    public final override bool opEquals(Object o)
+    {
+        if (this is o)
+            return true;
+
+        if (auto q = cast(ArrayQueue!T)o)
+        {
+            if (_size != q._size || _head != q._head || _tail != q._tail)
+                return false;
+
+            for (size_t i = _head; i < _size; i++)
+                if (_list[i] != q._list[i])
+                    return false;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    @property public final size_t count()
+    {
+        return _size;
+    }
+
+    @property public final bool empty()
+    {
+        return !_size;
+    }
+
+    public ArrayQueue!T duplicate()
+    {
+        auto q = new ArrayQueue!T();
+
+        q._list = _list.duplicate();
+        q._size = _size;
+        q._tail = _tail;
+        q._head = _head;
+
+        return q;
+    }
+
+    public void enqueue(T item)
+    {
+        if (_size == _list.count)
+        {
+            _list.add(T.init);
+            _head = 0;
+            _tail = _size == _list.count ? 0 : _size;
+        }
+
+        _list[_tail] = item;
+        _tail = (_tail + 1) % _list.count;
+        _size++;
+    }
+
+    public T dequeue()
+    {
+        auto item = _list[_head];
+
+        _list[_head] = T.init;
+        _head = (_head + 1) % _list.count;
+        _size--;
+
+        return item;
+    }
+
+    public T* peek()
+    {
+        if (!_size)
+            return null;
+
+        return &_list._array[_head];
+    }
+}
+
+unittest
+{
+    auto q = new ArrayQueue!int();
+
+    q.enqueue(1);
+    q.enqueue(2);
+    q.enqueue(3);
+
+    assert(q.dequeue() == 1);
+    assert(q.dequeue() == 2);
+    assert(q.dequeue() == 3);
+}
+
+unittest
+{
+    auto q = new ArrayQueue!int();
+
+    assert(q.empty);
+    assert(!q.count);
+}
+
+unittest
+{
+    auto q = new ArrayQueue!int();
+
+    q.enqueue(1);
+
+    assert(!q.empty);
+    assert(q.count == 1);
+}
+
+unittest
+{
+    auto q = new ArrayQueue!int();
+
+    assert(!q.peek());
+}
+
+unittest
+{
+    auto q = new ArrayQueue!int();
+
+    q.enqueue(1);
+
+    assert(*q.peek() == 1);
+}
+
+unittest
+{
+    auto q1 = new ArrayQueue!int();
+    auto q2 = new ArrayQueue!int();
+
+    q1.enqueue(1);
+    q1.enqueue(2);
+
+    q2.enqueue(1);
+    q2.enqueue(2);
+
+    assert(q1 == q2);
+}
+
+unittest
+{
+    auto q1 = new ArrayQueue!int();
+    auto q2 = new ArrayQueue!int();
+
+    q1.enqueue(1);
+    q1.enqueue(2);
+
+    q2.enqueue(3);
+    q2.enqueue(4);
+
+    assert(q1 != q2);
+}
+
+unittest
+{
+    auto q1 = new ArrayQueue!int();
+    auto q2 = new ArrayQueue!int();
+
+    q1.enqueue(1);
+    q1.enqueue(2);
+
+    q2.enqueue(3);
+    q2.enqueue(4);
+    q2.enqueue(5);
+
+    assert(q1 != q2);
+}
