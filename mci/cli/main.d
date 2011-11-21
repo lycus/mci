@@ -96,11 +96,11 @@ body
 
     if (!tool)
     {
-        logf("Error: No such tool: %s", args[1]);
+        logf("Error: No such tool: '%s'", args[1]);
         return ExitCode.failure;
     }
 
-    return tool.run(args[2 .. $]) ? ExitCode.success : ExitCode.error;
+    return tool.run(args[1 .. $]) ? ExitCode.success : ExitCode.error;
 }
 
 private void usage(string cli)

@@ -40,10 +40,11 @@ public final class InterpreterTool : Tool
                    config.bundling,
                    "optimize|p", &optimize,
                    "collector|c", &gcType);
+            args = args[1 .. $];
         }
         catch (Exception ex)
         {
-            logf("Error parsing command line: %s", ex.msg);
+            logf("Error: Could not parse command line: %s", ex.msg);
             return false;
         }
 

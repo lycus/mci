@@ -34,6 +34,7 @@ public final class DisassemblerTool : Tool
                    config.caseSensitive,
                    config.bundling,
                    "output|o", &outputDir);
+            args = args[1 .. $];
         }
         catch (Exception ex)
         {
@@ -51,7 +52,7 @@ public final class DisassemblerTool : Tool
         {
             if (!endsWith(file, outputFileExtension))
             {
-                logf("Error: File %s does not end in \"%s\".", file, outputFileExtension);
+                logf("Error: File '%s' does not end in '%s'.", file, outputFileExtension);
                 return false;
             }
 
@@ -77,7 +78,7 @@ public final class DisassemblerTool : Tool
                     }
                     catch (ErrnoException ex)
                     {
-                        logf("Error: Could not write %s: %s", fileName, ex.msg);
+                        logf("Error: Could not write '%s': %s", fileName, ex.msg);
                         return false;
                     }
                     finally
@@ -89,12 +90,12 @@ public final class DisassemblerTool : Tool
             }
             catch (ErrnoException ex)
             {
-                logf("Error: Could not read %s: %s", file, ex.msg);
+                logf("Error: Could not read '%s': %s", file, ex.msg);
                 return false;
             }
             catch (ReaderException ex)
             {
-                logf("Error: Could not load %s: %s", file, ex.msg);
+                logf("Error: Could not load '%s': %s", file, ex.msg);
                 return false;
             }
             finally

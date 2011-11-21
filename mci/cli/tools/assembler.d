@@ -55,6 +55,7 @@ public final class AssemblerTool : Tool
                    "optimize|p", &optimize,
                    "interpret|i", &interpret,
                    "collector|c", &gcType);
+            args = args[1 .. $];
         }
         catch (Exception ex)
         {
@@ -64,7 +65,7 @@ public final class AssemblerTool : Tool
 
         if (!endsWith(output, outputFileExtension))
         {
-            logf("Output file %s does not end in \"%s\".", outputFileExtension, output);
+            logf("Output file '%s' does not end in '%s'.", output, outputFileExtension);
             return false;
         }
 
@@ -80,13 +81,13 @@ public final class AssemblerTool : Tool
         {
             if (!endsWith(file, inputFileExtension))
             {
-                logf("Error: File %s does not end in \"%s\".", inputFileExtension, file);
+                logf("Error: File '%s' does not end in '%s'.", file, inputFileExtension);
                 return false;
             }
 
             if (file.length <= inputFileExtension.length)
             {
-                logf("Error: File %s is missing a module name.", file);
+                logf("Error: File '%s' is missing a module name.", file);
                 return false;
             }
 
@@ -96,7 +97,7 @@ public final class AssemblerTool : Tool
             {
                 if (modName == mod)
                 {
-                    logf("Error: File %s specified multiple times.", file);
+                    logf("Error: File '%s' specified multiple times.", file);
                     return false;
                 }
             }
@@ -115,29 +116,29 @@ public final class AssemblerTool : Tool
             }
             catch (ErrnoException ex)
             {
-                logf("Error: Could not read %s: %s", file, ex.msg);
+                logf("Error: Could not read '%s': %s", file, ex.msg);
                 return false;
             }
             catch (UtfException ex)
             {
-                log("Error: UTF-8 decoding failed; file is probably not plain text.");
+                log("Error: UTF-8 decoding failed; file '%s' is probably not plain text.", file);
                 return false;
             }
             catch (LexerException ex)
             {
-                logf("Error: Lexing failed in %s (line %s%s): %s", file, ex.location.line,
+                logf("Error: Lexing failed in '%s' (line %s%s): %s", file, ex.location.line,
                      ex.location.column == 0 ? "" : ", column " ~ to!string(ex.location.column), ex.msg);
                 return false;
             }
             catch (ParserException ex)
             {
-                logf("Error: Parsing failed in %s (line %s%s): %s", file, ex.location.line,
+                logf("Error: Parsing failed in '%s' (line %s%s): %s", file, ex.location.line,
                      ex.location.column == 0 ? "" : ", column " ~ to!string(ex.location.column), ex.msg);
                 return false;
             }
             catch (AssemblerException ex)
             {
-                logf("Error: Internal error in %s: %s", file, ex.msg);
+                logf("Error: Internal error in '%s': %s", file, ex.msg);
                 return false;
             }
             finally
@@ -161,12 +162,12 @@ public final class AssemblerTool : Tool
         }
         catch (ErrnoException ex)
         {
-            logf("Error: Could not write %s: %s", output, ex.msg);
+            logf("Error: Could not write '%s': %s", output, ex.msg);
             return false;
         }
         catch (GenerationException ex)
         {
-            logf("Error: Generation failed in %s (line %s%s): %s", driver.currentModule ~ inputFileExtension,
+            logf("Error: Generation failed in '%s' (line %s%s): %s", driver.currentModule ~ inputFileExtension,
                  ex.location.line, ex.location.column == 0 ? "" : ", column " ~ to!string(ex.location.column), ex.msg);
             return false;
         }
