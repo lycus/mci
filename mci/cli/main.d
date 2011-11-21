@@ -1,8 +1,10 @@
 module mci.cli.main;
 
-import std.stdio,
+import std.conv,
+       std.stdio,
        std.getopt,
-       mci.cli.tool;
+       mci.cli.tool,
+       mci.cli.tools.interpreter;
 
 private enum ExitCode : ubyte
 {
@@ -76,8 +78,8 @@ body
         log("Available garbage collectors:");
         log();
 
-        log("     dgc\tD Garbage Collector\t\tUses the D runtime's garbage collector.");
-        log("     libc\tLibC Garbage Collector\t\tUses calloc/free; performs no actual collection.");
+        logf("     %s\tD Garbage Collector\t\tUses the D runtime's garbage collector.", to!string(GarbageCollectorType.dgc));
+        logf("     %s\tLibC Garbage Collector\t\tUses calloc/free; performs no actual collection.", to!string(GarbageCollectorType.libc));
         log();
     }
 
