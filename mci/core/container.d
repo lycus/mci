@@ -34,7 +34,11 @@ public interface Countable(T) : Iterable!T
 
 public interface Collection(T) : Countable!T
 {
-    public T* opBinaryRight(string op : "in")(T item);
+    public T* opBinaryRight(string op : "in")(T item)
+    in
+    {
+        assert(item);
+    }
 
     public void add(T item);
 
@@ -60,6 +64,13 @@ public interface Indexable(T) : Collection!T
 
 public interface Map(K, V) : Collection!(Tuple!(K, V))
 {
+    public override Tuple!(K, V)* opBinaryRight(string op : "in")(Tuple!(K, V) item)
+    in
+    {
+        static if (isNullable!K)
+            assert(item.x);
+    }
+
     public V* opBinaryRight(string op : "in")(K key)
     in
     {
