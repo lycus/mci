@@ -221,23 +221,22 @@ public enum OperationCode : ubyte
     cmpLTEq = 50,
     argPush = 51,
     argPop = 52,
-    result = 53,
-    invoke = 54,
-    invokeTail = 55,
-    invokeIndirect = 56,
-    call = 57,
-    callTail = 58,
-    callIndirect = 59,
-    jump = 60,
-    jumpTrue = 61,
-    jumpFalse = 62,
-    leave = 63,
-    return_ = 64,
-    phi = 65,
-    exThrow = 66,
-    exTry = 67,
-    exHandle = 68,
-    exEnd = 69,
+    invoke = 53,
+    invokeTail = 54,
+    invokeIndirect = 55,
+    call = 56,
+    callTail = 57,
+    callIndirect = 58,
+    jump = 59,
+    jumpTrue = 60,
+    jumpFalse = 61,
+    leave = 62,
+    return_ = 63,
+    phi = 64,
+    exThrow = 65,
+    exTry = 66,
+    exHandle = 67,
+    exEnd = 68,
 }
 
 public __gshared OpCode opNop;
@@ -363,7 +362,7 @@ static this()
     opNot = create("not", OperationCode.not, OpCodeType.normal, OperandType.none, 1, true);
     opShL = create("shl", OperationCode.shL, OpCodeType.normal, OperandType.none, 2, true);
     opShR = create("shr", OperationCode.shR, OpCodeType.normal, OperandType.none, 2, true);
-    opConv = create("conv", OperationCode.conv, OpCodeType.normal, OperandType.type, 1, true);
+    opConv = create("conv", OperationCode.conv, OpCodeType.normal, OperandType.none, 1, true);
     opMemAlloc = create("mem.alloc", OperationCode.memAlloc, OpCodeType.normal, OperandType.type, 1, true);
     opMemNew = create("mem.new", OperationCode.memNew, OpCodeType.normal, OperandType.structure, 0, true);
     opMemFree = create("mem.free", OperationCode.memFree, OpCodeType.normal, OperandType.none, 1, false);
