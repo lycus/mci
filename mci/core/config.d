@@ -149,12 +149,12 @@ else
 version (LittleEndian)
 {
     public enum Endianness endianness = Endianness.littleEndian;
-    public string endiannessName = "LE";
+    public string endiannessName = "Little Endian (LE)";
 }
 else version (BigEndian)
 {
     public enum Endianness endianness = Endianness.bigEndian;
-    public string endiannessName = "BE";
+    public string endiannessName = "Big Endian (BE)";
 }
 else
 {
@@ -243,5 +243,5 @@ else version (MinGW)
 else
 {
     public enum EmulationLayer emulationLayer = EmulationLayer.none;
-    public enum string emulationLayerName = null;
+    public enum string emulationLayerName = "None";
 }

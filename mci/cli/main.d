@@ -50,8 +50,6 @@ body
     log("Managed Compiler Infrastructure (MCI) 1.0 Command Line Interface");
     log("Copyright (c) 2011 The Lycus Foundation - http://github.com/lycus/mci");
     log("Available under the terms of the MIT License");
-    logf("%s (%s, %s) on %s%s compiled with %s", architectureName, is32Bit ? "32-bit" : "64-bit", endiannessName,
-         operatingSystemName, emulationLayer ? " under " ~ emulationLayer ~ " " : "", compilerName);
     log();
 
     if (help)
@@ -77,12 +75,29 @@ body
             if (i < allTools.count)
                 log();
         }
+    }
 
+    if (version_ || help)
+    {
         log("Available garbage collectors:");
         log();
 
         logf("     %s\tD Garbage Collector\t\tUses the D runtime's garbage collector.", to!string(GarbageCollectorType.dgc));
         logf("     %s\tLibC Garbage Collector\t\tUses calloc/free; performs no actual collection.", to!string(GarbageCollectorType.libc));
+        log();
+    }
+
+    if (version_)
+    {
+        log("System configuration:");
+        log();
+
+        logf("     Architecture:\t\t\t\t%s", architectureName);
+        logf("     Pointer Length:\t\t\t\t%s-bit", is32Bit ? 32 : 64);
+        logf("     Endianness:\t\t\t\t%s", endiannessName);
+        logf("     Operating System:\t\t\t\t%s", operatingSystemName);
+        logf("     Emulation Layer:\t\t\t\t%s", emulationLayerName);
+        logf("     Compiler:\t\t\t\t\t%s", compilerName);
         log();
     }
 
