@@ -18,8 +18,8 @@ out (result)
 }
 body
 {
-    if (auto mod = find(program.modules, (Module m) { return m.name == node.name.name; }))
-        return mod;
+    if (auto mod = program.modules.get(node.name.name))
+        return *mod;
 
     throw new GenerationException("Unknown module " ~ node.name.name ~ ".", node.location);
 }

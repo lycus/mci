@@ -1,27 +1,23 @@
 module mci.core.program;
 
 import mci.core.container,
-       mci.core.code.modules,
-       mci.core.typing.cache;
+       mci.core.code.modules;
 
 public final class Program
 {
-    private NoNullList!Module _modules;
-    private TypeCache _typeCache;
+    private NoNullDictionary!(string, Module) _modules;
 
     invariant()
     {
         assert(_modules);
-        assert(_typeCache);
     }
 
     public this()
     {
         _modules = new typeof(_modules)();
-        _typeCache = new TypeCache();
     }
 
-    @property public NoNullList!Module modules()
+    @property public Lookup!(string, Module) modules()
     out (result)
     {
         assert(result);
@@ -29,15 +25,5 @@ public final class Program
     body
     {
         return _modules;
-    }
-
-    @property public TypeCache typeCache()
-    out (result)
-    {
-        assert(result);
-    }
-    body
-    {
-        return _typeCache;
     }
 }

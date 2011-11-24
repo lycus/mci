@@ -50,10 +50,10 @@ public final class ModuleDisassembler
         _done = true;
 
         foreach (type; module_.types)
-            writeType(type);
+            writeType(type.y);
 
         foreach (func; module_.functions)
-            writeFunction(func);
+            writeFunction(func.y);
     }
 
     private void writeType(StructureType type)

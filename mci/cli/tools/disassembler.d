@@ -67,14 +67,14 @@ public final class DisassemblerTool : Tool
                 foreach (mod; program.modules)
                 {
                     FileStream file;
-                    auto fileName = buildPath(outputDir, mod.name ~ inputFileExtension);
+                    auto fileName = buildPath(outputDir, mod.y.name ~ inputFileExtension);
 
                     try
                     {
                         file = new FileStream(fileName, FileAccess.write, FileMode.truncate);
                         auto disasm = new ModuleDisassembler(file);
 
-                        disasm.disassemble(mod);
+                        disasm.disassemble(mod.y);
                     }
                     catch (ErrnoException ex)
                     {

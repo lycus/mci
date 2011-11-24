@@ -62,27 +62,43 @@ public interface Indexable(T) : Collection!T
     public Indexable!T opCatAssign(Indexable!T rhs);
 }
 
-public interface Map(K, V) : Collection!(Tuple!(K, V))
+public interface Lookup(K, V) : Countable!(Tuple!(K, V))
+{
+    public V opIndex(K key)
+    in
+    {
+        static if (isNullable!K)
+            assert(key);
+    }
+
+    // TODO: Turn this into an opBinaryRight!"in" when the compiler is fixed.
+    public V* get(K key)
+    in
+    {
+        static if (isNullable!K)
+            assert(key);
+    }
+
+    public Countable!K keys()
+    out (result)
+    {
+        assert(result);
+    }
+
+    public Countable!V values()
+    out (result)
+    {
+        assert(result);
+    }
+}
+
+public interface Map(K, V) : Lookup!(K, V), Collection!(Tuple!(K, V))
 {
     public override Tuple!(K, V)* opBinaryRight(string op : "in")(Tuple!(K, V) item)
     in
     {
         static if (isNullable!K)
             assert(item.x);
-    }
-
-    public V* opBinaryRight(string op : "in")(K key)
-    in
-    {
-        static if (isNullable!K)
-            assert(key);
-    }
-
-    public V opIndex(K key)
-    in
-    {
-        static if (isNullable!K)
-            assert(key);
     }
 
     public V opIndexAssign(V value, K key)
@@ -118,18 +134,6 @@ public interface Map(K, V) : Collection!(Tuple!(K, V))
     {
         static if (isNullable!K)
             assert(key);
-    }
-
-    public Countable!K keys()
-    out (result)
-    {
-        assert(result);
-    }
-
-    public Countable!V values()
-    out (result)
-    {
-        assert(result);
     }
 }
 
@@ -1173,6 +1177,11 @@ public class Dictionary(K, V) : Map!(K, V)
         d._aa = _aa.dup;
 
         return d;
+    }
+
+    public V* get(K key)
+    {
+        return key in _aa;
     }
 
     public final void add(Tuple!(K, V) item)

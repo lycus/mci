@@ -167,10 +167,9 @@ public final class ModuleCreationPass : GeneratorPass
         {
             state.currentModule = unit.x;
 
-            auto mod = new Module(unit.x);
+            auto mod = new Module(state.program, unit.x);
 
             state.moduleUnits.add(mod, unit.y);
-            state.program.modules.add(mod);
         }
     }
 }
@@ -185,7 +184,7 @@ public final class TypeCreationPass : GeneratorPass
 
             foreach (node; unit.y.nodes)
                 if (auto type = cast(TypeDeclarationNode)node)
-                    state.types.add(type, generateType(type, unit.x, state.program.typeCache));
+                    state.types.add(type, generateType(type, unit.x));
         }
     }
 }

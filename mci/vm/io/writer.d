@@ -65,29 +65,29 @@ public final class ProgramWriter
         _writer.write(cast(uint)program.modules.count);
 
         foreach (mod; program.modules)
-            writeModule(mod);
+            writeModule(mod.y);
 
         foreach (mod; program.modules)
         {
-            _writer.write(cast(uint)mod.types.count);
+            _writer.write(cast(uint)mod.y.types.count);
 
-            foreach (type; mod.types)
-                writeType(type);
+            foreach (type; mod.y.types)
+                writeType(type.y);
         }
 
         foreach (mod; program.modules)
         {
-            _writer.write(cast(uint)mod.functions.count);
+            _writer.write(cast(uint)mod.y.functions.count);
 
-            foreach (func; mod.functions)
-                writeFunction(func);
+            foreach (func; mod.y.functions)
+                writeFunction(func.y);
         }
 
         foreach (mod; program.modules)
         {
-            foreach (func; mod.functions)
+            foreach (func; mod.y.functions)
             {
-                foreach (block; func.blocks)
+                foreach (block; func.y.blocks)
                 {
                     _writer.write(cast(uint)block.instructions.count);
 

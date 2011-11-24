@@ -132,13 +132,14 @@ public final class Function
         assert(_registers);
     }
 
-    package this(Module module_, string name, Type returnType, FunctionAttributes attributes = FunctionAttributes.none,
-                 CallingConvention callingConvention = CallingConvention.queueCall)
+    public this(Module module_, string name, Type returnType, FunctionAttributes attributes = FunctionAttributes.none,
+                CallingConvention callingConvention = CallingConvention.queueCall)
     in
     {
         assert(module_);
         assert(name);
         assert(returnType);
+        assert(!module_.functions.get(name));
     }
     body
     {
@@ -150,6 +151,8 @@ public final class Function
         _blocks = new typeof(_blocks)();
         _registers = new typeof(_registers)();
         _parameters = new typeof(_parameters)();
+
+        (cast(Dictionary!(string, Function))module_.functions)[name] = this;
     }
 
     @property public Module module_()

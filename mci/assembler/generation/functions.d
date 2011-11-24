@@ -26,11 +26,11 @@ out (result)
 }
 body
 {
-    if (contains(module_.functions, (Function f) { return f.name == node.name.name; }))
+    if (module_.functions.get(node.name.name))
         throw new GenerationException("Function " ~ module_.name ~ "/" ~ node.name.name ~ " already defined.", node.location);
 
     auto returnType = resolveType(node.returnType, module_, program);
-    auto func = module_.createFunction(node.name.name, returnType, node.attributes, node.callingConvention);
+    auto func = new Function(module_, node.name.name, returnType, node.attributes, node.callingConvention);
 
     foreach (param; node.parameters)
         func.createParameter(resolveType(param.type, module_, program));
@@ -162,8 +162,8 @@ body
 {
     auto mod = node.moduleName ? resolveModule(node.moduleName, program) : module_;
 
-    if (auto func = find(mod.functions, (Function f) { return f.name == node.name.name; }))
-        return func;
+    if (auto func = mod.functions.get(node.name.name))
+        return *func;
 
     throw new GenerationException("Unknown function " ~ mod.name ~ "/" ~ node.name.name ~ ".",
                                   node.location);

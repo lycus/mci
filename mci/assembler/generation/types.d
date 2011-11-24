@@ -12,12 +12,11 @@ import std.conv,
        mci.assembler.generation.exception,
        mci.assembler.generation.modules;
 
-public StructureType generateType(TypeDeclarationNode node, Module module_, TypeCache cache)
+public StructureType generateType(TypeDeclarationNode node, Module module_)
 in
 {
     assert(node);
     assert(module_);
-    assert(cache);
 }
 out (result)
 {
@@ -25,10 +24,10 @@ out (result)
 }
 body
 {
-    if (cache.getType(module_.name, node.name.name))
+    if (module_.types.get(node.name.name))
         throw new GenerationException("Type " ~ module_.name ~ "/" ~ node.name.name ~ " already defined.", node.location);
 
-    return cache.addStructureType(module_, node.name.name, node.layout);
+    return new StructureType(module_, node.name.name, node.layout);
 }
 
 public Field generateField(FieldDeclarationNode node, StructureType type, Program program)
@@ -68,11 +67,11 @@ body
     else if (auto fpType = cast(FunctionPointerTypeReferenceNode)node)
         return resolveFunctionPointerType(fpType, module_, program);
     else if (auto ptrType = cast(PointerTypeReferenceNode)node)
-        return program.typeCache.getPointerType(resolveType(ptrType.elementType, module_, program));
+        return getPointerType(resolveType(ptrType.elementType, module_, program));
     else if (auto arrType = cast(ArrayTypeReferenceNode)node)
-        return program.typeCache.getArrayType(resolveType(arrType.elementType, module_, program));
+        return getArrayType(resolveType(arrType.elementType, module_, program));
     else
-        return program.typeCache.getType(null, (cast(CoreTypeReferenceNode)node).name.name);
+        return getType((cast(CoreTypeReferenceNode)node).name.name);
 }
 
 public StructureType resolveStructureType(StructureTypeReferenceNode node, Module module_, Program program)
@@ -91,8 +90,8 @@ body
     // If no module is specified, default to the module the type reference is in.
     auto mod = node.moduleName ? resolveModule(node.moduleName, program) : module_;
 
-    if (auto type = find(mod.types, (StructureType t) { return t.name == node.name.name; }))
-        return type;
+    if (auto type = mod.types.get(node.name.name))
+        return *type;
 
     throw new GenerationException("Unknown type " ~ mod.name ~ "/" ~ node.name.name ~ ".",
                                   node.location);
@@ -117,7 +116,7 @@ body
     foreach (paramType; node.parameterTypes)
         parameterTypes.add(resolveType(paramType, module_, program));
 
-    return program.typeCache.getFunctionPointerType(returnType, parameterTypes);
+    return getFunctionPointerType(returnType, parameterTypes);
 }
 
 public Field resolveField(FieldReferenceNode node, Module module_, Program program)

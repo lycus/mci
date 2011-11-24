@@ -2,6 +2,7 @@ module mci.core.typing.types;
 
 import mci.core.container,
        mci.core.nullable,
+       mci.core.program,
        mci.core.code.modules,
        mci.core.typing.members;
 
@@ -37,11 +38,12 @@ public final class StructureType : Type
         assert(_fields);
     }
 
-    package this(Module module_, string name, TypeLayout layout = TypeLayout.automatic)
+    public this(Module module_, string name, TypeLayout layout = TypeLayout.automatic)
     in
     {
         assert(module_);
         assert(name);
+        assert(!module_.types.get(name));
     }
     body
     {
@@ -50,7 +52,7 @@ public final class StructureType : Type
         _layout = layout;
         _fields = new typeof(_fields)();
 
-        (cast(NoNullList!StructureType)module_.types).add(this);
+        (cast(Dictionary!(string, StructureType))module_.types)[name] = this;
     }
 
     @property public TypeLayout layout()
@@ -167,7 +169,8 @@ public final class PointerType : Type
 
 unittest
 {
-    auto mod = new Module("foo");
+    auto prog = new Program();
+    auto mod = new Module(prog, "foo");
 
     auto st = new StructureType(mod, "bar");
     st.close();
@@ -179,7 +182,8 @@ unittest
 
 unittest
 {
-    auto mod = new Module("foo");
+    auto prog = new Program();
+    auto mod = new Module(prog, "foo");
 
     auto st = new StructureType(mod, "foo_bar_baz");
     st.close();
@@ -250,7 +254,8 @@ public final class FunctionPointerType : Type
 
 unittest
 {
-    auto mod = new Module("foo");
+    auto prog = new Program();
+    auto mod = new Module(prog, "foo");
 
     auto st1 = new StructureType(mod, "bar");
     st1.close();
@@ -304,7 +309,8 @@ public final class ArrayType : Type
 
 unittest
 {
-    auto mod = new Module("bar");
+    auto prog = new Program();
+    auto mod = new Module(prog, "bar");
 
     auto st = new StructureType(mod, "baz");
     st.close();
