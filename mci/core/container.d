@@ -147,71 +147,31 @@ public interface Queue(T) : Countable!T
 }
 
 public Iterable!T asIterable(T)(Iterable!T items)
-in
-{
-    assert(items);
-}
-out (result)
-{
-    assert(result);
-}
-body
 {
     return items;
 }
 
 public Countable!T asCountable(T)(Countable!T items)
-in
-{
-    assert(items);
-}
-out (result)
-{
-    assert(result);
-}
-body
 {
     return items;
 }
 
 public Collection!T asCollection(T)(Collection!T items)
-in
-{
-    assert(items);
-}
-out (result)
-{
-    assert(result);
-}
-body
 {
     return items;
 }
 
 public Indexable!T asIndexable(T)(Indexable!T items)
-in
 {
-    assert(items);
+    return items;
 }
-out (result)
-{
-    assert(result);
-}
-body
+
+public Lookup!(K, V) asLookup(K, V)(Lookup!(K, V) items)
 {
     return items;
 }
 
 public Map!(K, V) asMap(K, V)(Map!(K, V) items)
-in
-{
-    assert(items);
-}
-out (result)
-{
-    assert(result);
-}
-body
 {
     return items;
 }
