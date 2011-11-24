@@ -134,8 +134,8 @@ body
 {
     auto type = cast(StructureType)resolveType(node.typeName, module_, program);
 
-    if (auto field = find(type.fields, (Field f) { return f.name == node.name.name; }))
-        return field;
+    if (auto field = type.fields.get(node.name.name))
+        return *field;
 
     throw new GenerationException("Unknown field " ~ type.module_.name ~ "/" ~ type.name ~ ":" ~ node.name.name ~ ".",
                                   node.location);

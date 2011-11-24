@@ -28,7 +28,7 @@ public final class StructureType : Type
     private TypeLayout _layout;
     private Module _module;
     private string _name;
-    private NoNullList!Field _fields;
+    private NoNullDictionary!(string, Field) _fields;
     private bool _isClosed;
 
     invariant()
@@ -70,7 +70,7 @@ public final class StructureType : Type
         return _module;
     }
 
-    @property public Countable!Field fields()
+    @property public Lookup!(string, Field) fields()
     in
     {
         assert(_isClosed);
@@ -106,7 +106,7 @@ public final class StructureType : Type
         assert(name);
         assert(type);
         assert(layout == TypeLayout.explicit ? offset.hasValue : !offset.hasValue);
-        assert(!contains(_fields, (Field f) { return f.name == name; }));
+        assert(name !in _fields);
         assert(!_isClosed);
     }
     out (result)
@@ -115,10 +115,7 @@ public final class StructureType : Type
     }
     body
     {
-        auto field = new Field(this, name, type, storage, offset);
-        _fields.add(field);
-
-        return field;
+        return _fields[name] = new Field(this, name, type, storage, offset);
     }
 
     public void close()

@@ -404,7 +404,7 @@ public final class ProgramReader
                     auto instrCount = _reader.read!uint();
 
                     for (uint i = 0; i < instrCount; i++)
-                        block.instructions.add(readInstruction(func.y, program));
+                        block.y.instructions.add(readInstruction(func.y, program));
                 }
             }
         }
@@ -618,12 +618,12 @@ public final class ProgramReader
 
         auto type = cast(StructureType)toType(declType, program);
         auto name = _reader.readString();
-        auto field = find(type.fields, (Field f) { return f.name == name; });
 
-        if (!field)
-            error("Unknown field: %s/%s:%s", type.module_.name, type.name, name);
+        if (auto field = type.fields.get(name))
+            return *field;
 
-        return field;
+        error("Unknown field: %s/%s:%s", type.module_.name, type.name, name);
+        assert(false);
     }
 
     private Function readFunctionReference(Program program)
@@ -850,12 +850,12 @@ public final class ProgramReader
     body
     {
         auto name = _reader.readString();
-        auto reg = find(function_.registers, (Register reg) { return reg.name == name; });
 
-        if (!reg)
-            error("Unknown register: %s", name);
+        if (auto reg = function_.registers.get(name))
+            return *reg;
 
-        return reg;
+        error("Unknown register: %s", name);
+        assert(false);
     }
 
     private BasicBlock readBasicBlockReference(Function function_)
@@ -870,12 +870,12 @@ public final class ProgramReader
     body
     {
         auto name = _reader.readString();
-        auto block = find(function_.blocks, (BasicBlock bb) { return bb.name == name; });
 
-        if (!block)
-            error("Unknown basic block: %s", name);
+        if (auto block = function_.blocks.get(name))
+            return *block;
 
-        return block;
+        error("Unknown basic block: %s", name);
+        assert(false);
     }
 
     private static void error(T ...)(T args)

@@ -85,7 +85,7 @@ public final class ModuleDisassembler
         {
             write("    field ");
 
-            final switch (field.storage)
+            final switch (field.y.storage)
             {
                 case FieldStorage.instance:
                     write("instance");
@@ -98,10 +98,10 @@ public final class ModuleDisassembler
                     break;
             }
 
-            writef(" %s %s", field.type, field.name);
+            writef(" %s %s", field.y.type, field.y.name);
 
-            if (field.offset.hasValue)
-                writef(" (%s)", field.offset.value);
+            if (field.y.offset.hasValue)
+                writef(" (%s)", field.y.offset.value);
 
             writeln(";");
         }
@@ -164,16 +164,16 @@ public final class ModuleDisassembler
         writeln("{");
 
         foreach (reg; function_.registers)
-            writefln("    register %s %s;", reg.type, reg.name);
+            writefln("    register %s %s;", reg.y.type, reg.y.name);
 
         writeln();
 
         foreach (block; function_.blocks)
         {
-            writefln("    block %s", block.name);
+            writefln("    block %s", block.y.name);
             writeln("    {");
 
-            foreach (instr; block.instructions)
+            foreach (instr; block.y.instructions)
             {
                 write("        ");
 

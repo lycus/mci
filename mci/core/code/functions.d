@@ -118,8 +118,8 @@ public final class Function
     private string _name;
     private NoNullList!Parameter _parameters;
     private Type _returnType;
-    private NoNullList!BasicBlock _blocks;
-    private NoNullList!Register _registers;
+    private NoNullDictionary!(string, BasicBlock) _blocks;
+    private NoNullDictionary!(string, Register) _registers;
     private bool _isClosed;
 
     invariant()
@@ -214,7 +214,7 @@ public final class Function
         return _isClosed;
     }
 
-    @property public NoNullList!BasicBlock blocks()
+    @property public Lookup!(string, BasicBlock) blocks()
     out (result)
     {
         assert(result);
@@ -224,7 +224,7 @@ public final class Function
         return _blocks;
     }
 
-    @property public NoNullList!Register registers()
+    @property public Lookup!(string, Register) registers()
     out (result)
     {
         assert(result);
@@ -273,7 +273,7 @@ public final class Function
     in
     {
         assert(name);
-        assert(!contains(_blocks, (BasicBlock bb) { return bb.name == name; }));
+        assert(name !in _blocks);
     }
     out (result)
     {
@@ -281,10 +281,7 @@ public final class Function
     }
     body
     {
-        auto block = new BasicBlock(name);
-        _blocks.add(block);
-
-        return block;
+        return _blocks[name] = new BasicBlock(name);
     }
 
     public Register createRegister(string name, Type type)
@@ -292,7 +289,7 @@ public final class Function
     {
         assert(name);
         assert(type);
-        assert(!contains(_registers, (Register r) { return r.name == name; }));
+        assert(name !in _registers);
     }
     out (result)
     {
@@ -300,9 +297,6 @@ public final class Function
     }
     body
     {
-        auto reg = new Register(name, type);
-        _registers.add(reg);
-
-        return reg;
+        return _registers[name] = new Register(name, type);
     }
 }

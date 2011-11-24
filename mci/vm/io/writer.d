@@ -89,9 +89,9 @@ public final class ProgramWriter
             {
                 foreach (block; func.y.blocks)
                 {
-                    _writer.write(cast(uint)block.instructions.count);
+                    _writer.write(cast(uint)block.y.instructions.count);
 
-                    foreach (instr; block.instructions)
+                    foreach (instr; block.y.instructions)
                         writeInstruction(instr);
                 }
             }
@@ -121,7 +121,7 @@ public final class ProgramWriter
         _writer.write(cast(uint)type.fields.count);
 
         foreach (field; type.fields)
-            writeField(field);
+            writeField(field.y);
     }
 
     private void writeField(Field field)
@@ -160,12 +160,12 @@ public final class ProgramWriter
         _writer.write(cast(uint)function_.registers.count);
 
         foreach (register; function_.registers)
-            writeRegister(register);
+            writeRegister(register.y);
 
         _writer.write(cast(uint)function_.blocks.count);
 
         foreach (block; function_.blocks)
-            writeBasicBlock(block);
+            writeBasicBlock(block.y);
     }
 
     private void writeRegister(Register register)
