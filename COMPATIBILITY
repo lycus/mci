@@ -2,7 +2,7 @@
 
                 -- Compatibility --
 
-The MCI generally requires D 2.0.
+The MCI generally requires version 2.0 of the D language.
 
 The following compilers are supported:
 
@@ -21,9 +21,8 @@ The following architectures are supported:
     * PowerPC (32-bit and 64-bit)
     * Itanium (64-bit)
     * MIPS (32-bit and 64-bit)
-    * System/390 (32-bit and 64-bit)
 
-Architecture must be determined when compiling, or the compilation
+Architecture must be determinable when compiling, or the compilation
 process will be aborted.
 
 The following operating systems are supported:
@@ -37,17 +36,12 @@ The following operating systems are supported:
     * AIX
     * Hurd
 
-Operating system must be determined when compiling, or the compilation
+Operating system must be determinable when compiling, or the compilation
 process will be aborted.
 
-The following emulation layers can be used:
+The following emulation layers can optionally be used:
 
     * Cygwin
     * MinGW
 
 Byte order must also be determined when compiling.
-
-During compilation (when config.d is compiled), a configuration briefing
-will be printed. This is useful for determining the cause of problems in the
-compilation process. If a configuration issue is found, the compilation
-process will generally abort in config.d.
