@@ -121,7 +121,7 @@ public final class AssemblerTool : Tool
             }
             catch (UtfException ex)
             {
-                log("Error: UTF-8 decoding failed; file '%s' is probably not plain text.", file);
+                logf("Error: UTF-8 decoding failed; file '%s' is probably not plain text.", file);
                 return false;
             }
             catch (LexerException ex)
