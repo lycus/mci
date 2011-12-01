@@ -363,8 +363,8 @@ static this()
     opShL = create("shl", OperationCode.shL, OpCodeType.normal, OperandType.none, 2, true);
     opShR = create("shr", OperationCode.shR, OpCodeType.normal, OperandType.none, 2, true);
     opConv = create("conv", OperationCode.conv, OpCodeType.normal, OperandType.none, 1, true);
-    opMemAlloc = create("mem.alloc", OperationCode.memAlloc, OpCodeType.normal, OperandType.type, 1, true);
-    opMemNew = create("mem.new", OperationCode.memNew, OpCodeType.normal, OperandType.structure, 0, true);
+    opMemAlloc = create("mem.alloc", OperationCode.memAlloc, OpCodeType.normal, OperandType.none, 1, true);
+    opMemNew = create("mem.new", OperationCode.memNew, OpCodeType.normal, OperandType.none, 0, true);
     opMemFree = create("mem.free", OperationCode.memFree, OpCodeType.normal, OperandType.none, 1, false);
     opMemDelete = create("mem.delete", OperationCode.memDelete, OpCodeType.normal, OperandType.none, 1, false);
     opMemGet = create("mem.get", OperationCode.memGet, OpCodeType.normal, OperandType.none, 1, true);
