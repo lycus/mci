@@ -121,7 +121,7 @@ public final class GeneratorDriver
     }
     body
     {
-        _module = manager.create(moduleName);
+        _module = manager.attach(new Module(moduleName));
         _state = new typeof(_state)(_module, manager, units);
         _passes = new typeof(_passes)();
 

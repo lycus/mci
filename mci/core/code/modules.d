@@ -166,17 +166,6 @@ public final class ModuleManager
     {
         return _modules[module_.name] = module_;
     }
-
-    public Module create(string name)
-    in
-    {
-        assert(name);
-        assert(name !in _modules);
-    }
-    body
-    {
-        return _modules[name] = new Module(name);
-    }
 }
 
 public interface ModuleLoader

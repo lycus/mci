@@ -369,7 +369,7 @@ public final class ModuleReader : ModuleLoader
             error("File magic %s doesn't match expected %s.", magic, fileMagic);
 
         auto ver = _reader.read!uint();
-        auto mod = _manager.create(baseName(_file.name));
+        auto mod = _manager.attach(new Module(baseName(_file.name)));
 
         auto typeCount = _reader.read!uint();
 
