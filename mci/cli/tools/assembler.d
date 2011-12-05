@@ -184,7 +184,7 @@ public final class AssemblerTool : Tool
         try
         {
             auto manager = new ModuleManager();
-            driver = new GeneratorDriver(output[0 .. $ - moduleFileExtension.length], manager, units);
+            driver = new GeneratorDriver(baseName(output[0 .. $ - moduleFileExtension.length]), manager, units);
             auto mod = driver.run();
             auto writer = new ModuleWriter();
 
