@@ -93,9 +93,9 @@ public final class ModuleManager
 
         static if (isPosix)
         {
-            _probePaths.addRange(buildPath("usr", "local", "lib"),
-                                 buildPath("usr", "lib"),
-                                 "/lib");
+            addRange(_probePaths, [buildPath("usr", "local", "lib"),
+                                   buildPath("usr", "lib"),
+                                   "/lib"]);
         }
         else
         {
