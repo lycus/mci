@@ -4,14 +4,19 @@ import std.conv,
        std.stdio,
        std.getopt,
        mci.core.config,
-       mci.cli.tool,
-       mci.cli.tools.interpreter;
+       mci.cli.tool;
 
 private enum ExitCode : ubyte
 {
     success,
     error,
     failure,
+}
+
+public enum GarbageCollectorType : ubyte
+{
+    libc = 0,
+    dgc = 1,
 }
 
 private bool silent;

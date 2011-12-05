@@ -6,7 +6,7 @@ public final class VerifierTool : Tool
 {
     @property public string description()
     {
-        return "Verify the validity of an assembled program.";
+        return "Verify the validity of an assembled module.";
     }
 
     @property public string[] options()

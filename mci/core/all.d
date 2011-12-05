@@ -7,8 +7,8 @@ public import mci.core.exception;
 public import mci.core.io;
 public import mci.core.meta;
 public import mci.core.nullable;
-public import mci.core.program;
 public import mci.core.tuple;
+public import mci.core.visitor;
 
 public import mci.core.code.emit;
 public import mci.core.code.functions;

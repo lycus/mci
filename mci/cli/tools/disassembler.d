@@ -6,6 +6,7 @@ import std.algorithm,
        std.path,
        mci.assembler.disassembly.modules,
        mci.core.io,
+       mci.core.code.modules,
        mci.vm.io.exception,
        mci.vm.io.reader,
        mci.cli.main,
@@ -16,24 +17,24 @@ public final class DisassemblerTool : Tool
 {
     @property public string description()
     {
-        return "Disassemble an assembled program into IAL modules.";
+        return "Disassemble an assembled module into IAL code.";
     }
 
     @property public string[] options()
     {
-        return ["\t--output=<path>\t\t-o <path>\tSpecify module output directory path."];
+        return ["\t--output=<file>\t\t-o <file>\tSpecify module output file."];
     }
 
     public bool run(string[] args)
     {
-        string outputDir = ".";
+        string output = "out.mci";
 
         try
         {
             getopt(args,
                    config.caseSensitive,
                    config.bundling,
-                   "output|o", &outputDir);
+                   "output|o", &output);
             args = args[1 .. $];
         }
         catch (Exception ex)
@@ -44,15 +45,33 @@ public final class DisassemblerTool : Tool
 
         if (args.length == 0)
         {
-            log("Error: No input programs given.");
+            log("Error: No input modules given.");
+            return false;
+        }
+
+        if (output.length <= inputFileExtension.length)
+        {
+            logf("Error: Output file '%s' has no name part.", output);
+            return false;
+        }
+
+        if (extension(output) != inputFileExtension)
+        {
+            logf("Error: Output file '%s' does not end in '%s'.", output, inputFileExtension);
             return false;
         }
 
         foreach (file; args)
         {
-            if (!endsWith(file, outputFileExtension))
+            if (file.length <= moduleFileExtension.length)
             {
-                logf("Error: File '%s' does not end in '%s'.", file, outputFileExtension);
+                logf("Error: Input module '%s' has no name part.", file);
+                return false;
+            }
+
+            if (extension(file) != moduleFileExtension)
+            {
+                logf("Error: Input module '%s' does not end in '%s'.", file, moduleFileExtension);
                 return false;
             }
 
@@ -60,33 +79,13 @@ public final class DisassemblerTool : Tool
 
             try
             {
-                stream = new FileStream(file);
-                auto reader = new ProgramReader(stream);
-                auto program = reader.read();
+                auto manager = new ModuleManager();
+                auto reader = new ModuleReader(manager);
+                auto mod = reader.load(file);
+                stream = new FileStream(output, FileAccess.write, FileMode.truncate);
+                auto disasm = new ModuleDisassembler(stream);
 
-                foreach (mod; program.modules)
-                {
-                    FileStream file;
-                    auto fileName = buildPath(outputDir, mod.y.name ~ inputFileExtension);
-
-                    try
-                    {
-                        file = new FileStream(fileName, FileAccess.write, FileMode.truncate);
-                        auto disasm = new ModuleDisassembler(file);
-
-                        disasm.disassemble(mod.y);
-                    }
-                    catch (ErrnoException ex)
-                    {
-                        logf("Error: Could not write '%s': %s", fileName, ex.msg);
-                        return false;
-                    }
-                    finally
-                    {
-                        if (file)
-                            file.close();
-                    }
-                }
+                disasm.disassemble(mod);
             }
             catch (ErrnoException ex)
             {

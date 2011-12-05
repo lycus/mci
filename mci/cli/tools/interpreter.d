@@ -5,12 +5,6 @@ import std.getopt,
        mci.cli.main,
        mci.cli.tool;
 
-public enum GarbageCollectorType : ubyte
-{
-    libc = 0,
-    dgc = 1,
-}
-
 public final class InterpreterTool : Tool
 {
     private bool _verify;
@@ -19,12 +13,12 @@ public final class InterpreterTool : Tool
 
     @property public string description()
     {
-        return "Run an assembled program with the IAL interpreter.";
+        return "Run an assembled module with the IAL interpreter.";
     }
 
     @property public string[] options()
     {
-        return ["\t--optimize\t\t-p\t\tPass the program through the optimization pipeline.",
+        return ["\t--optimize\t\t-p\t\tPass the module through the optimization pipeline.",
                 "\t--collector=<type>\t-c <type>\tSpecify which garbage collector to use."];
     }
 

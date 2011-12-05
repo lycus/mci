@@ -4,42 +4,45 @@ import std.algorithm,
        std.conv,
        std.exception,
        std.getopt,
+       std.path,
        std.utf,
-       mci.core.container,
-       mci.core.io,
        mci.assembler.exception,
        mci.assembler.generation.driver,
        mci.assembler.generation.exception,
-       mci.vm.io.writer,
        mci.assembler.parsing.exception,
        mci.assembler.parsing.lexer,
        mci.assembler.parsing.parser,
+       mci.core.container,
+       mci.core.io,
+       mci.core.code.modules,
+       mci.vm.io.writer,
        mci.cli.main,
        mci.cli.tool,
        mci.cli.tools.interpreter;
 
 public enum string inputFileExtension = ".ial";
-public enum string outputFileExtension = ".mci";
 
 public final class AssemblerTool : Tool
 {
     @property public string description()
     {
-        return "Assemble IAL modules into a program.";
+        return "Assemble IAL files into a module.";
     }
 
     @property public string[] options()
     {
-        return ["\t--output=<file>\t\t-o <file>\tSpecify program output file.",
-                "\t--verify\t\t-v\t\tRun IAL verifier on input modules.",
-                "\t--optimize\t\t-p\t\tPass the program through the optimization pipeline.",
-                "\t--interpret\t\t-t\t\tRun the program with the IAL interpreter (no output will be generated).",
-                "\t--collector=<type>\t-c <type>\tSpecify which garbage collector to use if running the program."];
+        return ["\t--output=<file>\t\t-o <file>\tSpecify module output file.",
+                "\t--reference=<file>\t\t-r <file>\tReference a compiled module.",
+                "\t--verify\t\t-v\t\tRun the IAL verifier on the resulting module.",
+                "\t--optimize\t\t-p\t\tPass the module through the optimization pipeline.",
+                "\t--interpret\t\t-t\t\tRun the module with the IAL interpreter (no output will be generated).",
+                "\t--collector=<type>\t-c <type>\tSpecify which garbage collector to use if running the module."];
     }
 
     public bool run(string[] args)
     {
         string output = "out.mci";
+        string[] moduleRefs;
         bool verify;
         bool optimize;
         bool interpret;
@@ -51,6 +54,7 @@ public final class AssemblerTool : Tool
                    config.caseSensitive,
                    config.bundling,
                    "output|o", &output,
+                   "reference|r", &moduleRefs,
                    "verify|v", &verify,
                    "optimize|p", &optimize,
                    "interpret|i", &interpret,
@@ -63,39 +67,66 @@ public final class AssemblerTool : Tool
             return false;
         }
 
-        if (!endsWith(output, outputFileExtension))
+        if (args.length == 0)
         {
-            logf("Output file '%s' does not end in '%s'.", output, outputFileExtension);
+            log("Error: No files given.");
             return false;
         }
 
-        if (args.length == 0)
+        if (output.length <= moduleFileExtension.length)
         {
-            log("Error: No modules given.");
+            logf("Error: Output file '%s' has no name part.", output);
             return false;
+        }
+
+        if (extension(output) != moduleFileExtension)
+        {
+            logf("Error: Output file '%s' does not end in '%s'.", output, moduleFileExtension);
+            return false;
+        }
+
+        foreach (reference; moduleRefs)
+        {
+            if (reference.length <= moduleFileExtension.length)
+            {
+                logf("Error: Referenced module '%s' has no name part.", reference);
+                return false;
+            }
+
+            if (extension(reference) != moduleFileExtension)
+            {
+                logf("Error: Referenced module '%s' does not end in '%s'.", reference, moduleFileExtension);
+                return false;
+            }
+
+            if (reference == output)
+            {
+                logf("Error: Output file '%s' is the same as referenced module '%s'.", output, reference);
+                return false;
+            }
         }
 
         auto units = new NoNullDictionary!(string, CompilationUnit)();
 
         foreach (file; args)
         {
-            if (!endsWith(file, inputFileExtension))
+            if (file.length <= inputFileExtension.length)
+            {
+                logf("Error: File '%s' has no name part.", file);
+                return false;
+            }
+
+            if (extension(file) != inputFileExtension)
             {
                 logf("Error: File '%s' does not end in '%s'.", file, inputFileExtension);
                 return false;
             }
 
-            if (file.length <= inputFileExtension.length)
-            {
-                logf("Error: File '%s' is missing a module name.", file);
-                return false;
-            }
+            auto fileName = file[0 .. $ - inputFileExtension.length];
 
-            auto modName = file[0 .. $ - inputFileExtension.length];
-
-            foreach (mod; units.keys)
+            foreach (f; units.keys)
             {
-                if (modName == mod)
+                if (fileName == f)
                 {
                     logf("Error: File '%s' specified multiple times.", file);
                     return false;
@@ -112,7 +143,7 @@ public final class AssemblerTool : Tool
                 auto parser = new Parser(lexer.lex());
                 auto unit = parser.parse();
 
-                units.add(modName, unit);
+                units.add(fileName, unit);
             }
             catch (ErrnoException ex)
             {
@@ -149,16 +180,15 @@ public final class AssemblerTool : Tool
         }
 
         GeneratorDriver driver;
-        FileStream file;
 
         try
         {
-            driver = new GeneratorDriver(units);
-            auto program = driver.run();
-            file = new FileStream(output, FileAccess.write, FileMode.truncate);
-            auto writer = new ProgramWriter(file);
+            auto manager = new ModuleManager();
+            driver = new GeneratorDriver(output[0 .. $ - moduleFileExtension.length], manager, units);
+            auto mod = driver.run();
+            auto writer = new ModuleWriter();
 
-            writer.write(program);
+            writer.save(mod, output);
         }
         catch (ErrnoException ex)
         {
@@ -167,14 +197,9 @@ public final class AssemblerTool : Tool
         }
         catch (GenerationException ex)
         {
-            logf("Error: Generation failed in '%s' (line %s%s): %s", driver.currentModule ~ inputFileExtension,
+            logf("Error: Generation failed in '%s' (line %s%s): %s", driver.currentFile ~ inputFileExtension,
                  ex.location.line, ex.location.column == 0 ? "" : ", column " ~ to!string(ex.location.column), ex.msg);
             return false;
-        }
-        finally
-        {
-            if (file)
-                file.close();
         }
 
         return true;

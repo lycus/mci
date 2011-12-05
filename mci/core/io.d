@@ -112,6 +112,16 @@ public final class FileStream : Stream
         return !_file.isOpen;
     }
 
+    @property public string name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _file.name;
+    }
+
     public ubyte read()
     {
         ubyte[1] b;

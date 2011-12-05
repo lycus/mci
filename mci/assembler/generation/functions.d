@@ -2,7 +2,6 @@ module mci.assembler.generation.functions;
 
 import std.conv,
        mci.core.container,
-       mci.core.program,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.modules,
@@ -13,12 +12,12 @@ import std.conv,
        mci.assembler.generation.modules,
        mci.assembler.generation.types;
 
-public Function generateFunction(FunctionDeclarationNode node, Module module_, Program program)
+public Function generateFunction(FunctionDeclarationNode node, Module module_, ModuleManager manager)
 in
 {
     assert(node);
     assert(module_);
-    assert(program);
+    assert(manager);
 }
 out (result)
 {
@@ -29,11 +28,11 @@ body
     if (module_.functions.get(node.name.name))
         throw new GenerationException("Function " ~ module_.name ~ "/" ~ node.name.name ~ " already defined.", node.location);
 
-    auto returnType = resolveType(node.returnType, module_, program);
+    auto returnType = resolveType(node.returnType, module_, manager);
     auto func = new Function(module_, node.name.name, returnType, node.attributes, node.callingConvention);
 
     foreach (param; node.parameters)
-        func.createParameter(resolveType(param.type, module_, program));
+        func.createParameter(resolveType(param.type, module_, manager));
 
     func.close();
 
@@ -42,7 +41,7 @@ body
         if (func.registers.get(reg.name.name))
             throw new GenerationException("Register " ~ reg.name.name ~ " already defined.", reg.location);
 
-        func.createRegister(reg.name.name, resolveType(reg.type, module_, program));
+        func.createRegister(reg.name.name, resolveType(reg.type, module_, manager));
     }
 
     foreach (block; node.blocks)
@@ -111,19 +110,19 @@ body
                         operand = resolveBasicBlock(*instrOperand.peek!BasicBlockReferenceNode(), func);
                         break;
                     case OperandType.type:
-                        operand = resolveType(*instrOperand.peek!TypeReferenceNode(), module_, program);
+                        operand = resolveType(*instrOperand.peek!TypeReferenceNode(), module_, manager);
                         break;
                     case OperandType.structure:
-                        operand = resolveStructureType(*instrOperand.peek!StructureTypeReferenceNode(), module_, program);
+                        operand = resolveStructureType(*instrOperand.peek!StructureTypeReferenceNode(), module_, manager);
                         break;
                     case OperandType.field:
-                        operand = resolveField(*instrOperand.peek!FieldReferenceNode(), module_, program);
+                        operand = resolveField(*instrOperand.peek!FieldReferenceNode(), module_, manager);
                         break;
                     case OperandType.function_:
-                        operand = resolveFunction(*instrOperand.peek!FunctionReferenceNode(), module_, program);
+                        operand = resolveFunction(*instrOperand.peek!FunctionReferenceNode(), module_, manager);
                         break;
                     case OperandType.signature:
-                        operand = resolveFunctionPointerType(*instrOperand.peek!FunctionPointerTypeReferenceNode(), module_, program);
+                        operand = resolveFunctionPointerType(*instrOperand.peek!FunctionPointerTypeReferenceNode(), module_, manager);
                         break;
                     case OperandType.selector:
                         auto regs = instrOperand.peek!RegisterSelectorNode().registers;
@@ -147,12 +146,12 @@ body
     return func;
 }
 
-public Function resolveFunction(FunctionReferenceNode node, Module module_, Program program)
+public Function resolveFunction(FunctionReferenceNode node, Module module_, ModuleManager manager)
 in
 {
     assert(node);
     assert(module_);
-    assert(program);
+    assert(manager);
 }
 out (result)
 {
@@ -160,13 +159,12 @@ out (result)
 }
 body
 {
-    auto mod = node.moduleName ? resolveModule(node.moduleName, program) : module_;
+    auto mod = node.moduleName ? resolveModule(node.moduleName, manager) : module_;
 
     if (auto func = mod.functions.get(node.name.name))
         return *func;
 
-    throw new GenerationException("Unknown function " ~ mod.name ~ "/" ~ node.name.name ~ ".",
-                                  node.location);
+    throw new GenerationException("Unknown function " ~ mod.name ~ "/" ~ node.name.name ~ ".", node.location);
 }
 
 public Register resolveRegister(RegisterReferenceNode node, Function function_)

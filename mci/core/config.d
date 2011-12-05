@@ -165,6 +165,9 @@ version (Windows)
 {
     public enum OperatingSystem operatingSystem = OperatingSystem.windows;
     public enum string operatingSystemName = "Windows";
+
+    public enum bool isPosix = false;
+    public enum bool isWindows = true;
 }
 else version (Posix)
 {
@@ -224,6 +227,9 @@ else version (Posix)
     {
         static assert(false, "Unknown POSIX operating system.");
     }
+
+    public enum bool isPosix = true;
+    public enum bool isWindows = false;
 }
 else
 {

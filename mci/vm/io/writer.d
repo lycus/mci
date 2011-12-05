@@ -3,7 +3,7 @@ module mci.vm.io.writer;
 import mci.core.common,
        mci.core.container,
        mci.core.io,
-       mci.core.program,
+       mci.core.visitor,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.modules,
@@ -13,89 +13,26 @@ import mci.core.common,
        mci.vm.io.common,
        mci.vm.io.extended;
 
-public final class ProgramWriter
+public final class ModuleWriter : ModuleSaver
 {
     private FileStream _file;
     private VMBinaryWriter _writer;
     private bool _done;
 
-    invariant()
-    {
-        assert(_file);
-        assert(_file.canWrite);
-        assert(!_file.isClosed);
-        assert(_writer);
-    }
-
-    public this(FileStream file)
+    public void save(Module module_, string path)
     in
     {
-        assert(file);
-        assert(file.canWrite);
-        assert(!file.isClosed);
-    }
-    body
-    {
-        _file = file;
-        _writer = new typeof(_writer)(file);
-    }
-
-    public void write(Program program)
-    in
-    {
-        assert(program);
         assert(!_done);
     }
     body
     {
         _done = true;
+        _file = new typeof(_file)(path, FileAccess.write, FileMode.truncate);
+        _writer = new typeof(_writer)(_file);
 
-        writeProgram(program);
-    }
+        writeModule(module_);
 
-    private void writeProgram(Program program)
-    in
-    {
-        assert(program);
-    }
-    body
-    {
-        _writer.writeArray(fileMagic);
-        _writer.write(fileVersion);
-        _writer.write(cast(uint)program.modules.count);
-
-        foreach (mod; program.modules)
-            writeModule(mod.y);
-
-        foreach (mod; program.modules)
-        {
-            _writer.write(cast(uint)mod.y.types.count);
-
-            foreach (type; mod.y.types)
-                writeType(type.y);
-        }
-
-        foreach (mod; program.modules)
-        {
-            _writer.write(cast(uint)mod.y.functions.count);
-
-            foreach (func; mod.y.functions)
-                writeFunction(func.y);
-        }
-
-        foreach (mod; program.modules)
-        {
-            foreach (func; mod.y.functions)
-            {
-                foreach (block; func.y.blocks)
-                {
-                    _writer.write(cast(uint)block.y.instructions.count);
-
-                    foreach (instr; block.y.instructions)
-                        writeInstruction(instr);
-                }
-            }
-        }
+        _file.close();
     }
 
     private void writeModule(Module module_)
@@ -105,7 +42,29 @@ public final class ProgramWriter
     }
     body
     {
-        _writer.writeString(module_.name);
+        _writer.writeArray(fileMagic);
+        _writer.write(fileVersion);
+
+        _writer.write(cast(uint)module_.types.count);
+
+        foreach (type; module_.types)
+            writeType(type.y);
+
+        _writer.write(cast(uint)module_.functions.count);
+
+        foreach (func; module_.functions)
+            writeFunction(func.y);
+
+        foreach (func; module_.functions)
+        {
+            foreach (block; func.y.blocks)
+            {
+                _writer.write(cast(uint)block.y.instructions.count);
+
+                foreach (instr; block.y.instructions)
+                    writeInstruction(instr);
+            }
+        }
     }
 
     private void writeType(StructureType type)

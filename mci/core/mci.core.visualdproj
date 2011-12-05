@@ -300,7 +300,7 @@
   <File path="io.d" />
   <File path="meta.d" />
   <File path="nullable.d" />
-  <File path="program.d" />
   <File path="tuple.d" />
+  <File path="visitor.d" />
  </Folder>
 </DProject>

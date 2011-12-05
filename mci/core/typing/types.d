@@ -2,7 +2,6 @@ module mci.core.typing.types;
 
 import mci.core.container,
        mci.core.nullable,
-       mci.core.program,
        mci.core.code.modules,
        mci.core.typing.members;
 
@@ -166,8 +165,7 @@ public final class PointerType : Type
 
 unittest
 {
-    auto prog = new Program();
-    auto mod = new Module(prog, "foo");
+    auto mod = new Module("foo");
 
     auto st = new StructureType(mod, "bar");
     st.close();
@@ -179,8 +177,7 @@ unittest
 
 unittest
 {
-    auto prog = new Program();
-    auto mod = new Module(prog, "foo");
+    auto mod = new Module("foo");
 
     auto st = new StructureType(mod, "foo_bar_baz");
     st.close();
@@ -251,8 +248,7 @@ public final class FunctionPointerType : Type
 
 unittest
 {
-    auto prog = new Program();
-    auto mod = new Module(prog, "foo");
+    auto mod = new Module("foo");
 
     auto st1 = new StructureType(mod, "bar");
     st1.close();
@@ -306,13 +302,12 @@ public final class ArrayType : Type
 
 unittest
 {
-    auto prog = new Program();
-    auto mod = new Module(prog, "bar");
+    auto mod = new Module("foo");
 
     auto st = new StructureType(mod, "baz");
     st.close();
 
     auto ptr = new ArrayType(st);
 
-    assert(ptr.name == "bar/baz[]");
+    assert(ptr.name == "foo/baz[]");
 }

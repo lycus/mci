@@ -1,11 +1,13 @@
 module mci.vm.io.reader;
 
-import std.string,
+import std.exception,
+       std.file,
+       std.path,
+       std.string,
        mci.core.common,
        mci.core.container,
        mci.core.io,
        mci.core.nullable,
-       mci.core.program,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.modules,
@@ -307,37 +309,32 @@ private final class FunctionPointerTypeReferenceDescriptor : TypeReferenceDescri
     }
 }
 
-public final class ProgramReader
+public final class ModuleReader : ModuleLoader
 {
     private FileStream _file;
+    private ModuleManager _manager;
     private VMBinaryReader _reader;
     private bool _done;
     private NoNullDictionary!(StructureType, TypeDescriptor) _types;
 
     invariant()
     {
-        assert(_file);
-        assert(_file.canRead);
-        assert(!_file.isClosed);
-        assert(_reader);
+        assert(_manager);
         assert(_types);
     }
 
-    public this(FileStream file)
+    public this(ModuleManager manager)
     in
     {
-        assert(file);
-        assert(file.canRead);
-        assert(!file.isClosed);
+        assert(manager);
     }
     body
     {
-        _file = file;
-        _reader = new typeof(_reader)(file);
+        _manager = manager;
         _types = new typeof(_types)();
     }
 
-    public Program read()
+    public Module load(string path)
     in
     {
         assert(!_done);
@@ -349,11 +346,17 @@ public final class ProgramReader
     body
     {
         _done = true;
+        _file = new typeof(_file)(path);
+        _reader = new typeof(_reader)(_file);
 
-        return readProgram();
+        auto mod = readModule();
+
+        _file.close();
+
+        return mod;
     }
 
-    private Program readProgram()
+    private Module readModule()
     out (result)
     {
         assert(result);
@@ -366,87 +369,49 @@ public final class ProgramReader
             error("File magic %s doesn't match expected %s.", magic, fileMagic);
 
         auto ver = _reader.read!uint();
-        auto modCount = _reader.read!uint();
-        auto program = new Program();
+        auto mod = _manager.create(baseName(_file.name));
 
-        for (uint i = 0; i < modCount; i++)
-            readModule(program);
+        auto typeCount = _reader.read!uint();
 
-        foreach (mod; program.modules)
+        for (uint i = 0; i < typeCount; i++)
         {
-            auto typeCount = _reader.read!uint();
+            auto type = readType();
+            auto structType = new StructureType(mod, type.name, type.layout);
 
-            for (uint i = 0; i < typeCount; i++)
-            {
-                auto type = readType();
-                auto structType = new StructureType(mod.y, type.name, type.layout);
-
-                _types[structType] = type;
-            }
+            _types[structType] = type;
         }
 
-        closeTypes(program);
-
-        foreach (mod; program.modules)
-        {
-            auto funcCount = _reader.read!uint();
-
-            for (uint i = 0; i < funcCount; i++)
-                readFunction(mod.y, program);
-        }
-
-        foreach (mod; program.modules)
-        {
-            foreach (func; mod.y.functions)
-            {
-                foreach (block; func.y.blocks)
-                {
-                    auto instrCount = _reader.read!uint();
-
-                    for (uint i = 0; i < instrCount; i++)
-                        block.y.instructions.add(readInstruction(func.y, program));
-                }
-            }
-        }
-
-        return program;
-    }
-
-    private Module readModule(Program program)
-    in
-    {
-        assert(program);
-    }
-    out (result)
-    {
-        assert(result);
-    }
-    body
-    {
-        return new Module(program, _reader.readString());
-    }
-
-    private void closeTypes(Program program)
-    in
-    {
-        assert(program);
-    }
-    body
-    {
         foreach (tup; _types)
         {
             foreach (field; tup.y.fields)
-                tup.x.createField(field.name, toType(field.type, program), field.storage, field.offset);
+                tup.x.createField(field.name, toType(field.type), field.storage, field.offset);
 
             tup.x.close();
         }
+
+        auto funcCount = _reader.read!uint();
+
+        for (uint i = 0; i < funcCount; i++)
+            readFunction(mod);
+
+        foreach (func; mod.functions)
+        {
+            foreach (block; func.y.blocks)
+            {
+                auto instrCount = _reader.read!uint();
+
+                for (uint i = 0; i < instrCount; i++)
+                    block.y.instructions.add(readInstruction(func.y));
+            }
+        }
+
+        return mod;
     }
 
-    private static Type toType(TypeReferenceDescriptor descriptor, Program program)
+    private Type toType(TypeReferenceDescriptor descriptor)
     in
     {
         assert(descriptor);
-        assert(program);
     }
     out (result)
     {
@@ -456,30 +421,29 @@ public final class ProgramReader
     {
         if (auto structType = cast(StructureTypeReferenceDescriptor)descriptor)
         {
-            if (auto type = toModule(structType.moduleName, program).types.get(structType.name))
+            if (auto type = toModule(structType.moduleName).types.get(structType.name))
                 return *type;
 
             error("Unknown type: %s/%s", structType.moduleName, structType.name);
             assert(false);
         }
         else if (auto ptrType = cast(PointerTypeReferenceDescriptor)descriptor)
-            return getPointerType(toType(ptrType.elementType, program));
+            return getPointerType(toType(ptrType.elementType));
         else if (auto arrType = cast(ArrayTypeReferenceDescriptor)descriptor)
-            return getArrayType(toType(arrType.elementType, program));
+            return getArrayType(toType(arrType.elementType));
         else if (auto fpType = cast(FunctionPointerTypeReferenceDescriptor)descriptor)
         {
-            auto params = new NoNullList!Type(map(fpType.parameterTypes, (TypeReferenceDescriptor desc) { return toType(desc, program); }));
-            return getFunctionPointerType(toType(fpType.returnType, program), params);
+            auto params = new NoNullList!Type(map(fpType.parameterTypes, (TypeReferenceDescriptor desc) { return toType(desc); }));
+            return getFunctionPointerType(toType(fpType.returnType), params);
         }
         else
             return (cast(CoreTypeReferenceDescriptor)descriptor).type;
     }
 
-    private static Module toModule(string name, Program program)
+    private Module toModule(string name)
     in
     {
         assert(name);
-        assert(program);
     }
     out (result)
     {
@@ -487,10 +451,10 @@ public final class ProgramReader
     }
     body
     {
-        if (auto mod = program.modules.get(name))
-            return *mod;
+        if (auto mod = _manager.load(this, name))
+            return mod;
 
-        error("Unknown module: %s", name);
+        error("Could not locate module: %s", name);
         assert(false);
     }
 
@@ -603,11 +567,10 @@ public final class ProgramReader
         assert(false);
     }
 
-    private Field readFieldReference(Program program)
+    private Field readFieldReference()
     out (result)
     {
         assert(result);
-        assert(program);
     }
     body
     {
@@ -616,7 +579,7 @@ public final class ProgramReader
         if (!isType!StructureTypeReferenceDescriptor(declType))
             error("Structure type expected");
 
-        auto type = cast(StructureType)toType(declType, program);
+        auto type = cast(StructureType)toType(declType);
         auto name = _reader.readString();
 
         if (auto field = type.fields.get(name))
@@ -626,18 +589,14 @@ public final class ProgramReader
         assert(false);
     }
 
-    private Function readFunctionReference(Program program)
-    in
-    {
-        assert(program);
-    }
+    private Function readFunctionReference()
     out (result)
     {
         assert(result);
     }
     body
     {
-        auto mod = toModule(_reader.readString(), program);
+        auto mod = toModule(_reader.readString());
         auto name = _reader.readString();
 
         if (auto func = mod.functions.get(name))
@@ -647,11 +606,10 @@ public final class ProgramReader
         assert(false);
     }
 
-    private Function readFunction(Module module_, Program program)
+    private Function readFunction(Module module_)
     in
     {
         assert(module_);
-        assert(program);
     }
     out (result)
     {
@@ -662,19 +620,19 @@ public final class ProgramReader
         auto name = _reader.readString();
         auto attributes = _reader.read!FunctionAttributes();
         auto callConv = _reader.read!CallingConvention();
-        auto returnType = toType(readTypeReference(), program);
+        auto returnType = toType(readTypeReference());
         auto func = new Function(module_, name, returnType, attributes, callConv);
         auto paramCount = _reader.read!uint();
 
         for (uint i = 0; i < paramCount; i++)
-            func.createParameter(toType(readTypeReference(), program));
+            func.createParameter(toType(readTypeReference()));
 
         func.close();
 
         auto regCount = _reader.read!uint();
 
         for (uint j = 0; j < regCount; j++)
-            readRegister(func, program);
+            readRegister(func);
 
         auto bbCount = _reader.read!uint();
 
@@ -684,11 +642,10 @@ public final class ProgramReader
         return func;
     }
 
-    private Register readRegister(Function function_, Program program)
+    private Register readRegister(Function function_)
     in
     {
         assert(function_);
-        assert(program);
     }
     out (result)
     {
@@ -697,7 +654,7 @@ public final class ProgramReader
     body
     {
         auto name = _reader.readString();
-        auto type = toType(readTypeReference(), program);
+        auto type = toType(readTypeReference());
 
         return function_.createRegister(name, type);
     }
@@ -716,11 +673,10 @@ public final class ProgramReader
         return function_.createBasicBlock(_reader.readString());
     }
 
-    private Instruction readInstruction(Function function_, Program program)
+    private Instruction readInstruction(Function function_)
     in
     {
         assert(function_);
-        assert(program);
     }
     out (result)
     {
@@ -797,7 +753,7 @@ public final class ProgramReader
                 operand = asCountable(bytes);
                 break;
             case OperandType.type:
-                operand = toType(readTypeReference(), program);
+                operand = toType(readTypeReference());
                 break;
             case OperandType.structure:
                 auto desc = readTypeReference();
@@ -805,13 +761,13 @@ public final class ProgramReader
                 if (!isType!StructureTypeReferenceDescriptor(desc))
                     error("Structure type expected");
 
-                operand = cast(StructureType)toType(desc, program);
+                operand = cast(StructureType)toType(desc);
                 break;
             case OperandType.field:
-                operand = readFieldReference(program);
+                operand = readFieldReference();
                 break;
             case OperandType.function_:
-                operand = readFunctionReference(program);
+                operand = readFunctionReference();
                 break;
             case OperandType.signature:
                 auto desc = readTypeReference();
@@ -819,7 +775,7 @@ public final class ProgramReader
                 if (!isType!FunctionPointerTypeReferenceDescriptor(desc))
                     error("Function pointer type expected");
 
-                operand = cast(FunctionPointerType)toType(desc, program);
+                operand = cast(FunctionPointerType)toType(desc);
                 break;
             case OperandType.label:
                 operand = readBasicBlockReference(function_);

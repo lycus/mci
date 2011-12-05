@@ -3,7 +3,6 @@ module mci.assembler.generation.types;
 import std.conv,
        mci.core.container,
        mci.core.nullable,
-       mci.core.program,
        mci.core.code.modules,
        mci.core.typing.cache,
        mci.core.typing.members,
@@ -30,12 +29,12 @@ body
     return new StructureType(module_, node.name.name, node.layout);
 }
 
-public Field generateField(FieldDeclarationNode node, StructureType type, Program program)
+public Field generateField(FieldDeclarationNode node, StructureType type, ModuleManager manager)
 in
 {
     assert(node);
     assert(type);
-    assert(program);
+    assert(manager);
 }
 out (result)
 {
@@ -43,18 +42,18 @@ out (result)
 }
 body
 {
-    auto fieldType = resolveType(node.type, type.module_, program);
+    auto fieldType = resolveType(node.type, type.module_, manager);
     auto offset = node.offset ? Nullable!uint(to!uint(node.offset.value)) : Nullable!uint();
 
     return type.createField(node.name.name, fieldType, node.storage, offset);
 }
 
-public Type resolveType(TypeReferenceNode node, Module module_, Program program)
+public Type resolveType(TypeReferenceNode node, Module module_, ModuleManager manager)
 in
 {
     assert(node);
     assert(module_);
-    assert(program);
+    assert(manager);
 }
 out (result)
 {
@@ -63,23 +62,23 @@ out (result)
 body
 {
     if (auto structType = cast(StructureTypeReferenceNode)node)
-        return resolveStructureType(structType, module_, program);
+        return resolveStructureType(structType, module_, manager);
     else if (auto fpType = cast(FunctionPointerTypeReferenceNode)node)
-        return resolveFunctionPointerType(fpType, module_, program);
+        return resolveFunctionPointerType(fpType, module_, manager);
     else if (auto ptrType = cast(PointerTypeReferenceNode)node)
-        return getPointerType(resolveType(ptrType.elementType, module_, program));
+        return getPointerType(resolveType(ptrType.elementType, module_, manager));
     else if (auto arrType = cast(ArrayTypeReferenceNode)node)
-        return getArrayType(resolveType(arrType.elementType, module_, program));
+        return getArrayType(resolveType(arrType.elementType, module_, manager));
     else
         return getType((cast(CoreTypeReferenceNode)node).name.name);
 }
 
-public StructureType resolveStructureType(StructureTypeReferenceNode node, Module module_, Program program)
+public StructureType resolveStructureType(StructureTypeReferenceNode node, Module module_, ModuleManager manager)
 in
 {
     assert(node);
     assert(module_);
-    assert(program);
+    assert(manager);
 }
 out (result)
 {
@@ -88,21 +87,21 @@ out (result)
 body
 {
     // If no module is specified, default to the module the type reference is in.
-    auto mod = node.moduleName ? resolveModule(node.moduleName, program) : module_;
+    auto mod = node.moduleName ? resolveModule(node.moduleName, manager) : module_;
 
     if (auto type = mod.types.get(node.name.name))
         return *type;
 
-    throw new GenerationException("Unknown type " ~ mod.name ~ "/" ~ node.name.name ~ ".",
-                                  node.location);
+    throw new GenerationException("Unknown type " ~ mod.name ~ "/" ~ node.name.name ~ ".", node.location);
 }
 
-public FunctionPointerType resolveFunctionPointerType(FunctionPointerTypeReferenceNode node, Module module_, Program program)
+public FunctionPointerType resolveFunctionPointerType(FunctionPointerTypeReferenceNode node, Module module_,
+                                                      ModuleManager manager)
 in
 {
     assert(node);
     assert(module_);
-    assert(program);
+    assert(manager);
 }
 out (result)
 {
@@ -110,21 +109,21 @@ out (result)
 }
 body
 {
-    auto returnType = resolveType(node.returnType, module_, program);
+    auto returnType = resolveType(node.returnType, module_, manager);
     auto parameterTypes = new NoNullList!Type();
 
     foreach (paramType; node.parameterTypes)
-        parameterTypes.add(resolveType(paramType, module_, program));
+        parameterTypes.add(resolveType(paramType, module_, manager));
 
     return getFunctionPointerType(returnType, parameterTypes);
 }
 
-public Field resolveField(FieldReferenceNode node, Module module_, Program program)
+public Field resolveField(FieldReferenceNode node, Module module_, ModuleManager manager)
 in
 {
     assert(node);
     assert(module_);
-    assert(program);
+    assert(manager);
 }
 out (result)
 {
@@ -132,7 +131,7 @@ out (result)
 }
 body
 {
-    auto type = cast(StructureType)resolveType(node.typeName, module_, program);
+    auto type = cast(StructureType)resolveType(node.typeName, module_, manager);
 
     if (auto field = type.fields.get(node.name.name))
         return *field;

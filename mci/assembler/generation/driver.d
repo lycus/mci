@@ -1,7 +1,6 @@
 module mci.assembler.generation.driver;
 
 import mci.core.container,
-       mci.core.program,
        mci.core.tuple,
        mci.core.code.modules,
        mci.core.typing.members,
@@ -14,41 +13,53 @@ import mci.core.container,
 
 public final class GeneratorState
 {
-    private Program _program;
+    private Module _module;
+    private ModuleManager _manager;
     private NoNullDictionary!(string, CompilationUnit) _units;
-    private NoNullDictionary!(Module, CompilationUnit) _moduleUnits;
     private NoNullDictionary!(TypeDeclarationNode, StructureType) _types;
-    private string _currentModule;
+    private string _currentFile;
 
     invariant()
     {
-        assert(_program);
+        assert(_module);
+        assert(_manager);
         assert(_units);
-        assert(_moduleUnits);
         assert(_types);
     }
 
-    public this(NoNullDictionary!(string, CompilationUnit) units)
+    public this(Module module_, ModuleManager manager, NoNullDictionary!(string, CompilationUnit) units)
     in
     {
+        assert(module_);
+        assert(manager);
         assert(units);
     }
     body
     {
+        _module = module_;
+        _manager = manager;
         _units = units.duplicate();
-        _program = new typeof(_program)();
-        _moduleUnits = new typeof(_moduleUnits)();
         _types = new typeof(_types)();
     }
 
-    @property public Program program()
+    @property public Module module_()
     out (result)
     {
         assert(result);
     }
     body
     {
-        return _program;
+        return _module;
+    }
+
+    @property public ModuleManager manager()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _manager;
     }
 
     @property public Countable!(Tuple!(string, CompilationUnit)) units()
@@ -61,16 +72,6 @@ public final class GeneratorState
         return _units;
     }
 
-    @property public NoNullDictionary!(Module, CompilationUnit) moduleUnits()
-    out (result)
-    {
-        assert(result);
-    }
-    body
-    {
-        return _moduleUnits;
-    }
-
     @property public NoNullDictionary!(TypeDeclarationNode, StructureType) types()
     out (result)
     {
@@ -81,51 +82,55 @@ public final class GeneratorState
         return _types;
     }
 
-    @property public string currentModule()
+    @property public string currentFile()
     {
-        return _currentModule;
+        return _currentFile;
     }
 
-    @property public void currentModule(string currentModule)
+    @property private void currentFile(string currentFile)
     in
     {
-        assert(currentModule);
+        assert(currentFile);
     }
     body
     {
-        _currentModule = currentModule;
+        _currentFile = currentFile;
     }
 }
 
 public final class GeneratorDriver
 {
+    private Module _module;
     private GeneratorState _state;
     private NoNullList!GeneratorPass _passes;
     private bool _run;
 
     invariant()
     {
+        assert(_module);
         assert(_state);
         assert(_passes);
     }
 
-    public this(NoNullDictionary!(string, CompilationUnit) units)
+    public this(string moduleName, ModuleManager manager, NoNullDictionary!(string, CompilationUnit) units)
     in
     {
+        assert(moduleName);
+        assert(manager);
         assert(units);
     }
     body
     {
-        _state = new typeof(_state)(units);
+        _module = manager.create(moduleName);
+        _state = new typeof(_state)(_module, manager, units);
         _passes = new typeof(_passes)();
 
-        _passes.add(new ModuleCreationPass());
         _passes.add(new TypeCreationPass());
         _passes.add(new TypeClosurePass());
         _passes.add(new FunctionCreationPass());
     }
 
-    public Program run()
+    public Module run()
     in
     {
         assert(!_run);
@@ -136,17 +141,17 @@ public final class GeneratorDriver
     }
     body
     {
+        _run = true;
+
         foreach (pass; _passes)
             pass.run(_state);
 
-        _run = true;
-
-        return _state.program;
+        return _module;
     }
 
-    @property public string currentModule()
+    @property public string currentFile()
     {
-        return _state.currentModule;
+        return _state.currentFile;
     }
 }
 
@@ -159,32 +164,17 @@ public interface GeneratorPass
     }
 }
 
-public final class ModuleCreationPass : GeneratorPass
+public final class TypeCreationPass : GeneratorPass
 {
     public void run(GeneratorState state)
     {
         foreach (unit; state.units)
         {
-            state.currentModule = unit.x;
-
-            auto mod = new Module(state.program, unit.x);
-
-            state.moduleUnits.add(mod, unit.y);
-        }
-    }
-}
-
-public final class TypeCreationPass : GeneratorPass
-{
-    public void run(GeneratorState state)
-    {
-        foreach (unit; state.moduleUnits)
-        {
-            state.currentModule = unit.x.name;
+            state.currentFile = unit.x;
 
             foreach (node; unit.y.nodes)
                 if (auto type = cast(TypeDeclarationNode)node)
-                    state.types.add(type, generateType(type, unit.x));
+                    state.types.add(type, generateType(type, state.module_));
         }
     }
 }
@@ -195,7 +185,7 @@ public final class TypeClosurePass : GeneratorPass
     {
         foreach (type; state.types)
         {
-            state.currentModule = type.y.module_.name;
+            state.currentFile = type.y.module_.name;
 
             auto fields = new NoNullList!Field();
 
@@ -205,7 +195,7 @@ public final class TypeClosurePass : GeneratorPass
                     throw new GenerationException("Field " ~ type.y.module_.name ~ "/" ~ type.y.name ~ ":" ~
                                                   field.name.name ~ " already defined.", field.location);
 
-                fields.add(generateField(field, type.y, state.program));
+                fields.add(generateField(field, type.y, state.manager));
             }
 
             type.y.close();
@@ -217,13 +207,13 @@ public final class FunctionCreationPass : GeneratorPass
 {
     public void run(GeneratorState state)
     {
-        foreach (unit; state.moduleUnits)
+        foreach (unit; state.units)
         {
-            state.currentModule = unit.x.name;
+            state.currentFile = unit.x;
 
             foreach (node; unit.y.nodes)
                 if (auto func = cast(FunctionDeclarationNode)node)
-                    generateFunction(func, unit.x, state.program);
+                    generateFunction(func, state.module_, state.manager);
         }
     }
 }
