@@ -114,6 +114,8 @@ MCI_VM_SOURCES = \
 	mci/vm/memory/dgc.d \
 	mci/vm/memory/layout.d \
 	mci/vm/memory/libc.d \
+	mci/vm/intrinsics/io.d \
+	mci/vm/intrinsics/memory.d \
 	mci/vm/io/common.d \
 	mci/vm/io/exception.d \
 	mci/vm/io/extended.d \

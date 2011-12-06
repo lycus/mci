@@ -271,6 +271,10 @@
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="mci.vm">
+  <Folder name="intrinsics">
+   <File path="intrinsics\io.d" />
+   <File path="intrinsics\memory.d" />
+  </Folder>
   <Folder name="io">
    <File path="io\common.d" />
    <File path="io\exception.d" />
