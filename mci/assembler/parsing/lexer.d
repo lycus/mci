@@ -298,7 +298,8 @@ public final class Lexer
             case '=':
             case '*':
             case '/':
-                return new Token(charToType(chr), to!string(chr), _source.location);
+                auto str = to!string(chr);
+                return new Token(charToType(chr), str, makeSourceLocation(str, _source.location));
             default:
                 return null;
         }
@@ -341,7 +342,7 @@ public final class Lexer
             errorGot("opcode name", idLoc, id);
 
         // This can be a keyword, an opcode, or an identifier.
-        return new Token(type, id, _source.location);
+        return new Token(type, id, makeSourceLocation(id, _source.location));
     }
 
     private Token lexLiteral(dchar chr)
@@ -385,7 +386,7 @@ public final class Lexer
             str ~= digChr;
         }
 
-        return new Token(TokenType.literal, str, _source.location);
+        return new Token(TokenType.literal, str, makeSourceLocation(str, _source.location));
     }
 
     private Token lexFloatingPoint(string str)
@@ -412,8 +413,19 @@ public final class Lexer
         if (!hasTrailingDigit)
             error("base-10 digit", _source.location);
 
-        return new Token(TokenType.literal, str, _source.location);
+        return new Token(TokenType.literal, str, makeSourceLocation(str, _source.location));
     }
+}
+
+private SourceLocation makeSourceLocation(string value, SourceLocation location)
+in
+{
+    assert(value);
+    assert(location);
+}
+body
+{
+    return new SourceLocation(location.line, location.column - value.length);
 }
 
 private bool isIdentifierChar(dchar chr)
