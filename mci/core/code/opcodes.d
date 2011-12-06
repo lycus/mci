@@ -215,28 +215,29 @@ public enum OperationCode : ubyte
     fieldGSet = 44,
     fieldGAddr = 45,
     cmpEq = 46,
-    cmpGT = 47,
-    cmpLT = 48,
-    cmpGTEq = 49,
-    cmpLTEq = 50,
-    argPush = 51,
-    argPop = 52,
-    invoke = 53,
-    invokeTail = 54,
-    invokeIndirect = 55,
-    call = 56,
-    callTail = 57,
-    callIndirect = 58,
-    jump = 59,
-    jumpTrue = 60,
-    jumpFalse = 61,
-    leave = 62,
-    return_ = 63,
-    phi = 64,
-    exThrow = 65,
-    exTry = 66,
-    exHandle = 67,
-    exEnd = 68,
+    cmpNEq = 47,
+    cmpGT = 48,
+    cmpLT = 49,
+    cmpGTEq = 50,
+    cmpLTEq = 51,
+    argPush = 52,
+    argPop = 53,
+    invoke = 54,
+    invokeTail = 55,
+    invokeIndirect = 56,
+    call = 57,
+    callTail = 58,
+    callIndirect = 59,
+    jump = 60,
+    jumpTrue = 61,
+    jumpFalse = 62,
+    leave = 63,
+    return_ = 64,
+    phi = 65,
+    exThrow = 66,
+    exTry = 67,
+    exHandle = 68,
+    exEnd = 69,
 }
 
 public __gshared OpCode opNop;
@@ -286,6 +287,7 @@ public __gshared OpCode opFieldGGet;
 public __gshared OpCode opFieldGSet;
 public __gshared OpCode opFieldGAddr;
 public __gshared OpCode opCmpEq;
+public __gshared OpCode opCmpNEq;
 public __gshared OpCode opCmpGT;
 public __gshared OpCode opCmpLT;
 public __gshared OpCode opCmpGTEq;
@@ -380,6 +382,7 @@ static this()
     opFieldGSet = create("field.gset", OperationCode.fieldGSet, OpCodeType.normal, OperandType.field, 1, false);
     opFieldGAddr = create("field.gaddr", OperationCode.fieldGAddr, OpCodeType.normal, OperandType.field, 0, true);
     opCmpEq = create("cmp.eq", OperationCode.cmpEq, OpCodeType.normal, OperandType.none, 2, true);
+    opCmpEq = create("cmp.neq", OperationCode.cmpNEq, OpCodeType.normal, OperandType.none, 2, true);
     opCmpGT = create("cmp.gt", OperationCode.cmpGT, OpCodeType.normal, OperandType.none, 2, true);
     opCmpLT = create("cmp.lt", OperationCode.cmpLT, OpCodeType.normal, OperandType.none, 2, true);
     opCmpGTEq = create("cmp.gteq", OperationCode.cmpGTEq, OpCodeType.normal, OperandType.none, 2, true);
