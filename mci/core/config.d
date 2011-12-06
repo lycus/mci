@@ -51,6 +51,9 @@ version (D_InlineAsm_X86_64)
 else version (D_InlineAsm_X86)
 {
 }
+else version (GNU)
+{
+}
 else
 {
     static assert(false, "Inline assembly not available.");
