@@ -160,14 +160,12 @@ public final class AssemblerTool : Tool
             }
             catch (LexerException ex)
             {
-                logf("Error: Lexing failed in '%s' (line %s%s): %s", file, ex.location.line,
-                     ex.location.column == 0 ? "" : ", column " ~ to!string(ex.location.column), ex.msg);
+                logf("Error: Lexing failed in '%s' %s: %s", file, ex.location, ex.msg);
                 return false;
             }
             catch (ParserException ex)
             {
-                logf("Error: Parsing failed in '%s' (line %s%s): %s", file, ex.location.line,
-                     ex.location.column == 0 ? "" : ", column " ~ to!string(ex.location.column), ex.msg);
+                logf("Error: Parsing failed in '%s' %s: %s", file, ex.location, ex.msg);
                 return false;
             }
             catch (AssemblerException ex)
@@ -228,8 +226,7 @@ public final class AssemblerTool : Tool
         }
         catch (GenerationException ex)
         {
-            logf("Error: Generation failed in '%s' (line %s%s): %s", driver.currentFile,
-                 ex.location.line, ex.location.column == 0 ? "" : ", column " ~ to!string(ex.location.column), ex.msg);
+            logf("Error: Generation failed in '%s' %s: %s", driver.currentFile, ex.location, ex.msg);
             return false;
         }
 
