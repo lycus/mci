@@ -42,7 +42,7 @@ public enum FileMode : ubyte
     append,
 }
 
-private char[] accessAndModeToString(FileAccess access, FileMode mode)
+public char[] accessAndModeToString(FileAccess access, FileMode mode)
 out (result)
 {
     assert(result);
@@ -215,11 +215,6 @@ public final class MemoryStream : Stream
     }
 }
 
-private template isValidType(T)
-{
-    public enum bool isValidType = is(T == enum) || is(T == bool) || isNumeric!T || isSomeChar!T;
-}
-
 public class BinaryReader
 {
     private FileStream _file;
@@ -246,7 +241,7 @@ public class BinaryReader
     }
 
     public final T read(T)()
-        if (isValidType!T)
+        if (isPrimitiveType!T)
     {
         T value;
 
@@ -265,7 +260,7 @@ public class BinaryReader
     }
 
     public final T readArray(T)(size_t length)
-        if (isArray!T && isValidType!(ArrayElementType!T))
+        if (isArray!T && isPrimitiveType!(ArrayElementType!T))
     {
         T arr;
 
@@ -304,7 +299,7 @@ public class BinaryWriter
     }
 
     public final void write(T)(T value)
-        if (isValidType!T)
+        if (isPrimitiveType!T)
     {
         if (endianness != _endianness)
         {
@@ -319,7 +314,7 @@ public class BinaryWriter
     }
 
     public final void writeArray(T)(T value)
-        if (isArray!T && isValidType!(ArrayElementType!T))
+        if (isArray!T && isPrimitiveType!(ArrayElementType!T))
     {
         foreach (item; value)
             write(item);

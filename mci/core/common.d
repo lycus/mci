@@ -1,5 +1,9 @@
 module mci.core.common;
 
+import core.stdc.stdlib,
+       core.stdc.string,
+       mci.core.meta;
+
 public bool isType(U, T)(T obj)
 in
 {
@@ -63,6 +67,19 @@ unittest
     auto d = new D();
 
     assert(!isType!A(d));
+}
+
+public T* copyToNative(T)(T[] arr)
+    if (isPrimitiveType!T)
+{
+    if (!arr)
+        return null;
+
+    auto size = T.sizeof * arr.length;
+    auto mem = cast(T*)malloc(size);
+    memcpy(mem, arr.ptr, size);
+
+    return mem;
 }
 
 public enum Compiler : ubyte
