@@ -6,6 +6,7 @@ import std.algorithm,
        std.getopt,
        std.path,
        std.utf,
+       mci.assembler.disassembly.ast,
        mci.assembler.exception,
        mci.assembler.generation.driver,
        mci.assembler.generation.exception,
@@ -33,7 +34,8 @@ public final class AssemblerTool : Tool
     @property public string[] options()
     {
         return ["\t--output=<file>\t\t-o <file>\tSpecify module output file.",
-                "\t--reference=<file>\t\t-r <file>\tReference a compiled module.",
+                "\t--dump=<file>\t\t-d <file>\tDump parsed ASTs to the given file.",
+                "\t--reference=<file>\t-r <file>\tReference a compiled module.",
                 "\t--verify\t\t-v\t\tRun the IAL verifier on the resulting module.",
                 "\t--optimize\t\t-p\t\tPass the module through the optimization pipeline.",
                 "\t--interpret\t\t-t\t\tRun the module with the IAL interpreter (no output will be generated).",
@@ -43,6 +45,7 @@ public final class AssemblerTool : Tool
     public bool run(string[] args)
     {
         string output = "out.mci";
+        string dump;
         string[] moduleRefs;
         bool verify;
         bool optimize;
@@ -55,6 +58,7 @@ public final class AssemblerTool : Tool
                    config.caseSensitive,
                    config.bundling,
                    "output|o", &output,
+                   "dump|d", &dump,
                    "reference|r", &moduleRefs,
                    "verify|v", &verify,
                    "optimize|p", &optimize,
@@ -123,11 +127,9 @@ public final class AssemblerTool : Tool
                 return false;
             }
 
-            auto fileName = file[0 .. $ - inputFileExtension.length];
-
-            foreach (f; units.keys)
+            foreach (f; units)
             {
-                if (fileName == f)
+                if (file == f.x)
                 {
                     logf("Error: File '%s' specified multiple times.", file);
                     return false;
@@ -144,7 +146,7 @@ public final class AssemblerTool : Tool
                 auto parser = new Parser(lexer.lex());
                 auto unit = parser.parse();
 
-                units.add(fileName, unit);
+                units.add(file, unit);
             }
             catch (ErrnoException ex)
             {
@@ -180,6 +182,32 @@ public final class AssemblerTool : Tool
             }
         }
 
+        if (dump)
+        {
+            FileStream dumpStream;
+
+            try
+            {
+                dumpStream = new FileStream(dump, FileAccess.write, FileMode.truncate);
+
+                foreach (unit; units)
+                {
+                    auto disasm = new TreeDisassembler(unit.x, dumpStream);
+                    disasm.disassemble(unit.y);
+                }
+            }
+            catch (ErrnoException ex)
+            {
+                logf("Error: Could not write '%s': %s", dump, ex.msg);
+                return false;
+            }
+            finally
+            {
+                if (dumpStream)
+                    dumpStream.close();
+            }
+        }
+
         GeneratorDriver driver;
 
         try
@@ -200,7 +228,7 @@ public final class AssemblerTool : Tool
         }
         catch (GenerationException ex)
         {
-            logf("Error: Generation failed in '%s' (line %s%s): %s", driver.currentFile ~ inputFileExtension,
+            logf("Error: Generation failed in '%s' (line %s%s): %s", driver.currentFile,
                  ex.location.line, ex.location.column == 0 ? "" : ", column " ~ to!string(ex.location.column), ex.msg);
             return false;
         }

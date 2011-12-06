@@ -342,7 +342,7 @@ unittest
     assert(find(list, (int x) { return x == 5; }, 6) == 6);
 }
 
-public Iterable!R map(T, R)(Iterable!T iter, scope R delegate(T) selector)
+public Iterable!R map(R, T)(Iterable!T iter, scope R delegate(T) selector)
 in
 {
     assert(iter);
@@ -408,11 +408,11 @@ unittest
     assert(aggregate(list, (int x, int y) { return x + y; }) == 6);
 }
 
-public Iterable!T concat(T)(Iterable!T iter, Iterable!T other)
+public Iterable!T concat(T)(Iterable!T iter, Iterable!T[] others ...)
 in
 {
     assert(iter);
-    assert(other);
+    assert(others);
 }
 out (result)
 {
@@ -425,8 +425,9 @@ body
     foreach (item; iter)
         list.add(item);
 
-    foreach (item; other)
-        list.add(item);
+    foreach (other; others)
+        foreach (item; other)
+            list.add(item);
 
     return list;
 }
@@ -738,7 +739,7 @@ public class List(T) : Indexable!T
         return this;
     }
 
-    public final override bool opEquals(Object o)
+    public final override equals_t opEquals(Object o)
     {
         if (this is o)
             return true;
@@ -1105,7 +1106,7 @@ public class Dictionary(K, V) : Map!(K, V)
         return _aa[key] = value;
     }
 
-    public override bool opEquals(Object o)
+    public override equals_t opEquals(Object o)
     {
         if (this is o)
             return true;
@@ -1351,7 +1352,7 @@ public class ArrayQueue(T) : Queue!T
         return 0;
     }
 
-    public final override bool opEquals(Object o)
+    public final override equals_t opEquals(Object o)
     {
         if (this is o)
             return true;

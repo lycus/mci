@@ -1,5 +1,7 @@
 module mci.core.diagnostics.debugging;
 
+import std.conv;
+
 public final class SourceLocation
 {
     private uint _line;
@@ -35,62 +37,9 @@ public final class SourceLocation
     {
         return _column;
     }
-}
 
-public final class DebuggingInfo
-{
-    private string _documentName;
-    private SourceLocation _location;
-    private string _languageName;
-
-    invariant()
+    public override string toString()
     {
-        assert(_documentName);
-        assert(_location);
-        assert(_languageName);
-    }
-
-    public this(string documentName, SourceLocation location, string languageName)
-    in
-    {
-        assert(documentName);
-        assert(location);
-        assert(languageName);
-    }
-    body
-    {
-        _documentName = documentName;
-        _location = location;
-        _languageName = languageName;
-    }
-
-    @property public string documentName()
-    out (result)
-    {
-        assert(result);
-    }
-    body
-    {
-        return _documentName;
-    }
-
-    @property public SourceLocation location()
-    out (result)
-    {
-        assert(result);
-    }
-    body
-    {
-        return _location;
-    }
-
-    @property public string languageName()
-    out (result)
-    {
-        assert(result);
-    }
-    body
-    {
-        return _languageName;
+        return "(line " ~ to!string(_line) ~ (_column == 0 ? "" : ", column " ~ to!string(_column)) ~ ")";
     }
 }

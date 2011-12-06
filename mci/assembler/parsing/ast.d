@@ -1,6 +1,7 @@
 module mci.assembler.parsing.ast;
 
-import std.variant,
+import std.conv,
+       std.variant,
        mci.core.container,
        mci.core.nullable,
        mci.core.tuple,
@@ -32,6 +33,16 @@ public abstract class Node
     @property public final SourceLocation location()
     {
         return _location;
+    }
+
+    @property public Countable!Node children()
+    {
+        return new List!Node();
+    }
+
+    public override string toString()
+    {
+        return "";
     }
 }
 
@@ -74,6 +85,11 @@ public class SimpleNameNode : Node
     {
         return _name;
     }
+
+    public override string toString()
+    {
+        return "name: " ~ _name;
+    }
 }
 
 public class ModuleReferenceNode : Node
@@ -101,6 +117,11 @@ public class ModuleReferenceNode : Node
     @property public final SimpleNameNode name()
     {
         return _name;
+    }
+
+    @property public override Countable!Node children()
+    {
+        return toCountable!Node(_name);
     }
 }
 
@@ -150,6 +171,11 @@ public class StructureTypeReferenceNode : TypeReferenceNode
     {
         return _name;
     }
+
+    @property public override Countable!Node children()
+    {
+        return toCountable!Node(_moduleName, _name);
+    }
 }
 
 public class PointerTypeReferenceNode : TypeReferenceNode
@@ -178,6 +204,11 @@ public class PointerTypeReferenceNode : TypeReferenceNode
     {
         return _elementType;
     }
+
+    @property public override Countable!Node children()
+    {
+        return toCountable!Node(_elementType);
+    }
 }
 
 public class ArrayTypeReferenceNode : TypeReferenceNode
@@ -205,6 +236,11 @@ public class ArrayTypeReferenceNode : TypeReferenceNode
     @property public final TypeReferenceNode elementType()
     {
         return _elementType;
+    }
+
+    @property public override Countable!Node children()
+    {
+        return toCountable!Node(_elementType);
     }
 }
 
@@ -243,6 +279,11 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
     @property public final Countable!TypeReferenceNode parameterTypes()
     {
         return _parameterTypes;
+    }
+
+    @property public override Countable!Node children()
+    {
+        return new List!Node(concat(toCountable!Node(_returnType), castItems!Node(_parameterTypes)));
     }
 }
 
@@ -287,6 +328,11 @@ private mixin template DefineCoreTypeNode(string type, string name)
           "    @property public final override SimpleNameNode name()" ~
           "    {" ~
           "        return _name;" ~
+          "    }" ~
+          "" ~
+          "    @property public override Countable!Node children()" ~
+          "    {" ~
+          "        return toCountable!Node(_name);" ~
           "    }" ~
           "}");
 }
@@ -340,6 +386,11 @@ public class FieldReferenceNode : Node
     {
         return _name;
     }
+
+    @property public override Countable!Node children()
+    {
+        return toCountable!Node(_typeName, _name);
+    }
 }
 
 public class FunctionReferenceNode : Node
@@ -374,6 +425,11 @@ public class FunctionReferenceNode : Node
     @property public final SimpleNameNode name()
     {
         return _name;
+    }
+
+    @property public override Countable!Node children()
+    {
+        return toCountable!Node(_moduleName, _name);
     }
 }
 
@@ -418,6 +474,16 @@ public class TypeDeclarationNode : DeclarationNode
     @property public final Countable!FieldDeclarationNode fields()
     {
         return _fields;
+    }
+
+    @property public override Countable!Node children()
+    {
+        return new List!Node(concat(toCountable!Node(_name), castItems!Node(_fields)));
+    }
+
+    public override string toString()
+    {
+        return "layout: " ~ to!string(_layout);
     }
 }
 
@@ -470,6 +536,16 @@ public class FieldDeclarationNode : Node
     {
         return _offset;
     }
+
+    @property public override Countable!Node children()
+    {
+        return toCountable!Node(_type, _name, _offset);
+    }
+
+    public override string toString()
+    {
+        return "storage: " ~ to!string(_storage);
+    }
 }
 
 public class ParameterNode : Node
@@ -497,6 +573,11 @@ public class ParameterNode : Node
     @property public final TypeReferenceNode type()
     {
         return _type;
+    }
+
+    @property public override Countable!Node children()
+    {
+        return toCountable!Node(_type);
     }
 }
 
@@ -579,6 +660,20 @@ public class FunctionDeclarationNode : DeclarationNode
     {
         return _blocks;
     }
+
+    @property public override Countable!Node children()
+    {
+        auto params = castItems!Node(_parameters);
+        auto regs = castItems!Node(_registers);
+        auto blocks = castItems!Node(_blocks);
+
+        return new List!Node(concat(toCountable!Node(_name), params, toCountable!Node(_returnType), regs, blocks));
+    }
+
+    public override string toString()
+    {
+        return "attributes: " ~ to!string(_attributes) ~ ", calling convention: " ~ to!string(_callingConvention);
+    }
 }
 
 public class RegisterDeclarationNode : Node
@@ -616,6 +711,11 @@ public class RegisterDeclarationNode : Node
     {
         return _type;
     }
+
+    @property public override Countable!Node children()
+    {
+        return toCountable!Node(_name, _type);
+    }
 }
 
 public class BasicBlockDeclarationNode : Node
@@ -644,14 +744,19 @@ public class BasicBlockDeclarationNode : Node
         _instructions = instructions.duplicate();
     }
 
+    @property public final SimpleNameNode name()
+    {
+        return _name;
+    }
+
     @property public final Countable!InstructionNode instructions()
     {
         return _instructions;
     }
 
-    @property public final SimpleNameNode name()
+    @property public override Countable!Node children()
     {
-        return _name;
+        return new List!Node(concat(toCountable!Node(_name), castItems!Node(_instructions)));
     }
 }
 
@@ -681,6 +786,11 @@ public class RegisterReferenceNode : Node
     {
         return _name;
     }
+
+    @property public override Countable!Node children()
+    {
+        return toCountable!Node(_name);
+    }
 }
 
 public class BasicBlockReferenceNode : Node
@@ -708,6 +818,11 @@ public class BasicBlockReferenceNode : Node
     @property public final SimpleNameNode name()
     {
         return _name;
+    }
+
+    @property public override Countable!Node children()
+    {
+        return toCountable!Node(_name);
     }
 }
 
@@ -737,6 +852,11 @@ public class RegisterSelectorNode : Node
     {
         return _registers;
     }
+
+    @property public override Countable!Node children()
+    {
+        return new List!Node(castItems!Node(_registers));
+    }
 }
 
 public class LiteralValueNode : Node
@@ -765,6 +885,11 @@ public class LiteralValueNode : Node
     {
         return _value;
     }
+
+    public override string toString()
+    {
+        return "value: " ~ value;
+    }
 }
 
 public class ByteArrayLiteralNode : Node
@@ -792,6 +917,11 @@ public class ByteArrayLiteralNode : Node
     @property public final Countable!LiteralValueNode values()
     {
         return _values;
+    }
+
+    @property public override Countable!Node children()
+    {
+        return new List!Node(castItems!Node(_values));
     }
 }
 
@@ -830,6 +960,16 @@ public class InstructionOperandNode : Node
     @property public final InstructionOperand operand()
     {
         return _operand;
+    }
+
+    @property public override Countable!Node children()
+    {
+        return toCountable!Node(_operand.coerce!Node());
+    }
+
+    public override string toString()
+    {
+        return "operand: " ~ _operand.toString();
     }
 }
 
@@ -895,5 +1035,10 @@ public class InstructionNode : Node
     @property public final InstructionOperandNode operand()
     {
         return _operand;
+    }
+
+    @property public override Countable!Node children()
+    {
+        return toCountable!Node(target, source1, source2, source3, operand);
     }
 }

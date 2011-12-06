@@ -92,7 +92,7 @@ public final class DisassemblerTool : Tool
             }
             catch (ErrnoException ex)
             {
-                logf("Error: Could not read '%s': %s", file, ex.msg);
+                logf("Error: Could not access '%s': %s", file, ex.msg);
                 return false;
             }
             catch (ReaderException ex)
