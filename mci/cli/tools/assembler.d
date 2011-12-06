@@ -15,6 +15,7 @@ import std.algorithm,
        mci.core.container,
        mci.core.io,
        mci.core.code.modules,
+       mci.vm.intrinsics.declarations,
        mci.vm.io.writer,
        mci.cli.main,
        mci.cli.tool,
@@ -184,6 +185,8 @@ public final class AssemblerTool : Tool
         try
         {
             auto manager = new ModuleManager();
+            manager.attach(intrinsicModule);
+
             driver = new GeneratorDriver(baseName(output[0 .. $ - moduleFileExtension.length]), manager, units);
             auto mod = driver.run();
             auto writer = new ModuleWriter();

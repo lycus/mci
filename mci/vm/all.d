@@ -1,5 +1,6 @@
 module mci.vm.all;
 
+public import mci.vm.intrinsics.declarations;
 public import mci.vm.intrinsics.io;
 public import mci.vm.intrinsics.memory;
 

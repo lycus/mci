@@ -26,7 +26,7 @@ public extern (C)
     File* mci_file_open(ubyte* name, size_t length, FileAccess access, FileMode mode)
     {
         auto chrMode = accessAndModeToString(access, mode);
-        auto mem = mci_memory_malloc(File.sizeof);
+        auto mem = mci_memory_allocate(File.sizeof);
         auto file = emplace!File(cast(File*)mem, cast(string)name[0 .. length], chrMode);
 
         return file;
@@ -42,12 +42,12 @@ public extern (C)
         return stream.getFP();
     }
 
-    bool mci_file_eof(File* stream)
+    ubyte mci_file_eof(File* stream)
     {
         return stream.eof;
     }
 
-    bool mci_file_is_open(File* stream)
+    ubyte mci_file_is_open(File* stream)
     {
         return stream.isOpen;
     }

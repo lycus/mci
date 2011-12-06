@@ -7,6 +7,7 @@ import std.algorithm,
        mci.assembler.disassembly.modules,
        mci.core.io,
        mci.core.code.modules,
+       mci.vm.intrinsics.declarations,
        mci.vm.io.exception,
        mci.vm.io.reader,
        mci.cli.main,
@@ -80,6 +81,8 @@ public final class DisassemblerTool : Tool
             try
             {
                 auto manager = new ModuleManager();
+                manager.attach(intrinsicModule);
+
                 auto reader = new ModuleReader(manager);
                 auto mod = reader.load(file);
                 stream = new FileStream(output, FileAccess.write, FileMode.truncate);

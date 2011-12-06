@@ -272,6 +272,7 @@
  </Config>
  <Folder name="mci.vm">
   <Folder name="intrinsics">
+   <File path="intrinsics\declarations.d" />
    <File path="intrinsics\io.d" />
    <File path="intrinsics\memory.d" />
   </Folder>
