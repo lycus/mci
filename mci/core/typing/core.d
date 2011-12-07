@@ -6,9 +6,13 @@ public abstract class CoreType : Type
 {
 }
 
-private mixin template DefineCoreType(string type, string name)
+public abstract class PrimitiveType : CoreType
 {
-    mixin("public final class " ~ type ~ "Type : CoreType" ~
+}
+
+private mixin template DefineCoreType(string type, string name, string base = "PrimitiveType")
+{
+    mixin("public final class " ~ type ~ "Type : " ~ base ~
           "{" ~
           "    private static " ~ type ~ "Type _instance;" ~
           "" ~
@@ -38,7 +42,7 @@ private mixin template DefineCoreType(string type, string name)
           "}");
 }
 
-mixin DefineCoreType!("Unit", "unit");
+mixin DefineCoreType!("Unit", "unit", "CoreType");
 mixin DefineCoreType!("Int8", "int8");
 mixin DefineCoreType!("UInt8", "uint8");
 mixin DefineCoreType!("Int16", "int16");
@@ -59,7 +63,8 @@ in
 }
 body
 {
-    return name == Int8Type.instance.name ||
+    return name == UnitType.instance.name ||
+           name == Int8Type.instance.name ||
            name == UInt8Type.instance.name ||
            name == Int16Type.instance.name ||
            name == UInt16Type.instance.name ||

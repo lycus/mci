@@ -244,6 +244,48 @@ public class ArrayTypeReferenceNode : TypeReferenceNode
     }
 }
 
+public class VectorTypeReferenceNode : TypeReferenceNode
+{
+    private TypeReferenceNode _elementType;
+    private LiteralValueNode _elements;
+
+    invariant()
+    {
+        assert(_elementType);
+        assert(_elements);
+    }
+
+    public this(SourceLocation location, TypeReferenceNode elementType, LiteralValueNode elements)
+    in
+    {
+        assert(location);
+        assert(elementType);
+        assert(elements);
+    }
+    body
+    {
+        super(location);
+
+        _elementType = elementType;
+        _elements = elements;
+    }
+
+    @property public final TypeReferenceNode elementType()
+    {
+        return _elementType;
+    }
+
+    @property public final LiteralValueNode elements()
+    {
+        return _elements;
+    }
+
+    @property public override Countable!Node children()
+    {
+        return toCountable!Node(_elementType, _elements);
+    }
+}
+
 public class FunctionPointerTypeReferenceNode : TypeReferenceNode
 {
     private TypeReferenceNode _returnType;
@@ -302,9 +344,22 @@ public abstract class CoreTypeReferenceNode : TypeReferenceNode
     @property public abstract SimpleNameNode name();
 }
 
-private mixin template DefineCoreTypeNode(string type, string name)
+public abstract class PrimitiveTypeReferenceNode : CoreTypeReferenceNode
 {
-    mixin("public class " ~ type ~ "TypeReferenceNode : CoreTypeReferenceNode" ~
+    public this(SourceLocation location)
+    in
+    {
+        assert(location);
+    }
+    body
+    {
+        super(location);
+    }
+}
+
+private mixin template DefineCoreTypeNode(string type, string name, string base = "PrimitiveTypeReferenceNode")
+{
+    mixin("public class " ~ type ~ "TypeReferenceNode : " ~ base ~
           "{" ~
           "    private SimpleNameNode _name;" ~
           "" ~
@@ -337,7 +392,7 @@ private mixin template DefineCoreTypeNode(string type, string name)
           "}");
 }
 
-mixin DefineCoreTypeNode!("Unit", "unit");
+mixin DefineCoreTypeNode!("Unit", "unit", "CoreTypeReferenceNode");
 mixin DefineCoreTypeNode!("Int8", "int8");
 mixin DefineCoreTypeNode!("UInt8", "uint8");
 mixin DefineCoreTypeNode!("Int16", "int16");

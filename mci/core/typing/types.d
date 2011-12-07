@@ -1,6 +1,7 @@
 module mci.core.typing.types;
 
-import mci.core.container,
+import std.conv,
+       mci.core.container,
        mci.core.nullable,
        mci.core.code.modules,
        mci.core.typing.members;
@@ -310,4 +311,65 @@ unittest
     auto ptr = new ArrayType(st);
 
     assert(ptr.name == "foo/baz[]");
+}
+
+public final class VectorType : Type
+{
+    private Type _elementType;
+    private uint _elements;
+
+    invariant()
+    {
+        assert(_elementType);
+        assert(_elements);
+    }
+
+    package this(Type elementType, uint elements)
+    in
+    {
+        assert(elementType);
+        assert(elements);
+    }
+    body
+    {
+        _elementType = elementType;
+        _elements = elements;
+    }
+
+    @property public Type elementType()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _elementType;
+    }
+
+    @property public uint elements()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _elements;
+    }
+
+    @property public override string name()
+    {
+        return elementType.toString() ~ "[" ~ to!string(_elements) ~ "]";
+    }
+}
+
+unittest
+{
+    auto mod = new Module("foo");
+
+    auto st = new StructureType(mod, "baz");
+    st.close();
+
+    auto ptr = new VectorType(st, 3);
+
+    assert(ptr.name == "foo/baz[3]");
 }

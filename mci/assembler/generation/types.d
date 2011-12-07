@@ -1,9 +1,11 @@
 module mci.assembler.generation.types;
 
 import std.conv,
+       mci.core.common,
        mci.core.container,
        mci.core.nullable,
        mci.core.code.modules,
+       mci.core.typing.core,
        mci.core.typing.cache,
        mci.core.typing.members,
        mci.core.typing.types,
@@ -69,6 +71,20 @@ body
         return getPointerType(resolveType(ptrType.elementType, module_, manager));
     else if (auto arrType = cast(ArrayTypeReferenceNode)node)
         return getArrayType(resolveType(arrType.elementType, module_, manager));
+    else if (auto vecType = cast(VectorTypeReferenceNode)node)
+    {
+        auto elemType = resolveType(vecType.elementType, module_, manager);
+
+        if (!isType!PrimitiveType(elemType))
+            throw new GenerationException("Vector elements must be primitive types.", node.location);
+
+        auto elements = to!uint(vecType.elements.value);
+
+        if (!elements)
+            throw new GenerationException("Vector types must not have zero elements.", node.location);
+
+        return getVectorType(elemType, elements);
+    }
     else
         return getType((cast(CoreTypeReferenceNode)node).name.name);
 }

@@ -1,0 +1,9 @@
+type automatic NonPrimitiveVector
+{
+    field instance Foo[3] vec;
+}
+
+type automatic Foo
+{
+    field instance float32 bar;
+}

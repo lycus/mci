@@ -266,6 +266,50 @@ private final class ArrayTypeReferenceDescriptor : TypeReferenceDescriptor
     }
 }
 
+private final class VectorTypeReferenceDescriptor : TypeReferenceDescriptor
+{
+    private TypeReferenceDescriptor _elementType;
+    private uint _elements;
+
+    invariant()
+    {
+        assert(_elementType);
+        assert(_elements);
+    }
+
+    public this(TypeReferenceDescriptor elementType, uint elements)
+    in
+    {
+        assert(elementType);
+        assert(elements);
+    }
+    body
+    {
+        _elementType = elementType;
+        _elements = elements;
+    }
+
+    @property public TypeReferenceDescriptor elementType()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _elementType;
+    }
+
+    @property public uint elements()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _elements;
+    }
+}
+
 private final class FunctionPointerTypeReferenceDescriptor : TypeReferenceDescriptor
 {
     private TypeReferenceDescriptor _returnType;
@@ -431,6 +475,8 @@ public final class ModuleReader : ModuleLoader
             return getPointerType(toType(ptrType.elementType));
         else if (auto arrType = cast(ArrayTypeReferenceDescriptor)descriptor)
             return getArrayType(toType(arrType.elementType));
+        else if (auto vecType = cast(VectorTypeReferenceDescriptor)descriptor)
+            return getVectorType(toType(vecType.elementType), vecType.elements);
         else if (auto fpType = cast(FunctionPointerTypeReferenceDescriptor)descriptor)
         {
             auto params = new NoNullList!Type(map(fpType.parameterTypes, (TypeReferenceDescriptor desc) { return toType(desc); }));
@@ -551,6 +597,11 @@ public final class ModuleReader : ModuleLoader
                 auto element = readTypeReference();
 
                 return new ArrayTypeReferenceDescriptor(element);
+            case TypeReferenceType.vector:
+                auto element = readTypeReference();
+                auto elements = _reader.read!uint();
+
+                return new VectorTypeReferenceDescriptor(element, elements);
             case TypeReferenceType.function_:
                 auto returnType = readTypeReference();
                 auto fpType = new FunctionPointerTypeReferenceDescriptor(returnType);

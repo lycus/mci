@@ -1,0 +1,4 @@
+type automatic Test11
+{
+    field instance int32[3] vec;
+}

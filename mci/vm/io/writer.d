@@ -300,6 +300,12 @@ public final class ModuleWriter : ModuleSaver
             _writer.write(TypeReferenceType.array);
             writeTypeReference(arrType.elementType);
         }
+        else if (auto vecType = cast(VectorType)type)
+        {
+            _writer.write(TypeReferenceType.vector);
+            writeTypeReference(vecType.elementType);
+            _writer.write(vecType.elements);
+        }
         else
         {
             _writer.write(TypeReferenceType.core);

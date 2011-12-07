@@ -324,20 +324,28 @@ public final class Parser
 
         while (true)
         {
-            auto peek = peek();
+            auto peekVal = peek();
 
-            if (peek.type == TokenType.star)
+            if (peekVal.type == TokenType.star)
             {
                 next();
 
                 type = new PointerTypeReferenceNode(type.location, type);
             }
-            else if (peek.type == TokenType.openBracket)
+            else if (peekVal.type == TokenType.openBracket)
             {
                 next();
-                consume("]");
 
-                type = new ArrayTypeReferenceNode(type.location, type);
+                if (peek().type == TokenType.literal)
+                {
+                    auto elements = parseLiteralValue!uint();
+
+                    type = new VectorTypeReferenceNode(type.location, type, elements);
+                }
+                else
+                    type = new ArrayTypeReferenceNode(type.location, type);
+
+                consume("]");
             }
             else
                 break;

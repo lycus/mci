@@ -1,0 +1,4 @@
+type automatic ZeroSizeVector
+{
+    field instance float32[0] vec;
+}

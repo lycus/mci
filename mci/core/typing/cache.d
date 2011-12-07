@@ -13,6 +13,7 @@ private NoNullDictionary!(string, Type) types;
 private NoNullDictionary!(Tuple!(Type, NoNullList!Type), FunctionPointerType) functionPointerTypes;
 private NoNullDictionary!(Type, PointerType) pointerTypes;
 private NoNullDictionary!(Type, ArrayType) arrayTypes;
+private NoNullDictionary!(Tuple!(Type, uint), VectorType) vectorTypes;
 
 static this()
 {
@@ -20,6 +21,7 @@ static this()
     functionPointerTypes = new typeof(functionPointerTypes)();
     pointerTypes = new typeof(pointerTypes)();
     arrayTypes = new typeof(arrayTypes)();
+    vectorTypes = new typeof(vectorTypes)();
 
     void addCoreType(CoreType type)
     in
@@ -112,4 +114,24 @@ body
         return *arrType;
 
     return arrayTypes[elementType] = new ArrayType(elementType);
+}
+
+public VectorType getVectorType(Type elementType, uint elements)
+in
+{
+    assert(elementType);
+    assert(elements);
+}
+out (result)
+{
+    assert(result);
+}
+body
+{
+    auto tup = tuple(elementType, elements);
+
+    if (auto vecType = tup in vectorTypes)
+        return *vecType;
+
+    return vectorTypes[tup] = new VectorType(elementType, elements);
 }
