@@ -7,7 +7,7 @@ import mci.core.common,
        mci.core.typing.members,
        mci.core.typing.types;
 
-public uint computeSize(Type type, bool is64Bit)
+public uint computeSize(Type type, bool is32Bit)
 in
 {
     assert(type);
@@ -27,10 +27,10 @@ body
         return 8;
 
     if (isType!NativeIntType(type) || isType!NativeUIntType(type))
-        return is64Bit ? 8 : 4;
+        return is32Bit ? 4 : 8;
 
     if (isType!PointerType(type) || isType!ArrayType(type) || isType!VectorType(type) || isType!FunctionPointerType(type))
-        return is64Bit ? 8 : 4;
+        return is32Bit ? 4 : 8;
 
     auto structType = cast(StructureType)type;
 
@@ -45,25 +45,25 @@ body
 
             return size;
         case TypeLayout.sequential:
-            return aggregate(structType.fields, (uint x, Tuple!(string, Field) f) { return x + computeSize(f.y.type, is64Bit); });
+            return aggregate(structType.fields, (uint x, Tuple!(string, Field) f) { return x + computeSize(f.y.type, is32Bit); });
         case TypeLayout.automatic:
             uint size;
 
             foreach (field; structType.fields)
             {
-                auto al = computeAlignment(field.y.type, is64Bit);
+                auto al = computeAlignment(field.y.type, is32Bit);
 
                 if (size % al)
                     size += al - size % al;
 
-                size += computeSize(field.y.type, is64Bit);
+                size += computeSize(field.y.type, is32Bit);
             }
 
             return size;
     }
 }
 
-public uint computeOffset(Field field, bool is64Bit)
+public uint computeOffset(Field field, bool is32Bit)
 in
 {
     assert(field);
@@ -82,7 +82,7 @@ body
                 if (f.y !is field)
                     break;
 
-                ofs += computeSize(f.y.type, is64Bit);
+                ofs += computeSize(f.y.type, is32Bit);
             }
 
             return ofs;
@@ -94,19 +94,19 @@ body
                 if (fld.y is field)
                     break;
 
-                auto al = computeAlignment(fld.y.type, is64Bit);
+                auto al = computeAlignment(fld.y.type, is32Bit);
 
                 if (offset % al)
                     offset += al - offset % al;
 
-                offset += computeSize(fld.y.type, is64Bit);
+                offset += computeSize(fld.y.type, is32Bit);
             }
 
             return offset;
     }
 }
 
-private uint computeAlignment(Type type, bool is64Bit)
+private uint computeAlignment(Type type, bool is32Bit)
 {
     if (auto struc = cast(StructureType)type)
     {
@@ -119,7 +119,7 @@ private uint computeAlignment(Type type, bool is64Bit)
                 {
                     if (fld.y.offset.value == 0)
                     {
-                        auto al = computeAlignment(fld.y.type, is64Bit);
+                        auto al = computeAlignment(fld.y.type, is32Bit);
 
                         if (al > maxAlign)
                             al = maxAlign;
@@ -132,11 +132,11 @@ private uint computeAlignment(Type type, bool is64Bit)
             case TypeLayout.automatic:
                 // TODO: Write a first() function for iterables.
                 foreach (field; struc.fields)
-                    return computeAlignment(field.y.type, is64Bit);
+                    return computeAlignment(field.y.type, is32Bit);
 
                 assert(false);
         }
-    } 
+    }
     else
-        return computeSize(type, is64Bit);
+        return computeSize(type, is32Bit);
 }

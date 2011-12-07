@@ -288,6 +288,7 @@
    <File path="memory\dgc.d" />
    <File path="memory\layout.d" />
    <File path="memory\libc.d" />
+   <File path="memory\prettyprint.d" />
   </Folder>
   <File path="all.d" />
  </Folder>
