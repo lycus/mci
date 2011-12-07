@@ -226,7 +226,7 @@ public final class FunctionPointerType : Type
 
     @property public override string name()
     {
-        auto s = _returnType.toString() ~ " (";
+        auto s = (_returnType ? _returnType.toString() : "void") ~ " (";
 
         foreach (i, param; _parameterTypes)
         {

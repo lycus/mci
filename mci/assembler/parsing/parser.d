@@ -282,12 +282,13 @@ public final class Parser
     }
     body
     {
+        Token voidTok;
         TypeReferenceNode returnType;
 
         if (peek().type != TokenType.void_)
             returnType = parseTypeSpecification(true);
         else
-            next();
+            voidTok = next();
 
         consume("(");
 
@@ -308,7 +309,7 @@ public final class Parser
 
         next();
 
-        return new FunctionPointerTypeReferenceNode(returnType.location, returnType, params);
+        return new FunctionPointerTypeReferenceNode(returnType ? returnType.location : voidTok.location, returnType, params);
     }
 
     private TypeReferenceNode parseTypeSpecification(bool insideFunctionPointer = false)

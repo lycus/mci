@@ -150,7 +150,7 @@ public final class ModuleDisassembler
                 break;
         }
 
-        writef("%s %s (", function_.returnType, function_.name);
+        writef("%s %s (", function_.returnType ? function_.returnType.toString() : "void", function_.name);
 
         foreach (i, param; function_.parameters)
         {

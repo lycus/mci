@@ -25,7 +25,6 @@ static this()
 public FunctionPointerType getFunctionPointerType(Type returnType, NoNullList!Type parameterTypes)
 in
 {
-    assert(returnType);
     assert(parameterTypes);
 }
 out (result)
