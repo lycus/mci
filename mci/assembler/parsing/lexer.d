@@ -425,7 +425,7 @@ in
 }
 body
 {
-    return new SourceLocation(location.line, location.column - value.length);
+    return new SourceLocation(location.line, location.column - cast(uint)value.length);
 }
 
 private bool isIdentifierChar(dchar chr)
