@@ -1,0 +1,7 @@
+function qcall unit main ()
+{
+    block entry
+    {
+        invoke (mci/mci_memory_allocate);
+    }
+}

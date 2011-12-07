@@ -1,0 +1,9 @@
+function qcall unit foo ()
+{
+    register int32 i;
+    register int32 i;
+
+    block entry
+    {
+    }
+}

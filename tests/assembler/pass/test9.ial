@@ -1,0 +1,6 @@
+function pure nooptimize noinline nocallinline qcall unit main ()
+{
+    block entry
+    {
+    }
+}
