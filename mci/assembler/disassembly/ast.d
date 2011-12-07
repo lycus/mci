@@ -63,11 +63,11 @@ public final class TreeDisassembler
     }
     body
     {
-        writeif("[%s in %s %s", split(typeid(node).name, ".")[$ - 1], _inputFile, node.location);
+        writeif("[%s in %s %s", split(typeid(node).name, ".")[$ - 1][0 .. $ - 4], _inputFile, node.location);
 
         auto str = node.toString();
 
-        if (str)
+        if (str.length)
             writef(" -> %s", str);
 
         writeln("]");

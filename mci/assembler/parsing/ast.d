@@ -722,7 +722,7 @@ public class FunctionDeclarationNode : DeclarationNode
         auto regs = castItems!Node(_registers);
         auto blocks = castItems!Node(_blocks);
 
-        return new List!Node(concat(toCountable!Node(_name), params, toCountable!Node(_returnType), regs, blocks));
+        return new List!Node(concat(toCountable!Node(_name), toCountable!Node(_returnType), params, regs, blocks));
     }
 
     public override string toString()
@@ -769,7 +769,7 @@ public class RegisterDeclarationNode : Node
 
     @property public override Countable!Node children()
     {
-        return toCountable!Node(_name, _type);
+        return toCountable!Node(_type, _name);
     }
 }
 
@@ -1021,11 +1021,6 @@ public class InstructionOperandNode : Node
     {
         return toCountable!Node(_operand.coerce!Node());
     }
-
-    public override string toString()
-    {
-        return "operand: " ~ _operand.toString();
-    }
 }
 
 public class InstructionNode : Node
@@ -1095,5 +1090,10 @@ public class InstructionNode : Node
     @property public override Countable!Node children()
     {
         return toCountable!Node(target, source1, source2, source3, operand);
+    }
+
+    public override string toString()
+    {
+        return "opcode: " ~ _opCode.name ~ "/" ~ to!string(_opCode.code);
     }
 }
