@@ -86,7 +86,34 @@ body
         return getVectorType(elemType, elements);
     }
     else
-        return getType((cast(CoreTypeReferenceNode)node).name.name);
+    {
+        if (isType!UnitTypeReferenceNode(node))
+            return UnitType.instance;
+        if (isType!Int8TypeReferenceNode(node))
+            return Int8Type.instance;
+        else if (isType!UInt8TypeReferenceNode(node))
+            return UInt8Type.instance;
+        else if (isType!Int16TypeReferenceNode(node))
+            return Int16Type.instance;
+        else if (isType!UInt16TypeReferenceNode(node))
+            return UInt16Type.instance;
+        else if (isType!Int32TypeReferenceNode(node))
+            return Int32Type.instance;
+        else if (isType!UInt32TypeReferenceNode(node))
+            return UInt32Type.instance;
+        else if (isType!Int64TypeReferenceNode(node))
+            return Int64Type.instance;
+        else if (isType!UInt64TypeReferenceNode(node))
+            return UInt64Type.instance;
+        else if (isType!NativeIntTypeReferenceNode(node))
+            return NativeIntType.instance;
+        else if (isType!NativeUIntTypeReferenceNode(node))
+            return NativeUIntType.instance;
+        else if (isType!Float32TypeReferenceNode(node))
+            return Float32Type.instance;
+        else
+            return Float64Type.instance;
+    }
 }
 
 public StructureType resolveStructureType(StructureTypeReferenceNode node, Module module_, ModuleManager manager)
