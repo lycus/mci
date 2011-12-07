@@ -183,14 +183,14 @@ public final class Lexer
         _source.reset();
 
         auto stream = new NoNullList!Token();
-        stream.add(new Token(TokenType.begin, null, null));
+        stream.add(new Token(TokenType.begin, null, _source.location));
 
         Token tok;
 
         while ((tok = lexNext()) !is null)
             stream.add(tok);
 
-        stream.add(new Token(TokenType.end, null, null));
+        stream.add(new Token(TokenType.end, null, _source.location));
 
         return new MemoryTokenStream(stream);
     }

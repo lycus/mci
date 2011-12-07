@@ -133,31 +133,15 @@ public final class Token
 
     invariant()
     {
-        if (_type == TokenType.begin || _type == TokenType.end)
-        {
-            assert(!_value);
-            assert(!_location);
-        }
-        else
-        {
-            assert(_value);
-            assert(_location);
-        }
+        assert(_type != TokenType.begin && _type != TokenType.end ? !!_value : !_value);
+        assert(_location);
     }
 
     public this(TokenType type, string value, SourceLocation location)
     in
     {
-        if (type == TokenType.begin || type == TokenType.end)
-        {
-            assert(!value);
-            assert(!location);
-        }
-        else
-        {
-            assert(value);
-            assert(location);
-        }
+        assert(type != TokenType.begin && type != TokenType.end ? !!value : !value);
+        assert(location);
     }
     body
     {
@@ -174,10 +158,7 @@ public final class Token
     @property public string value()
     out (result)
     {
-        if (_type == TokenType.begin || _type == TokenType.end)
-            assert(!result);
-        else
-            assert(result);
+        assert(_type != TokenType.begin && _type != TokenType.end ? !!result : !result);
     }
     body
     {
@@ -187,10 +168,7 @@ public final class Token
     @property public SourceLocation location()
     out (result)
     {
-        if (_type == TokenType.begin || _type == TokenType.end)
-            assert(!result);
-        else
-            assert(result);
+        assert(result);
     }
     body
     {
@@ -301,10 +279,10 @@ unittest
 {
     auto list = new NoNullList!Token();
 
-    list.add(new Token(TokenType.begin, null, null));
+    list.add(new Token(TokenType.begin, null, new SourceLocation(1, 1)));
     list.add(new Token(TokenType.unit, "unit", new SourceLocation(1, 1)));
     list.add(new Token(TokenType.constant, "const", new SourceLocation(1, 1)));
-    list.add(new Token(TokenType.end, null, null));
+    list.add(new Token(TokenType.end, null, new SourceLocation(1, 1)));
 
     auto stream = new MemoryTokenStream(list);
 
