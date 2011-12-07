@@ -9,6 +9,7 @@ bin/*
 *.user
 
 *.mci
+*.ast
 *.o
 *.a
 *.deps

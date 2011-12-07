@@ -44,7 +44,8 @@ private bool test(string directory, string cli, int expected, bool error)
 
 private bool invoke(string file, string cli, int expected, bool error)
 {
-    auto command = cli ~ " asm " ~ file ~ " -o " ~ file[0 .. $ - 4] ~ ".mci";
+    auto name = file[0 .. $ - 4];
+    auto command = cli ~ " asm " ~ file ~ " -o " ~ name ~ ".mci -d " ~ name ~ ".ast";
     auto result = system(command ~ " -s");
 
     if (result != expected)
