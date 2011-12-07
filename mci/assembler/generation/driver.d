@@ -11,12 +11,12 @@ import mci.core.container,
        mci.assembler.generation.functions,
        mci.assembler.generation.types;
 
-public final class GeneratorState
+private final class GeneratorState
 {
     private Module _module;
     private ModuleManager _manager;
     private NoNullDictionary!(string, CompilationUnit) _units;
-    private NoNullDictionary!(TypeDeclarationNode, StructureType) _types;
+    private List!(Tuple!(string, TypeDeclarationNode, StructureType)) _types;
     private string _currentFile;
 
     invariant()
@@ -72,7 +72,7 @@ public final class GeneratorState
         return _units;
     }
 
-    @property public NoNullDictionary!(TypeDeclarationNode, StructureType) types()
+    @property public List!(Tuple!(string, TypeDeclarationNode, StructureType)) types()
     out (result)
     {
         assert(result);
@@ -174,7 +174,7 @@ public final class TypeCreationPass : GeneratorPass
 
             foreach (node; unit.y.nodes)
                 if (auto type = cast(TypeDeclarationNode)node)
-                    state.types.add(type, generateType(type, state.module_));
+                    state.types.add(tuple(unit.x, type, generateType(type, state.module_)));
         }
     }
 }
@@ -185,20 +185,20 @@ public final class TypeClosurePass : GeneratorPass
     {
         foreach (type; state.types)
         {
-            state.currentFile = type.y.module_.name;
+            state.currentFile = type.x;
 
             auto fields = new NoNullList!Field();
 
-            foreach (field; type.x.fields)
+            foreach (field; type.y.fields)
             {
                 if (contains(fields, (Field x) { return x.name == field.name.name; }))
-                    throw new GenerationException("Field " ~ type.y.module_.name ~ "/" ~ type.y.name ~ ":" ~
+                    throw new GenerationException("Field " ~ type.z.module_.name ~ "/" ~ type.z.name ~ ":" ~
                                                   field.name.name ~ " already defined.", field.location);
 
-                fields.add(generateField(field, type.y, state.manager));
+                fields.add(generateField(field, type.z, state.manager));
             }
 
-            type.y.close();
+            type.z.close();
         }
     }
 }

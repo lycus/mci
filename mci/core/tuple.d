@@ -116,12 +116,12 @@ public struct Tuple(X, Y, Z)
         return _z;
     }
 
-    public equals_t opEquals(ref const Tuple!(X, Y) rhs) const
+    public equals_t opEquals(ref const Tuple!(X, Y, Z) rhs) const
     {
         return typeid(X).equals(&_x, &rhs._x) && typeid(Y).equals(&_x, &rhs._x) && typeid(Z).equals(&_x, &rhs._x);
     }
 
-    public int opCmp(ref const Tuple!(X, Y) rhs) const
+    public int opCmp(ref const Tuple!(X, Y, Z) rhs) const
     {
         if (!typeid(X).equals(&_x, &rhs._x))
             return typeid(X).compare(&_x, &rhs._x);
