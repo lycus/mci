@@ -1,4 +1,4 @@
-function qcall unit main ()
+function qcall void main ()
 {
     block entry
     {

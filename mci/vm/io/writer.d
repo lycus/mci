@@ -110,7 +110,11 @@ public final class ModuleWriter : ModuleSaver
         _writer.writeString(function_.name);
         _writer.write(function_.attributes);
         _writer.write(function_.callingConvention);
-        writeTypeReference(function_.returnType);
+        _writer.write(!!function_.returnType);
+
+        if (function_.returnType)
+            writeTypeReference(function_.returnType);
+
         _writer.write(cast(uint)function_.parameters.count);
 
         foreach (param; function_.parameters)
@@ -272,7 +276,11 @@ public final class ModuleWriter : ModuleSaver
     body
     {
         _writer.write(TypeReferenceType.function_);
-        writeTypeReference(type.returnType);
+        _writer.write(!!type.returnType);
+
+        if (type.returnType)
+            writeTypeReference(type.returnType);
+
         _writer.write(cast(uint)type.parameterTypes.count);
 
         foreach (param; type.parameterTypes)
@@ -310,9 +318,7 @@ public final class ModuleWriter : ModuleSaver
         {
             _writer.write(TypeReferenceType.core);
 
-            if (isType!UnitType(type))
-                _writer.write(CoreTypeIdentifier.unit);
-            else if (isType!Int8Type(type))
+            if (isType!Int8Type(type))
                 _writer.write(CoreTypeIdentifier.int8);
             else if (isType!UInt8Type(type))
                 _writer.write(CoreTypeIdentifier.uint8);

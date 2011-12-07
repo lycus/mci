@@ -293,7 +293,6 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
 
     invariant()
     {
-        assert(_returnType);
         assert(_parameterTypes);
     }
 
@@ -302,7 +301,6 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
     in
     {
         assert(location);
-        assert(returnType);
         assert(parameterTypes);
     }
     body
@@ -344,22 +342,9 @@ public abstract class CoreTypeReferenceNode : TypeReferenceNode
     @property public abstract SimpleNameNode name();
 }
 
-public abstract class PrimitiveTypeReferenceNode : CoreTypeReferenceNode
+private mixin template DefineCoreTypeNode(string type, string name)
 {
-    public this(SourceLocation location)
-    in
-    {
-        assert(location);
-    }
-    body
-    {
-        super(location);
-    }
-}
-
-private mixin template DefineCoreTypeNode(string type, string name, string base = "PrimitiveTypeReferenceNode")
-{
-    mixin("public class " ~ type ~ "TypeReferenceNode : " ~ base ~
+    mixin("public class " ~ type ~ "TypeReferenceNode : CoreTypeReferenceNode" ~
           "{" ~
           "    private SimpleNameNode _name;" ~
           "" ~
@@ -392,7 +377,6 @@ private mixin template DefineCoreTypeNode(string type, string name, string base 
           "}");
 }
 
-mixin DefineCoreTypeNode!("Unit", "unit", "CoreTypeReferenceNode");
 mixin DefineCoreTypeNode!("Int8", "int8");
 mixin DefineCoreTypeNode!("UInt8", "uint8");
 mixin DefineCoreTypeNode!("Int16", "int16");
@@ -650,7 +634,6 @@ public class FunctionDeclarationNode : DeclarationNode
     {
         assert(_name);
         assert(_parameters);
-        assert(_returnType);
         assert(_registers);
         assert(_blocks);
     }
@@ -664,7 +647,6 @@ public class FunctionDeclarationNode : DeclarationNode
         assert(location);
         assert(name);
         assert(parameters);
-        assert(returnType);
         assert(registers);
         assert(blocks);
     }

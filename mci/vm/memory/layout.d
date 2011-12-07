@@ -14,9 +14,6 @@ in
 }
 body
 {
-    if (isType!UnitType(type))
-        return 0;
-
     if (isType!Int8Type(type) || isType!UInt8Type(type))
         return 1;
 

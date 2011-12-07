@@ -127,7 +127,6 @@ public final class Function
         assert(_module);
         assert(_name);
         assert(_parameters);
-        assert(_returnType);
         assert(_blocks);
         assert(_registers);
     }
@@ -138,7 +137,6 @@ public final class Function
     {
         assert(module_);
         assert(name);
-        assert(returnType);
         assert(!module_.functions.get(name));
     }
     body
@@ -176,11 +174,6 @@ public final class Function
     }
 
     @property public Type returnType()
-    out (result)
-    {
-        assert(result);
-    }
-    body
     {
         return _returnType;
     }

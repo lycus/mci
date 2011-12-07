@@ -36,7 +36,6 @@ static this()
     in
     {
         assert(name);
-        assert(returnType);
     }
     body
     {
@@ -56,7 +55,7 @@ static this()
     mciMemoryReallocate = createFunction("mci_memory_reallocate", getPointerType(UInt8Type.instance),
                                          [getPointerType(UInt8Type.instance),
                                           NativeUIntType.instance]);
-    mciMemoryFree = createFunction("mci_memory_free", UnitType.instance,
+    mciMemoryFree = createFunction("mci_memory_free", null,
                                    [getPointerType(UInt8Type.instance)]);
 
     mciGetStdIn = createFunction("mci_get_stdin", getPointerType(UInt8Type.instance));
@@ -67,7 +66,7 @@ static this()
                                   NativeUIntType.instance,
                                   UInt8Type.instance,
                                   UInt8Type.instance]);
-    mciFileClose = createFunction("mci_file_close", UnitType.instance,
+    mciFileClose = createFunction("mci_file_close", null,
                                   [getPointerType(UInt8Type.instance)]);
     mciFileFP = createFunction("mci_file_fp", getPointerType(UInt8Type.instance),
                                [getPointerType(UInt8Type.instance)]);
@@ -77,11 +76,11 @@ static this()
                                    [getPointerType(UInt8Type.instance)]);
     mciFilePosition = createFunction("mci_file_position", UInt64Type.instance,
                                      [getPointerType(UInt8Type.instance)]);
-    mciFileWrite = createFunction("mci_file_write", UnitType.instance,
+    mciFileWrite = createFunction("mci_file_write", null,
                                   [getPointerType(UInt8Type.instance),
                                    getPointerType(UInt8Type.instance),
                                    NativeUIntType.instance]);
-    mciFileWriteLine = createFunction("mci_file_write_line", UnitType.instance,
+    mciFileWriteLine = createFunction("mci_file_write_line", null,
                                       [getPointerType(UInt8Type.instance),
                                        getPointerType(UInt8Type.instance),
                                        NativeUIntType.instance]);

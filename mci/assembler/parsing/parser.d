@@ -282,7 +282,12 @@ public final class Parser
     }
     body
     {
-        auto returnType = parseTypeSpecification(true);
+        TypeReferenceNode returnType;
+
+        if (peek().type != TokenType.void_)
+            returnType = parseTypeSpecification(true);
+        else
+            next();
 
         consume("(");
 
@@ -393,8 +398,6 @@ public final class Parser
 
         switch (tok.type)
         {
-            case TokenType.unit:
-                return new UnitTypeReferenceNode(tok.location);
             case TokenType.int8:
                 return new Int8TypeReferenceNode(tok.location);
             case TokenType.uint8:
@@ -629,7 +632,13 @@ public final class Parser
                 errorGot("'qcall', 'ccall', 'scall', 'tcall', or 'fcall'", convTok.location, convTok.value);
         }
 
-        auto returnType = parseTypeSpecification();
+        TypeReferenceNode returnType;
+
+        if (peek().type != TokenType.void_)
+            returnType = parseTypeSpecification();
+        else
+            next();
+
         auto name = parseSimpleName();
 
         consume("(");

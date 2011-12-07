@@ -195,14 +195,12 @@ public final class FunctionPointerType : Type
 
     invariant()
     {
-        assert(_returnType);
         assert(_parameterTypes);
     }
 
     package this(Type returnType, NoNullList!Type parameterTypes)
     in
     {
-        assert(returnType);
         assert(parameterTypes);
     }
     body
@@ -212,11 +210,6 @@ public final class FunctionPointerType : Type
     }
 
     @property public Type returnType()
-    out (result)
-    {
-        assert(result);
-    }
-    body
     {
         return _returnType;
     }

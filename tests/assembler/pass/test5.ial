@@ -1,5 +1,5 @@
 type automatic Arrays
 {
     field instance int32[] ints;
-    field instance unit[] units;
+    field instance float32[] floats;
 }

@@ -75,7 +75,7 @@ body
     {
         auto elemType = resolveType(vecType.elementType, module_, manager);
 
-        if (!isType!PrimitiveType(elemType))
+        if (!isType!CoreType(elemType))
             throw new GenerationException("Vector elements must be primitive types.", node.location);
 
         auto elements = to!uint(vecType.elements.value);
@@ -87,8 +87,6 @@ body
     }
     else
     {
-        if (isType!UnitTypeReferenceNode(node))
-            return UnitType.instance;
         if (isType!Int8TypeReferenceNode(node))
             return Int8Type.instance;
         else if (isType!UInt8TypeReferenceNode(node))
@@ -152,7 +150,7 @@ out (result)
 }
 body
 {
-    auto returnType = resolveType(node.returnType, module_, manager);
+    auto returnType = node.returnType ? resolveType(node.returnType, module_, manager) : null;
     auto parameterTypes = new NoNullList!Type();
 
     foreach (paramType; node.parameterTypes)

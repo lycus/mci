@@ -317,27 +317,16 @@ private final class FunctionPointerTypeReferenceDescriptor : TypeReferenceDescri
 
     invariant()
     {
-        assert(_returnType);
         assert(_parameterTypes);
     }
 
     public this(TypeReferenceDescriptor returnType)
-    in
-    {
-        assert(returnType);
-    }
-    body
     {
         _returnType = returnType;
         _parameterTypes = new typeof(_parameterTypes)();
     }
 
     @property public TypeReferenceDescriptor returnType()
-    out (result)
-    {
-        assert(result);
-    }
-    body
     {
         return _returnType;
     }
@@ -480,7 +469,7 @@ public final class ModuleReader : ModuleLoader
         else if (auto fpType = cast(FunctionPointerTypeReferenceDescriptor)descriptor)
         {
             auto params = new NoNullList!Type(map(fpType.parameterTypes, (TypeReferenceDescriptor desc) { return toType(desc); }));
-            return getFunctionPointerType(toType(fpType.returnType), params);
+            return getFunctionPointerType(fpType.returnType ? toType(fpType.returnType) : null, params);
         }
         else
             return (cast(CoreTypeReferenceDescriptor)descriptor).type;
@@ -553,8 +542,6 @@ public final class ModuleReader : ModuleLoader
 
                 switch (id)
                 {
-                    case CoreTypeIdentifier.unit:
-                        return new CoreTypeReferenceDescriptor(UnitType.instance);
                     case CoreTypeIdentifier.int8:
                         return new CoreTypeReferenceDescriptor(Int8Type.instance);
                     case CoreTypeIdentifier.uint8:
@@ -603,7 +590,11 @@ public final class ModuleReader : ModuleLoader
 
                 return new VectorTypeReferenceDescriptor(element, elements);
             case TypeReferenceType.function_:
-                auto returnType = readTypeReference();
+                TypeReferenceDescriptor returnType;
+
+                if (_reader.read!bool())
+                    returnType = readTypeReference();
+
                 auto fpType = new FunctionPointerTypeReferenceDescriptor(returnType);
                 auto paramCount = _reader.read!uint();
 
@@ -671,7 +662,13 @@ public final class ModuleReader : ModuleLoader
         auto name = _reader.readString();
         auto attributes = _reader.read!FunctionAttributes();
         auto callConv = _reader.read!CallingConvention();
-        auto returnType = toType(readTypeReference());
+
+        TypeReferenceDescriptor retType;
+
+        if (_reader.read!bool())
+            retType = readTypeReference();
+
+        auto returnType = retType ? toType(readTypeReference()) : null;
         auto func = new Function(module_, name, returnType, attributes, callConv);
         auto paramCount = _reader.read!uint();
 

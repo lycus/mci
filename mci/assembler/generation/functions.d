@@ -28,7 +28,7 @@ body
     if (module_.functions.get(node.name.name))
         throw new GenerationException("Function " ~ module_.name ~ "/" ~ node.name.name ~ " already defined.", node.location);
 
-    auto returnType = resolveType(node.returnType, module_, manager);
+    auto returnType = node.returnType ? resolveType(node.returnType, module_, manager) : null;
     auto func = new Function(module_, node.name.name, returnType, node.attributes, node.callingConvention);
 
     foreach (param; node.parameters)
