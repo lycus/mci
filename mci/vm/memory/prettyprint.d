@@ -14,6 +14,12 @@ private class PrettyPrinter
 {
     private ulong _indent;
     private string _result;
+    private bool _is32Bit;
+
+    public this(bool is32Bit)
+    {
+        _is32Bit = is32Bit;
+    }
 
     @property public string result()
     out (result)
@@ -41,6 +47,20 @@ private class PrettyPrinter
             append("    ");
     }
 
+    private void beginBlock()
+    {
+        newLine();
+        append("{");
+        _indent++;
+    }
+
+    private void endBlock()
+    {
+        _indent--;
+        newLine();
+        append("}");
+    }
+
     private void newLine()
     {
         append(std.ascii.newline);
@@ -58,7 +78,7 @@ private class PrettyPrinter
         newLine();
     }
 
-    public void process(Type type, bool is32Bit, void* mem, string instanceName)
+    public void process(Type type, void* mem, string instanceName)
     in
     {
         assert(type);
@@ -102,37 +122,49 @@ private class PrettyPrinter
             return append(format("%s", *cast(double*)mem));
 
         if (isType!NativeIntType(type))
-            return append(format("%s", is32Bit ? to!string(*cast(int*)mem) : to!string(*cast(long*)mem)));
+            return append(format("%s", _is32Bit ? to!string(*cast(int*)mem) : to!string(*cast(long*)mem)));
 
         if (isType!NativeUIntType(type))
-            return append(format("%s", is32Bit ? to!string(*cast(uint*)mem) : to!string(*cast(ulong*)mem)));
+            return append(format("%s", _is32Bit ? to!string(*cast(uint*)mem) : to!string(*cast(ulong*)mem)));
 
         if (auto struc = cast(StructureType)type)
         {
-            newLine();
-            append("{");
-            _indent++;
+            beginBlock();
 
             foreach (field; struc.fields)
             {
                 newLine();
 
-                auto offset = computeOffset(field.y, is32Bit);
-                process(field.y.type, is32Bit, mem + offset, field.x);
+                auto offset = computeOffset(field.y, _is32Bit);
+                process(field.y.type, mem + offset, field.x);
             }
 
-            _indent--;
-            newLine();
-            append("}");
+            endBlock();
 
             return;
         }
 
+        if (auto vect = cast(VectorType)type)
+        {
+            auto elementSize = computeSize(vect.elementType, _is32Bit);
+            auto p = mem;
+
+            beginBlock();
+
+            for (auto i = 0; i < vect.elements; i++)
+            {
+                newLine();
+                process(vect.elementType, p, to!string(i));
+
+                p += elementSize;
+            }
+
+            endBlock();
+        }
+
+        // FIXME: FunctionPointerType does not imply a low-level function pointer at the memory location.
         if (isType!PointerType(type) || isType!ArrayType(type) || isType!FunctionPointerType(type))
             return append(format("0x%s", *cast(void**)mem));
-
-        // TODO: Support vectors.
-        assert(false, "Unsupported type: " ~ type.name);
     }
 }
 
@@ -148,8 +180,8 @@ out (result)
 }
 body
 {
-    auto ctx = new PrettyPrinter();
-    ctx.process(type, is32Bit, mem, instanceName);
+    auto ctx = new PrettyPrinter(is32Bit);
+    ctx.process(type, mem, instanceName);
 
     return ctx.result;
 }
