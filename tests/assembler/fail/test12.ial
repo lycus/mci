@@ -1,0 +1,4 @@
+type automatic VoidField
+{
+    field instance void foo;
+}
