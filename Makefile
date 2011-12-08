@@ -45,6 +45,7 @@ all: \
 
 clean:
 	-rm -f bin/*
+	-rm -f tests/*/*/*.ast
 	-rm -f tests/*/*/*.mci
 	-rm -f tests/*/*/*.def
 	-rm -f tests/*/*/*.log
