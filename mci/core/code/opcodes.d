@@ -391,10 +391,10 @@ static this()
     opArgPop = create("arg.pop", OperationCode.argPop, OpCodeType.normal, OperandType.none, 0, true);
     opCall = create("call", OperationCode.call, OpCodeType.controlFlow, OperandType.function_, 0, true);
     opCallTail = create("call.tail", OperationCode.callTail, OpCodeType.controlFlow, OperandType.function_, 0, true);
-    opCallIndirect = create("call.indirect", OperationCode.callIndirect, OpCodeType.controlFlow, OperandType.signature, 0, true);
+    opCallIndirect = create("call.indirect", OperationCode.callIndirect, OpCodeType.controlFlow, OperandType.signature, 1, true);
     opInvoke = create("invoke", OperationCode.invoke, OpCodeType.controlFlow, OperandType.function_, 0, false);
     opInvokeTail = create("invoke.tail", OperationCode.invokeTail, OpCodeType.controlFlow, OperandType.function_, 0, false);
-    opInvokeIndirect = create("invoke.indirect", OperationCode.invokeIndirect, OpCodeType.controlFlow, OperandType.signature, 0, false);
+    opInvokeIndirect = create("invoke.indirect", OperationCode.invokeIndirect, OpCodeType.controlFlow, OperandType.signature, 1, false);
     opJump = create("jump", OperationCode.jump, OpCodeType.controlFlow, OperandType.label, 0, false);
     opJumpTrue = create("jump.true", OperationCode.jumpTrue, OpCodeType.controlFlow, OperandType.label, 1, false);
     opJumpFalse = create("jump.false", OperationCode.jumpFalse, OpCodeType.controlFlow, OperandType.label, 1, false);
