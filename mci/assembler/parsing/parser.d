@@ -275,22 +275,14 @@ public final class Parser
         return new ModuleReferenceNode(name.location, name);
     }
 
-    private FunctionPointerTypeReferenceNode parseFunctionPointerTypeReference()
+    private FunctionPointerTypeReferenceNode parseFunctionPointerTypeReference(TypeReferenceNode returnType)
     out (result)
     {
         assert(result);
     }
     body
     {
-        Token voidTok;
-        TypeReferenceNode returnType;
-
-        if (peek().type != TokenType.void_)
-            returnType = parseTypeSpecification(true);
-        else
-            voidTok = next();
-
-        consume("(");
+        auto paren = consume("(");
 
         auto params = new NoNullList!TypeReferenceNode();
 
@@ -309,55 +301,59 @@ public final class Parser
 
         next();
 
-        return new FunctionPointerTypeReferenceNode(returnType ? returnType.location : voidTok.location, returnType, params);
+        return new FunctionPointerTypeReferenceNode(paren.location, returnType, params);
     }
 
-    private TypeReferenceNode parseTypeSpecification(bool insideFunctionPointer = false)
+    private TypeReferenceNode parseTypeSpecification()
     out (result)
     {
         assert(result);
     }
     body
     {
-        auto type = parseTypeReference();
-
-        // Handle function pointer types.
-        if (!insideFunctionPointer && peek().type == TokenType.openParen)
+        if (peek().type == TokenType.void_)
         {
-            _stream.movePrevious();
-            return parseFunctionPointerTypeReference();
+            next();
+            return parseFunctionPointerTypeReference(null);
         }
+
+        auto type = parseTypeReference();
 
         while (true)
         {
             auto peekVal = peek();
 
-            if (peekVal.type == TokenType.star)
+            switch (peekVal.type)
             {
-                next();
+                case TokenType.star:
+                    next();
+                    type = new PointerTypeReferenceNode(type.location, type);
 
-                type = new PointerTypeReferenceNode(type.location, type);
+                    break;
+                case TokenType.openBracket:
+                    next();
+
+                    if (peek().type == TokenType.literal)
+                    {
+                        auto elements = parseLiteralValue!uint();
+
+                        type = new VectorTypeReferenceNode(type.location, type, elements);
+                    }
+                    else
+                        type = new ArrayTypeReferenceNode(type.location, type);
+
+                    consume("]");
+
+                    break;
+                case TokenType.openParen:
+                    type = parseFunctionPointerTypeReference(type);
+                    break;
+                default:
+                    return type;
             }
-            else if (peekVal.type == TokenType.openBracket)
-            {
-                next();
-
-                if (peek().type == TokenType.literal)
-                {
-                    auto elements = parseLiteralValue!uint();
-
-                    type = new VectorTypeReferenceNode(type.location, type, elements);
-                }
-                else
-                    type = new ArrayTypeReferenceNode(type.location, type);
-
-                consume("]");
-            }
-            else
-                break;
         }
 
-        return type;
+        assert(false);
     }
 
     private StructureTypeReferenceNode parseStructureTypeReference()
@@ -635,10 +631,21 @@ public final class Parser
 
         TypeReferenceNode returnType;
 
-        if (peek().type != TokenType.void_)
+        auto voidTok = next();
+
+        if (voidTok.type != TokenType.void_)
+        {
+            _stream.movePrevious();
             returnType = parseTypeSpecification();
+        }
         else
-            next();
+        {
+            if (peek().type != TokenType.identifier)
+            {
+                _stream.movePrevious();
+                returnType = parseTypeSpecification();
+            }
+        }
 
         auto name = parseSimpleName();
 
@@ -910,7 +917,8 @@ public final class Parser
                 location = method.location;
                 break;
             case OperandType.signature:
-                auto sig = parseFunctionPointerTypeReference();
+                auto retType = parseTypeSpecification();
+                auto sig = parseFunctionPointerTypeReference(retType);
                 operand = sig;
                 location = sig.location;
                 break;

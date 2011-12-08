@@ -1,4 +1,4 @@
-function qcall void foo ()
+function qcall void foo()
 {
     register int32 i;
     register int32 i;

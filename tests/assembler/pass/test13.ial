@@ -1,4 +1,4 @@
-function qcall int32() main()
+function qcall void() foo()
 {
     block entry
     {
