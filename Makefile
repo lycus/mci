@@ -52,7 +52,7 @@ clean:
 
 #################### mci.core ####################
 
-bin/libmci.core.a:
+bin/libmci.core.a: $(MCI_CORE_SOURCES)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) -lib $(MCI_CORE_SOURCES);
 
@@ -83,7 +83,7 @@ MCI_CORE_SOURCES = \
 
 #################### mci.assembler ####################
 
-bin/libmci.assembler.a:
+bin/libmci.assembler.a: $(MCI_ASSEMBLER_SOURCES)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) -lib $(MCI_ASSEMBLER_SOURCES);
 
@@ -105,7 +105,7 @@ MCI_ASSEMBLER_SOURCES = \
 
 #################### mci.vm ####################
 
-bin/libmci.vm.a:
+bin/libmci.vm.a: $(MCI_VM_SOURCES)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) -lib $(MCI_VM_SOURCES);
 
@@ -127,7 +127,7 @@ MCI_VM_SOURCES = \
 
 #################### mci.interpreter ####################
 
-bin/libmci.interpreter.a:
+bin/libmci.interpreter.a: $(MCI_INTERPRETER_SOURCES)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) -lib $(MCI_INTERPRETER_SOURCES);
 
@@ -136,7 +136,7 @@ MCI_INTERPRETER_SOURCES = \
 
 #################### mci.jit ####################
 
-bin/libmci.jit.a:
+bin/libmci.jit.a: $(MCI_JIT_SOURCES)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) -lib $(MCI_JIT_SOURCES);
 
@@ -145,7 +145,7 @@ MCI_JIT_SOURCES = \
 
 #################### mci.cli ####################
 
-bin/mci.cli: $(MCI_CLI_DEPS)
+bin/mci.cli: $(MCI_CLI_DEPS) $(MCI_CLI_SOURCES)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS);
 
@@ -166,7 +166,7 @@ MCI_CLI_DEPS = \
 
 #################### mci.tester ####################
 
-bin/mci.tester: $(MCI_TESTER_DEPS)
+bin/mci.tester: $(MCI_TESTER_DEPS) $(MCI_TESTER_SOURCES)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS);
 	cd bin; \
