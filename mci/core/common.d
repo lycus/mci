@@ -2,7 +2,17 @@ module mci.core.common;
 
 import core.stdc.stdlib,
        core.stdc.string,
+       mci.core.config,
        mci.core.meta;
+
+static if (is32Bit)
+{
+    alias int isize_t;
+}
+else
+{
+    alias long isize_t;
+}
 
 public bool isType(U, T)(T obj)
 in
