@@ -34,6 +34,8 @@ else
 	MCI_TESTER =
 endif
 
+.PHONY: all clean docs
+
 all: \
 	bin/libmci.core.a \
 	bin/libmci.assembler.a \
@@ -44,11 +46,29 @@ all: \
 	$(MCI_TESTER)
 
 clean:
+	-rm -rf docs/_build/*
 	-rm -f bin/*
 	-rm -f tests/*/*/*.ast
 	-rm -f tests/*/*/*.mci
 	-rm -f tests/*/*/*.def
 	-rm -f tests/*/*/*.log
+
+docs:
+	cd docs; \
+	make html; \
+	make dirhtml; \
+	make singlehtml; \
+	make pickle; \
+	make json; \
+	make htmlhelp; \
+	make qthelp; \
+	make devhelp; \
+	make epub; \
+	make latex; \
+	make text; \
+	make man; \
+	make changes; \
+	make linkcheck;
 
 #################### mci.core ####################
 
