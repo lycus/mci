@@ -168,76 +168,79 @@ public final class OpCode
 
 public enum OperationCode : ubyte
 {
-    nop = 0,
-    comment = 1,
-    dead = 2,
-    raw = 3,
-    loadI8 = 4,
-    loadUI8 = 5,
-    loadI16 = 6,
-    loadUI16 = 7,
-    loadI32 = 8,
-    loadUI32 = 9,
-    loadI64 = 10,
-    loadUI64 = 11,
-    loadF32 = 12,
-    loadF64 = 13,
-    loadFunc = 14,
-    loadNull = 15,
-    loadSize = 16,
-    add = 17,
-    sub = 18,
-    mul = 19,
-    div = 20,
-    rem = 21,
-    neg = 22,
-    and = 23,
-    or = 24,
-    xOr = 25,
-    not = 26,
-    shL = 27,
-    shR = 28,
-    conv = 29,
-    memAlloc = 30,
-    memNew = 31,
-    memFree = 32,
-    memDelete = 33,
-    memGet = 34,
-    memSet = 35,
-    memAddr = 36,
-    arrayGet = 37,
-    arraySet = 38,
-    arrayAddr = 39,
-    fieldGet = 40,
-    fieldSet = 41,
-    fieldAddr = 42,
-    fieldGGet = 43,
-    fieldGSet = 44,
-    fieldGAddr = 45,
-    cmpEq = 46,
-    cmpNEq = 47,
-    cmpGT = 48,
-    cmpLT = 49,
-    cmpGTEq = 50,
-    cmpLTEq = 51,
-    argPush = 52,
-    argPop = 53,
-    invoke = 54,
-    invokeTail = 55,
-    invokeIndirect = 56,
-    call = 57,
-    callTail = 58,
-    callIndirect = 59,
-    jump = 60,
-    jumpTrue = 61,
-    jumpFalse = 62,
-    leave = 63,
-    return_ = 64,
-    phi = 65,
-    exThrow = 66,
-    exTry = 67,
-    exHandle = 68,
-    exEnd = 69,
+    nop,
+    comment,
+    dead,
+    raw,
+    loadI8,
+    loadUI8,
+    loadI16,
+    loadUI16,
+    loadI32,
+    loadUI32,
+    loadI64,
+    loadUI64,
+    loadF32,
+    loadF64,
+    loadFunc,
+    loadNull,
+    loadSize,
+    ariAdd,
+    ariSub,
+    ariMul,
+    ariDiv,
+    ariRem,
+    ariNeg,
+    bitAnd,
+    bitOr,
+    bitXOr,
+    bitNeg,
+    not,
+    shL,
+    shR,
+    conv,
+    memAlloc,
+    memNew,
+    memFree,
+    memGCAlloc,
+    memGCNew,
+    memGCFree,
+    memGet,
+    memSet,
+    memAddr,
+    arrayGet,
+    arraySet,
+    arrayAddr,
+    fieldGet,
+    fieldSet,
+    fieldAddr,
+    fieldGGet,
+    fieldGSet,
+    fieldGAddr,
+    cmpEq,
+    cmpNEq,
+    cmpGT,
+    cmpLT,
+    cmpGTEq,
+    cmpLTEq,
+    argPush,
+    argPop,
+    invoke,
+    invokeTail,
+    invokeIndirect,
+    call,
+    callTail,
+    callIndirect,
+    jump,
+    jumpTrue,
+    jumpFalse,
+    leave,
+    return_,
+    phi,
+    exThrow,
+    exTry,
+    exHandle,
+    exEnd,
 }
 
 public OpCode opNop;
@@ -257,15 +260,16 @@ public OpCode opLoadF64;
 public OpCode opLoadFunc;
 public OpCode opLoadNull;
 public OpCode opLoadSize;
-public OpCode opAdd;
-public OpCode opSub;
-public OpCode opMul;
-public OpCode opDiv;
-public OpCode opRem;
-public OpCode opNeg;
-public OpCode opAnd;
-public OpCode opOr;
-public OpCode opXOr;
+public OpCode opAriAdd;
+public OpCode opAriSub;
+public OpCode opAriMul;
+public OpCode opAriDiv;
+public OpCode opAriRem;
+public OpCode opAriNeg;
+public OpCode opBitAnd;
+public OpCode opBitOr;
+public OpCode opBitXOr;
+public OpCode opBitNeg;
 public OpCode opNot;
 public OpCode opShL;
 public OpCode opShR;
@@ -273,7 +277,9 @@ public OpCode opConv;
 public OpCode opMemAlloc;
 public OpCode opMemNew;
 public OpCode opMemFree;
-public OpCode opMemDelete;
+public OpCode opMemGCAlloc;
+public OpCode opMemGCNew;
+public OpCode opMemGCFree;
 public OpCode opMemGet;
 public OpCode opMemSet;
 public OpCode opMemAddr;
@@ -352,15 +358,16 @@ static this()
     opLoadFunc = create("load.func", OperationCode.loadFunc, OpCodeType.normal, OperandType.function_, 0, true);
     opLoadNull = create("load.null", OperationCode.loadNull, OpCodeType.normal, OperandType.none, 0, true);
     opLoadSize = create("load.size", OperationCode.loadSize, OpCodeType.normal, OperandType.type, 0, true);
-    opAdd = create("add", OperationCode.add, OpCodeType.normal, OperandType.none, 2, true);
-    opSub = create("sub", OperationCode.sub, OpCodeType.normal, OperandType.none, 2, true);
-    opMul = create("mul", OperationCode.mul, OpCodeType.normal, OperandType.none, 2, true);
-    opDiv = create("div", OperationCode.div, OpCodeType.normal, OperandType.none, 2, true);
-    opRem = create("rem", OperationCode.rem, OpCodeType.normal, OperandType.none, 2, true);
-    opNeg = create("neg", OperationCode.neg, OpCodeType.normal, OperandType.none, 1, true);
-    opAnd = create("and", OperationCode.and, OpCodeType.normal, OperandType.none, 2, true);
-    opOr = create("or", OperationCode.or, OpCodeType.normal, OperandType.none, 2, true);
-    opXOr = create("xor", OperationCode.xOr, OpCodeType.normal, OperandType.none, 2, true);
+    opAriAdd = create("ari.add", OperationCode.ariAdd, OpCodeType.normal, OperandType.none, 2, true);
+    opAriSub = create("ari.sub", OperationCode.ariSub, OpCodeType.normal, OperandType.none, 2, true);
+    opAriMul = create("ari.mul", OperationCode.ariMul, OpCodeType.normal, OperandType.none, 2, true);
+    opAriDiv = create("ari.div", OperationCode.ariDiv, OpCodeType.normal, OperandType.none, 2, true);
+    opAriRem = create("ari.rem", OperationCode.ariRem, OpCodeType.normal, OperandType.none, 2, true);
+    opAriNeg = create("ari.neg", OperationCode.ariNeg, OpCodeType.normal, OperandType.none, 1, true);
+    opBitAnd = create("bit.and", OperationCode.bitAnd, OpCodeType.normal, OperandType.none, 2, true);
+    opBitOr = create("bit.or", OperationCode.bitOr, OpCodeType.normal, OperandType.none, 2, true);
+    opBitXOr = create("bit.xor", OperationCode.bitXOr, OpCodeType.normal, OperandType.none, 2, true);
+    opBitNeg = create("bit.neg", OperationCode.bitNeg, OpCodeType.normal, OperandType.none, 1, true);
     opNot = create("not", OperationCode.not, OpCodeType.normal, OperandType.none, 1, true);
     opShL = create("shl", OperationCode.shL, OpCodeType.normal, OperandType.none, 2, true);
     opShR = create("shr", OperationCode.shR, OpCodeType.normal, OperandType.none, 2, true);
@@ -368,7 +375,9 @@ static this()
     opMemAlloc = create("mem.alloc", OperationCode.memAlloc, OpCodeType.normal, OperandType.none, 1, true);
     opMemNew = create("mem.new", OperationCode.memNew, OpCodeType.normal, OperandType.none, 0, true);
     opMemFree = create("mem.free", OperationCode.memFree, OpCodeType.normal, OperandType.none, 1, false);
-    opMemDelete = create("mem.delete", OperationCode.memDelete, OpCodeType.normal, OperandType.none, 1, false);
+    opMemGCAlloc = create("mem.gcalloc", OperationCode.memAlloc, OpCodeType.normal, OperandType.none, 1, true);
+    opMemGCNew = create("mem.gcnew", OperationCode.memNew, OpCodeType.normal, OperandType.none, 0, true);
+    opMemGCFree = create("mem.gcfree", OperationCode.memFree, OpCodeType.normal, OperandType.none, 1, false);
     opMemGet = create("mem.get", OperationCode.memGet, OpCodeType.normal, OperandType.none, 1, true);
     opMemSet = create("mem.set", OperationCode.memSet, OpCodeType.normal, OperandType.none, 2, false);
     opMemAddr = create("mem.addr", OperationCode.memAddr, OpCodeType.normal, OperandType.none, 1, true);
