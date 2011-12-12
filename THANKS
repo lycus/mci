@@ -1,0 +1,17 @@
+            == MCI: Managed Compiler Infrastructure ==
+
+                -- Thanks --
+
+The MCI developers would like to extend a "thank you" to the following
+projects and their developers for inspiration, great ideas, and advice:
+
+    * GCC
+      - http://gcc.gnu.org
+    * LLVM
+      - http://www.llvm.org
+    * Mono
+      - http://www.mono-project.com
+    * Parrot
+      - http://www.parrot.org
+    * SL#
+      - http://github.com/IgniteInteractiveStudio/SLSharp
