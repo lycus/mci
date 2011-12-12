@@ -78,7 +78,7 @@ private class PrettyPrinter
         newLine();
     }
 
-    public void process(Type type, void* mem, string instanceName)
+    public void process(Type type, ubyte* mem, string instanceName)
     in
     {
         assert(type);
@@ -147,7 +147,7 @@ private class PrettyPrinter
         if (auto vect = cast(VectorType)type)
         {
             auto elementSize = computeSize(vect.elementType, _is32Bit);
-            auto p = mem;
+            auto p = *cast(ubyte**)mem;
 
             beginBlock();
 
@@ -168,7 +168,7 @@ private class PrettyPrinter
     }
 }
 
-public string prettyPrint(Type type, bool is32Bit, void* mem, string instanceName)
+public string prettyPrint(Type type, bool is32Bit, ubyte* mem, string instanceName)
 in
 {
     assert(type);

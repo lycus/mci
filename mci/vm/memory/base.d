@@ -56,7 +56,7 @@ public final class RuntimeObject
         _generation = generation;
     }
 
-    @property public void* data()
+    @property public ubyte* data()
     {
         return cast(ubyte*)this + __traits(classInstanceSize, RuntimeObject);
     }
