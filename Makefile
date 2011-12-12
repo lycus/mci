@@ -4,7 +4,7 @@ DPLC ?= dmd
 
 ifneq ($(MODEL), 32)
 	ifneq ($(MODEL), 64)
-		$(error Unsupported architecture: $(MODEL))
+		$(error Unsupported pointer length: $(MODEL))
 	endif
 endif
 
