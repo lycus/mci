@@ -1,0 +1,11 @@
+function qcall void foo()
+{
+    block entry
+    {
+        jump (other);
+    }
+
+    block other
+    {
+    }
+}

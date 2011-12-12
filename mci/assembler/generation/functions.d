@@ -49,7 +49,12 @@ body
         if (func.blocks.get(block.name.name))
             throw new GenerationException("Basic block " ~ block.name.name ~ " already defined.", block.location);
 
-        auto bb = func.createBasicBlock(block.name.name);
+        func.createBasicBlock(block.name.name);
+    }
+
+    foreach (block; node.blocks)
+    {
+        auto bb = func.blocks.get(block.name.name);
 
         foreach (instrNode; block.instructions)
         {
