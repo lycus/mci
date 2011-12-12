@@ -391,7 +391,7 @@ static this()
     opFieldGSet = create("field.gset", OperationCode.fieldGSet, OpCodeType.normal, OperandType.field, 1, false);
     opFieldGAddr = create("field.gaddr", OperationCode.fieldGAddr, OpCodeType.normal, OperandType.field, 0, true);
     opCmpEq = create("cmp.eq", OperationCode.cmpEq, OpCodeType.normal, OperandType.none, 2, true);
-    opCmpEq = create("cmp.neq", OperationCode.cmpNEq, OpCodeType.normal, OperandType.none, 2, true);
+    opCmpNEq = create("cmp.neq", OperationCode.cmpNEq, OpCodeType.normal, OperandType.none, 2, true);
     opCmpGT = create("cmp.gt", OperationCode.cmpGT, OpCodeType.normal, OperandType.none, 2, true);
     opCmpLT = create("cmp.lt", OperationCode.cmpLT, OpCodeType.normal, OperandType.none, 2, true);
     opCmpGTEq = create("cmp.gteq", OperationCode.cmpGTEq, OpCodeType.normal, OperandType.none, 2, true);
