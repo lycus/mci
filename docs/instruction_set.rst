@@ -625,6 +625,9 @@ necessary, but can be done if desired.
 Memory aliasing instructions
 ++++++++++++++++++++++++++++
 
+These instructions can be used for general pointer manipulation, such as
+dereferencing, setting memory values, etc.
+
 mem.get
 -------
 
@@ -684,6 +687,9 @@ a pointer to the source register's type.
 Array and vector instructions
 +++++++++++++++++++++++++++++
 
+These instructions are used to index into and manipulate arrays and
+vectors.
+
 array.get
 ---------
 
@@ -736,6 +742,9 @@ The target register must be the first source register's element type.
 
 Structure field instructions
 ++++++++++++++++++++++++++++
+
+These instructions are used to operate on fields contained in structures
+types and pointers to them.
 
 field.get
 ---------
@@ -844,6 +853,8 @@ This instruction is only valid on static fields.
 
 Comparison instructions
 +++++++++++++++++++++++
+
+These instructions test relativity of their source registers.
 
 cmp.eq
 ------
@@ -996,10 +1007,48 @@ involved vectors.
 Function invocation instructions
 ++++++++++++++++++++++++++++++++
 
-.. TODO
+These instructions are used to call functions and function pointers.
+
+arg.push
+--------
+
+**Has target register**
+    No
+**Source registers**
+    1
+**Operand type**
+    None
+
+Enqueues the value in the source register into the functiona call argument
+queue. The type of the value must equal the type of the function parameter
+at the same index as this instruction.
+
+This instruction must be immediately followed by another arg.push_ or any
+of call_, call.tail_, call.indirect_, invoke_, invoke.tail_, or
+invoke.indirect_.
+
+arg,pop
+-------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    None
+
+Dequeues an argument given to a function. This instruction can only appear
+in the "entry" basic block of a function, and must either be the first
+instruction or come right after a previous arg.pop.
+
+The target register must match the type of the function parameter at the
+same index as this instruction.
 
 Control flow instructions
 +++++++++++++++++++++++++
+
+These instructions are used to transfer control from one point in a program
+to another. Most are generally terminator instructions.
 
 jump
 ----
@@ -1127,6 +1176,8 @@ Exception handling instructions
 
 Miscellaneous instructions
 ++++++++++++++++++++++++++
+
+Instructions that don't quite fit anywhere else.
 
 conv
 ----
