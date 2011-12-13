@@ -534,7 +534,7 @@ memory is assigned.
 If the allocation was successful, all allocated memory is guaranteed to be
 completely zeroed out.
 
-The target register must be a pointer, function pointer, or array.
+The target register must be a pointer or an array.
 
 mem.new
 -------
@@ -559,7 +559,7 @@ memory is assigned.
 If the allocation was successful, all allocated memory is guaranteed to be
 completely zeroed out.
 
-The target register must be a pointer, function pointer, or vector.
+The target register must be a pointer or a vector.
 
 mem.free
 --------
@@ -579,8 +579,8 @@ is in some way invalid (e.g. it points to the interior of a block of
 allocated memory or has never been allocated in the first place), undefined
 behavior occurs.
 
-The source register must be any pointer-like type (that is, a pointer, a
-function pointer, an array, or a vector).
+The source register must be any pointer-like type (that is, a pointer, an
+array, or a vector).
 
 mem.gcalloc
 -----------
