@@ -1,4 +1,0 @@
-type automatic Foo
-{
-    field const int32 bar;
-}
