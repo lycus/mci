@@ -1281,4 +1281,36 @@ conv
 Converts the value in the source register from one type to another, and
 assigns the resulting value to the target register.
 
-.. TODO: Write semantics.
+The following notation is used:
+
+.. TODO: Move this notation table to a type system page.
+
++--------------+------------------------------------------------------------+
+| Notation     | Meaning                                                    |
++==============+============================================================+
+| `T`          | Type name                                                  |
++--------------+------------------------------------------------------------+
+| `T[]`        | Array of `T`                                               |
++--------------+------------------------------------------------------------+
+| `T[E]`       | Vector of `T` with `E` elements                            |
++--------------+------------------------------------------------------------+
+| `T*`         | Pointer to `T`                                             |
++--------------+------------------------------------------------------------+
+| `R(T1, ...)` | Function pointer returning `R`, taking `T1`, ... arguments |
++--------------+------------------------------------------------------------+
+
+The following conversions are valid:
+
+* `T` -> `U` for any primitives `T` and `U` (`int8`, `uint8`, `int16`,
+  `uint16`, `int32`, `uint32`, `int64`, `uint64`, `int`, `uint`,
+  `float32`, and `float64`).
+* `T*` -> `uint` or `int` for any `T`.
+* `T*` -> `U*` for any `T` and any `U`.
+* `T*` -> `T[]` for any `T`.
+* `T[]` -> `T*` for any `T`.
+* `T[E]` -> `U[E]` for any primitives `T` and `U`.
+* `T*[E]` -> `U*[E]` for any `T` and `U`.
+* `R(T1, ...)` -> `U*` for any `R`, any amount and type of `T`\ :sub:`n`,
+  and any `U`.
+* `T*` -> `R(U1, ...)` for any `T`, any `R`, and any amount and type of
+  `U`\ :sub:`n`.
