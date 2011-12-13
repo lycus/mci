@@ -369,9 +369,9 @@ static this()
     opMemAlloc = create("mem.alloc", OperationCode.memAlloc, OpCodeType.normal, OperandType.none, 1, true);
     opMemNew = create("mem.new", OperationCode.memNew, OpCodeType.normal, OperandType.none, 0, true);
     opMemFree = create("mem.free", OperationCode.memFree, OpCodeType.normal, OperandType.none, 1, false);
-    opMemGCAlloc = create("mem.gcalloc", OperationCode.memAlloc, OpCodeType.normal, OperandType.none, 1, true);
-    opMemGCNew = create("mem.gcnew", OperationCode.memNew, OpCodeType.normal, OperandType.none, 0, true);
-    opMemGCFree = create("mem.gcfree", OperationCode.memFree, OpCodeType.normal, OperandType.none, 1, false);
+    opMemGCAlloc = create("mem.gcalloc", OperationCode.memGCAlloc, OpCodeType.normal, OperandType.none, 1, true);
+    opMemGCNew = create("mem.gcnew", OperationCode.memGCNew, OpCodeType.normal, OperandType.none, 0, true);
+    opMemGCFree = create("mem.gcfree", OperationCode.memGCFree, OpCodeType.normal, OperandType.none, 1, false);
     opMemGet = create("mem.get", OperationCode.memGet, OpCodeType.normal, OperandType.none, 1, true);
     opMemSet = create("mem.set", OperationCode.memSet, OpCodeType.normal, OperandType.none, 2, false);
     opMemAddr = create("mem.addr", OperationCode.memAddr, OpCodeType.normal, OperandType.none, 1, true);
