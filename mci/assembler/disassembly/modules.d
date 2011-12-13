@@ -93,9 +93,6 @@ public final class ModuleDisassembler
                 case FieldStorage.static_:
                     write("static");
                     break;
-                case FieldStorage.constant:
-                    write("const");
-                    break;
             }
 
             writef(" %s %s", field.y.type, field.y.name);

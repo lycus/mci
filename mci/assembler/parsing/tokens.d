@@ -88,7 +88,6 @@ body
                             "field" : TokenType.field,
                             "instance" : TokenType.instance,
                             "static" : TokenType.static_,
-                            "const" : TokenType.constant,
                             "function" : TokenType.function_,
                             "qcall" : TokenType.queueCall,
                             "ccall" : TokenType.cdecl,

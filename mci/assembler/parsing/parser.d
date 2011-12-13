@@ -487,9 +487,6 @@ public final class Parser
             case TokenType.static_:
                 storage = FieldStorage.static_;
                 break;
-            case TokenType.constant:
-                storage = FieldStorage.constant;
-                break;
             default:
                 errorGot("'instance', 'static', or 'const'", storageTok.location, storageTok.value);
                 break;
