@@ -515,6 +515,9 @@ If the requested amount of memory could not be allocated, a null pointer
 is assigned to the target register; otherwise, the pointer to the allocated
 memory is assigned.
 
+If the allocation was successful, all allocated memory is guaranteed to be
+completely zeroed out.
+
 The target register must be a pointer, function pointer, or array.
 
 mem.new
@@ -536,6 +539,9 @@ target register.
 If the requested amount of memory could not be allocated, a null pointer
 is assigned to the target register; otherwise, the pointer to the allocated
 memory is assigned.
+
+If the allocation was successful, all allocated memory is guaranteed to be
+completely zeroed out.
 
 The target register must be a pointer, function pointer, or vector.
 
