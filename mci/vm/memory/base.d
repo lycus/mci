@@ -60,6 +60,16 @@ public final class RuntimeObject
     {
         return cast(ubyte*)this + __traits(classInstanceSize, RuntimeObject);
     }
+
+    public static RuntimeObject fromData(ubyte* data)
+    in
+    {
+        assert(data);
+    }
+    body
+    {
+        return cast(RuntimeObject)(data - __traits(classInstanceSize, RuntimeObject));
+    }
 }
 
 public interface GCGeneration
