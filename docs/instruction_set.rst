@@ -1309,7 +1309,7 @@ The following conversions are valid:
 * `T*` -> `T[]` for any `T`.
 * `T[]` -> `T*` for any `T`.
 * `T[E]` -> `U[E]` for any primitives `T` and `U`.
-* `T*[E]` -> `U*[E]` for any `T` and `U`.
+* `T*[E]` -> `U*[E]` for any `T` and any `U`.
 * `R(T1, ...)` -> `U*` for any `R`, any amount and type of `T`\ :sub:`n`,
   and any `U`.
 * `T*` -> `R(U1, ...)` for any `T`, any `R`, and any amount and type of
