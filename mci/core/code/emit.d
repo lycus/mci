@@ -167,10 +167,8 @@ public class BasicBlockEmitter
     mixin DefineEmit!"Countable!ubyte";
     mixin DefineEmit!"BasicBlock";
     mixin DefineEmit!"Type";
-    mixin DefineEmit!"StructureType";
     mixin DefineEmit!"Field";
     mixin DefineEmit!"Function";
-    mixin DefineEmit!"FunctionPointerType";
     mixin DefineEmit!"Countable!Register";
 
     public final BasicBlockEmitter emitTarget(OpCode opCode, Register source1, Register source2, Register source3,

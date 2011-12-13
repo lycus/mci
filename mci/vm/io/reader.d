@@ -803,27 +803,11 @@ public final class ModuleReader : ModuleLoader
             case OperandType.type:
                 operand = toType(readTypeReference());
                 break;
-            case OperandType.structure:
-                auto desc = readTypeReference();
-
-                if (!isType!StructureTypeReferenceDescriptor(desc))
-                    error("Structure type expected");
-
-                operand = cast(StructureType)toType(desc);
-                break;
             case OperandType.field:
                 operand = readFieldReference();
                 break;
             case OperandType.function_:
                 operand = readFunctionReference();
-                break;
-            case OperandType.signature:
-                auto desc = readTypeReference();
-
-                if (!isType!FunctionPointerTypeReferenceDescriptor(desc))
-                    error("Function pointer type expected");
-
-                operand = cast(FunctionPointerType)toType(desc);
                 break;
             case OperandType.label:
                 operand = readBasicBlockReference(function_);

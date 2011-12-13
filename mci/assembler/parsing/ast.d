@@ -965,10 +965,8 @@ public class ByteArrayLiteralNode : Node
 alias Algebraic!(LiteralValueNode,
                  ByteArrayLiteralNode,
                  TypeReferenceNode,
-                 StructureTypeReferenceNode,
                  FieldReferenceNode,
                  FunctionReferenceNode,
-                 FunctionPointerTypeReferenceNode,
                  BasicBlockReferenceNode,
                  RegisterSelectorNode) InstructionOperand;
 

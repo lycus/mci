@@ -30,8 +30,6 @@ endif
 
 ifeq ($(BUILD), test)
 	MCI_TESTER = bin/mci.tester
-else
-	MCI_TESTER =
 endif
 
 .PHONY: all clean docs
@@ -186,7 +184,7 @@ MCI_CLI_DEPS = \
 
 #################### mci.tester ####################
 
-bin/mci.tester: $(MCI_TESTER_DEPS) $(MCI_TESTER_SOURCES)
+$(MCI_TESTER): $(MCI_TESTER_DEPS) $(MCI_TESTER_SOURCES)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS);
 	cd bin; \

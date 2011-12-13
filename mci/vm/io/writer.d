@@ -208,14 +208,10 @@ public final class ModuleWriter : ModuleSaver
                 writeBasicBlockReference(*val);
             else if (auto val = operand.peek!Type())
                 writeTypeReference(*val);
-            else if (auto val = operand.peek!StructureType())
-                writeStructureTypeReference(*val);
             else if (auto val = operand.peek!Field())
                 writeFieldReference(*val);
             else if (auto val = operand.peek!Function())
                 writeFunctionReference(*val);
-            else if (auto val = operand.peek!FunctionPointerType())
-                writeFunctionPointerTypeReference(*val);
             else if (auto val = operand.peek!(Countable!Register)())
             {
                 _writer.write(cast(uint)val.count);

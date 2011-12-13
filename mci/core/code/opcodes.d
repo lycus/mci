@@ -30,10 +30,8 @@ public enum OperandType : ubyte
     float64,
     bytes,
     type,
-    structure,
     field,
     function_,
-    signature,
     label,
     selector,
 }
@@ -73,14 +71,10 @@ body
             return typeid(double);
         case OperandType.type:
             return typeid(Type);
-        case OperandType.structure:
-            return typeid(StructureType);
         case OperandType.field:
             return typeid(Field);
         case OperandType.function_:
             return typeid(Function);
-        case OperandType.signature:
-            return typeid(FunctionPointerType);
         case OperandType.label:
             return typeid(BasicBlock);
         case OperandType.selector:

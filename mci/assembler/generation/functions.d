@@ -117,17 +117,11 @@ body
                     case OperandType.type:
                         operand = resolveType(*instrOperand.peek!TypeReferenceNode(), module_, manager);
                         break;
-                    case OperandType.structure:
-                        operand = resolveStructureType(*instrOperand.peek!StructureTypeReferenceNode(), module_, manager);
-                        break;
                     case OperandType.field:
                         operand = resolveField(*instrOperand.peek!FieldReferenceNode(), module_, manager);
                         break;
                     case OperandType.function_:
                         operand = resolveFunction(*instrOperand.peek!FunctionReferenceNode(), module_, manager);
-                        break;
-                    case OperandType.signature:
-                        operand = resolveFunctionPointerType(*instrOperand.peek!FunctionPointerTypeReferenceNode(), module_, manager);
                         break;
                     case OperandType.selector:
                         auto regs = instrOperand.peek!RegisterSelectorNode().registers;

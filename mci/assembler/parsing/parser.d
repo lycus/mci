@@ -901,11 +901,6 @@ public final class Parser
                 operand = type;
                 location = type.location;
                 break;
-            case OperandType.structure:
-                auto type = parseStructureTypeReference();
-                operand = type;
-                location = type.location;
-                break;
             case OperandType.field:
                 auto field = parseFieldReference();
                 operand = field;
@@ -915,12 +910,6 @@ public final class Parser
                 auto method = parseFunctionReference();
                 operand = method;
                 location = method.location;
-                break;
-            case OperandType.signature:
-                auto retType = parseTypeSpecification();
-                auto sig = parseFunctionPointerTypeReference(retType);
-                operand = sig;
-                location = sig.location;
                 break;
             case OperandType.selector:
                 auto selector = parseRegisterSelector();

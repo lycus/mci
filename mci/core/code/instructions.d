@@ -72,10 +72,8 @@ alias Algebraic!(byte,
                  Countable!ubyte,
                  BasicBlock,
                  Type,
-                 StructureType,
                  Field,
                  Function,
-                 FunctionPointerType,
                  Countable!Register) InstructionOperand;
 
 public final class Instruction
