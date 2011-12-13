@@ -463,12 +463,18 @@ shl
 **Operand type**
     None
 
-.. TODO
+Shifts the bits of the first source register to the left by the amount given
+in the second source register and assigns the result to the target register.
 
-All three registers must be of the exact same type. Allowed types are `int8`,
-`uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`, `int`,
-`uint`, `float32`, `float64`, as well as any pointer type. Vectors of all of
-these are also allowed.
+If the second source register is larger than the amount of bits of the first
+source register's type, that amount will be used instead.
+
+The first register and the target register must be of the exact same type.
+Allowed types are `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`,
+`int64`, `uint64`, `int`, `uint`, `float32`, `float64`, as well as any pointer
+type. Vectors of all of these are also allowed.
+
+The second register must be of type `uint` or a vector of these.
 
 shr
 ---
@@ -480,12 +486,22 @@ shr
 **Operand type**
     None
 
-.. TODO
+Shifts the bits of the first source register to the right by the amount given
+in the second source register and assigns the result to the target register.
 
-All three registers must be of the exact same type. Allowed types are `int8`,
-`uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`, `int`,
-`uint`, `float32`, `float64`, as well as any pointer type. Vectors of all of
-these are also allowed.
+If the type of the values being shifted is signed, the shift is an arithmetic
+shift (i.e. it is done with sign extension); otherwise, a logical shift is done
+(i.e. zero extension is used).
+
+If the second source register is larger than the amount of bits of the first
+source register's type, that amount will be used instead.
+
+The first register and the target register must be of the exact same type.
+Allowed types are `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`,
+`int64`, `uint64`, `int`, `uint`, `float32`, `float64`, as well as any pointer
+type. Vectors of all of these are also allowed.
+
+The second register must be of type `uint` or a vector of these.
 
 Memory management instructions
 ++++++++++++++++++++++++++++++
