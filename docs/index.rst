@@ -10,6 +10,7 @@ for compilers, runtimes, code analyzers, and other developer tools.
 
    introduction.rst
    terminology.rst
+   instruction_set.rst
 
 Indices and Tables
 ==================

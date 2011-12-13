@@ -41,6 +41,12 @@ refers to the set of machine code instructions available in a
 processor architecture (and sometimes other features). It may also
 be used to describe the instruction set of IR_\s.
 
+ALU
++++
+
+Abbreviation for arithmetic logic unit. This refers to the unit in
+a processor which performs basic arithmetic and bit-wise operations.
+
 SSA
 +++
 
@@ -50,6 +56,36 @@ are used to determine which variable should be used depending on
 where control flow came from.
 
 SSA is mostly useful in analysis and optimization.
+
+Basic block
++++++++++++
+
+A basic block (or BB, or just block) is a set of instructions which,
+in SSA_ form, contains a number of simple instructions terminated by
+a single terminator_ instruction. If one were to compare with the C
+programming language, a basic block can be considered a label which
+a `goto` statement can transfer control to.
+
+Terminator
+++++++++++
+
+A terminator is an instruction which, while code is in SSA_ form,
+indicates the end of a `basic block`_. Only one terminator is allowed
+in a `basic block`_, and it must appear as the last instruction. All
+basic blocks must end with a terminator.
+
+JIT
++++
+
+An abbreviation for just in time. It generally refers to either the
+technique of compiling code on demand, or such a compiler itself.
+
+AOT
++++
+
+An abbreviation for ahead of time. It generally refers to either
+the technique of compiling code before program execution, or such
+a compiler itself.
 
 GC
 ++
@@ -66,6 +102,16 @@ A GC_ root is a pointer which does not lie within the heap, and is
 used by the GC_ to start its reachability analysis from. This usually
 includes (but is not necessarily limited to) global fields, local
 registers, etc.
+
+Heap
+++++
+
+Refers to the data structure the operating system uses to manage its
+memory. In general, there are two heaps: The native heap and the
+managed heap. The former is what is usually accessed through LibC_'s
+malloc() and free() functions (mem.alloc and mem.free in IAL_); the
+latter is the heap controlled by the GC_ (accessed through mem.gcalloc
+and mem.gcfree in IAL_).
 
 RTO
 +++
@@ -86,3 +132,11 @@ Target
 
 Refers to a processor architecture that the MCI_ can compile code for
 (therefore, a *target*).
+
+LibC
+++++
+
+This is the standard library for the C programming language. It is
+typically exploited by many other languages, however, as it provides
+the easiest access to memory, I/O, and other such facilities which
+are very close to the operating system.
