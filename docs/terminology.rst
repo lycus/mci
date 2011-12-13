@@ -64,7 +64,7 @@ A basic block (or BB, or just block) is a set of instructions which,
 in SSA_ form, contains a number of simple instructions terminated by
 a single terminator_ instruction. If one were to compare with the C
 programming language, a basic block can be considered a label which
-a `goto` statement can transfer control to.
+a ``goto`` statement can transfer control to.
 
 Terminator
 ++++++++++

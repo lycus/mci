@@ -79,7 +79,7 @@ load.i8
 
 Loads a constant 8-bit signed integer into the target register.
 
-The target register must be of type `int8`.
+The target register must be of type ``int8``.
 
 load.ui8
 --------
@@ -93,7 +93,7 @@ load.ui8
 
 Loads a constant 8-bit unsigned integer into the target register.
 
-The target register must be of type `uint8`.
+The target register must be of type ``uint8``.
 
 load.i16
 --------
@@ -107,7 +107,7 @@ load.i16
 
 Loads a constant 16-bit signed integer into the target register.
 
-The target register must be of type `int16`.
+The target register must be of type ``int16``.
 
 load.ui16
 ---------
@@ -121,7 +121,7 @@ load.ui16
 
 Loads a constant 16-bit unsigned integer into the target register.
 
-The target register must be of type `uint16`.
+The target register must be of type ``uint16``.
 
 load.i32
 --------
@@ -135,7 +135,7 @@ load.i32
 
 Loads a constant 32-bit signed integer into the target register.
 
-The target register must be of type `int32`.
+The target register must be of type ``int32``.
 
 load.ui32
 ---------
@@ -149,7 +149,7 @@ load.ui32
 
 Loads a constant 32-bit unsigned integer into the target register.
 
-The target register must be of type `uint32`.
+The target register must be of type ``uint32``.
 
 load.i64
 --------
@@ -163,7 +163,7 @@ load.i64
 
 Loads a constant 64-bit signed integer into the target register.
 
-The target register must be of type `int64`.
+The target register must be of type ``int64``.
 
 load.ui64
 ---------
@@ -177,7 +177,7 @@ load.ui64
 
 Loads a constant 64-bit unsigned integer into the target register.
 
-The target register must be of type `uint64`.
+The target register must be of type ``uint64``.
 
 load.f32
 --------
@@ -191,7 +191,7 @@ load.f32
 
 Loads a constant 32-bit floating-point value into the target register.
 
-The target register must be of type `float32`.
+The target register must be of type ``float32``.
 
 load.f64
 --------
@@ -205,7 +205,7 @@ load.f64
 
 Loads a constant 64-bit floating-point value into the target register.
 
-The target register must be of type `float64`.
+The target register must be of type ``float64``.
 
 load.func
 ---------
@@ -264,7 +264,7 @@ load.size
 Loads the absolute size of a type specification's layout in memory into the
 target register.
 
-The target register must be of type `uint`.
+The target register must be of type ``uint``.
 
 Arithmetic and logic instructions
 +++++++++++++++++++++++++++++++++
@@ -284,10 +284,10 @@ ari.add
 Adds the value in the first source register to the value in the second
 source register and stores the result in the target register.
 
-All three registers must be of the exact same type. Allowed types are `int8`,
-`uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`, `int`,
-`uint`, `float32`, `float64`, as well as any pointer type. Vectors of all of
-these are also allowed.
+All three registers must be of the exact same type. Allowed types are
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
+well as any pointer type. Vectors of all of these are also allowed.
 
 ari.sub
 -------
@@ -302,10 +302,10 @@ ari.sub
 Subtracts the value in the first source register from the value in the second
 source register and stores the result in the target register.
 
-All three registers must be of the exact same type. Allowed types are `int8`,
-`uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`, `int`,
-`uint`, `float32`, `float64`, as well as any pointer type. Vectors of all of
-these are also allowed.
+All three registers must be of the exact same type. Allowed types are
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
+well as any pointer type. Vectors of all of these are also allowed.
 
 ari.mul
 -------
@@ -320,10 +320,10 @@ ari.mul
 Multiplies the value in the first source register with the value in the
 second source register and stores the result in the target register.
 
-All three registers must be of the exact same type. Allowed types are `int8`,
-`uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`, `int`,
-`uint`, `float32`, `float64`, as well as any pointer type. Vectors of all of
-these are also allowed.
+All three registers must be of the exact same type. Allowed types are
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
+well as any pointer type. Vectors of all of these are also allowed.
 
 ari.div
 -------
@@ -338,10 +338,10 @@ ari.div
 Divides the value in the first source register by the value in the second
 source register and stores the result in the target register.
 
-All three registers must be of the exact same type. Allowed types are `int8`,
-`uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`, `int`,
-`uint`, `float32`, `float64`, as well as any pointer type. Vectors of all of
-these are also allowed.
+All three registers must be of the exact same type. Allowed types are
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
+well as any pointer type. Vectors of all of these are also allowed.
 
 ari.neg
 -------
@@ -356,10 +356,10 @@ ari.neg
 Negates the value in the source register and assigns the result to the target
 register.
 
-Both registers must be of the exact same type. Allowed types are `int8`,
-`uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`, `int`,
-`uint`, `float32`, `float64`, as well as any pointer type. Vectors of all of
-these are also allowed.
+Both registers must be of the exact same type. Allowed types are
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
+well as any pointer type. Vectors of all of these are also allowed.
 
 bit.and
 -------
@@ -374,10 +374,10 @@ bit.and
 Performs a bit-wise AND operation on the two source registers and assigns
 the result to the target register.
 
-All three registers must be of the exact same type. Allowed types are `int8`,
-`uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`, `int`,
-`uint`, `float32`, `float64`, as well as any pointer type. Vectors of all of
-these are also allowed.
+All three registers must be of the exact same type. Allowed types are
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
+well as any pointer type. Vectors of all of these are also allowed.
 
 bit.or
 ------
@@ -392,10 +392,10 @@ bit.or
 Performs a bit-wise OR operation on the two source registers and assigns
 the result to the target register.
 
-All three registers must be of the exact same type. Allowed types are `int8`,
-`uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`, `int`,
-`uint`, `float32`, `float64`, as well as any pointer type. Vectors of all of
-these are also allowed.
+All three registers must be of the exact same type. Allowed types are
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
+well as any pointer type. Vectors of all of these are also allowed.
 
 bit.xor
 -------
@@ -410,10 +410,10 @@ bit.xor
 Performs a bit-wise XOR operation on the two source registers and assigns
 the result to the target register.
 
-All three registers must be of the exact same type. Allowed types are `int8`,
-`uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`, `int`,
-`uint`, `float32`, `float64`, as well as any pointer type. Vectors of all of
-these are also allowed.
+All three registers must be of the exact same type. Allowed types are
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
+well as any pointer type. Vectors of all of these are also allowed.
 
 bit.neg
 -------
@@ -425,13 +425,13 @@ bit.neg
 **Operand type**
     None
 
-Performs a bit-wise, two's complement negation operation on the source
-register and assigns the result to the target register.
+Performs a bit-wise complement negation operation on the source register
+and assigns the result to the target register.
 
-Both registers must be of the exact same type. Allowed types are `int8`,
-`uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`, `int`,
-`uint`, `float32`, `float64`, as well as any pointer type. Vectors of all of
-these are also allowed.
+Both registers must be of the exact same type. Allowed types are
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
+well as any pointer type. Vectors of all of these are also allowed.
 
 not
 ---
@@ -448,10 +448,10 @@ result to the target register.
 
 If the source equals 0, the result is 1. In all other cases, the result is 0.
 
-Both registers must be of the exact same type. Allowed types are `int8`,
-`uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`, `int`,
-`uint`, `float32`, `float64`, as well as any pointer type. Vectors of all of
-these are also allowed.
+Both registers must be of the exact same type. Allowed types are
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
+well as any pointer type. Vectors of all of these are also allowed.
 
 shl
 ---
@@ -470,11 +470,12 @@ If the second source register is larger than the amount of bits of the first
 source register's type, that amount will be used instead.
 
 The first register and the target register must be of the exact same type.
-Allowed types are `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`,
-`int64`, `uint64`, `int`, `uint`, `float32`, `float64`, as well as any pointer
-type. Vectors of all of these are also allowed.
+Allowed types are ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``,
+``uint32``, ``int64``, ``uint64``, ``int``, ``uint``, ``float32``,
+``float64``, as well as any pointer type. Vectors of all of these are also
+allowed.
 
-The second register must be of type `uint` or a vector of these.
+The second register must be of type ``uint`` or a vector of these.
 
 shr
 ---
@@ -497,11 +498,12 @@ If the second source register is larger than the amount of bits of the first
 source register's type, that amount will be used instead.
 
 The first register and the target register must be of the exact same type.
-Allowed types are `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`,
-`int64`, `uint64`, `int`, `uint`, `float32`, `float64`, as well as any pointer
-type. Vectors of all of these are also allowed.
+Allowed types are ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``,
+``uint32``, ``int64``, ``uint64``, ``int``, ``uint``, ``float32``,
+``float64``, as well as any pointer type. Vectors of all of these are also
+allowed.
 
-The second register must be of type `uint` or a vector of these.
+The second register must be of type ``uint`` or a vector of these.
 
 Memory management instructions
 ++++++++++++++++++++++++++++++
@@ -525,7 +527,7 @@ Allocates memory from the native heap.
 The source register indicates how many elements to allocate memory for.
 This means that the total amount of memory allocated is the size of the
 target register's element type times the element count. The source
-register must be of type `uint`.
+register must be of type ``uint``.
 
 If the requested amount of memory could not be allocated, a null pointer
 is assigned to the target register; otherwise, the pointer to the allocated
@@ -703,7 +705,7 @@ array.get
 Fetches at the index given in the second source register from the array
 given in the first source register and assigns it to the target register.
 The first source register must be an array or vector type, while the
-second register must be of type `uint`.
+second register must be of type ``uint``.
 
 The target vector must be of the first source register's element type.
 
@@ -720,7 +722,7 @@ array.set
 Sets the element at the index given in the second source register of the
 array given in the first source register to the value in the third source
 register. The first source register must be an array or vector type, while
-the second register must be of type `uint`. The third register must be of
+the second register must be of type ``uint``. The third register must be of
 the element type of the array in the first source register.
 
 array.addr
@@ -736,7 +738,7 @@ array.addr
 Retrieves the address to the element given in the second source register
 of the array given in the first source register and assigns it to the
 target register. The first source register must be an array or vector
-type, while the second source register must be of type `uint`.
+type, while the second source register must be of type ``uint``.
 
 The target register must be the first source register's element type.
 
@@ -870,11 +872,11 @@ Compares the two source registers for equality. If they are equal, the
 target register is set to 1; otherwise, 0.
 
 The source registers must be of the exact same type, and can be one of
-`int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`,
-`int`, `uint`, `float32`, `float64`, or any pointer type (in which case
-the pointers are compared for equality). Vectors of these types are also
-allowed; they are compared element-by-element and are considered equal if
-all elements are equal.
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
+pointer type (in which case the pointers are compared for equality).
+Vectors of these types are also allowed; they are compared
+element-by-element and are considered equal if all elements are equal.
 
 The target register must be of type `uint`, or a vector of `uint` (with
 the same amount of elements as the source vectors) if the comparison
@@ -894,11 +896,11 @@ Compares the two source registers for inequality. If they are unequal, the
 target register is set to 1; otherwise, 0.
 
 The source registers must be of the exact same type, and can be one of
-`int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`,
-`int`, `uint`, `float32`, `float64`, or any pointer type (in which case
-the pointers are compared for equality). Vectors of these types are also
-allowed; they are compared element-by-element and are considered unequal
-if all elements are unequal.
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
+pointer type (in which case the pointers are compared for equality).
+Vectors of these types are also allowed; they are compared
+element-by-element and are considered unequal if all elements are unequal.
 
 The target register must be of type `uint`, or a vector of `uint` (with
 the same amount of elements as the source vectors) if the comparison
@@ -919,11 +921,12 @@ value in the second source register. If this is true, the target register
 is set to 1; otherwise, 0.
 
 The source registers must be of the exact same type, and can be one of
-`int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`,
-`int`, `uint`, `float32`, `float64`, or any pointer type (in which case
-the pointers are compared). Vectors of these types are also allowed; they
-are compared element-by-element and the first vector is considered greater
-than the second vector if all elements are greater.
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
+pointer type (in which case the pointers are compared). Vectors of these
+types are also allowed; they are compared element-by-element and the first
+vector is considered greater than the second vector if all elements are
+greater.
 
 The target register must be of type `uint`, or a vector of `uint` (with
 the same amount of elements as the source vectors) if the comparison
@@ -944,11 +947,12 @@ value in the second source register. If this is true, the target register
 is set to 1; otherwise, 0.
 
 The source registers must be of the exact same type, and can be one of
-`int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`,
-`int`, `uint`, `float32`, `float64`, or any pointer type (in which case
-the pointers are compared). Vectors of these types are also allowed; they
-are compared element-by-element and the first vector is considered lesser
-than the second vector if all elements are lesser.
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
+pointer type (in which case the pointers are compared). Vectors of these
+types are also allowed; they are compared element-by-element and the first
+vector is considered lesser than the second vector if all elements are
+lesser.
 
 The target register must be of type `uint`, or a vector of `uint` (with
 the same amount of elements as the source vectors) if the comparison
@@ -969,11 +973,12 @@ equal to the value in the second source register. If this is true, the
 target register is set to 1; otherwise, 0.
 
 The source registers must be of the exact same type, and can be one of
-`int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`,
-`int`, `uint`, `float32`, `float64`, or any pointer type (in which case
-the pointers are compared). Vectors of these types are also allowed; they
-are compared element-by-element and the first vector is considered greater
-than or equal to the second vector if all elements are greater or equal.
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
+pointer type (in which case the pointers are compared). Vectors of these
+types are also allowed; they are compared element-by-element and the first
+vector is considered greater than or equal to the second vector if all
+elements are greater or equal.
 
 The target register must be of type `uint`, or a vector of `uint` (with
 the same amount of elements as the source vectors) if the comparison
@@ -994,11 +999,12 @@ equal to the value in the second source register. If this is true, the
 target register is set to 1; otherwise, 0.
 
 The source registers must be of the exact same type, and can be one of
-`int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`,
-`int`, `uint`, `float32`, `float64`, or any pointer type (in which case
-the pointers are compared). Vectors of these types are also allowed; they
-are compared element-by-element and the first vector is considered lesser
-than or equal to the second vector if all elements are lesser or equal.
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
+pointer type (in which case the pointers are compared). Vectors of these
+types are also allowed; they are compared element-by-element and the first
+vector is considered lesser than or equal to the second vector if all
+elements are lesser or equal.
 
 The target register must be of type `uint`, or a vector of `uint` (with
 the same amount of elements as the source vectors) if the comparison
@@ -1027,7 +1033,7 @@ This instruction must be immediately followed by another arg.push_ or any
 of call_, call.tail_, call.indirect_, invoke_, invoke.tail_, or
 invoke.indirect_.
 
-arg,pop
+arg.pop
 -------
 
 **Has target register**
@@ -1165,7 +1171,7 @@ jump.true
     Basic block
 
 Performs a jump to the specified basic block if the value in the source
-register (which must be of type `uint`) does not equal 0.
+register (which must be of type ``uint``) does not equal 0.
 
 This is a terminator instruction.
 
@@ -1180,7 +1186,7 @@ jump.false
     Basic block
 
 Performs a jump to the specified basic block if the value in the source
-register (which must be of type `uint`) equals 0.
+register (which must be of type ``uint``) equals 0.
 
 This is a terminator instruction.
 
@@ -1285,32 +1291,32 @@ The following notation is used:
 
 .. TODO: Move this notation table to a type system page.
 
-+--------------+------------------------------------------------------------+
-| Notation     | Meaning                                                    |
-+==============+============================================================+
-| `T`          | Type name                                                  |
-+--------------+------------------------------------------------------------+
-| `T[]`        | Array of `T`                                               |
-+--------------+------------------------------------------------------------+
-| `T[E]`       | Vector of `T` with `E` elements                            |
-+--------------+------------------------------------------------------------+
-| `T*`         | Pointer to `T`                                             |
-+--------------+------------------------------------------------------------+
-| `R(T1, ...)` | Function pointer returning `R`, taking `T1`, ... arguments |
-+--------------+------------------------------------------------------------+
++----------------+----------------------------------------------------------------+
+| Notation       | Meaning                                                        |
++================+================================================================+
+| ``T``          | Type name                                                      |
++----------------+----------------------------------------------------------------+
+| ``T[]``        | Array of ``T``                                                 |
++----------------+----------------------------------------------------------------+
+| ``T[E]``       | Vector of ``T`` with ``E`` elements                            |
++----------------+----------------------------------------------------------------+
+| ``T*``         | Pointer to ``T``                                               |
++----------------+----------------------------------------------------------------+
+| ``R(T1, ...)`` | Function pointer returning ``R``, taking ``T1``, ... arguments |
++----------------+----------------------------------------------------------------+
 
 The following conversions are valid:
 
-* `T` -> `U` for any primitives `T` and `U` (`int8`, `uint8`, `int16`,
-  `uint16`, `int32`, `uint32`, `int64`, `uint64`, `int`, `uint`,
-  `float32`, and `float64`).
-* `T*` -> `uint` or `int` for any `T`.
-* `T*` -> `U*` for any `T` and any `U`.
-* `T*` -> `T[]` for any `T`.
-* `T[]` -> `T*` for any `T`.
-* `T[E]` -> `U[E]` for any primitives `T` and `U`.
-* `T*[E]` -> `U*[E]` for any `T` and any `U`.
-* `R(T1, ...)` -> `U*` for any `R`, any amount and type of `T`\ :sub:`n`,
-  and any `U`.
-* `T*` -> `R(U1, ...)` for any `T`, any `R`, and any amount and type of
-  `U`\ :sub:`n`.
+* ``T`` -> ``U`` for any primitives ``T`` and ``U`` (``int8``, ``uint8``,
+  ``int16``, ``uint16``, ``int32``, ``uint32``, ``int64``, ``uint64``,
+  ``int``, ``uint``, ``float32``, and ``float64``).
+* ``T*`` -> ``uint`` or ``int`` for any ``T``.
+* ``T*`` -> ``U*`` for any ``T`` and any ``U``.
+* ``T*`` -> ``T[]`` for any ``T``.
+* ``T[]`` -> ``T*`` for any ``T``.
+* ``T[E]`` -> ``U[E]`` for any primitives ``T`` and ``U``.
+* ``T*[E]`` -> ``U*[E]`` for any ``T`` and any ``U``.
+* ``R(T1, ...)`` -> ``U*`` for any ``R``, any amount and type of ``T``
+  \ :sub:`n`, and any ``U``.
+* ``T*`` -> ``R(U1, ...)`` for any ``T``, any ``R``, and any amount and
+  type of ``U``\ :sub:`n`.
