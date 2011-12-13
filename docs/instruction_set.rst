@@ -1044,6 +1044,96 @@ instruction or come right after a previous arg.pop.
 The target register must match the type of the function parameter at the
 same index as this instruction.
 
+call
+----
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    Function reference
+
+This performs a call to the function given as operand. This instruction
+expects that the function has a return type (i.e. it does not return void).
+
+This instruction should follow immediately after a correct sequence of
+arg.push_ instructions.
+
+The result (as returned by the called function) is assigned to the target
+register.
+
+call.tail
+---------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    Function reference
+
+Works exactly like a call_, except that this instruction hints to the code
+generator that tail call optimization should be done, if possible.
+
+call.indirect
+-------------
+
+**Has target register**
+    Yes
+**Source registers**
+    1
+**Operand type**
+    None
+
+Performs a function call like the call_ instruction, but indirectly. The
+source register must be a function pointer to a function returning non-void,
+and the this instruction must (like call_) be immediately preceeded by a
+correct arg.push_ sequence matching the function pointer's signature.
+
+The result of the call is assigned to the target register.
+
+invoke
+------
+
+**Has target register**
+    No
+**Source registers**
+    0
+**Operand type**
+    Function reference
+
+This instruction does the same thing as call_, but only works for functions
+with no return type (i.e. returning void), and thus has no target register.
+
+invoke.tail
+-----------
+
+**Has target register**
+    No
+**Source registers**
+    0
+**Operand type**
+    Function reference
+
+This instruction does the same thing as call.tail_, but only works for
+functions with no return type (i.e. returning void), and thus has no target
+register.
+
+invoke.indirect
+---------------
+
+**Has target register**
+    No
+**Source registers**
+    1
+**Operand type**
+    None
+
+This instruction does the same thing as call.indirect_, but only works for
+function pointers with no return type (i.e. returning void), and thus has no
+target register.
+
 Control flow instructions
 +++++++++++++++++++++++++
 
