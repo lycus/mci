@@ -1250,8 +1250,7 @@ was assigned in the basic block control flow entered from and assigns it
 to the target register.
 
 This instruction is valid only during analysis and optimization. It must
-not appear in code passed to the JIT and AOT engines (but is allowed when
-executing under the interpreter).
+not appear in code passed to the interpreter or JIT/AOT engines.
 
 The target register and selector registers must all be of the same type.
 
