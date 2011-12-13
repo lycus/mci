@@ -662,12 +662,163 @@ a pointer to the source register's type.
 Array and vector instructions
 +++++++++++++++++++++++++++++
 
-.. TODO
+array.get
+---------
+
+**Has target register**
+    Yes
+**Source registers**
+    2
+**Operand type**
+    None
+
+Fetches at the index given in the second source register from the array
+given in the first source register and assigns it to the target register.
+The first source register must be an array or vector type, while the
+second register must be of type `uint`.
+
+The target vector must be of the first source register's element type.
+
+array.set
+---------
+
+**Has target register**
+    No
+**Source registers**
+    3
+**Operand type**
+    None
+
+Sets the element at the index given in the second source register of the
+array given in the first source register to the value in the third source
+register. The first source register must be an array or vector type, while
+the second register must be of type `uint`. The third register must be of
+the element type of the array in the first source register.
+
+array.addr
+----------
+
+**Has target register**
+    Yes
+**Source registers**
+    2
+**Operand type**
+    None
+
+Retrieves the address to the element given in the second source register
+of the array given in the first source register and assigns it to the
+target register. The first source register must be an array or vector
+type, while the second source register must be of type `uint`.
+
+The target register must be the first source register's element type.
 
 Structure field instructions
 ++++++++++++++++++++++++++++
 
-.. TODO
+field.get
+---------
+
+**Has target register**
+    Yes
+**Source registers**
+    1
+**Operand type**
+    Field reference
+
+Fetches the value of the field given as the operand on the structure
+given in the source register and assigns it to the target register. The
+source register must either be a structure or a pointer to a structure
+with at most one indirection.
+
+The target register's type must match the field type.
+
+This instruction is only valid on instance fields.
+
+field.set
+---------
+
+**Has target register**
+    No
+**Source registers**
+    2
+**Operand type**
+    Field reference
+
+Sets the value of the field given in the operand on the structure given
+in the first source register to the value in the second source register.
+The first source register must be a structure or a pointer to a structure
+with a most one indirection. The second source register must match the
+field's type.
+
+This instruction is only valid on instance fields.
+
+field.addr
+----------
+
+**Has target register**
+    Yes
+**Source registers**
+    1
+**Operand type**
+    Field reference
+
+Gets the address of the field given as the operand on the structure given
+in the source register and assigns it to the target register. The source
+register must be a structure or pointer to a structure with at most one
+indirection.
+
+The target register must be a pointer to the type of the field given in
+the operand.
+
+This instruction is only valid on instance fields.
+
+field.gget
+----------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    Field reference
+
+Similar to field.get_, but operates on static fields. This means that the
+instruction does not need an instance of the structure to fetch the value
+of the given field.
+
+This instruction is only valid on static fields.
+
+field.gset
+----------
+
+**Has target register**
+    No
+**Source registers**
+    1
+**Operand type**
+    Field reference
+
+Similar to field.set_, but operates on static fields. This means that the
+instruction does not need an instance of the structure to set the value of
+the given field.
+
+This instruction is only valid on static fields.
+
+field.gaddr
+-----------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    Field reference
+
+Similar to field.addr_, but operates on static fields. This means that the
+instruction does not need an instance of the structure to get the address
+to the given field.
+
+This instruction is only valid on static fields.
 
 Comparison instructions
 +++++++++++++++++++++++
