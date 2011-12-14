@@ -345,6 +345,7 @@ public final class Lexer
     }
     body
     {
+        auto loc = _source.location;
         string id;
 
         while (true)
@@ -369,6 +370,9 @@ public final class Lexer
 
             id ~= idChr;
         }
+
+        if (!id.length)
+            errorGot("non-empty quoted identifier", loc, id);
 
         return new Token(TokenType.identifier, id, makeSourceLocation(id, _source.location));
     }
