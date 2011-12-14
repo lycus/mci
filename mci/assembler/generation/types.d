@@ -73,17 +73,12 @@ body
         return getArrayType(resolveType(arrType.elementType, module_, manager));
     else if (auto vecType = cast(VectorTypeReferenceNode)node)
     {
-        auto elemType = resolveType(vecType.elementType, module_, manager);
-
-        if (!isType!CoreType(elemType))
-            throw new GenerationException("Vector elements must be primitive types.", node.location);
-
         auto elements = to!uint(vecType.elements.value);
 
         if (!elements)
             throw new GenerationException("Vector types must not have zero elements.", node.location);
 
-        return getVectorType(elemType, elements);
+        return getVectorType(resolveType(vecType.elementType, module_, manager), elements);
     }
     else
     {
