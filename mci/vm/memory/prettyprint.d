@@ -122,10 +122,10 @@ private class PrettyPrinter
             return append(format("%s", *cast(double*)mem));
 
         if (isType!NativeIntType(type))
-            return append(format("%s", _is32Bit ? to!string(*cast(int*)mem) : to!string(*cast(long*)mem)));
+            return append(format("%s", *cast(isize_t*)mem));
 
         if (isType!NativeUIntType(type))
-            return append(format("%s", _is32Bit ? to!string(*cast(uint*)mem) : to!string(*cast(ulong*)mem)));
+            return append(format("%s", *cast(size_t*)mem));
 
         if (auto struc = cast(StructureType)type)
         {
