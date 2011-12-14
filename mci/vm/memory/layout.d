@@ -40,17 +40,21 @@ body
             uint size;
 
             foreach (f; structType.fields)
-                if (f.y.offset.value > size)
+                if (f.y.storage == FieldStorage.instance && f.y.offset.value > size)
                     size = f.y.offset.value;
 
             return size;
         case TypeLayout.sequential:
-            return aggregate(structType.fields, (uint x, Tuple!(string, Field) f) { return x + computeSize(f.y.type, is32Bit); });
+            return aggregate(filter(structType.fields, (Tuple!(string, Field) f) { return f.y.storage == FieldStorage.instance; }),
+                             (uint x, Tuple!(string, Field) f) { return x + computeSize(f.y.type, is32Bit); });
         case TypeLayout.automatic:
             uint size;
 
             foreach (field; structType.fields)
             {
+                if (field.y.storage != FieldStorage.instance)
+                    continue;
+
                 auto al = computeAlignment(field.y.type, is32Bit);
 
                 if (size % al)
@@ -79,6 +83,9 @@ body
 
             foreach (f; field.declaringType.fields)
             {
+                if (f.y.storage != FieldStorage.instance)
+                    continue;
+
                 if (f.y !is field)
                     break;
 
@@ -91,6 +98,9 @@ body
 
             foreach (fld; field.declaringType.fields)
             {
+                if (fld.y.storage != FieldStorage.instance)
+                    continue;
+
                 if (fld.y is field)
                     break;
 
@@ -117,6 +127,9 @@ private uint computeAlignment(Type type, bool is32Bit)
 
                 foreach (fld; struc.fields)
                 {
+                    if (fld.y.storage != FieldStorage.instance)
+                        continue;
+
                     if (fld.y.offset.value == 0)
                     {
                         auto al = computeAlignment(fld.y.type, is32Bit);
