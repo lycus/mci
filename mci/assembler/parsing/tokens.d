@@ -56,6 +56,7 @@ public enum TokenType : ubyte
     float64,
     opCode,
     literal,
+    string,
 }
 
 public TokenType charToType(dchar chr)

@@ -254,9 +254,16 @@ public final class Lexer
             if (isIdentifierChar(chr))
                 return lexIdentifier(chr);
 
+            if (chr == '\'')
+                return lexQuotedIdentifier();
+
             // Handle integer and float literals.
             if (isDigit(chr) || chr == '-' || chr == '+')
                 return lexLiteral(chr);
+
+            // Handle string literals.
+            if (chr == '"')
+                return lexString();
 
             errorGot("any valid character", _source.location, chr);
         }
@@ -312,25 +319,14 @@ public final class Lexer
     }
     body
     {
-        auto idLoc = _source.location;
         string id = [cast(char)chr];
-        bool hasDot;
 
-        // Until we encounter white space, we construct an identifier.
         while (true)
         {
             auto idChr = _source.next();
 
-            if (std.uni.isWhite(idChr))
+            if (!isIdentifierChar(idChr) && !isDigit(idChr))
                 break;
-
-            auto isDot = idChr == '.';
-
-            if (!isIdentifierChar(idChr) && !isDigit(idChr) && !isDot)
-                break;
-
-            if (isDot)
-                hasDot = true;
 
             _source.moveNext();
             id ~= idChr;
@@ -338,11 +334,43 @@ public final class Lexer
 
         auto type = identifierToType(id);
 
-        if (hasDot && type != TokenType.opCode)
-            errorGot("opcode name", idLoc, id);
-
         // This can be a keyword, an opcode, or an identifier.
         return new Token(type, id, makeSourceLocation(id, _source.location));
+    }
+
+    private Token lexQuotedIdentifier()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        string id;
+
+        while (true)
+        {
+            auto idChr = _source.next();
+
+            if (idChr == '\'')
+            {
+                _source.moveNext();
+                break;
+            }
+
+            if (idChr == '\\')
+            {
+                _source.moveNext();
+
+                if (_source.next() == '\'')
+                    idChr = _source.moveNext();
+            }
+            else
+                _source.moveNext();
+
+            id ~= idChr;
+        }
+
+        return new Token(TokenType.identifier, id, makeSourceLocation(id, _source.location));
     }
 
     private Token lexLiteral(dchar chr)
@@ -415,6 +443,41 @@ public final class Lexer
 
         return new Token(TokenType.literal, str, makeSourceLocation(str, _source.location));
     }
+
+    private Token lexString()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        string str;
+
+        while (true)
+        {
+            auto chr = _source.next();
+
+            if (chr == '"')
+            {
+                _source.moveNext();
+                break;
+            }
+
+            if (chr == '\\')
+            {
+                _source.moveNext();
+
+                if (_source.next() == '"')
+                    chr = _source.moveNext();
+            }
+            else
+                _source.moveNext();
+
+            str ~= chr;
+        }
+
+        return new Token(TokenType.string, str, makeSourceLocation(str, _source.location));
+    }
 }
 
 private SourceLocation makeSourceLocation(string value, SourceLocation location)
@@ -430,5 +493,5 @@ body
 
 private bool isIdentifierChar(dchar chr)
 {
-    return chr == '_' || std.ascii.isAlpha(chr);
+    return chr == '_' || chr == '.' || std.ascii.isAlpha(chr);
 }
