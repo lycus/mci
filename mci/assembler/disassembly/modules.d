@@ -201,6 +201,24 @@ public final class ModuleDisassembler
                             }
 
                             break;
+                        case OperandType.ffi:
+                            auto ffi = operand.get!FFISignature();
+
+                            string callConv;
+
+                            final switch (ffi.callingConvention)
+                            {
+                                case CallingConvention.cdecl:
+                                    callConv = "cdecl";
+                                    break;
+                                case CallingConvention.stdCall:
+                                    callConv = "stdcall";
+                                    break;
+                            }
+
+                            writefln("%s, %s, %s", ffi.library, ffi.entryPoint, callConv);
+
+                            break;
                         default:
                             write(operand);
                     }
