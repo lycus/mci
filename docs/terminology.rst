@@ -55,9 +55,9 @@ Heap
 Refers to the data structure the operating system uses to manage its
 memory. In general, there are two heaps: The native heap and the
 managed heap. The former is what is usually accessed through LibC_'s
-malloc() and free() functions (mem.alloc and mem.free in IAL_); the
-latter is the heap controlled by the GC_ (accessed through mem.gcalloc
-and mem.gcfree in IAL_).
+``malloc()`` and ``free()`` functions (``mem.alloc`` and ``mem.free`` in
+IAL_); the latter is the heap controlled by the GC_ (accessed through
+``mem.gcalloc`` and ``mem.gcfree`` in IAL_).
 
 IR
 ++
@@ -131,7 +131,7 @@ Target
 ++++++
 
 Refers to a processor architecture that the MCI_ can compile code for
-(therefore, a *target*).
+(therefore, a *target* for code generation).
 
 Terminator
 ++++++++++
