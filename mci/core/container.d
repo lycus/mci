@@ -637,6 +637,34 @@ unittest
     assert(!equal(list1, list2));
 }
 
+public T first(T)(Iterable!T iter)
+in
+{
+    assert(iter);
+}
+body
+{
+    // Just return the first item.
+    foreach (item; iter)
+        return item;
+
+    assert(false);
+}
+
+unittest
+{
+    auto list = toList(1, 2, 3);
+
+    assert(first(list) == 1);
+}
+
+unittest
+{
+    auto list = new List!int();
+
+    assertThrown!AssertError(first(list));
+}
+
 public class List(T) : Indexable!T
 {
     private T[] _array;

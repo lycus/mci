@@ -143,11 +143,10 @@ private uint computeAlignment(Type type, bool is32Bit)
             case TypeLayout.sequential:
                 return 1;
             case TypeLayout.automatic:
-                // TODO: Write a first() function for iterables.
-                foreach (field; struc.fields)
-                    return computeAlignment(field.y.type, is32Bit);
+                if (struc.fields.empty)
+                    return 1;
 
-                assert(false);
+                return computeAlignment(first(struc.fields).y.type, is32Bit);
         }
     }
     else
