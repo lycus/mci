@@ -168,8 +168,6 @@ public enum OperationCode : ubyte
     nop,
     comment,
     dead,
-    raw,
-    ffi,
     loadI8,
     loadUI8,
     loadI16,
@@ -229,6 +227,8 @@ public enum OperationCode : ubyte
     call,
     callTail,
     callIndirect,
+    raw,
+    ffi,
     jump,
     jumpTrue,
     jumpFalse,
@@ -244,8 +244,6 @@ public enum OperationCode : ubyte
 public OpCode opNop;
 public OpCode opComment;
 public OpCode opDead;
-public OpCode opRaw;
-public OpCode opFFI;
 public OpCode opLoadI8;
 public OpCode opLoadUI8;
 public OpCode opLoadI16;
@@ -305,6 +303,8 @@ public OpCode opInvokeIndirect;
 public OpCode opCall;
 public OpCode opCallTail;
 public OpCode opCallIndirect;
+public OpCode opRaw;
+public OpCode opFFI;
 public OpCode opJump;
 public OpCode opJumpTrue;
 public OpCode opJumpFalse;
@@ -343,8 +343,6 @@ static this()
     opNop = create("nop", OperationCode.nop, OpCodeType.noOperation, OperandType.none, 0, false);
     opComment = create("comment", OperationCode.comment, OpCodeType.annotation, OperandType.bytes, 0, false);
     opDead = create("dead", OperationCode.dead, OpCodeType.annotation, OperandType.none, 0, false);
-    opRaw = create("raw", OperationCode.raw, OpCodeType.normal, OperandType.bytes, 0, false);
-    opFFI = create("ffi", OperationCode.ffi, OpCodeType.normal, OperandType.ffi, 0, false);
     opLoadI8 = create("load.i8", OperationCode.loadI8, OpCodeType.normal, OperandType.int8, 0, true);
     opLoadUI8 = create("load.ui8", OperationCode.loadUI8, OpCodeType.normal, OperandType.uint8, 0, true);
     opLoadI16 = create("load.i16", OperationCode.loadI16, OpCodeType.normal, OperandType.int16, 0, true);
@@ -404,6 +402,8 @@ static this()
     opInvoke = create("invoke", OperationCode.invoke, OpCodeType.normal, OperandType.function_, 0, false);
     opInvokeTail = create("invoke.tail", OperationCode.invokeTail, OpCodeType.normal, OperandType.function_, 0, false);
     opInvokeIndirect = create("invoke.indirect", OperationCode.invokeIndirect, OpCodeType.normal, OperandType.none, 1, false);
+    opRaw = create("raw", OperationCode.raw, OpCodeType.controlFlow, OperandType.bytes, 0, false);
+    opFFI = create("ffi", OperationCode.ffi, OpCodeType.controlFlow, OperandType.ffi, 0, false);
     opJump = create("jump", OperationCode.jump, OpCodeType.controlFlow, OperandType.label, 0, false);
     opJumpTrue = create("jump.true", OperationCode.jumpTrue, OpCodeType.controlFlow, OperandType.label, 1, false);
     opJumpFalse = create("jump.false", OperationCode.jumpFalse, OpCodeType.controlFlow, OperandType.label, 1, false);
