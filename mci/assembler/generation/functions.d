@@ -29,7 +29,7 @@ body
         throw new GenerationException("Function " ~ module_.name ~ "/" ~ node.name.name ~ " already defined.", node.location);
 
     auto returnType = node.returnType ? resolveType(node.returnType, module_, manager) : null;
-    auto func = new Function(module_, node.name.name, returnType, node.attributes, node.callingConvention);
+    auto func = new Function(module_, node.name.name, returnType, node.attributes);
 
     foreach (param; node.parameters)
         func.createParameter(resolveType(param.type, module_, manager));

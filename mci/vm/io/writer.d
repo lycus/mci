@@ -109,7 +109,6 @@ public final class ModuleWriter : ModuleSaver
     {
         _writer.writeString(function_.name);
         _writer.write(function_.attributes);
-        _writer.write(function_.callingConvention);
         _writer.write(!!function_.returnType);
 
         if (function_.returnType)

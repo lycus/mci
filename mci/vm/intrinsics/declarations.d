@@ -39,7 +39,7 @@ static this()
     }
     body
     {
-        auto func = new Function(intrinsicModule, name, returnType, FunctionAttributes.intrinsic, CallingConvention.cdecl);
+        auto func = new Function(intrinsicModule, name, returnType, FunctionAttributes.intrinsic);
 
         foreach (param; parameters)
             func.createParameter(param);

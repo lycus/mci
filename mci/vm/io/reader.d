@@ -661,7 +661,6 @@ public final class ModuleReader : ModuleLoader
     {
         auto name = _reader.readString();
         auto attributes = _reader.read!FunctionAttributes();
-        auto callConv = _reader.read!CallingConvention();
 
         TypeReferenceDescriptor retType;
 
@@ -669,7 +668,7 @@ public final class ModuleReader : ModuleLoader
             retType = readTypeReference();
 
         auto returnType = retType ? toType(readTypeReference()) : null;
-        auto func = new Function(module_, name, returnType, attributes, callConv);
+        auto func = new Function(module_, name, returnType, attributes);
         auto paramCount = _reader.read!uint();
 
         for (uint i = 0; i < paramCount; i++)

@@ -624,7 +624,6 @@ public class FunctionDeclarationNode : DeclarationNode
 {
     private SimpleNameNode _name;
     private FunctionAttributes _attributes;
-    private CallingConvention _callingConvention;
     private NoNullList!ParameterNode _parameters;
     private TypeReferenceNode _returnType;
     private NoNullList!RegisterDeclarationNode _registers;
@@ -639,9 +638,8 @@ public class FunctionDeclarationNode : DeclarationNode
     }
 
     public this(SourceLocation location, SimpleNameNode name, FunctionAttributes attributes,
-                CallingConvention callingConvention, NoNullList!ParameterNode parameters,
-                TypeReferenceNode returnType, NoNullList!RegisterDeclarationNode registers,
-                NoNullList!BasicBlockDeclarationNode blocks)
+                NoNullList!ParameterNode parameters, TypeReferenceNode returnType,
+                NoNullList!RegisterDeclarationNode registers, NoNullList!BasicBlockDeclarationNode blocks)
     in
     {
         assert(location);
@@ -656,7 +654,6 @@ public class FunctionDeclarationNode : DeclarationNode
 
         _name = name;
         _attributes = attributes;
-        _callingConvention = callingConvention;
         _parameters = parameters.duplicate();
         _returnType = returnType;
         _registers = registers.duplicate();
@@ -671,11 +668,6 @@ public class FunctionDeclarationNode : DeclarationNode
     @property public final FunctionAttributes attributes()
     {
         return _attributes;
-    }
-
-    @property public final CallingConvention callingConvention()
-    {
-        return _callingConvention;
     }
 
     @property public final Countable!ParameterNode parameters()
@@ -709,7 +701,7 @@ public class FunctionDeclarationNode : DeclarationNode
 
     public override string toString()
     {
-        return "attributes: " ~ to!string(_attributes) ~ ", calling convention: " ~ to!string(_callingConvention);
+        return "attributes: " ~ to!string(_attributes);
     }
 }
 

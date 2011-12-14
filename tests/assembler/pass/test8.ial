@@ -1,4 +1,4 @@
-function qcall void main()
+function void main()
 {
     block entry
     {

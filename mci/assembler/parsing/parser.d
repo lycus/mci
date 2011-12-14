@@ -601,31 +601,6 @@ public final class Parser
             attributes |= FunctionAttributes.noCallInlining;
         }
 
-        CallingConvention callConv;
-
-        auto convTok = next();
-
-        switch (convTok.type)
-        {
-            case TokenType.queueCall:
-                callConv = CallingConvention.queueCall;
-                break;
-            case TokenType.cdecl:
-                callConv = CallingConvention.cdecl;
-                break;
-            case TokenType.stdCall:
-                callConv = CallingConvention.stdCall;
-                break;
-            case TokenType.thisCall:
-                callConv = CallingConvention.thisCall;
-                break;
-            case TokenType.fastCall:
-                callConv = CallingConvention.fastCall;
-                break;
-            default:
-                errorGot("'qcall', 'ccall', 'scall', 'tcall', or 'fcall'", convTok.location, convTok.value);
-        }
-
         TypeReferenceNode returnType;
 
         auto voidTok = next();
@@ -690,8 +665,7 @@ public final class Parser
 
         next();
 
-        return new FunctionDeclarationNode(name.location, name, attributes, callConv, params,
-                                           returnType, registers, blocks);
+        return new FunctionDeclarationNode(name.location, name, attributes, params, returnType, registers, blocks);
     }
 
     private RegisterDeclarationNode parseRegisterDeclaration()

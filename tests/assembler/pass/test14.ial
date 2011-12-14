@@ -1,4 +1,4 @@
-function qcall void foo()
+function void foo()
 {
     block entry
     {

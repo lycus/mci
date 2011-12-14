@@ -1,4 +1,4 @@
-function pure nooptimize noinline nocallinline qcall void main()
+function pure nooptimize noinline nocallinline void main()
 {
     block entry
     {

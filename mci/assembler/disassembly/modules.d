@@ -128,25 +128,6 @@ public final class ModuleDisassembler
         if (function_.attributes & FunctionAttributes.noCallInlining)
             write("nocallinline ");
 
-        final switch (function_.callingConvention)
-        {
-            case CallingConvention.queueCall:
-                write("qcall ");
-                break;
-            case CallingConvention.cdecl:
-                write("ccall ");
-                break;
-            case CallingConvention.stdCall:
-                write("scall ");
-                break;
-            case CallingConvention.thisCall:
-                write("tcall ");
-                break;
-            case CallingConvention.fastCall:
-                write("fcall ");
-                break;
-        }
-
         writef("%s %s (", function_.returnType ? function_.returnType.toString() : "void", function_.name);
 
         foreach (i, param; function_.parameters)

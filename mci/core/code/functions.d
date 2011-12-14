@@ -113,7 +113,6 @@ public enum FunctionAttributes : ubyte
 public final class Function
 {
     private FunctionAttributes _attributes;
-    private CallingConvention _callingConvention;
     private Module _module;
     private string _name;
     private NoNullList!Parameter _parameters;
@@ -131,8 +130,7 @@ public final class Function
         assert(_registers);
     }
 
-    public this(Module module_, string name, Type returnType, FunctionAttributes attributes = FunctionAttributes.none,
-                CallingConvention callingConvention = CallingConvention.queueCall)
+    public this(Module module_, string name, Type returnType, FunctionAttributes attributes = FunctionAttributes.none)
     in
     {
         assert(module_);
@@ -145,7 +143,6 @@ public final class Function
         _name = name;
         _returnType = returnType;
         _attributes = attributes;
-        _callingConvention = callingConvention;
         _blocks = new typeof(_blocks)();
         _registers = new typeof(_registers)();
         _parameters = new typeof(_parameters)();
@@ -181,11 +178,6 @@ public final class Function
     @property public FunctionAttributes attributes()
     {
         return _attributes;
-    }
-
-    @property public CallingConvention callingConvention()
-    {
-        return _callingConvention;
     }
 
     @property public Countable!Parameter parameters()
