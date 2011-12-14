@@ -33,6 +33,13 @@ a single terminator_ instruction. If one were to compare with the C
 programming language, a basic block can be considered a label which
 a ``goto`` statement can transfer control to.
 
+FFI
++++
+
+Abbreviation for foreign function interface. It can either refer to
+the concept of calling a native function dynamically at runtime, or
+the actual action of doing so.
+
 GC
 ++
 

@@ -132,6 +132,11 @@ body
 
                         operand = asCountable(registers);
                         break;
+                    case OperandType.ffi:
+                        auto ffi = *instrOperand.peek!FFISignatureNode();
+
+                        operand = new FFISignature(ffi.library.name, ffi.entryPoint.name, ffi.callingConvention);
+                        break;
                 }
             }
 

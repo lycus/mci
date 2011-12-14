@@ -954,13 +954,79 @@ public class ByteArrayLiteralNode : Node
     }
 }
 
+public class FFISignatureNode : Node
+{
+    private SimpleNameNode _library;
+    private SimpleNameNode _entryPoint;
+    private CallingConvention _callingConvention;
+
+    invariant()
+    {
+        assert(_library);
+        assert(_entryPoint);
+    }
+
+    public this(SourceLocation location, SimpleNameNode library, SimpleNameNode entryPoint,
+                CallingConvention callingConvention)
+    in
+    {
+        assert(location);
+        assert(library);
+        assert(entryPoint);
+    }
+    body
+    {
+        super(location);
+
+        _library = library;
+        _entryPoint = entryPoint;
+        _callingConvention = callingConvention;
+    }
+
+    @property public final SimpleNameNode library()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _library;
+    }
+
+    @property public final SimpleNameNode entryPoint()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _entryPoint;
+    }
+
+    @property public final CallingConvention callingConvention()
+    {
+        return _callingConvention;
+    }
+
+    @property public override Countable!Node children()
+    {
+        return toCountable!Node(_library, _entryPoint);
+    }
+
+    public override string toString()
+    {
+        return "calling convention: " ~ to!string(_callingConvention);
+    }
+}
+
 alias Algebraic!(LiteralValueNode,
                  ByteArrayLiteralNode,
                  TypeReferenceNode,
                  FieldReferenceNode,
                  FunctionReferenceNode,
                  BasicBlockReferenceNode,
-                 RegisterSelectorNode) InstructionOperand;
+                 RegisterSelectorNode,
+                 FFISignatureNode) InstructionOperand;
 
 public class InstructionOperandNode : Node
 {

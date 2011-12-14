@@ -74,7 +74,8 @@ alias Algebraic!(byte,
                  Type,
                  Field,
                  Function,
-                 Countable!Register) InstructionOperand;
+                 Countable!Register,
+                 FFISignature) InstructionOperand;
 
 public final class Instruction
 {

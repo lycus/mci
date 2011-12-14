@@ -51,7 +51,6 @@ This instruction has a number of consequences:
 
 * The function cannot be pure.
 * The function cannot be inlined.
-* Calls to other functions cannot be inlined.
 * All optimizations that would affect the layout of the stack cannot happen.
 * Execution of the function within the interpreter becomes impossible.
 * It must be the only instruction in the function.
@@ -68,6 +67,27 @@ inline assembly as in many C and C++ compilers. A general requirement of
 inline assembly using this instruction is that the raw blob must contain
 code that is neutral to relocations, as it is not in any way guaranteed
 where the code blob will be emitted in memory.
+
+ffi
+---
+
+**Has target register**
+    No
+**Source registers**
+    0
+**Operand type**
+    FFI signature
+
+This instruction marks the function as an FFI function. FFI functions must
+only contain this one instruction, which points the code generator to the
+actual function entry point in a native library.
+
+When using this instruction, a function cannot be pure and is not allowed
+to be inlined.
+
+Note that the native function isn't linked to statically. The execution
+engine (either the interpreter or the JIT/AOT engine) will attempt to
+locate the native entry point when the FFI function is called.
 
 Constant load instructions
 ++++++++++++++++++++++++++

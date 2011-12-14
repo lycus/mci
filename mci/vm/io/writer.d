@@ -218,6 +218,8 @@ public final class ModuleWriter : ModuleSaver
                 foreach (reg; *val)
                     writeRegisterReference(reg);
             }
+            else
+                writeFFISignature(*operand.peek!FFISignature());
         }
     }
 
@@ -360,5 +362,17 @@ public final class ModuleWriter : ModuleSaver
     {
         writeModuleReference(function_.module_);
         _writer.writeString(function_.name);
+    }
+
+    private void writeFFISignature(FFISignature signature)
+    in
+    {
+        assert(signature);
+    }
+    body
+    {
+        _writer.writeString(signature.library);
+        _writer.writeString(signature.entryPoint);
+        _writer.write(signature.callingConvention);
     }
 }

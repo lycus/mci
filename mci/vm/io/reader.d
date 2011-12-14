@@ -820,6 +820,9 @@ public final class ModuleReader : ModuleLoader
 
                 operand = asCountable(regs);
                 break;
+            case OperandType.ffi:
+                operand = readFFISignature();
+                break;
         }
 
         return new Instruction(opCode, operand, target, source1, source2, source3);
@@ -863,6 +866,20 @@ public final class ModuleReader : ModuleLoader
 
         error("Unknown basic block: %s", name);
         assert(false);
+    }
+
+    private FFISignature readFFISignature()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto library = _reader.readString();
+        auto ep = _reader.readString();
+        auto callConv = _reader.read!CallingConvention();
+
+        return new FFISignature(library, ep, callConv);
     }
 
     private static void error(T ...)(T args)

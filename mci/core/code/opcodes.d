@@ -34,6 +34,7 @@ public enum OperandType : ubyte
     function_,
     label,
     selector,
+    ffi,
 }
 
 public TypeInfo operandToTypeInfo(OperandType operandType)
@@ -79,6 +80,8 @@ body
             return typeid(BasicBlock);
         case OperandType.selector:
             return typeid(Countable!Register);
+        case OperandType.ffi:
+            return typeid(FFISignature);
     }
 }
 
@@ -166,6 +169,7 @@ public enum OperationCode : ubyte
     comment,
     dead,
     raw,
+    ffi,
     loadI8,
     loadUI8,
     loadI16,
@@ -241,6 +245,7 @@ public OpCode opNop;
 public OpCode opComment;
 public OpCode opDead;
 public OpCode opRaw;
+public OpCode opFFI;
 public OpCode opLoadI8;
 public OpCode opLoadUI8;
 public OpCode opLoadI16;
@@ -339,6 +344,7 @@ static this()
     opComment = create("comment", OperationCode.comment, OpCodeType.annotation, OperandType.bytes, 0, false);
     opDead = create("dead", OperationCode.dead, OpCodeType.annotation, OperandType.none, 0, false);
     opRaw = create("raw", OperationCode.raw, OpCodeType.normal, OperandType.bytes, 0, false);
+    opFFI = create("ffi", OperationCode.ffi, OpCodeType.normal, OperandType.ffi, 0, false);
     opLoadI8 = create("load.i8", OperationCode.loadI8, OpCodeType.normal, OperandType.int8, 0, true);
     opLoadUI8 = create("load.ui8", OperationCode.loadUI8, OpCodeType.normal, OperandType.uint8, 0, true);
     opLoadI16 = create("load.i16", OperationCode.loadI16, OpCodeType.normal, OperandType.int16, 0, true);

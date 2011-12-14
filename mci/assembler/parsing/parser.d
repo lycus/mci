@@ -777,14 +777,14 @@ public final class Parser
         {
             consume("(");
 
-            // If we're parsing a byte array or register selector, bring the
-            // opening parenthesis back in.
-            if (operandType == OperandType.bytes || operandType == OperandType.selector)
+            // If we're parsing a byte array, register selector, or FFI signature,
+            // bring the opening parenthesis back in.
+            if (operandType == OperandType.bytes || operandType == OperandType.selector || operandType == OperandType.ffi)
                 _stream.movePrevious();
 
             operand = parseInstructionOperand(operandType);
 
-            if (operandType != OperandType.bytes && operandType != OperandType.selector)
+            if (operandType != OperandType.bytes && operandType != OperandType.selector && operandType != OperandType.ffi)
                 consume(")");
         }
 
@@ -887,6 +887,11 @@ public final class Parser
                 operand = selector;
                 location = selector.location;
                 break;
+            case OperandType.ffi:
+                auto signature = parseFFISignature();
+                operand = signature;
+                location = signature.location;
+                break;
         }
 
         return new InstructionOperandNode(location, operand);
@@ -972,5 +977,43 @@ public final class Parser
         next();
 
         return new ByteArrayLiteralNode(open.location, values);
+    }
+
+    private FFISignatureNode parseFFISignature()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto open = consume("(");
+
+        auto library = parseSimpleName();
+
+        consume(",");
+
+        auto ep = parseSimpleName();
+
+        consume(",");
+
+        CallingConvention callConv;
+
+        auto convTok = next();
+
+        switch (convTok.type)
+        {
+            case TokenType.cdecl:
+                callConv = CallingConvention.cdecl;
+                break;
+            case TokenType.stdCall:
+                callConv = CallingConvention.stdCall;
+                break;
+            default:
+                errorGot("'cdecl' or 'stdcall'", convTok.location, convTok.value);
+        }
+
+        consume(")");
+
+        return new FFISignatureNode(open.location, library, ep, callConv);
     }
 }

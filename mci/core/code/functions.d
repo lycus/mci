@@ -91,15 +91,6 @@ public final class Parameter
     }
 }
 
-public enum CallingConvention : ubyte
-{
-    queueCall = 0,
-    cdecl = 1,
-    stdCall = 2,
-    thisCall = 3,
-    fastCall = 4,
-}
-
 public enum FunctionAttributes : ubyte
 {
     none = 0x00,
@@ -283,5 +274,62 @@ public final class Function
     body
     {
         return _registers[name] = new Register(name, type);
+    }
+}
+
+public enum CallingConvention : ubyte
+{
+    cdecl = 0,
+    stdCall = 1,
+}
+
+public final class FFISignature
+{
+    private string _library;
+    private string _entryPoint;
+    private CallingConvention _callingConvention;
+
+    invariant()
+    {
+        assert(_library);
+        assert(_entryPoint);
+    }
+
+    public this(string library, string entryPoint, CallingConvention callingConvention)
+    in
+    {
+        assert(library);
+        assert(entryPoint);
+    }
+    body
+    {
+        _library = library;
+        _entryPoint = entryPoint;
+        _callingConvention = callingConvention;
+    }
+
+    @property public string library()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _library;
+    }
+
+    @property public string entryPoint()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _entryPoint;
+    }
+
+    @property public CallingConvention callingConvention()
+    {
+        return _callingConvention;
     }
 }
