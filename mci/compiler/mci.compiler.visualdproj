@@ -1,5 +1,5 @@
 <DProject>
- <ProjectGuid>{0ACE7F95-561C-48AD-9645-D7CC00789004}</ProjectGuid>
+ <ProjectGuid>{3EA32DFA-FBB8-4EB3-8DBA-63E8FDCB8996}</ProjectGuid>
  <Config name="Debug">
   <obj>0</obj>
   <link>0</link>
@@ -42,7 +42,7 @@
   <ignoreUnsupportedPragmas>1</ignoreUnsupportedPragmas>
   <otherDMD>0</otherDMD>
   <program>$(DMDInstallDir)windows\bin\dmd.exe</program>
-  <imppath>..\..</imppath>
+  <imppath>..\..;..\..\..\libffi-d</imppath>
   <fileImppath />
   <outdir>$(ConfigurationName)</outdir>
   <objdir>$(OutDir)</objdir>
@@ -132,7 +132,7 @@
   <ignoreUnsupportedPragmas>1</ignoreUnsupportedPragmas>
   <otherDMD>0</otherDMD>
   <program>$(DMDInstallDir)windows\bin\dmd.exe</program>
-  <imppath>..\..</imppath>
+  <imppath>..\..;..\..\..\libffi-d</imppath>
   <fileImppath />
   <outdir>$(ConfigurationName)</outdir>
   <objdir>$(OutDir)</objdir>
@@ -222,7 +222,7 @@
   <ignoreUnsupportedPragmas>1</ignoreUnsupportedPragmas>
   <otherDMD>0</otherDMD>
   <program>$(DMDInstallDir)windows\bin\dmd.exe</program>
-  <imppath>..\..</imppath>
+  <imppath>..\..;..\..\..\libffi-d</imppath>
   <fileImppath />
   <outdir>$(ConfigurationName)</outdir>
   <objdir>$(OutDir)</objdir>
