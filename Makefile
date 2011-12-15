@@ -165,7 +165,7 @@ MCI_JIT_SOURCES = \
 
 bin/mci.cli: $(MCI_CLI_DEPS) $(MCI_CLI_SOURCES)
 	-mkdir -p bin;
-	$(DPLC) $(DFLAGS) $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS);
+	$(DPLC) $(DFLAGS) -L-lffi $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS);
 
 MCI_CLI_SOURCES = \
 	mci/cli/main.d \
@@ -186,7 +186,7 @@ MCI_CLI_DEPS = \
 
 $(MCI_TESTER): $(MCI_TESTER_DEPS) $(MCI_TESTER_SOURCES)
 	-mkdir -p bin;
-	$(DPLC) $(DFLAGS) $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS);
+	$(DPLC) $(DFLAGS) -L-lffi $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS);
 	cd bin; \
 	if [ ${BUILD} = "test" ]; then \
 		gdb --command=../mci.gdb ../$@; \
