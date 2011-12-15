@@ -28,9 +28,19 @@ For example, to do a 32-bit release build:
 The resulting libraries and executables will be placed in the root
 directory of the source distribution.
 
-Building on Windows is only supported via Visual D. Simply install
-your compiler of choice, configure Visual D to use it, and compile
-MCI.sln with the desired configuration.
+Building on Windows is only supported via Visual D. Install your
+compiler of choice and configure Visual D to use it.
+
+You'll need the libffi library files. You can either build libffi
+from source under Cygwin or MinGW, or you can download precompiled
+binaries here: https://github.com/lycus/libffi-d/downloads
+
+You need to make sure that either the Cygwin or MinGW version of the
+library can be found via your library search paths. These can be set
+in the global Visual D options.
+
+Finally, select your desired solution configuration (Debug, Release,
+or Test) and build the solution.
 
 Note that the MCI cannot currently be compiled for 64-bit on Windows
 with DMD, due to limitations in Optlink (among other things). It is
