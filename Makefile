@@ -37,9 +37,13 @@ endif
 all: \
 	bin/libmci.core.a \
 	bin/libmci.assembler.a \
+	bin/libmci.verifier.a \
+	bin/libmci.optimizer.a \
 	bin/libmci.vm.a \
 	bin/libmci.interpreter.a \
+	bin/libmci.compiler.a \
 	bin/libmci.jit.a \
+	bin/libmci.aot.a \
 	bin/mci.cli \
 	$(MCI_TESTER)
 
@@ -125,6 +129,24 @@ bin/libmci.assembler.a: $(MCI_ASSEMBLER_SOURCES)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) -lib $(MCI_ASSEMBLER_SOURCES);
 
+#################### mci.verifier ####################
+
+MCI_VERIFIER_SOURCES = \
+	mci/verifier/all.d \
+
+bin/libmci.verifier.a: $(MCI_VERIFIER_SOURCES)
+	-mkdir -p bin;
+	$(DPLC) $(DFLAGS) -lib $(MCI_VERIFIER_SOURCES);
+
+#################### mci.optimizer ####################
+
+MCI_OPTIMIZER_SOURCES = \
+	mci/optimizer/all.d \
+
+bin/libmci.optimizer.a: $(MCI_OPTIMIZER_SOURCES)
+	-mkdir -p bin;
+	$(DPLC) $(DFLAGS) -lib $(MCI_OPTIMIZER_SOURCES);
+
 #################### mci.vm ####################
 
 MCI_VM_SOURCES = \
@@ -156,6 +178,15 @@ bin/libmci.interpreter.a: $(MCI_INTERPRETER_SOURCES)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) -lib $(MCI_INTERPRETER_SOURCES);
 
+#################### mci.compiler ####################
+
+MCI_COMPILER_SOURCES = \
+	mci/compiler/all.d \
+
+bin/libmci.compiler.a: $(MCI_COMPILER_SOURCES)
+	-mkdir -p bin;
+	$(DPLC) $(DFLAGS) -lib $(MCI_COMPILER_SOURCES);
+
 #################### mci.jit ####################
 
 MCI_JIT_SOURCES = \
@@ -164,6 +195,15 @@ MCI_JIT_SOURCES = \
 bin/libmci.jit.a: $(MCI_JIT_SOURCES)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) -lib $(MCI_JIT_SOURCES);
+
+#################### mci.aot ####################
+
+MCI_AOT_SOURCES = \
+	mci/aot/all.d \
+
+bin/libmci.aot.a: $(MCI_AOT_SOURCES)
+	-mkdir -p bin;
+	$(DPLC) $(DFLAGS) -lib $(MCI_AOT_SOURCES);
 
 #################### mci.cli ####################
 
@@ -176,9 +216,13 @@ MCI_CLI_SOURCES = \
 	mci/cli/tools/verifier.d
 
 MCI_CLI_DEPS = \
+	bin/libmci.aot.a \
 	bin/libmci.jit.a \
+	bin/libmci.compiler.a \
 	bin/libmci.interpreter.a \
 	bin/libmci.vm.a \
+	bin/libmci.optimizer.a \
+	bin/libmci.verifier.a \
 	bin/libmci.assembler.a \
 	bin/libmci.core.a \
 	libffi-d/bin/libffi-d.a
@@ -193,9 +237,13 @@ MCI_TESTER_SOURCES = \
 	mci/tester/main.d
 
 MCI_TESTER_DEPS = \
+	bin/libmci.aot.a \
 	bin/libmci.jit.a \
+	bin/libmci.compiler.a \
 	bin/libmci.interpreter.a \
 	bin/libmci.vm.a \
+	bin/libmci.optimizer.a \
+	bin/libmci.verifier.a \
 	bin/libmci.assembler.a \
 	bin/libmci.core.a \
 	libffi-d/bin/libffi-d.a

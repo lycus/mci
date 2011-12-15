@@ -1,10 +1,14 @@
 module mci.tester.main;
 
 import std.stdio,
+       mci.aot.all,
        mci.assembler.all,
+       mci.compiler.all,
        mci.core.all,
        mci.interpreter.all,
        mci.jit.all,
+       mci.optimizer.all,
+       mci.verifier.all,
        mci.vm.all;
 
 private int main()
