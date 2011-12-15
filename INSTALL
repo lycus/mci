@@ -6,7 +6,8 @@ Installation on Linux works through a single Makefile:
 
     $ make
 
-If you have a working compiler installed, this should just work.
+If you have a working compiler installed, this should just work. Note
+that you must have libffi installed.
 
 There are some variables that you can override when building with
 the Makefile:
