@@ -44,12 +44,13 @@ all: \
 	$(MCI_TESTER)
 
 clean:
-	-rm -rf docs/_build/*
-	-rm -f bin/*
-	-rm -f tests/*/*/*.ast
-	-rm -f tests/*/*/*.mci
-	-rm -f tests/*/*/*.def
-	-rm -f tests/*/*/*.log
+	-rm -rf docs/_build/*;
+	-rm -f bin/*;
+	-rm -f tests/*/*/*.ast;
+	-rm -f tests/*/*/*.mci;
+	-rm -f tests/*/*/*.def;
+	-rm -f tests/*/*/*.log;
+	$(MAKE) -C libffi-d clean;
 
 docs:
 	cd docs; \
@@ -68,11 +69,10 @@ docs:
 	make changes; \
 	make linkcheck;
 
-#################### mci.core ####################
+libffi-d/bin/libffi-d.a:
+	$(MAKE) -C libffi-d;
 
-bin/libmci.core.a: $(MCI_CORE_SOURCES)
-	-mkdir -p bin;
-	$(DPLC) $(DFLAGS) -lib $(MCI_CORE_SOURCES);
+#################### mci.core ####################
 
 MCI_CORE_SOURCES = \
 	mci/core/all.d \
@@ -99,11 +99,11 @@ MCI_CORE_SOURCES = \
 	mci/core/typing/members.d \
 	mci/core/typing/types.d
 
-#################### mci.assembler ####################
-
-bin/libmci.assembler.a: $(MCI_ASSEMBLER_SOURCES)
+bin/libmci.core.a: $(MCI_CORE_SOURCES)
 	-mkdir -p bin;
-	$(DPLC) $(DFLAGS) -lib $(MCI_ASSEMBLER_SOURCES);
+	$(DPLC) $(DFLAGS) -lib $(MCI_CORE_SOURCES);
+
+#################### mci.assembler ####################
 
 MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/all.d \
@@ -121,11 +121,11 @@ MCI_ASSEMBLER_SOURCES = \
 	mci/assembler/parsing/parser.d \
 	mci/assembler/parsing/tokens.d
 
-#################### mci.vm ####################
-
-bin/libmci.vm.a: $(MCI_VM_SOURCES)
+bin/libmci.assembler.a: $(MCI_ASSEMBLER_SOURCES)
 	-mkdir -p bin;
-	$(DPLC) $(DFLAGS) -lib $(MCI_VM_SOURCES);
+	$(DPLC) $(DFLAGS) -lib $(MCI_ASSEMBLER_SOURCES);
+
+#################### mci.vm ####################
 
 MCI_VM_SOURCES = \
 	mci/vm/all.d \
@@ -143,29 +143,29 @@ MCI_VM_SOURCES = \
 	mci/vm/io/reader.d \
 	mci/vm/io/writer.d \
 
+bin/libmci.vm.a: $(MCI_VM_SOURCES)
+	-mkdir -p bin;
+	$(DPLC) $(DFLAGS) -lib $(MCI_VM_SOURCES);
+
 #################### mci.interpreter ####################
+
+MCI_INTERPRETER_SOURCES = \
+	mci/interpreter/all.d
 
 bin/libmci.interpreter.a: $(MCI_INTERPRETER_SOURCES)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) -lib $(MCI_INTERPRETER_SOURCES);
 
-MCI_INTERPRETER_SOURCES = \
-	mci/interpreter/all.d
-
 #################### mci.jit ####################
+
+MCI_JIT_SOURCES = \
+	mci/jit/all.d \
 
 bin/libmci.jit.a: $(MCI_JIT_SOURCES)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) -lib $(MCI_JIT_SOURCES);
 
-MCI_JIT_SOURCES = \
-	mci/jit/all.d \
-
 #################### mci.cli ####################
-
-bin/mci.cli: $(MCI_CLI_DEPS) $(MCI_CLI_SOURCES)
-	-mkdir -p bin;
-	$(DPLC) $(DFLAGS) -L-lffi $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS);
 
 MCI_CLI_SOURCES = \
 	mci/cli/main.d \
@@ -180,19 +180,14 @@ MCI_CLI_DEPS = \
 	bin/libmci.interpreter.a \
 	bin/libmci.vm.a \
 	bin/libmci.assembler.a \
-	bin/libmci.core.a
+	bin/libmci.core.a \
+	libffi-d/bin/libffi-d.a
+
+bin/mci.cli: $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS)
+	-mkdir -p bin;
+	$(DPLC) $(DFLAGS) -L-lffi $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS);
 
 #################### mci.tester ####################
-
-$(MCI_TESTER): $(MCI_TESTER_DEPS) $(MCI_TESTER_SOURCES)
-	-mkdir -p bin;
-	$(DPLC) $(DFLAGS) -L-lffi $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS);
-	cd bin; \
-	if [ ${BUILD} = "test" ]; then \
-		gdb --command=../mci.gdb ../$@; \
-	fi;
-	cd tests/assembler; \
-	rdmd tester.d;
 
 MCI_TESTER_SOURCES = \
 	mci/tester/main.d
@@ -202,4 +197,15 @@ MCI_TESTER_DEPS = \
 	bin/libmci.interpreter.a \
 	bin/libmci.vm.a \
 	bin/libmci.assembler.a \
-	bin/libmci.core.a
+	bin/libmci.core.a \
+	libffi-d/bin/libffi-d.a
+
+$(MCI_TESTER): $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS)
+	-mkdir -p bin;
+	$(DPLC) $(DFLAGS) -L-lffi $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS);
+	cd bin; \
+	if [ $(BUILD) = "test" ]; then \
+		gdb --command=../mci.gdb ../$@; \
+	fi;
+	cd tests/assembler; \
+	rdmd tester.d;
