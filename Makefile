@@ -16,7 +16,7 @@ ifneq ($(BUILD), debug)
 	endif
 endif
 
-DFLAGS = -w -wi -ignore -X -m$(MODEL) -profile -Xf$@.json -deps=$@.deps -of$@
+DFLAGS = -w -wi -ignore -X -m$(MODEL) -profile -Xf$@.json -deps=$@.deps -of$@ -Ilibffi-d
 
 ifeq ($(BUILD), release)
 	DFLAGS += -release -O -inline
