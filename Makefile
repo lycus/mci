@@ -221,7 +221,7 @@ bin/libmci.aot.a: $(MCI_AOT_SOURCES)
 MCI_DEBUGGER_SOURCES = \
 	mci/debugger/all.d \
 
-bin/libmci.aot.a: $(MCI_DEBUGGER_SOURCES)
+bin/libmci.debugger.a: $(MCI_DEBUGGER_SOURCES)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) -lib $(MCI_DEBUGGER_SOURCES);
 
