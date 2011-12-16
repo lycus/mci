@@ -37,6 +37,7 @@ endif
 all: \
 	bin/libmci.core.a \
 	bin/libmci.assembler.a \
+	bin/libmci.linker.a \
 	bin/libmci.verifier.a \
 	bin/libmci.optimizer.a \
 	bin/libmci.vm.a \
@@ -44,6 +45,7 @@ all: \
 	bin/libmci.compiler.a \
 	bin/libmci.jit.a \
 	bin/libmci.aot.a \
+	bin/libmci.debugger.a \
 	bin/mci.cli \
 	$(MCI_TESTER)
 
@@ -129,6 +131,15 @@ bin/libmci.assembler.a: $(MCI_ASSEMBLER_SOURCES)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) -lib $(MCI_ASSEMBLER_SOURCES);
 
+#################### mci.linker ####################
+
+MCI_LINKER_SOURCES = \
+	mci/linker/all.d
+
+bin/libmci.linker.a: $(MCI_LINKER_SOURCES)
+	-mkdir -p bin;
+	$(DPLC) $(DFLAGS) -lib $(MCI_LINKER_SOURCES);
+
 #################### mci.verifier ####################
 
 MCI_VERIFIER_SOURCES = \
@@ -205,6 +216,15 @@ bin/libmci.aot.a: $(MCI_AOT_SOURCES)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) -lib $(MCI_AOT_SOURCES);
 
+#################### mci.debugger ####################
+
+MCI_DEBUGGER_SOURCES = \
+	mci/debugger/all.d \
+
+bin/libmci.aot.a: $(MCI_DEBUGGER_SOURCES)
+	-mkdir -p bin;
+	$(DPLC) $(DFLAGS) -lib $(MCI_DEBUGGER_SOURCES);
+
 #################### mci.cli ####################
 
 MCI_CLI_SOURCES = \
@@ -216,6 +236,7 @@ MCI_CLI_SOURCES = \
 	mci/cli/tools/verifier.d
 
 MCI_CLI_DEPS = \
+	bin/libmci.debugger.a \
 	bin/libmci.aot.a \
 	bin/libmci.jit.a \
 	bin/libmci.compiler.a \
@@ -223,6 +244,7 @@ MCI_CLI_DEPS = \
 	bin/libmci.vm.a \
 	bin/libmci.optimizer.a \
 	bin/libmci.verifier.a \
+	bin/libmci.linker.a \
 	bin/libmci.assembler.a \
 	bin/libmci.core.a \
 	libffi-d/bin/libffi-d.a
@@ -237,6 +259,7 @@ MCI_TESTER_SOURCES = \
 	mci/tester/main.d
 
 MCI_TESTER_DEPS = \
+	bin/libmci.debugger.a \
 	bin/libmci.aot.a \
 	bin/libmci.jit.a \
 	bin/libmci.compiler.a \
@@ -244,6 +267,7 @@ MCI_TESTER_DEPS = \
 	bin/libmci.vm.a \
 	bin/libmci.optimizer.a \
 	bin/libmci.verifier.a \
+	bin/libmci.linker.a \
 	bin/libmci.assembler.a \
 	bin/libmci.core.a \
 	libffi-d/bin/libffi-d.a

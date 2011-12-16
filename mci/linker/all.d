@@ -1,0 +1,1 @@
+module mci.linker.all;
