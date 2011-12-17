@@ -294,8 +294,10 @@ public final class Parser
             {
                 consume(",");
 
-                if (peek().type == TokenType.closeParen)
-                    errorGot("type specification", peek.location, peek.value);
+                auto closeParen = peek();
+
+                if (closeParen.type == TokenType.closeParen)
+                    errorGot("type specification", closeParen.location, closeParen.value);
             }
         }
 
@@ -635,8 +637,10 @@ public final class Parser
             {
                 consume(",");
 
-                if (peek().type == TokenType.closeParen)
-                    errorGot("type specification", peek.location, peek.value);
+                auto closeParen = peek();
+
+                if (closeParen.type == TokenType.closeParen)
+                    errorGot("type specification", closeParen.location, closeParen.value);
             }
         }
 
@@ -916,8 +920,10 @@ public final class Parser
             {
                 consume(",");
 
-                if (peek().type == TokenType.closeParen)
-                    errorGot("register reference", peek.location, peek.value);
+                auto closeParen = peek();
+
+                if (closeParen.type == TokenType.closeParen)
+                    errorGot("register reference", closeParen.location, closeParen.value);
             }
         }
 
@@ -969,8 +975,10 @@ public final class Parser
             {
                 consume(",");
 
-                if (peek().type == TokenType.closeParen)
-                    errorGot("literal value", peek.location, peek.value);
+                auto closeParen = peek();
+
+                if (closeParen.type == TokenType.closeParen)
+                    errorGot("literal value", closeParen.location, closeParen.value);
             }
         }
 
