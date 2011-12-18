@@ -91,6 +91,7 @@ MCI_CORE_SOURCES = \
 	mci/core/nullable.d \
 	mci/core/tuple.d \
 	mci/core/visitor.d \
+	mci/core/analysis/utilities.d \
 	mci/core/code/emit.d \
 	mci/core/code/functions.d \
 	mci/core/code/instructions.d \
@@ -144,6 +145,11 @@ bin/libmci.linker.a: $(MCI_LINKER_SOURCES)
 
 MCI_VERIFIER_SOURCES = \
 	mci/verifier/all.d \
+	mci/verifier/base.d \
+	mci/verifier/exception.d \
+	mci/verifier/passes/control.d \
+	mci/verifier/passes/ordering.d \
+	mci/verifier/passes/typing.d
 
 bin/libmci.verifier.a: $(MCI_VERIFIER_SOURCES)
 	-mkdir -p bin;
@@ -152,7 +158,7 @@ bin/libmci.verifier.a: $(MCI_VERIFIER_SOURCES)
 #################### mci.optimizer ####################
 
 MCI_OPTIMIZER_SOURCES = \
-	mci/optimizer/all.d \
+	mci/optimizer/all.d
 
 bin/libmci.optimizer.a: $(MCI_OPTIMIZER_SOURCES)
 	-mkdir -p bin;
@@ -190,7 +196,7 @@ bin/libmci.interpreter.a: $(MCI_INTERPRETER_SOURCES)
 #################### mci.compiler ####################
 
 MCI_COMPILER_SOURCES = \
-	mci/compiler/all.d \
+	mci/compiler/all.d
 
 bin/libmci.compiler.a: $(MCI_COMPILER_SOURCES)
 	-mkdir -p bin;
@@ -199,7 +205,7 @@ bin/libmci.compiler.a: $(MCI_COMPILER_SOURCES)
 #################### mci.jit ####################
 
 MCI_JIT_SOURCES = \
-	mci/jit/all.d \
+	mci/jit/all.d
 
 bin/libmci.jit.a: $(MCI_JIT_SOURCES)
 	-mkdir -p bin;
@@ -208,7 +214,7 @@ bin/libmci.jit.a: $(MCI_JIT_SOURCES)
 #################### mci.aot ####################
 
 MCI_AOT_SOURCES = \
-	mci/aot/all.d \
+	mci/aot/all.d
 
 bin/libmci.aot.a: $(MCI_AOT_SOURCES)
 	-mkdir -p bin;
@@ -217,7 +223,7 @@ bin/libmci.aot.a: $(MCI_AOT_SOURCES)
 #################### mci.debugger ####################
 
 MCI_DEBUGGER_SOURCES = \
-	mci/debugger/all.d \
+	mci/debugger/all.d
 
 bin/libmci.debugger.a: $(MCI_DEBUGGER_SOURCES)
 	-mkdir -p bin;
