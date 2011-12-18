@@ -38,7 +38,7 @@ public final class AssemblerTool : Tool
                 "\t--reference=<file>\t-r <file>\tReference a compiled module.",
                 "\t--verify\t\t-v\t\tRun the IAL verifier on the resulting module.",
                 "\t--optimize\t\t-p\t\tPass the module through the optimization pipeline.",
-                "\t--interpret\t\t-t\t\tRun the module with the IAL interpreter (no output will be generated).",
+                "\t--interpret\t\t-i\t\tRun the module with the IAL interpreter (no output will be generated).",
                 "\t--collector=<type>\t-c <type>\tSpecify which garbage collector to use if running the module."];
     }
 
