@@ -15,6 +15,7 @@ Infrastructure guide
    terminology.rst
    type_system.rst
    instruction_set.rst
+   intrinsics.rst
 
 Framework reference
 +++++++++++++++++++

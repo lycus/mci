@@ -24,6 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 	ProjectSection(SolutionItems) = preProject
 		docs\index.rst = docs\index.rst
 		docs\instruction_set.rst = docs\instruction_set.rst
+		docs\intrinsics.rst = docs\intrinsics.rst
 		docs\introduction.rst = docs\introduction.rst
 		docs\terminology.rst = docs\terminology.rst
 		docs\type_system.rst = docs\type_system.rst
