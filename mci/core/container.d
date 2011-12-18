@@ -553,6 +553,36 @@ unittest
     assert(count(list2) == 3);
 }
 
+public size_t count(T)(Iterable!T iter, scope bool delegate(T) predicate)
+in
+{
+    assert(iter);
+    assert(predicate);
+}
+body
+{
+    size_t count;
+
+    foreach (item; iter)
+        if (predicate(item))
+            count++;
+
+    return count;
+}
+
+unittest
+{
+    auto list = new List!int();
+
+    list.add(1);
+    list.add(2);
+    list.add(3);
+    list.add(4);
+    list.add(5);
+
+    assert(count(list, (int i) { return i < 3; }) == 2);
+}
+
 public Iterable!R castItems(R, T)(Iterable!T iter)
 in
 {
@@ -663,6 +693,41 @@ unittest
     auto list = new List!int();
 
     assertThrown!AssertError(first(list));
+}
+
+public T last(T)(Iterable!T iter)
+in
+{
+    assert(iter);
+}
+body
+{
+    T item;
+    bool notEmpty;
+
+    foreach (i; iter)
+    {
+        item = i;
+        notEmpty = true;
+    }
+
+    assert(notEmpty);
+
+    return item;
+}
+
+unittest
+{
+    auto list = new List!int();
+
+    assertThrown!AssertError(last(list));
+}
+
+unittest
+{
+    auto list = toList(1, 2, 3);
+
+    assert(last(list) == 3);
 }
 
 public class List(T) : Indexable!T
