@@ -14,6 +14,8 @@ else
     alias long isize_t;
 }
 
+alias void function() function_t;
+
 public bool isType(U, T)(T obj)
 in
 {
