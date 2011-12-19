@@ -1,7 +1,6 @@
 module mci.cli.tools.disassembler;
 
-import std.algorithm,
-       std.exception,
+import std.exception,
        std.getopt,
        std.path,
        mci.assembler.disassembly.modules,

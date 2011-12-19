@@ -1,7 +1,6 @@
 module mci.cli.tools.assembler;
 
-import std.algorithm,
-       std.conv,
+import std.conv,
        std.exception,
        std.getopt,
        std.path,
@@ -35,7 +34,6 @@ public final class AssemblerTool : Tool
     {
         return ["\t--output=<file>\t\t-o <file>\tSpecify module output file.",
                 "\t--dump=<file>\t\t-d <file>\tDump parsed ASTs to the given file.",
-                "\t--reference=<file>\t-r <file>\tReference a compiled module.",
                 "\t--verify\t\t-v\t\tRun the IAL verifier on the resulting module.",
                 "\t--optimize\t\t-p\t\tPass the module through the optimization pipeline.",
                 "\t--interpret\t\t-i\t\tRun the module with the IAL interpreter (no output will be generated).",
@@ -46,7 +44,6 @@ public final class AssemblerTool : Tool
     {
         string output = "out.mci";
         string dump;
-        string[] moduleRefs;
         bool verify;
         bool optimize;
         bool interpret;
@@ -59,7 +56,6 @@ public final class AssemblerTool : Tool
                    config.bundling,
                    "output|o", &output,
                    "dump|d", &dump,
-                   "reference|r", &moduleRefs,
                    "verify|v", &verify,
                    "optimize|p", &optimize,
                    "interpret|i", &interpret,
@@ -88,27 +84,6 @@ public final class AssemblerTool : Tool
         {
             logf("Error: Output file '%s' does not end in '%s'.", output, moduleFileExtension);
             return false;
-        }
-
-        foreach (reference; moduleRefs)
-        {
-            if (reference.length <= moduleFileExtension.length)
-            {
-                logf("Error: Referenced module '%s' has no name part.", reference);
-                return false;
-            }
-
-            if (extension(reference) != moduleFileExtension)
-            {
-                logf("Error: Referenced module '%s' does not end in '%s'.", reference, moduleFileExtension);
-                return false;
-            }
-
-            if (reference == output)
-            {
-                logf("Error: Output file '%s' is the same as referenced module '%s'.", output, reference);
-                return false;
-            }
         }
 
         auto units = new NoNullDictionary!(string, CompilationUnit)();
