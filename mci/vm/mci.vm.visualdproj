@@ -278,6 +278,7 @@
  </Config>
  <Folder name="mci.vm">
   <Folder name="intrinsics">
+   <File path="intrinsics\config.d" />
    <File path="intrinsics\declarations.d" />
   </Folder>
   <Folder name="io">

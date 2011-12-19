@@ -6,10 +6,18 @@ import mci.core.common,
        mci.core.code.modules,
        mci.core.typing.cache,
        mci.core.typing.core,
-       mci.core.typing.types;
+       mci.core.typing.types,
+       mci.vm.intrinsics.config;
 
 public Module intrinsicModule;
 public NoNullDictionary!(Function, function_t) intrinsicFunctions;
+
+public Function mciGetCompiler;
+public Function mciGetArchitecture;
+public Function mciGetOperatingSystem;
+public Function mciGetEndianness;
+public Function mciIs32Bit;
+
 public enum string intrinsicModuleName = "mci";
 
 static this()
@@ -36,4 +44,10 @@ static this()
 
         return f;
     }
+
+    mciGetCompiler = createFunction("mci_get_compiler", &mci_get_compiler, UInt8Type.instance);
+    mciGetArchitecture = createFunction("mci_get_architecture", &mci_get_architecture, UInt8Type.instance);
+    mciGetOperatingSystem = createFunction("mci_get_operating_system", &mci_get_operating_system, UInt8Type.instance);
+    mciGetEndianness = createFunction("mci_get_endianness", &mci_get_endianness, UInt8Type.instance);
+    mciIs32Bit = createFunction("mci_is_32_bit", &mci_is_32_bit, UInt8Type.instance);
 }

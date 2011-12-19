@@ -167,6 +167,7 @@ MCI_VM_SOURCES = \
 	mci/vm/memory/layout.d \
 	mci/vm/memory/libc.d \
 	mci/vm/memory/prettyprint.d \
+	mci/vm/intrinsics/config.d \
 	mci/vm/intrinsics/declarations.d \
 	mci/vm/io/common.d \
 	mci/vm/io/exception.d \
