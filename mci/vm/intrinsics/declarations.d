@@ -1,30 +1,39 @@
 module mci.vm.intrinsics.declarations;
 
-import mci.core.code.functions,
+import mci.core.common,
+       mci.core.container,
+       mci.core.code.functions,
        mci.core.code.modules,
        mci.core.typing.cache,
        mci.core.typing.core,
        mci.core.typing.types;
 
 public Module intrinsicModule;
+public NoNullDictionary!(Function, function_t) intrinsicFunctions;
 public enum string intrinsicModuleName = "mci";
 
 static this()
 {
-    intrinsicModule = new Module(intrinsicModuleName);
+    intrinsicModule = new typeof(intrinsicModule)(intrinsicModuleName);
+    intrinsicFunctions = new typeof(intrinsicFunctions)();
 
-    Function createFunction(string name, Type returnType, Type[] parameters = null)
+    Function createFunction(string name, void* func, Type returnType, Type[] parameters = null)
     in
     {
         assert(name);
+        assert(func);
     }
     body
     {
-        auto func = new Function(intrinsicModule, name, returnType, FunctionAttributes.intrinsic);
+        auto f = new Function(intrinsicModule, name, returnType, FunctionAttributes.intrinsic);
 
         foreach (param; parameters)
-            func.createParameter(param);
+            f.createParameter(param);
 
-        return func;
+        f.close();
+
+        intrinsicFunctions[f] = cast(function_t)func;
+
+        return f;
     }
 }
