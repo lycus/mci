@@ -8,24 +8,38 @@ import mci.core.container,
 
 public final class BasicBlock
 {
+    private Function _function;
     private string _name;
     private NoNullList!Instruction _instructions;
 
     invariant()
     {
+        assert(_function);
         assert(_name);
         assert(_instructions);
     }
 
-    package this(string name)
+    private this(Function function_, string name)
     in
     {
+        assert(function_);
         assert(name);
     }
     body
     {
+        _function = function_;
         _name = name;
         _instructions = new typeof(_instructions)();
+    }
+
+    @property public Function function_()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _function;
     }
 
     @property public string name()
@@ -58,21 +72,35 @@ public enum string entryBlockName = "entry";
 
 public final class Parameter
 {
+    private Function _function;
     private Type _type;
 
     invariant()
     {
+        assert(_function);
         assert(_type);
     }
 
-    package this(Type type)
+    private this(Function function_, Type type)
     in
     {
+        assert(function_);
         assert(type);
     }
     body
     {
+        _function = function_;
         _type = type;
+    }
+
+    @property public Function function_()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _function;
     }
 
     @property public Type type()
@@ -229,7 +257,7 @@ public final class Function
     {
         // We keep the Parameter class around for now, since it may
         // come in handy later for specifying attributes.
-        auto param = new Parameter(type);
+        auto param = new Parameter(this, type);
         _parameters.add(param);
 
         return param;
@@ -257,7 +285,7 @@ public final class Function
     }
     body
     {
-        return _blocks[name] = new BasicBlock(name);
+        return _blocks[name] = new BasicBlock(this, name);
     }
 
     public Register createRegister(string name, Type type)
@@ -273,7 +301,7 @@ public final class Function
     }
     body
     {
-        return _registers[name] = new Register(name, type);
+        return _registers[name] = new Register(this, name, type);
     }
 }
 

@@ -10,25 +10,39 @@ import std.variant,
 
 public final class Register
 {
+    private Function _function;
     private Type _type;
     private string _name;
 
     invariant()
     {
+        assert(_function);
         assert(_type);
         assert(_name);
     }
 
-    package this(string name, Type type)
+    package this(Function function_, string name, Type type)
     in
     {
+        assert(function_);
         assert(name);
         assert(type);
     }
     body
     {
+        _function = function_;
         _name = name;
         _type = type;
+    }
+
+    @property public Function function_()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _function;
     }
 
     @property public Type type()
