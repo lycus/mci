@@ -498,9 +498,8 @@ source register's type, that amount will be used instead.
 
 The first register and the target register must be of the exact same type.
 Allowed types are ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``,
-``uint32``, ``int64``, ``uint64``, ``int``, ``uint``, ``float32``,
-``float64``, as well as any pointer type. Vectors of all of these are also
-allowed.
+``uint32``, ``int64``, ``uint64``, ``int``, ``uint``, as well as any pointer
+type. Vectors of all of these are also allowed.
 
 The second register must be of type ``uint`` or a vector of these.
 
@@ -526,9 +525,8 @@ source register's type, that amount will be used instead.
 
 The first register and the target register must be of the exact same type.
 Allowed types are ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``,
-``uint32``, ``int64``, ``uint64``, ``int``, ``uint``, ``float32``,
-``float64``, as well as any pointer type. Vectors of all of these are also
-allowed.
+``uint32``, ``int64``, ``uint64``, ``int``, ``uint``, as well as any pointer
+type. Vectors of all of these are also allowed.
 
 The second register must be of type ``uint`` or a vector of these.
 
