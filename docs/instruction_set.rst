@@ -403,8 +403,8 @@ the result to the target register.
 
 All three registers must be of the exact same type. Allowed types are
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
-well as any pointer type. Vectors of all of these are also allowed.
+``int64``, ``uint64``, ``int``, ``uint``, as well as any pointer type.
+Vectors of all of these are also allowed.
 
 bit.or
 ------
@@ -421,8 +421,8 @@ the result to the target register.
 
 All three registers must be of the exact same type. Allowed types are
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
-well as any pointer type. Vectors of all of these are also allowed.
+``int64``, ``uint64``, ``int``, ``uint``, as well as any pointer type.
+Vectors of all of these are also allowed.
 
 bit.xor
 -------
@@ -439,8 +439,8 @@ the result to the target register.
 
 All three registers must be of the exact same type. Allowed types are
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
-well as any pointer type. Vectors of all of these are also allowed.
+``int64``, ``uint64``, ``int``, ``uint``, as well as any pointer type.
+Vectors of all of these are also allowed.
 
 bit.neg
 -------
@@ -457,8 +457,8 @@ and assigns the result to the target register.
 
 Both registers must be of the exact same type. Allowed types are
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
-well as any pointer type. Vectors of all of these are also allowed.
+``int64``, ``uint64``, ``int``, ``uint``, as well as any pointer type.
+Vectors of all of these are also allowed.
 
 not
 ---
