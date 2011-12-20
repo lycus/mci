@@ -14,12 +14,12 @@ public struct Tuple(X)
         return _x;
     }
 
-    public equals_t opEquals(ref const Tuple!(X, Y) rhs) const
+    public equals_t opEquals(ref const Tuple!X rhs) const
     {
         return typeid(X).equals(&_x, &rhs._x);
     }
 
-    public int opCmp(ref const Tuple!(X, Y) rhs) const
+    public int opCmp(ref const Tuple!X rhs) const
     {
         // There is no doubt that this could be sanitized, but it seems to be the best
         // generic way to call these built-in functions.
@@ -63,7 +63,7 @@ public struct Tuple(X, Y)
 
     public equals_t opEquals(ref const Tuple!(X, Y) rhs) const
     {
-        return typeid(X).equals(&_x, &rhs._x) && typeid(Y).equals(&_x, &rhs._x);
+        return typeid(X).equals(&_x, &rhs._x) && typeid(Y).equals(&_y, &rhs._y);
     }
 
     public int opCmp(ref const Tuple!(X, Y) rhs) const
@@ -118,7 +118,7 @@ public struct Tuple(X, Y, Z)
 
     public equals_t opEquals(ref const Tuple!(X, Y, Z) rhs) const
     {
-        return typeid(X).equals(&_x, &rhs._x) && typeid(Y).equals(&_x, &rhs._x) && typeid(Z).equals(&_x, &rhs._x);
+        return typeid(X).equals(&_x, &rhs._x) && typeid(Y).equals(&_y, &rhs._y) && typeid(Z).equals(&_z, &rhs._z);
     }
 
     public int opCmp(ref const Tuple!(X, Y, Z) rhs) const
@@ -129,7 +129,7 @@ public struct Tuple(X, Y, Z)
         if (!typeid(Y).equals(&_y, &rhs._y))
             return typeid(Y).compare(&_y, &rhs._y);
 
-        if (!typeid(Z).equals(&_y, &rhs._y))
+        if (!typeid(Z).equals(&_z, &rhs._z))
             return typeid(Z).compare(&_z, &rhs._z);
 
         return 0;
