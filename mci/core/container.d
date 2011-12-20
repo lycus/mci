@@ -873,11 +873,10 @@ public class List(T) : Indexable!T
         onRemove(item);
 
         size_t index;
+        bool eq;
 
         for (size_t i = 0; i < _array.length; i++)
         {
-            bool eq;
-
             // Here's an ugly hack for interfaces because, for whatever reason, one cannot
             // compare interface instances without casting them to a concrete type.
             static if (is(T == interface))
@@ -892,7 +891,7 @@ public class List(T) : Indexable!T
             }
         }
 
-        if (index != -1)
+        if (eq)
             _array = _array[0 .. index] ~ _array[index + 1 .. $];
     }
 
@@ -1139,9 +1138,11 @@ body
 public class Dictionary(K, V) : Map!(K, V)
 {
     private V[K] _aa;
+    private List!(Tuple!(K, V)) _list;
 
     public this()
     {
+        _list = new typeof(_list)();
     }
 
     public this(Map!(K, V) items)
@@ -1151,15 +1152,16 @@ public class Dictionary(K, V) : Map!(K, V)
     }
     body
     {
+        this();
+
         foreach (item; items)
             add(item);
     }
 
     public final int opApply(scope int delegate(ref Tuple!(K, V)) dg)
     {
-        foreach (k, v; _aa)
+        foreach (tup; _list)
         {
-            auto tup = tuple(k, v);
             auto status = dg(tup);
 
             if (status != 0)
@@ -1171,17 +1173,12 @@ public class Dictionary(K, V) : Map!(K, V)
 
     public final int opApply(scope int delegate(ref size_t, ref Tuple!(K, V)) dg)
     {
-        size_t i = 0;
-
-        foreach (k, v; _aa)
+        foreach (i, tup; _list)
         {
-            auto tup = tuple(k, v);
             auto status = dg(i, tup);
 
             if (status != 0)
                 return status;
-
-            i++;
         }
 
         return 0;
@@ -1196,7 +1193,15 @@ public class Dictionary(K, V) : Map!(K, V)
     {
         onAdd(key, value);
 
-        return _aa[key] = value;
+        _aa[key] = value;
+
+        foreach (tup; _list)
+            if (tup.x == key)
+                return value;
+
+        _list.add(tuple(key, value));
+
+        return value;
     }
 
     public override equals_t opEquals(Object o)
@@ -1229,11 +1234,12 @@ public class Dictionary(K, V) : Map!(K, V)
     {
         auto d = new Dictionary!(K, V)();
         d._aa = _aa.dup;
+        d._list = _list.duplicate();
 
         return d;
     }
 
-    public V* get(K key)
+    public final V* get(K key)
     {
         return key in _aa;
     }
@@ -1253,6 +1259,7 @@ public class Dictionary(K, V) : Map!(K, V)
         onClear();
 
         _aa = null;
+        _list.clear();
     }
 
     public final void add(K key, V value)
@@ -1260,31 +1267,35 @@ public class Dictionary(K, V) : Map!(K, V)
         onAdd(key, value);
 
         _aa[key] = value;
+        _list.add(tuple(key, value));
     }
 
     public final void remove(K key)
     {
         onRemove(key);
 
+        _list.remove(tuple(key, _aa[key]));
         _aa.remove(key);
     }
 
-    public final Countable!K keys()
+    @property public final Countable!K keys()
     {
         auto arr = new List!K();
 
-        foreach (k; _aa.keys)
-            arr.add(k);
+        // Retain insertion order.
+        foreach (tup; _list)
+            arr.add(tup.x);
 
         return arr;
     }
 
-    public final Countable!V values()
+    @property public final Countable!V values()
     {
         auto arr = new List!V();
 
-        foreach (v; _aa.values)
-            arr.add(v);
+        // Retain insertion order.
+        foreach (tup; _list)
+            arr.add(tup.y);
 
         return arr;
     }
@@ -1363,6 +1374,7 @@ public class NoNullDictionary(K, V)
     {
         auto d = new NoNullDictionary!(K, V)();
         d._aa = _aa.dup;
+        d._list = _list.duplicate();
 
         return d;
     }
