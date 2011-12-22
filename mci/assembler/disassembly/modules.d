@@ -216,7 +216,7 @@ public final class ModuleDisassembler
                                     break;
                             }
 
-                            writefln("%s, %s, %s", ffi.library, ffi.entryPoint, callConv);
+                            writef("%s, %s, %s", ffi.library, ffi.entryPoint, callConv);
 
                             break;
                         default:

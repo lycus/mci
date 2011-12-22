@@ -27,7 +27,7 @@ public final class DisassemblerTool : Tool
 
     public bool run(string[] args)
     {
-        string output = "out.mci";
+        string output = "out.ial";
 
         try
         {
