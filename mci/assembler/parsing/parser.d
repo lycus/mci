@@ -33,7 +33,7 @@ public final class CompilationUnit
         _nodes = nodes.duplicate();
     }
 
-    @property public Countable!DeclarationNode nodes()
+    @property public ReadOnlyIndexable!DeclarationNode nodes()
     out (result)
     {
         assert(result);

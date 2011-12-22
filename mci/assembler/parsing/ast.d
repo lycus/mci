@@ -35,7 +35,7 @@ public abstract class Node
         return _location;
     }
 
-    @property public Countable!Node children()
+    @property public ReadOnlyIndexable!Node children()
     {
         return new List!Node();
     }
@@ -119,9 +119,9 @@ public class ModuleReferenceNode : Node
         return _name;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return toCountable!Node(_name);
+        return toReadOnlyIndexable!Node(_name);
     }
 }
 
@@ -172,9 +172,9 @@ public class StructureTypeReferenceNode : TypeReferenceNode
         return _name;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return toCountable!Node(_moduleName, _name);
+        return toReadOnlyIndexable!Node(_moduleName, _name);
     }
 }
 
@@ -205,9 +205,9 @@ public class PointerTypeReferenceNode : TypeReferenceNode
         return _elementType;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return toCountable!Node(_elementType);
+        return toReadOnlyIndexable!Node(_elementType);
     }
 }
 
@@ -238,9 +238,9 @@ public class ArrayTypeReferenceNode : TypeReferenceNode
         return _elementType;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return toCountable!Node(_elementType);
+        return toReadOnlyIndexable!Node(_elementType);
     }
 }
 
@@ -280,9 +280,9 @@ public class VectorTypeReferenceNode : TypeReferenceNode
         return _elements;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return toCountable!Node(_elementType, _elements);
+        return toReadOnlyIndexable!Node(_elementType, _elements);
     }
 }
 
@@ -316,14 +316,14 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
         return _returnType;
     }
 
-    @property public final Countable!TypeReferenceNode parameterTypes()
+    @property public final ReadOnlyIndexable!TypeReferenceNode parameterTypes()
     {
         return _parameterTypes;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return new List!Node(concat(toCountable!Node(_returnType), castItems!Node(_parameterTypes)));
+        return new List!Node(concat(toReadOnlyIndexable!Node(_returnType), castItems!Node(_parameterTypes)));
     }
 }
 
@@ -370,9 +370,9 @@ private mixin template DefineCoreTypeNode(string type, string name)
           "        return _name;" ~
           "    }" ~
           "" ~
-          "    @property public override Countable!Node children()" ~
+          "    @property public override ReadOnlyIndexable!Node children()" ~
           "    {" ~
-          "        return toCountable!Node(_name);" ~
+          "        return toReadOnlyIndexable!Node(_name);" ~
           "    }" ~
           "}");
 }
@@ -426,9 +426,9 @@ public class FieldReferenceNode : Node
         return _name;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return toCountable!Node(_typeName, _name);
+        return toReadOnlyIndexable!Node(_typeName, _name);
     }
 }
 
@@ -466,9 +466,9 @@ public class FunctionReferenceNode : Node
         return _name;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return toCountable!Node(_moduleName, _name);
+        return toReadOnlyIndexable!Node(_moduleName, _name);
     }
 }
 
@@ -510,14 +510,14 @@ public class TypeDeclarationNode : DeclarationNode
         return _layout;
     }
 
-    @property public final Countable!FieldDeclarationNode fields()
+    @property public final ReadOnlyIndexable!FieldDeclarationNode fields()
     {
         return _fields;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return new List!Node(concat(toCountable!Node(_name), castItems!Node(_fields)));
+        return new List!Node(concat(toReadOnlyIndexable!Node(_name), castItems!Node(_fields)));
     }
 
     public override string toString()
@@ -576,9 +576,9 @@ public class FieldDeclarationNode : Node
         return _offset;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return toCountable!Node(_type, _name, _offset);
+        return toReadOnlyIndexable!Node(_type, _name, _offset);
     }
 
     public override string toString()
@@ -614,9 +614,9 @@ public class ParameterNode : Node
         return _type;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return toCountable!Node(_type);
+        return toReadOnlyIndexable!Node(_type);
     }
 }
 
@@ -670,7 +670,7 @@ public class FunctionDeclarationNode : DeclarationNode
         return _attributes;
     }
 
-    @property public final Countable!ParameterNode parameters()
+    @property public final ReadOnlyIndexable!ParameterNode parameters()
     {
         return _parameters;
     }
@@ -680,23 +680,23 @@ public class FunctionDeclarationNode : DeclarationNode
         return _returnType;
     }
 
-    @property public final Countable!RegisterDeclarationNode registers()
+    @property public final ReadOnlyIndexable!RegisterDeclarationNode registers()
     {
         return _registers;
     }
 
-    @property public final Countable!BasicBlockDeclarationNode blocks()
+    @property public final ReadOnlyIndexable!BasicBlockDeclarationNode blocks()
     {
         return _blocks;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
         auto params = castItems!Node(_parameters);
         auto regs = castItems!Node(_registers);
         auto blocks = castItems!Node(_blocks);
 
-        return new List!Node(concat(toCountable!Node(_name), toCountable!Node(_returnType), params, regs, blocks));
+        return new List!Node(concat(toReadOnlyIndexable!Node(_name), toReadOnlyIndexable!Node(_returnType), params, regs, blocks));
     }
 
     public override string toString()
@@ -741,9 +741,9 @@ public class RegisterDeclarationNode : Node
         return _type;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return toCountable!Node(_type, _name);
+        return toReadOnlyIndexable!Node(_type, _name);
     }
 }
 
@@ -778,14 +778,14 @@ public class BasicBlockDeclarationNode : Node
         return _name;
     }
 
-    @property public final Countable!InstructionNode instructions()
+    @property public final ReadOnlyIndexable!InstructionNode instructions()
     {
         return _instructions;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return new List!Node(concat(toCountable!Node(_name), castItems!Node(_instructions)));
+        return new List!Node(concat(toReadOnlyIndexable!Node(_name), castItems!Node(_instructions)));
     }
 }
 
@@ -816,9 +816,9 @@ public class RegisterReferenceNode : Node
         return _name;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return toCountable!Node(_name);
+        return toReadOnlyIndexable!Node(_name);
     }
 }
 
@@ -849,9 +849,9 @@ public class BasicBlockReferenceNode : Node
         return _name;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return toCountable!Node(_name);
+        return toReadOnlyIndexable!Node(_name);
     }
 }
 
@@ -877,12 +877,12 @@ public class RegisterSelectorNode : Node
         _registers = registers.duplicate();
     }
 
-    @property public final Countable!RegisterReferenceNode registers()
+    @property public final ReadOnlyIndexable!RegisterReferenceNode registers()
     {
         return _registers;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
         return new List!Node(castItems!Node(_registers));
     }
@@ -943,12 +943,12 @@ public class ByteArrayLiteralNode : Node
         _values = values.duplicate();
     }
 
-    @property public final Countable!LiteralValueNode values()
+    @property public final ReadOnlyIndexable!LiteralValueNode values()
     {
         return _values;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
         return new List!Node(castItems!Node(_values));
     }
@@ -1008,9 +1008,9 @@ public class FFISignatureNode : Node
         return _callingConvention;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return toCountable!Node(_library, _entryPoint);
+        return toReadOnlyIndexable!Node(_library, _entryPoint);
     }
 
     public override string toString()
@@ -1055,9 +1055,9 @@ public class InstructionOperandNode : Node
         return _operand;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return toCountable!Node(_operand.coerce!Node());
+        return toReadOnlyIndexable!Node(_operand.coerce!Node());
     }
 }
 
@@ -1125,9 +1125,9 @@ public class InstructionNode : Node
         return _operand;
     }
 
-    @property public override Countable!Node children()
+    @property public override ReadOnlyIndexable!Node children()
     {
-        return toCountable!Node(target, source1, source2, source3, operand);
+        return toReadOnlyIndexable!Node(target, source1, source2, source3, operand);
     }
 
     public override string toString()

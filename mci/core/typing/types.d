@@ -214,7 +214,7 @@ public final class FunctionPointerType : Type
         return _returnType;
     }
 
-    @property public Countable!Type parameterTypes()
+    @property public ReadOnlyIndexable!Type parameterTypes()
     out (result)
     {
         assert(result);

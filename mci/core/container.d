@@ -32,14 +32,17 @@ public interface Countable(T) : Iterable!T
     public Countable!T duplicate();
 }
 
-public interface Collection(T) : Countable!T
+public interface ReadOnlyCollection(T) : Countable!T
 {
     public T* opBinaryRight(string op : "in")(T item)
     in
     {
         assert(item);
     }
+}
 
+public interface Collection(T) : ReadOnlyCollection!T
+{
     public void add(T item);
 
     public void remove(T item);
@@ -47,22 +50,25 @@ public interface Collection(T) : Countable!T
     public void clear();
 }
 
-public interface Indexable(T) : Collection!T
+public interface ReadOnlyIndexable(T) : ReadOnlyCollection!T
 {
     public T opIndex(size_t index);
 
-    public T opIndexAssign(T item, size_t index);
+    public ReadOnlyIndexable!T opSlice(size_t x, size_t y);
 
-    public Indexable!T opSlice();
+    public ReadOnlyIndexable!T opSlice();
 
-    public Indexable!T opSlice(size_t x, size_t y);
-
-    public Indexable!T opCat(Indexable!T rhs);
-
-    public Indexable!T opCatAssign(Indexable!T rhs);
+    public ReadOnlyIndexable!T opCat(Iterable!T rhs);
 }
 
-public interface Lookup(K, V) : Countable!(Tuple!(K, V))
+public interface Indexable(T) : ReadOnlyIndexable!T, Collection!T
+{
+    public T opIndexAssign(T item, size_t index);
+
+    public Indexable!T opCatAssign(Iterable!T rhs);
+}
+
+public interface Lookup(K, V) : ReadOnlyCollection!(Tuple!(K, V))
 {
     public V opIndex(K key)
     in
@@ -79,13 +85,13 @@ public interface Lookup(K, V) : Countable!(Tuple!(K, V))
             assert(key);
     }
 
-    public Countable!K keys()
+    public ReadOnlyCollection!K keys()
     out (result)
     {
         assert(result);
     }
 
-    public Countable!V values()
+    public ReadOnlyCollection!V values()
     out (result)
     {
         assert(result);
@@ -156,7 +162,17 @@ public Countable!T asCountable(T)(Countable!T items)
     return items;
 }
 
+public ReadOnlyCollection!T asReadOnlyCollection(T)(ReadOnlyCollection!T items)
+{
+    return items;
+}
+
 public Collection!T asCollection(T)(Collection!T items)
+{
+    return items;
+}
+
+public ReadOnlyIndexable!T asReadOnlyIndexable(T)(ReadOnlyIndexable!T items)
 {
     return items;
 }
@@ -814,7 +830,7 @@ public class List(T) : Indexable!T
         return list;
     }
 
-    public List!T opCat(Indexable!T rhs)
+    public List!T opCat(Iterable!T rhs)
     {
         auto list = duplicate();
 
@@ -824,7 +840,7 @@ public class List(T) : Indexable!T
         return list;
     }
 
-    public List!T opCatAssign(Indexable!T rhs)
+    public List!T opCatAssign(Iterable!T rhs)
     {
         foreach (item; rhs)
             add(item);
@@ -989,6 +1005,74 @@ unittest
     assert(list[2] == 3);
 }
 
+public Indexable!T toIndexable(T)(T[] items ...)
+out (result)
+{
+    assert(result);
+}
+body
+{
+    return toList(items);
+}
+
+unittest
+{
+    auto list = toIndexable(1, 2, 3);
+
+    assert(list);
+}
+
+public ReadOnlyIndexable!T toReadOnlyIndexable(T)(T[] items ...)
+out (result)
+{
+    assert(result);
+}
+body
+{
+    return toList(items);
+}
+
+unittest
+{
+    auto list = toReadOnlyIndexable(1, 2, 3);
+
+    assert(list);
+}
+
+public Collection!T toCollection(T)(T[] items ...)
+out (result)
+{
+    assert(result);
+}
+body
+{
+    return toList(items);
+}
+
+unittest
+{
+    auto list = toCollection(1, 2, 3);
+
+    assert(list);
+}
+
+public ReadOnlyCollection!T toReadOnlyCollection(T)(T[] items ...)
+out (result)
+{
+    assert(result);
+}
+body
+{
+    return toList(items);
+}
+
+unittest
+{
+    auto list = toReadOnlyCollection(1, 2, 3);
+
+    assert(list);
+}
+
 public Countable!T toCountable(T)(T[] items ...)
 out (result)
 {
@@ -1056,7 +1140,7 @@ public class NoNullList(T)
         return list;
     }
 
-    public override NoNullList!T opCat(Indexable!T rhs)
+    public override NoNullList!T opCat(Iterable!T rhs)
     {
         auto list = duplicate();
 
@@ -1066,7 +1150,7 @@ public class NoNullList(T)
         return list;
     }
 
-    public override NoNullList!T opCatAssign(Indexable!T rhs)
+    public override NoNullList!T opCatAssign(Iterable!T rhs)
     {
         foreach (item; rhs)
             add(item);
@@ -1278,7 +1362,7 @@ public class Dictionary(K, V) : Map!(K, V)
         _aa.remove(key);
     }
 
-    @property public final Countable!K keys()
+    @property public final ReadOnlyCollection!K keys()
     {
         auto arr = new List!K();
 
@@ -1289,7 +1373,7 @@ public class Dictionary(K, V) : Map!(K, V)
         return arr;
     }
 
-    @property public final Countable!V values()
+    @property public final ReadOnlyCollection!V values()
     {
         auto arr = new List!V();
 
@@ -1383,25 +1467,6 @@ public class NoNullDictionary(K, V)
     {
         assert(value);
     }
-}
-
-public NoNullDictionary!(K, V) toNullDictionary(K, V)(Iterable!(Tuple!(K, V)) iter)
-in
-{
-    assert(iter);
-}
-out (result)
-{
-    assert(result);
-}
-body
-{
-    auto d = new NoNullDictionary!(K, V)();
-
-    foreach (item; iter)
-        d.add(item);
-
-    return d;
 }
 
 public class ArrayQueue(T) : Queue!T

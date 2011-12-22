@@ -277,6 +277,14 @@
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="mci.verifier">
+  <Folder name="passes">
+   <File path="passes\control.d" />
+   <File path="passes\ordering.d" />
+   <File path="passes\typing.d" />
+  </Folder>
   <File path="all.d" />
+  <File path="base.d" />
+  <File path="exception.d" />
+  <File path="manager.d" />
  </Folder>
 </DProject>

@@ -196,7 +196,7 @@ public final class ModuleWriter : ModuleSaver
                 _writer.write(*val);
             else if (auto val = operand.peek!double())
                 _writer.write(*val);
-            else if (auto val = operand.peek!(Countable!ubyte)())
+            else if (auto val = operand.peek!(ReadOnlyIndexable!ubyte)())
             {
                 _writer.write(cast(uint)val.count);
 
@@ -211,7 +211,7 @@ public final class ModuleWriter : ModuleSaver
                 writeFieldReference(*val);
             else if (auto val = operand.peek!Function())
                 writeFunctionReference(*val);
-            else if (auto val = operand.peek!(Countable!Register)())
+            else if (auto val = operand.peek!(ReadOnlyIndexable!Register)())
             {
                 _writer.write(cast(uint)val.count);
 

@@ -178,7 +178,7 @@ public final class ModuleDisassembler
                     switch (instr.opCode.operandType)
                     {
                         case OperandType.bytes:
-                            auto bytes = operand.get!(Countable!ubyte)();
+                            auto bytes = *operand.peek!(ReadOnlyIndexable!ubyte)();
 
                             foreach (i, b; bytes)
                             {
@@ -190,7 +190,7 @@ public final class ModuleDisassembler
 
                             break;
                         case OperandType.selector:
-                            auto regs = operand.get!(Countable!Register)();
+                            auto regs = *operand.peek!(ReadOnlyIndexable!Register)();
 
                             foreach (i, reg; regs)
                             {
@@ -202,7 +202,7 @@ public final class ModuleDisassembler
 
                             break;
                         case OperandType.ffi:
-                            auto ffi = operand.get!FFISignature();
+                            auto ffi = operand.peek!FFISignature();
 
                             string callConv;
 

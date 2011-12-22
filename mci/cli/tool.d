@@ -27,14 +27,14 @@ public interface Tool
     }
 }
 
-public Countable!(Tuple!(string, Tool)) allTools;
+public ReadOnlyIndexable!(Tuple!(string, Tool)) allTools;
 
 static this()
 {
-    allTools = toCountable(tuple!(string, Tool)("asm", new AssemblerTool()),
-                           tuple!(string, Tool)("disasm", new DisassemblerTool()),
-                           tuple!(string, Tool)("interp", new InterpreterTool()),
-                           tuple!(string, Tool)("verify", new VerifierTool()));
+    allTools = toReadOnlyIndexable(tuple!(string, Tool)("asm", new AssemblerTool()),
+                                   tuple!(string, Tool)("disasm", new DisassemblerTool()),
+                                   tuple!(string, Tool)("interp", new InterpreterTool()),
+                                   tuple!(string, Tool)("verify", new VerifierTool()));
 }
 
 public Tool getTool(string name)

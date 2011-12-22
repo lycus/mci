@@ -164,12 +164,12 @@ public class BasicBlockEmitter
     mixin DefineEmit!"ulong";
     mixin DefineEmit!"float";
     mixin DefineEmit!"double";
-    mixin DefineEmit!"Countable!ubyte";
+    mixin DefineEmit!"ReadOnlyIndexable!ubyte";
     mixin DefineEmit!"BasicBlock";
     mixin DefineEmit!"Type";
     mixin DefineEmit!"Field";
     mixin DefineEmit!"Function";
-    mixin DefineEmit!"Countable!Register";
+    mixin DefineEmit!"ReadOnlyIndexable!Register";
 
     public final BasicBlockEmitter emitTarget(OpCode opCode, Register source1, Register source2, Register source3,
                                               Register target)

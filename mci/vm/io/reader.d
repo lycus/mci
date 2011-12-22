@@ -402,7 +402,7 @@ public final class ModuleReader : ModuleLoader
             error("File magic %s doesn't match expected %s.", magic, fileMagic);
 
         auto ver = _reader.read!uint();
-        auto mod = _manager.attach(new Module(baseName(_file.name)));
+        auto mod = _manager.attach(new Module(baseName(_file.name, moduleFileExtension)));
 
         auto typeCount = _reader.read!uint();
 
@@ -797,7 +797,7 @@ public final class ModuleReader : ModuleLoader
                 for (uint i = 0; i < count; i++)
                     bytes.add(_reader.read!ubyte());
 
-                operand = asCountable(bytes);
+                operand = asReadOnlyIndexable(bytes);
                 break;
             case OperandType.type:
                 operand = toType(readTypeReference());
@@ -818,7 +818,7 @@ public final class ModuleReader : ModuleLoader
                 for (uint i = 0; i < count; i++)
                     regs.add(readRegisterReference(function_));
 
-                operand = asCountable(regs);
+                operand = asReadOnlyIndexable(regs);
                 break;
             case OperandType.ffi:
                 operand = readFFISignature();

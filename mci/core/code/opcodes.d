@@ -49,7 +49,7 @@ body
         case OperandType.none:
             return null;
         case OperandType.bytes:
-            return typeid(Countable!ubyte);
+            return typeid(ReadOnlyIndexable!ubyte);
         case OperandType.int8:
             return typeid(byte);
         case OperandType.uint8:
@@ -79,7 +79,7 @@ body
         case OperandType.label:
             return typeid(BasicBlock);
         case OperandType.selector:
-            return typeid(Countable!Register);
+            return typeid(ReadOnlyIndexable!Register);
         case OperandType.ffi:
             return typeid(FFISignature);
     }
@@ -316,7 +316,7 @@ public OpCode opExTry;
 public OpCode opExHandle;
 public OpCode opExEnd;
 
-public Countable!OpCode allOpCodes;
+public ReadOnlyIndexable!OpCode allOpCodes;
 
 static this()
 {

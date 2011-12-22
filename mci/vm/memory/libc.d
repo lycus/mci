@@ -52,7 +52,7 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         assert(!_objectCount);
     }
 
-    @property public Countable!GCGeneration generations()
+    @property public ReadOnlyIndexable!GCGeneration generations()
     {
         return _generations;
     }

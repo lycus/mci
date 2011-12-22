@@ -199,7 +199,7 @@ public final class Function
         return _attributes;
     }
 
-    @property public Countable!Parameter parameters()
+    @property public ReadOnlyIndexable!Parameter parameters()
     in
     {
         assert(_isClosed);

@@ -109,7 +109,7 @@ body
                         foreach (literal; instrOperand.peek!ByteArrayLiteralNode().values)
                             bytes.add(to!ubyte(literal.value));
 
-                        operand = asCountable(bytes);
+                        operand = asReadOnlyIndexable(bytes);
                         break;
                     case OperandType.label:
                         operand = resolveBasicBlock(*instrOperand.peek!BasicBlockReferenceNode(), func);
@@ -130,7 +130,7 @@ body
                         foreach (reg; regs)
                             registers.add(resolveRegister(reg, func));
 
-                        operand = asCountable(registers);
+                        operand = asReadOnlyIndexable(registers);
                         break;
                     case OperandType.ffi:
                         auto ffi = *instrOperand.peek!FFISignatureNode();

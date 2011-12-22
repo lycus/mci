@@ -10,6 +10,8 @@ public import mci.core.nullable;
 public import mci.core.tuple;
 public import mci.core.visitor;
 
+public import mci.core.analysis.utilities;
+
 public import mci.core.code.emit;
 public import mci.core.code.functions;
 public import mci.core.code.opcodes;

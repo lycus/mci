@@ -287,6 +287,9 @@
   <Folder name="diagnostics">
    <File path="diagnostics\debugging.d" />
   </Folder>
+  <Folder name="analysis">
+   <File path="analysis\utilities.d" />
+  </Folder>
   <Folder name="tree">
    <File path="tree\base.d" />
    <File path="tree\expressions.d" />

@@ -62,7 +62,7 @@ private final class GeneratorState
         return _manager;
     }
 
-    @property public Countable!(Tuple!(string, CompilationUnit)) units()
+    @property public Lookup!(string, CompilationUnit) units()
     out (result)
     {
         assert(result);

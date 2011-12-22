@@ -38,7 +38,7 @@ public final class DGarbageCollector : GarbageCollector
         _generations.add(_generation);
     }
 
-    @property public Countable!GCGeneration generations()
+    @property public ReadOnlyIndexable!GCGeneration generations()
     {
         return _generations;
     }

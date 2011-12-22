@@ -83,12 +83,12 @@ alias Algebraic!(byte,
                  ulong,
                  float,
                  double,
-                 Countable!ubyte,
+                 ReadOnlyIndexable!ubyte,
                  BasicBlock,
                  Type,
                  Field,
                  Function,
-                 Countable!Register,
+                 ReadOnlyIndexable!Register,
                  FFISignature) InstructionOperand;
 
 public final class Instruction

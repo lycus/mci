@@ -83,7 +83,7 @@ public interface GCGeneration
 
 public interface GarbageCollector
 {
-    @property public Countable!GCGeneration generations()
+    @property public ReadOnlyIndexable!GCGeneration generations()
     out (result)
     {
         assert(result);

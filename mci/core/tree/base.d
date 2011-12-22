@@ -9,7 +9,7 @@ public abstract class TreeNode
 {
     @property public abstract Type type();
 
-    @property public Countable!TreeNode children()
+    @property public ReadOnlyIndexable!TreeNode children()
     out (result)
     {
         assert(result);
