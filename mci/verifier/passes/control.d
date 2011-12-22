@@ -23,6 +23,25 @@ public final class TerminatorVerifier : CodeVerifier
     }
 }
 
+public final class ReturnVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            auto leave = getFirstInstruction(bb.y, opLeave);
+
+            if (leave && function_.returnType)
+                    error(leave, "Function does not return 'void', so 'leave' is invalid.");
+
+            auto ret = getFirstInstruction(bb.y, opReturn);
+
+            if (ret && !function_.returnType)
+                error(ret, "Function returns 'void', so 'return' is invalid.");
+        }
+    }
+}
+
 public final class FFIVerifier : CodeVerifier
 {
     public override void verify(Function function_)

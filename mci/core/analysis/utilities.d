@@ -16,10 +16,21 @@ in
 body
 {
     foreach (bb; function_.blocks)
-        if (auto instr = find(bb.y.instructions, (Instruction i) { return i.opCode is opCode; }))
+        if (auto instr = getFirstInstruction(bb.y, opCode))
             return instr;
 
     return null;
+}
+
+public Instruction getFirstInstruction(BasicBlock block, OpCode opCode)
+in
+{
+    assert(block);
+    assert(opCode);
+}
+body
+{
+    return find(block.instructions, (Instruction i) { return i.opCode is opCode; });
 }
 
 public Instruction getFirstInstruction(BasicBlock block, OpCodeType type)

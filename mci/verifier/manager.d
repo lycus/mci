@@ -17,9 +17,11 @@ public final class VerificationManager
 
         addRange(_verifiers,
                  toIterable!CodeVerifier(new TerminatorVerifier(),
+                                         new ReturnVerifier(),
                                          new FFIVerifier(),
                                          new RawVerifier(),
-                                         new ConstantLoadVerifier()));
+                                         new ConstantLoadVerifier(),
+                                         new ReturnTypeVerifier()));
     }
 
     public this()

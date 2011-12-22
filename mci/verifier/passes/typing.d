@@ -62,3 +62,17 @@ public final class ConstantLoadVerifier : CodeVerifier
         }
     }
 }
+
+public final class ReturnTypeVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            auto instr = getFirstInstruction(bb.y, opReturn);
+
+            if (instr.sourceRegister1.type !is function_.returnType)
+                error(instr, "The type of the source register does not match the return type of the function.");
+        }
+    }
+}
