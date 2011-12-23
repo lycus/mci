@@ -8,13 +8,18 @@ import mci.core.code.functions,
 
 public abstract class ModuleVisitor
 {
+    private bool _run;
+
     public final void run(Module module_)
     in
     {
         assert(module_);
+        assert(!_run);
     }
     body
     {
+        _run = true;
+
         visit(module_);
 
         foreach (type; module_.types)
@@ -45,7 +50,7 @@ public abstract class ModuleVisitor
         }
     }
 
-    public void visit(Module module_)
+    protected void visit(Module module_)
     in
     {
         assert(module_);
@@ -54,7 +59,7 @@ public abstract class ModuleVisitor
     {
     }
 
-    public void visit(StructureType type)
+    protected void visit(StructureType type)
     in
     {
         assert(type);
@@ -63,7 +68,7 @@ public abstract class ModuleVisitor
     {
     }
 
-    public void visit(Field field)
+    protected void visit(Field field)
     in
     {
         assert(field);
@@ -72,7 +77,7 @@ public abstract class ModuleVisitor
     {
     }
 
-    public void visit(Function function_)
+    protected void visit(Function function_)
     in
     {
         assert(function_);
@@ -81,7 +86,7 @@ public abstract class ModuleVisitor
     {
     }
 
-    public void visit(Parameter parameter)
+    protected void visit(Parameter parameter)
     in
     {
         assert(parameter);
@@ -90,7 +95,7 @@ public abstract class ModuleVisitor
     {
     }
 
-    public void visit(Register register)
+    protected void visit(Register register)
     in
     {
         assert(register);
@@ -99,7 +104,7 @@ public abstract class ModuleVisitor
     {
     }
 
-    public void visit(BasicBlock block)
+    protected void visit(BasicBlock block)
     in
     {
         assert(block);
@@ -108,7 +113,7 @@ public abstract class ModuleVisitor
     {
     }
 
-    public void visit(Instruction instruction)
+    protected void visit(Instruction instruction)
     in
     {
         assert(instruction);
