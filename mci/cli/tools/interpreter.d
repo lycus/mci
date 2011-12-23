@@ -1,16 +1,11 @@
 module mci.cli.tools.interpreter;
 
 import std.getopt,
-       std.stdio,
        mci.cli.main,
        mci.cli.tool;
 
 public final class InterpreterTool : Tool
 {
-    private bool _verify;
-    private bool _optimize;
-    private GarbageCollectorType _gcType;
-
     @property public string description()
     {
         return "Run an assembled module with the IAL interpreter.";
