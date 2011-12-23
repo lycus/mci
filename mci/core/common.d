@@ -2,6 +2,7 @@ module mci.core.common;
 
 import core.stdc.stdlib,
        core.stdc.string,
+       std.traits,
        mci.core.config,
        mci.core.meta;
 
@@ -92,6 +93,13 @@ public T* copyToNative(T)(T[] arr)
     memcpy(mem, arr.ptr, size);
 
     return mem;
+}
+
+public bool powerOfTwo(T)(T value)
+    if (isIntegral!T)
+{
+    // See: http://graphics.stanford.edu/~seander/bithacks.html#DetermineIfPowerOf2
+    return value && !(value & (value - 1));
 }
 
 public enum Compiler : ubyte

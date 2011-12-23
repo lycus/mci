@@ -28,7 +28,19 @@ body
     if (module_.types.get(node.name.name))
         throw new GenerationException("Type " ~ module_.name ~ "/" ~ node.name.name ~ " already defined.", node.location);
 
-    return new StructureType(module_, node.name.name, node.layout);
+    uint alignment;
+
+    if (node.alignment)
+    {
+        auto al = to!uint(node.alignment.value);
+
+        if (al && !powerOfTwo(al))
+            throw new GenerationException("Type alignment must be a power of two.", node.alignment.location);
+
+        alignment = al;
+    }
+
+    return new StructureType(module_, node.name.name, alignment);
 }
 
 public Field generateField(FieldDeclarationNode node, StructureType type, ModuleManager manager)
@@ -45,9 +57,8 @@ out (result)
 body
 {
     auto fieldType = resolveType(node.type, type.module_, manager);
-    auto offset = node.offset ? Nullable!uint(to!uint(node.offset.value)) : Nullable!uint();
 
-    return type.createField(node.name.name, fieldType, node.storage, offset);
+    return type.createField(node.name.name, fieldType, node.storage);
 }
 
 public Type resolveType(TypeReferenceNode node, Module module_, ModuleManager manager)

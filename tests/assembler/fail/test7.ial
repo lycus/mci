@@ -1,4 +1,4 @@
-type automatic Test7
+type Test7
 {
     field int32 missingStorageSpecifier;
 }

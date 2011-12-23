@@ -1,4 +1,4 @@
-type automatic Foo
+type Foo
 {
     field static int32 bar;
 }

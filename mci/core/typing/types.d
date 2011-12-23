@@ -1,6 +1,7 @@
 module mci.core.typing.types;
 
 import std.conv,
+       mci.core.common,
        mci.core.container,
        mci.core.nullable,
        mci.core.code.modules,
@@ -16,18 +17,11 @@ public abstract class Type
     }
 }
 
-public enum TypeLayout : ubyte
-{
-    automatic = 0,
-    sequential = 1,
-    explicit = 2,
-}
-
 public final class StructureType : Type
 {
-    private TypeLayout _layout;
     private Module _module;
     private string _name;
+    private uint _alignment;
     private NoNullDictionary!(string, Field) _fields;
     private bool _isClosed;
 
@@ -35,29 +29,31 @@ public final class StructureType : Type
     {
         assert(_module);
         assert(_name);
+        assert(!_alignment || powerOfTwo(_alignment));
         assert(_fields);
     }
 
-    public this(Module module_, string name, TypeLayout layout = TypeLayout.automatic)
+    public this(Module module_, string name, uint alignment = 0)
     in
     {
         assert(module_);
         assert(name);
+        assert(!alignment || powerOfTwo(alignment));
         assert(!module_.types.get(name));
     }
     body
     {
         _module = module_;
         _name = name;
-        _layout = layout;
+        _alignment = alignment;
         _fields = new typeof(_fields)();
 
         (cast(Dictionary!(string, StructureType))module_.types)[name] = this;
     }
 
-    @property public TypeLayout layout()
+    @property public uint alignment()
     {
-        return _layout;
+        return _alignment;
     }
 
     @property public Module module_()
@@ -99,13 +95,11 @@ public final class StructureType : Type
         return _module.toString() ~ "/" ~ _name;
     }
 
-    public Field createField(string name, Type type, FieldStorage storage = FieldStorage.instance,
-                             Nullable!uint offset = Nullable!uint())
+    public Field createField(string name, Type type, FieldStorage storage = FieldStorage.instance)
     in
     {
         assert(name);
         assert(type);
-        assert(layout == TypeLayout.explicit ? offset.hasValue : !offset.hasValue);
         assert(name !in _fields);
         assert(!_isClosed);
     }
@@ -115,7 +109,7 @@ public final class StructureType : Type
     }
     body
     {
-        return _fields[name] = new Field(this, name, type, storage, offset);
+        return _fields[name] = new Field(this, name, type, storage);
     }
 
     public void close()

@@ -75,7 +75,7 @@ public final class ModuleWriter : ModuleSaver
     body
     {
         _writer.writeString(type.name);
-        _writer.write(type.layout);
+        _writer.write(type.alignment);
 
         _writer.write(cast(uint)type.fields.count);
 
@@ -92,11 +92,6 @@ public final class ModuleWriter : ModuleSaver
     {
         _writer.writeString(field.name);
         _writer.write(field.storage);
-        _writer.write(field.offset.hasValue);
-
-        if (field.offset.hasValue)
-            _writer.write(field.offset.value);
-
         writeTypeReference(field.type);
     }
 

@@ -63,22 +63,12 @@ public final class ModuleDisassembler
     }
     body
     {
-        write("type ");
+        writef("type %s", type.name);
 
-        final switch (type.layout)
-        {
-            case TypeLayout.automatic:
-                write("automatic");
-                break;
-            case TypeLayout.sequential:
-                write("sequential");
-                break;
-            case TypeLayout.explicit:
-                write("explicit");
-                break;
-        }
+        if (type.alignment)
+            writef(" (%s)", type.alignment);
 
-        writefln(" %s", type.name);
+        writeln();
         writeln("{");
 
         foreach (field; type.fields)
@@ -95,12 +85,7 @@ public final class ModuleDisassembler
                     break;
             }
 
-            writef(" %s %s", field.y.type, field.y.name);
-
-            if (field.y.offset.hasValue)
-                writef(" (%s)", field.y.offset.value);
-
-            writeln(";");
+            writefln(" %s %s;", field.y.type, field.y.name);
         }
 
         writeln("}");

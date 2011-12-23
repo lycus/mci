@@ -62,16 +62,14 @@ Structure types
 +++++++++++++++
 
 A structure is a record that encapsulates a fixed number of fields, each of
-their own type. A field consists of a storage class, a type, a name, and
-optionally an offset in the structure where it should reside (this is used
-to implement unions). The structure also specifies its layout.
+their own type. A field consists of a storage class, a type, and a name.
 
 Examples::
 
     // A structure with two instance fields. These can be accessed on any
     // instance of Foo, both as a value instance or as a pointer with one
     // indirection.
-    type automatic Foo
+    type Foo
     {
         field instance int32 bar;
         field instance float64 baz;
@@ -80,61 +78,32 @@ Examples::
     // A structure with a static field. The field does not contribute to the
     // structure's size in memory, and cannot be accessed on an instance of
     // the structure.
-    type automatic Foo2
+    type Foo2
     {
         field static int32 bar;
     }
 
-The ``automatic`` in these examples indicates the layout of the structures.
-It can be either ``automatic``, ``sequential``, or ``explicit``:
+A structure can also specify its alignment (this is normally decided by the
+compiler). The alignment must be either be zero or a power of two. If it is
+zero, the compiler picks the alignment (that is to say, zero is like the
+default). Examples::
 
-* ``automatic``: Padding is inserted as the compiler deems necessary. This
-  does not allow the compiler to reorder fields, however (this will never
-  be done in any case).
-* ``sequential``: The fields are laid out in memory exactly in the order
-  that they are declared in. This may be less than optimal on some systems,
-  and should be used with care.
-* ``explicit``: Each field must specify an offset in the structure where it
-  will be placed. This is used to implement C-like unions. This means that
-  type-unsafe reads and writes can be made (as fields can overlap), and it
-  is up to the user to avoid such issues.
-
-As an example of ``sequential``, we can declare a three-dimensional vector
-type where we force each field to be on a 4-byte boundary::
-
-    type sequential Vector3
+    // Use automatic alignment.
+    type Foo3 (0)
     {
-        field instance float32 x (0);
-        field instance float32 y (4);
-        field instance float32 z (8);
     }
 
-We can use ``explicit`` to create a tagged union::
-
-    type explicit VariantVector3
+    // Align fields sequentially.
+    type Foo4 (1)
     {
-        field instance uint8 type (0);
-        // 3 bytes of padding will be inserted here, since we didn't add
-        // any fields to fill the space. This is OK, as this results in
-        // more performant addressing. If you really wanted to save the
-        // memory, you could simply make the other fields start at offset
-        // 1 instead of 4.
-
-        // For float32:
-        field instance float32 x (4);
-        field instance float32 y (8);
-        field instance float32 y (12);
-
-        // For int32:
-        field instance int32 x (4);
-        field instance int32 y (8);
-        field instance int32 z (12);
     }
 
-Now you could create an instance of ``VariantVector3`` and indicate with
-the ``type`` field which kind of data type is in use.
+    // Align fields on a boundary of 16 bytes.
+    type Foo5 (16)
+    {
+    }
 
-Structures can be create in two ways:
+Structures can be created in two ways:
 
 * On the stack: Simply declare a register typed to be an instance of the
   structure. This makes it a value instance that lives on the stack (and

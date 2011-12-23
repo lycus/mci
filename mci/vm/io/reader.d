@@ -23,7 +23,7 @@ import std.exception,
 private final class TypeDescriptor
 {
     private string _name;
-    private TypeLayout _layout;
+    private uint _alignment;
     private NoNullList!FieldDescriptor _fields;
 
     invariant()
@@ -32,7 +32,7 @@ private final class TypeDescriptor
         assert(_fields);
     }
 
-    public this(string name, TypeLayout layout)
+    public this(string name, uint alignment)
     in
     {
         assert(name);
@@ -40,7 +40,7 @@ private final class TypeDescriptor
     body
     {
         _name = name;
-        _layout = layout;
+        _alignment = alignment;
         _fields = new typeof(_fields)();
     }
 
@@ -54,9 +54,9 @@ private final class TypeDescriptor
         return _name;
     }
 
-    @property public TypeLayout layout()
+    @property public uint alignment()
     {
-        return _layout;
+        return _alignment;
     }
 
     @property public NoNullList!FieldDescriptor fields()
@@ -74,7 +74,6 @@ private final class FieldDescriptor
 {
     private string _name;
     private FieldStorage _storage;
-    private Nullable!uint _offset;
     private TypeReferenceDescriptor _type;
 
     invariant()
@@ -83,7 +82,7 @@ private final class FieldDescriptor
         assert(_type);
     }
 
-    public this(string name, FieldStorage storage, Nullable!uint offset, TypeReferenceDescriptor type)
+    public this(string name, FieldStorage storage, TypeReferenceDescriptor type)
     in
     {
         assert(name);
@@ -93,7 +92,6 @@ private final class FieldDescriptor
     {
         _name = name;
         _storage = storage;
-        _offset = offset;
         _type = type;
     }
 
@@ -110,11 +108,6 @@ private final class FieldDescriptor
     @property public FieldStorage storage()
     {
         return _storage;
-    }
-
-    @property public Nullable!uint offset()
-    {
-        return _offset;
     }
 
     @property public TypeReferenceDescriptor type()
@@ -409,7 +402,7 @@ public final class ModuleReader : ModuleLoader
         for (uint i = 0; i < typeCount; i++)
         {
             auto type = readType();
-            auto structType = new StructureType(mod, type.name, type.layout);
+            auto structType = new StructureType(mod, type.name, type.alignment);
 
             _types[structType] = type;
         }
@@ -417,7 +410,7 @@ public final class ModuleReader : ModuleLoader
         foreach (tup; _types)
         {
             foreach (field; tup.y.fields)
-                tup.x.createField(field.name, toType(field.type), field.storage, field.offset);
+                tup.x.createField(field.name, toType(field.type), field.storage);
 
             tup.x.close();
         }
@@ -501,8 +494,8 @@ public final class ModuleReader : ModuleLoader
     body
     {
         auto name = _reader.readString();
-        auto layout = _reader.read!TypeLayout();
-        auto type = new TypeDescriptor(name, layout);
+        auto alignment = _reader.read!uint();
+        auto type = new TypeDescriptor(name, alignment);
         auto fieldCount = _reader.read!uint();
 
         for (uint i = 0; i < fieldCount; i++)
@@ -520,10 +513,9 @@ public final class ModuleReader : ModuleLoader
     {
         auto name = _reader.readString();
         auto attributes = _reader.read!FieldStorage();
-        auto offset = _reader.read!bool() ? Nullable!uint(_reader.read!uint()) : Nullable!uint();
         auto type = readTypeReference();
 
-        return new FieldDescriptor(name, attributes, offset, type);
+        return new FieldDescriptor(name, attributes, type);
     }
 
     private TypeReferenceDescriptor readTypeReference()

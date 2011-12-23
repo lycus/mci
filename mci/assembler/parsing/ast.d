@@ -475,7 +475,7 @@ public class FunctionReferenceNode : Node
 public class TypeDeclarationNode : DeclarationNode
 {
     private SimpleNameNode _name;
-    private TypeLayout _layout;
+    private LiteralValueNode _alignment;
     private NoNullList!FieldDeclarationNode _fields;
 
     invariant()
@@ -484,7 +484,7 @@ public class TypeDeclarationNode : DeclarationNode
         assert(_fields);
     }
 
-    public this(SourceLocation location, SimpleNameNode name, TypeLayout layout, NoNullList!FieldDeclarationNode fields)
+    public this(SourceLocation location, SimpleNameNode name, LiteralValueNode alignment, NoNullList!FieldDeclarationNode fields)
     in
     {
         assert(location);
@@ -496,7 +496,7 @@ public class TypeDeclarationNode : DeclarationNode
         super(location);
 
         _name = name;
-        _layout = layout;
+        _alignment = alignment;
         _fields = fields.duplicate();
     }
 
@@ -505,9 +505,9 @@ public class TypeDeclarationNode : DeclarationNode
         return _name;
     }
 
-    @property public final TypeLayout layout()
+    @property public final LiteralValueNode alignment()
     {
-        return _layout;
+        return _alignment;
     }
 
     @property public final ReadOnlyIndexable!FieldDeclarationNode fields()
@@ -517,12 +517,7 @@ public class TypeDeclarationNode : DeclarationNode
 
     @property public override ReadOnlyIndexable!Node children()
     {
-        return new List!Node(concat(toReadOnlyIndexable!Node(_name), castItems!Node(_fields)));
-    }
-
-    public override string toString()
-    {
-        return "layout: " ~ to!string(_layout);
+        return new List!Node(concat(toReadOnlyIndexable!Node(_name), toReadOnlyIndexable!Node(_alignment), castItems!Node(_fields)));
     }
 }
 
@@ -531,7 +526,6 @@ public class FieldDeclarationNode : Node
     private TypeReferenceNode _type;
     private SimpleNameNode _name;
     private FieldStorage _storage;
-    private LiteralValueNode _offset;
 
     invariant()
     {
@@ -540,7 +534,7 @@ public class FieldDeclarationNode : Node
     }
 
     public this(SourceLocation location, TypeReferenceNode type, SimpleNameNode name,
-                FieldStorage storage, LiteralValueNode offset)
+                FieldStorage storage)
     in
     {
         assert(location);
@@ -571,14 +565,9 @@ public class FieldDeclarationNode : Node
         return _storage;
     }
 
-    @property public final LiteralValueNode offset()
-    {
-        return _offset;
-    }
-
     @property public override ReadOnlyIndexable!Node children()
     {
-        return toReadOnlyIndexable!Node(_type, _name, _offset);
+        return toReadOnlyIndexable!Node(_type, _name);
     }
 
     public override string toString()

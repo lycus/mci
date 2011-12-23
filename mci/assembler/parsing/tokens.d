@@ -22,9 +22,6 @@ public enum TokenType : ubyte
     star,
     slash,
     type,
-    automatic,
-    sequential,
-    explicit,
     field,
     instance,
     static_,
@@ -80,9 +77,6 @@ in
 body
 {
     auto keywordsToTypes = ["type" : TokenType.type,
-                            "automatic" : TokenType.automatic,
-                            "sequential" : TokenType.sequential,
-                            "explicit" : TokenType.explicit,
                             "field" : TokenType.field,
                             "instance" : TokenType.instance,
                             "static" : TokenType.static_,

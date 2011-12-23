@@ -15,7 +15,6 @@ public final class Field
     private StructureType _declaringType;
     private string _name;
     private Type _type;
-    private Nullable!uint _offset;
     private FieldStorage _storage;
 
     invariant()
@@ -23,17 +22,14 @@ public final class Field
         assert(_declaringType);
         assert(_name);
         assert(_type);
-        assert(_declaringType.layout == TypeLayout.explicit ? _offset.hasValue : !_offset.hasValue);
     }
 
-    package this(StructureType declaringType, string name, Type type, FieldStorage storage = FieldStorage.instance,
-                 Nullable!uint offset = Nullable!uint())
+    package this(StructureType declaringType, string name, Type type, FieldStorage storage = FieldStorage.instance)
     in
     {
         assert(declaringType);
         assert(name);
         assert(type);
-        assert(declaringType.layout == TypeLayout.explicit ? offset.hasValue : !offset.hasValue);
     }
     body
     {
@@ -41,7 +37,6 @@ public final class Field
         _name = name;
         _type = type;
         _storage = storage;
-        _offset = offset;
     }
 
     @property public StructureType declaringType()
@@ -77,11 +72,6 @@ public final class Field
     @property public FieldStorage storage()
     {
         return _storage;
-    }
-
-    @property public Nullable!uint offset()
-    {
-        return _offset;
     }
 
     public override string toString()

@@ -223,26 +223,18 @@ public final class Parser
     {
         consume("type");
 
-        TypeLayout layout;
-
-        auto layoutTok = next();
-
-        switch (layoutTok.type)
-        {
-            case TokenType.automatic:
-                layout = TypeLayout.automatic;
-                break;
-            case TokenType.sequential:
-                layout = TypeLayout.sequential;
-                break;
-            case TokenType.explicit:
-                layout = TypeLayout.explicit;
-                break;
-            default:
-                errorGot("'automatic', 'sequential', or 'explicit'", layoutTok.location, layoutTok.value);
-        }
-
         auto name = parseSimpleName();
+
+        LiteralValueNode alignment;
+
+        if (peek().type == TokenType.openParen)
+        {
+            next();
+
+            alignment = parseLiteralValue!uint();
+
+            consume(")");
+        }
 
         consume("{");
 
@@ -260,7 +252,7 @@ public final class Parser
 
         consume("}");
 
-        return new TypeDeclarationNode(name.location, name, layout, fields);
+        return new TypeDeclarationNode(name.location, name, alignment, fields);
     }
 
     private ModuleReferenceNode parseModuleReference()
@@ -497,20 +489,9 @@ public final class Parser
         auto type = parseTypeSpecification();
         auto name = parseSimpleName();
 
-        LiteralValueNode offset;
-
-        if (peek().type == TokenType.openParen)
-        {
-            next();
-
-            offset = parseLiteralValue!uint();
-
-            consume(")");
-        }
-
         consume(";");
 
-        return new FieldDeclarationNode(_stream.previous.location, type, name, storage, offset);
+        return new FieldDeclarationNode(_stream.previous.location, type, name, storage);
     }
 
     private LiteralValueNode parseLiteralValue(T)()

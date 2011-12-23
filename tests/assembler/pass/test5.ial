@@ -1,4 +1,4 @@
-type automatic Arrays
+type Arrays
 {
     field instance int32[] ints;
     field instance float32[] floats;
