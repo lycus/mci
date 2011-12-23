@@ -5,6 +5,7 @@ import mci.core.container,
        mci.cli.tools.assembler,
        mci.cli.tools.disassembler,
        mci.cli.tools.interpreter,
+       mci.cli.tools.statistics,
        mci.cli.tools.verifier;
 
 public interface Tool
@@ -34,7 +35,8 @@ static this()
     allTools = toReadOnlyIndexable(tuple!(string, Tool)("asm", new AssemblerTool()),
                                    tuple!(string, Tool)("disasm", new DisassemblerTool()),
                                    tuple!(string, Tool)("interp", new InterpreterTool()),
-                                   tuple!(string, Tool)("verify", new VerifierTool()));
+                                   tuple!(string, Tool)("verify", new VerifierTool()),
+                                   tuple!(string, Tool)("stats", new StatisticsTool()));
 }
 
 public Tool getTool(string name)

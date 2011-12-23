@@ -281,6 +281,7 @@
    <File path="tools\assembler.d" />
    <File path="tools\disassembler.d" />
    <File path="tools\interpreter.d" />
+   <File path="tools\statistics.d" />
    <File path="tools\verifier.d" />
   </Folder>
   <File path="main.d" />

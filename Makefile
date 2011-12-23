@@ -238,6 +238,7 @@ MCI_CLI_SOURCES = \
 	mci/cli/tools/assembler.d \
 	mci/cli/tools/disassembler.d \
 	mci/cli/tools/interpreter.d \
+	mci/cli/tools/statistics.d \
 	mci/cli/tools/verifier.d
 
 MCI_CLI_DEPS = \
