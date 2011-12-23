@@ -1322,6 +1322,8 @@ The following conversions are valid:
 * ``T*`` -> ``T[]`` for any ``T``.
 * ``T[]`` -> ``T*`` for any ``T``.
 * ``T[E]`` -> ``U[E]`` for any valid ``T`` -> ``U`` conversion.
+* ``R1(T1, ...)`` -> ``R2(U1, ...)`` for any ``R1``, any ``R2``, and any
+  amount and type of ``T`` \ :sub:`n` and ``U`` \ :sub:`m`.
 * ``R(T1, ...)`` -> ``U*`` for any ``R``, any amount and type of ``T``
   \ :sub:`n`, and any ``U``.
 * ``T*`` -> ``R(U1, ...)`` for any ``T``, any ``R``, and any amount and
