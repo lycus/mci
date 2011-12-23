@@ -399,10 +399,6 @@ in
     assert(iter);
     assert(selector);
 }
-out (result)
-{
-    assert(result);
-}
 body
 {
     auto result = seed;
