@@ -288,6 +288,7 @@ public class VectorTypeReferenceNode : TypeReferenceNode
 
 public class FunctionPointerTypeReferenceNode : TypeReferenceNode
 {
+    private Nullable!CallingConvention _callingConvention;
     private TypeReferenceNode _returnType;
     private NoNullList!TypeReferenceNode _parameterTypes;
 
@@ -296,7 +297,7 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
         assert(_parameterTypes);
     }
 
-    public this(SourceLocation location, TypeReferenceNode returnType,
+    public this(SourceLocation location, Nullable!CallingConvention callingConvention, TypeReferenceNode returnType,
                 NoNullList!TypeReferenceNode parameterTypes)
     in
     {
@@ -307,8 +308,14 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
     {
         super(location);
 
+        _callingConvention = callingConvention;
         _returnType = returnType;
         _parameterTypes = parameterTypes.duplicate();
+    }
+
+    @property public final Nullable!CallingConvention callingConvention()
+    {
+        return _callingConvention;
     }
 
     @property public final TypeReferenceNode returnType()
@@ -324,6 +331,11 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
     @property public override ReadOnlyIndexable!Node children()
     {
         return new List!Node(concat(toReadOnlyIndexable!Node(_returnType), castItems!Node(_parameterTypes)));
+    }
+
+    public override string toString()
+    {
+        return "calling convention: " ~ to!string(_callingConvention);
     }
 }
 

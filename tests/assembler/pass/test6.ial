@@ -1,0 +1,5 @@
+type NativeFuncPtrs
+{
+    field instance void() stdcall foo;
+    field instance int32(float64, int32*) cdecl bar;
+}

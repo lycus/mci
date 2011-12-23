@@ -295,7 +295,28 @@ public final class Parser
 
         next();
 
-        return new FunctionPointerTypeReferenceNode(paren.location, returnType, params);
+        Nullable!CallingConvention cc;
+
+        auto ccTok = peek();
+
+        if (ccTok.type == TokenType.cdecl || ccTok.type == TokenType.stdCall)
+        {
+            next();
+
+            switch (ccTok.type)
+            {
+                case TokenType.cdecl:
+                    cc = nullable(CallingConvention.cdecl);
+                    break;
+                case TokenType.stdCall:
+                    cc = nullable(CallingConvention.stdCall);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return new FunctionPointerTypeReferenceNode(paren.location, cc, returnType, params);
     }
 
     private TypeReferenceNode parseTypeSpecification()

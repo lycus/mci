@@ -5,6 +5,7 @@ import std.conv,
        mci.core.container,
        mci.core.nullable,
        mci.core.code.modules,
+       mci.core.code.functions,
        mci.core.typing.members;
 
 public abstract class Type
@@ -184,6 +185,7 @@ unittest
 
 public final class FunctionPointerType : Type
 {
+    private Nullable!CallingConvention _callingConvention;
     private Type _returnType;
     private NoNullList!Type _parameterTypes;
 
@@ -192,15 +194,21 @@ public final class FunctionPointerType : Type
         assert(_parameterTypes);
     }
 
-    package this(Type returnType, NoNullList!Type parameterTypes)
+    package this(Nullable!CallingConvention callingConvention, Type returnType, NoNullList!Type parameterTypes)
     in
     {
         assert(parameterTypes);
     }
     body
     {
+        _callingConvention = callingConvention;
         _returnType = returnType;
         _parameterTypes = parameterTypes.duplicate();
+    }
+
+    @property public Nullable!CallingConvention callingConvention()
+    {
+        return _callingConvention;
     }
 
     @property public Type returnType()
@@ -220,7 +228,22 @@ public final class FunctionPointerType : Type
 
     @property public override string name()
     {
-        auto s = (_returnType ? _returnType.toString() : "void") ~ " (";
+        string s;
+
+        if (_callingConvention.hasValue)
+        {
+            final switch (_callingConvention.value)
+            {
+                case CallingConvention.cdecl:
+                    s ~= "cdecl ";
+                    break;
+                case CallingConvention.stdCall:
+                    s ~= "stdcall ";
+                    break;
+            }
+        }
+
+        s ~= (_returnType ? _returnType.toString() : "void") ~ " (";
 
         foreach (i, param; _parameterTypes)
         {
@@ -248,9 +271,24 @@ unittest
     params.add(st2);
     params.add(st1);
 
-    auto fpt = new FunctionPointerType(st1, params);
+    auto fpt = new FunctionPointerType(Nullable!CallingConvention(), st1, params);
 
     assert(fpt.name == "foo/bar (foo/baz, foo/bar)");
+}
+
+unittest
+{
+    auto mod = new Module("foo");
+
+    auto st1 = new StructureType(mod, "bar");
+    st1.close();
+
+    auto params = new NoNullList!Type();
+    params.add(st1);
+
+    auto fpt = new FunctionPointerType(nullable(CallingConvention.cdecl), st1, params);
+
+    assert(fpt.name == "cdecl foo/bar (foo/bar)");
 }
 
 public final class ArrayType : Type

@@ -305,6 +305,7 @@ private final class VectorTypeReferenceDescriptor : TypeReferenceDescriptor
 
 private final class FunctionPointerTypeReferenceDescriptor : TypeReferenceDescriptor
 {
+    private Nullable!CallingConvention _callingConvention;
     private TypeReferenceDescriptor _returnType;
     private NoNullList!TypeReferenceDescriptor _parameterTypes;
 
@@ -313,10 +314,16 @@ private final class FunctionPointerTypeReferenceDescriptor : TypeReferenceDescri
         assert(_parameterTypes);
     }
 
-    public this(TypeReferenceDescriptor returnType)
+    public this(Nullable!CallingConvention callingConvention, TypeReferenceDescriptor returnType)
     {
+        _callingConvention = callingConvention;
         _returnType = returnType;
         _parameterTypes = new typeof(_parameterTypes)();
+    }
+
+    @property public Nullable!CallingConvention callingConvention()
+    {
+        return _callingConvention;
     }
 
     @property public TypeReferenceDescriptor returnType()
@@ -462,7 +469,7 @@ public final class ModuleReader : ModuleLoader
         else if (auto fpType = cast(FunctionPointerTypeReferenceDescriptor)descriptor)
         {
             auto params = new NoNullList!Type(map(fpType.parameterTypes, (TypeReferenceDescriptor desc) { return toType(desc); }));
-            return getFunctionPointerType(fpType.returnType ? toType(fpType.returnType) : null, params);
+            return getFunctionPointerType(fpType.callingConvention, fpType.returnType ? toType(fpType.returnType) : null, params);
         }
         else
             return (cast(CoreTypeReferenceDescriptor)descriptor).type;
@@ -587,7 +594,12 @@ public final class ModuleReader : ModuleLoader
                 if (_reader.read!bool())
                     returnType = readTypeReference();
 
-                auto fpType = new FunctionPointerTypeReferenceDescriptor(returnType);
+                Nullable!CallingConvention cc;
+
+                if (_reader.read!bool())
+                    cc = nullable(_reader.read!CallingConvention());
+
+                auto fpType = new FunctionPointerTypeReferenceDescriptor(cc, returnType);
                 auto paramCount = _reader.read!uint();
 
                 for (uint i = 0; i < paramCount; i++)

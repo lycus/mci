@@ -273,6 +273,11 @@ public final class ModuleWriter : ModuleSaver
         if (type.returnType)
             writeTypeReference(type.returnType);
 
+        _writer.write(type.callingConvention.hasValue);
+
+        if (type.callingConvention.hasValue)
+            _writer.write(type.callingConvention.value);
+
         _writer.write(cast(uint)type.parameterTypes.count);
 
         foreach (param; type.parameterTypes)

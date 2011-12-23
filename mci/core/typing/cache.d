@@ -4,12 +4,13 @@ import mci.core.common,
        mci.core.container,
        mci.core.nullable,
        mci.core.tuple,
+       mci.core.code.functions,
        mci.core.code.modules,
        mci.core.typing.core,
        mci.core.typing.members,
        mci.core.typing.types;
 
-private NoNullDictionary!(Tuple!(Type, NoNullList!Type), FunctionPointerType) functionPointerTypes;
+private NoNullDictionary!(Tuple!(Nullable!CallingConvention, Type, NoNullList!Type), FunctionPointerType) functionPointerTypes;
 private NoNullDictionary!(Type, PointerType) pointerTypes;
 private NoNullDictionary!(Type, ArrayType) arrayTypes;
 private NoNullDictionary!(Tuple!(Type, uint), VectorType) vectorTypes;
@@ -22,7 +23,8 @@ static this()
     vectorTypes = new typeof(vectorTypes)();
 }
 
-public FunctionPointerType getFunctionPointerType(Type returnType, NoNullList!Type parameterTypes)
+public FunctionPointerType getFunctionPointerType(Nullable!CallingConvention callingConvention, Type returnType,
+                                                  NoNullList!Type parameterTypes)
 in
 {
     assert(parameterTypes);
@@ -33,12 +35,12 @@ out (result)
 }
 body
 {
-    auto tup = tuple(returnType, parameterTypes.duplicate());
+    auto tup = tuple(callingConvention, returnType, parameterTypes.duplicate());
 
     if (auto fpType = tup in functionPointerTypes)
         return *fpType;
 
-    return functionPointerTypes[tup] = new FunctionPointerType(returnType, parameterTypes);
+    return functionPointerTypes[tup] = new FunctionPointerType(callingConvention, returnType, parameterTypes);
 }
 
 public PointerType getPointerType(Type elementType)

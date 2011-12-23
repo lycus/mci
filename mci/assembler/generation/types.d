@@ -162,7 +162,7 @@ body
     foreach (paramType; node.parameterTypes)
         parameterTypes.add(resolveType(paramType, module_, manager));
 
-    return getFunctionPointerType(returnType, parameterTypes);
+    return getFunctionPointerType(node.callingConvention, returnType, parameterTypes);
 }
 
 public Field resolveField(FieldReferenceNode node, Module module_, ModuleManager manager)
