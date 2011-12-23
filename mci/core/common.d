@@ -96,44 +96,44 @@ public T* copyToNative(T)(T[] arr)
 
 public enum Compiler : ubyte
 {
-    unknown,
-    dmd,
-    gdc,
-    ldc,
-    sdc,
+    unknown = 0,
+    dmd = 1,
+    gdc = 2,
+    ldc = 3,
+    sdc = 4,
 }
 
 public enum Architecture : ubyte
 {
-    x86,
-    arm,
-    ppc,
-    ia64,
-    mips,
+    x86 = 0,
+    arm = 1,
+    ppc = 2,
+    ia64 = 3,
+    mips = 4,
 }
 
 public enum Endianness : ubyte
 {
-    littleEndian,
-    bigEndian,
+    littleEndian = 0,
+    bigEndian = 1,
 }
 
 public enum OperatingSystem : ubyte
 {
-    windows,
-    linux,
-    osx,
-    bsd,
-    freebsd,
-    openbsd,
-    solaris,
-    aix,
-    hurd,
+    windows = 0,
+    linux = 1,
+    osx = 2,
+    bsd = 3,
+    freebsd = 4,
+    openbsd = 5,
+    solaris = 6,
+    aix = 7,
+    hurd = 8,
 }
 
 public enum EmulationLayer : ubyte
 {
-    none,
-    cygwin,
-    mingw,
+    none = 0,
+    cygwin = 1,
+    mingw = 2,
 }
