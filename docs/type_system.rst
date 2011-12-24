@@ -16,21 +16,23 @@ categories of types:
   - Vector types: Similar to arrays, but they have a fixed, static length
     (i.e. ``float64[3]``).
   - Function pointer types: These point to a function which can be invoked
-    indirectly. They contain a return type and parameter types (for example,
-    ``int32(float32, float64)`` would be a pointer to a function taking a
-    ``float32`` and a ``float64`` argument, returning ``int32``).
+    indirectly. They contain a calling convention, return type and parameter
+    types (for example, ``int32(float32, float64)`` would be a pointer to a
+    function taking a ``float32`` and a ``float64`` argument, returning
+    ``int32``).
 
 The following notation is used:
 
-================= ===============================================================
-Notation          Meaning
-================= ===============================================================
-``T``             Type name.
-``T[]``           Array of ``T``.
-``T[E]``          Vector of ``T`` with ``E`` elements.
-``T*``            Pointer to ``T``.
-``R(T1, ...)``    Function pointer returning ``R``, taking ``T1``, ... arguments.
-================= ===============================================================
+==================== ===============================================================
+Notation             Meaning
+==================== ===============================================================
+``T``                Type name.
+``T[]``              Array of ``T``.
+``T[E]``             Vector of ``T`` with ``E`` elements.
+``T*``               Pointer to ``T``.
+``R(T1, ...)``       Function pointer returning ``R``, taking ``T1``, ... arguments.
+``R(T1, ...) cdecl`` Function pointer with ``cdecl`` calling convention.
+==================== ===============================================================
 
 Primitive types
 +++++++++++++++
@@ -188,7 +190,9 @@ Function pointer types
 ----------------------
 
 These are simply pointers to functions in memory. A function pointer
-carries information about the return type and parameter types.
+carries information about the calling convention, return type, and
+parameter types. Calling convention is optional; if it is not specified,
+the default IAL calling convention is assumed.
 
 Examples:
 
@@ -197,8 +201,7 @@ Examples:
   ``void(float32)``
 * Function returning void, taking ``float32`` and ``int32``:
   ``void(float32, int32)``
-
-Calling convention is not part of the function pointer type, but is
-rather specified when invoking the function pointer.
+* Function returning void, taking no parameters, with ``cdecl`` calling
+  convention: ``void() cdecl``
 
 Function pointers are convertible to any pointer type.

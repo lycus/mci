@@ -258,6 +258,10 @@ can be assigned to a register declared as::
 
     register int32(float32, float64) bar;
 
+The target may also have a specified calling convention (``cdecl`` or
+``stdcall``), in which case the given function must be an FFI function with
+a matching calling convention.
+
 load.null
 ---------
 
