@@ -46,7 +46,7 @@ all: \
 	bin/libmci.jit.a \
 	bin/libmci.aot.a \
 	bin/libmci.debugger.a \
-	bin/mci.cli \
+	bin/mci \
 	$(MCI_TESTER)
 
 clean:
@@ -256,7 +256,7 @@ MCI_CLI_DEPS = \
 	bin/libmci.core.a \
 	libffi-d/bin/libffi-d.a
 
-bin/mci.cli: $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS)
+bin/mci: $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS)
 	-mkdir -p bin;
 	$(DPLC) $(DFLAGS) -L-lffi -L-ldl $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS);
 

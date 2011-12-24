@@ -80,7 +80,7 @@
   <libpaths />
   <deffile />
   <resfile />
-  <exefile>$(OutDir)\$(ProjectName).exe</exefile>
+  <exefile>$(OutDir)\mci.exe</exefile>
   <additionalOptions />
   <preBuildCommand />
   <postBuildCommand />
@@ -172,7 +172,7 @@
   <libpaths />
   <deffile />
   <resfile />
-  <exefile>$(OutDir)\$(ProjectName).exe</exefile>
+  <exefile>$(OutDir)\mci.exe</exefile>
   <additionalOptions />
   <preBuildCommand />
   <postBuildCommand />
@@ -264,7 +264,7 @@
   <libpaths />
   <deffile />
   <resfile />
-  <exefile>$(OutDir)\$(ProjectName).exe</exefile>
+  <exefile>$(OutDir)\mci.exe</exefile>
   <additionalOptions />
   <preBuildCommand />
   <postBuildCommand />

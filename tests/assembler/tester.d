@@ -3,8 +3,8 @@ import std.file,
        std.process,
        std.stdio;
 
-private string windowsPath = buildPath("..", "..", "mci", "cli", "Test", "mci.cli.exe");
-private string posixPath = buildPath("..", "..", "bin", "mci.cli");
+private string windowsPath = buildPath("..", "..", "mci", "cli", "Test", "mci.exe");
+private string posixPath = buildPath("..", "..", "bin", "mci");
 
 private int main()
 {
