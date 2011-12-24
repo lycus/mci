@@ -147,6 +147,7 @@ MCI_VERIFIER_SOURCES = \
 	mci/verifier/all.d \
 	mci/verifier/base.d \
 	mci/verifier/exception.d \
+	mci/verifier/manager.d \
 	mci/verifier/passes/control.d \
 	mci/verifier/passes/ordering.d \
 	mci/verifier/passes/typing.d
