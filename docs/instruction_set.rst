@@ -374,6 +374,25 @@ All three registers must be of the exact same type. Allowed types are
 ``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
 well as any pointer type. Vectors of all of these are also allowed.
 
+ari.rem
+-------
+
+**Has target register**
+    Yes
+**Source registers**
+    2
+**Operand type**
+    None
+
+Computes the remainder resulting from dividing the first source register
+with the second source register and stores the result in the target
+register.
+
+All three registers must be of the exact same type. Allowed types are
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
+well as any pointer type. Vectors of all of these are also allowed.
+
 ari.neg
 -------
 
