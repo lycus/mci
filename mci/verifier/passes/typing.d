@@ -77,7 +77,7 @@ public final class ArithmeticVerifier : CodeVerifier
         {
             foreach (instr; bb.y.instructions)
             {
-                if (isArithmetic(instr.opCode))
+                if (isArithmetic(instr.opCode) || instr.opCode is opNot)
                 {
                     if (!isValidInArithmetic(instr.targetRegister.type))
                         error(instr, "Target register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
