@@ -33,7 +33,7 @@ ifeq ($(BUILD), test)
 	MCI_TESTER = bin/mci.tester
 endif
 
-.PHONY: all clean docs install
+.PHONY: all clean docs install uninstall
 
 all: \
 	bin/libmci.core.a \
@@ -90,6 +90,22 @@ install: all
 	cp bin/libmci.debugger.a $(PREFIX)/lib;
 	cp bin/mci $(PREFIX)/bin;
 	$(MAKE) -C libffi-d install;
+
+uninstall: all
+	if [ -d $(PREFIX) ]; then \
+		rm $(PREFIX)/lib/libmci.core.a; \
+		rm $(PREFIX)/lib/libmci.assembler.a; \
+		rm $(PREFIX)/lib/libmci.linker.a; \
+		rm $(PREFIX)/lib/libmci.verifier.a; \
+		rm $(PREFIX)/lib/libmci.optimizer.a; \
+		rm $(PREFIX)/lib/libmci.vm.a; \
+		rm $(PREFIX)/lib/libmci.compiler.a; \
+		rm $(PREFIX)/lib/libmci.jit.a; \
+		rm $(PREFIX)/lib/libmci.aot.a; \
+		rm $(PREFIX)/lib/libmci.debugger.a; \
+		rm $(PREFIX)/bin/mci; \
+	fi;
+	$(MAKE) -C libffi-d uninstall;
 
 libffi-d/bin/libffi-d.a:
 	$(MAKE) -C libffi-d;
