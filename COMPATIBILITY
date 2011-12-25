@@ -11,7 +11,7 @@ The following compilers are supported:
     * LLVM D Compiler (LDC)
     * Stupid D Compiler (SDC)
 
-The MCI will generally compile even if you're using an unsupported
+The MCI will probably compile even if you're using an unsupported
 compiler, but we cannot in any way guarantee support.
 
 The following architectures are supported:
@@ -45,3 +45,7 @@ The following emulation layers can optionally be used:
     * MinGW
 
 Byte order must also be determined when compiling.
+
+The MCI also depends on the libffi library with full support for the
+closure API. As far as we are aware, this configuration is available
+across all combinations of supported architectures and operating systems.
