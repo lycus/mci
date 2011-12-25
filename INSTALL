@@ -7,10 +7,10 @@ Installation on Linux works through a single Makefile:
     $ make
 
 If you have a working compiler installed, this should just work. Note
-that you must have libffi installed.
+that you must have libffi installed, with full support for the closure
+API.
 
-There are some variables that you can override when building with
-the Makefile:
+There are some variables that you can override:
 
     * MODEL (= 64)
       - Which pointer size to build for (32 or 64).
@@ -20,13 +20,30 @@ the Makefile:
     * DPLC (= dmd)
       - The compiler to be used. See the COMPATIBILITY file for a
         list of supported compilers.
+    * PREFIX (= /usr/local)
+      - Specifies where to install binaries and libraries to when the
+        install target is invoked.
 
 For example, to do a 32-bit release build:
 
     $ make BUILD=release MODEL=32
 
-The resulting libraries and executables will be placed in the root
-directory of the source distribution.
+The resulting libraries and executables are placed into the 'bin'
+directory of the source distribution. To install, run:
+
+    $ make install
+
+You may wish to install elsewhere than '/usr/local', in which case,
+you can set the PREFIX variable. For example:
+
+    $ make install PREFIX=/opt/mci
+
+You can build the documentation by doing:
+
+    $ make docs
+
+The documentation will be placed in 'docs/_build'. You'll probably
+be interested in 'docs/_build/html/index.html' primarily.
 
 Building on Windows is only supported via Visual D. Install your
 compiler of choice and configure Visual D to use it.
