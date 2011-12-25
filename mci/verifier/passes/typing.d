@@ -2,8 +2,10 @@ module mci.verifier.passes.typing;
 
 import std.conv,
        mci.core.common,
+       mci.core.container,
        mci.core.analysis.utilities,
        mci.core.code.functions,
+       mci.core.code.instructions,
        mci.core.code.opcodes,
        mci.core.typing.core,
        mci.core.typing.types,
@@ -69,6 +71,23 @@ public final class ConstantLoadVerifier : CodeVerifier
     }
 }
 
+private bool areSameType(Register[] registers ...)
+in
+{
+    assert(registers);
+}
+body
+{
+    auto noNullTypes = map(filter(toIterable(registers), (Register r) { return !!r; }), (Register r) { return r.type; });
+
+    foreach (type; noNullTypes)
+        foreach (type2; noNullTypes)
+            if (type !is type2)
+                return false;
+
+    return true;
+}
+
 public final class ArithmeticVerifier : CodeVerifier
 {
     public override void verify(Function function_)
@@ -85,6 +104,9 @@ public final class ArithmeticVerifier : CodeVerifier
                     if ((instr.opCode.registers >= 1 && !isValidInArithmetic(instr.sourceRegister1.type)) ||
                         (instr.opCode.registers >= 2 && !isValidInArithmetic(instr.sourceRegister2.type)))
                         error(instr, "Source register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+
+                    if (!areSameType(instr.targetRegister, instr.sourceRegister1, instr.sourceRegister2))
+                        error(instr, "All registers must be the exact same type.");
                 }
             }
         }
@@ -107,6 +129,9 @@ public final class BitwiseVerifier : CodeVerifier
                     if ((instr.opCode.registers >= 1 && !isValidInBitwise(instr.sourceRegister1.type)) ||
                         (instr.opCode.registers >= 2 && !isValidInBitwise(instr.sourceRegister2.type)))
                         error(instr, "Source register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+
+                    if (!areSameType(instr.targetRegister, instr.sourceRegister1, instr.sourceRegister2))
+                        error(instr, "All registers must be the exact same type.");
                 }
             }
         }
