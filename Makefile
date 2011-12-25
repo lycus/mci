@@ -1,6 +1,7 @@
 MODEL ?= 64
 BUILD ?= debug
 DPLC ?= dmd
+PREFIX ?= /usr/local
 
 ifneq ($(MODEL), 32)
 	ifneq ($(MODEL), 64)
@@ -32,7 +33,7 @@ ifeq ($(BUILD), test)
 	MCI_TESTER = bin/mci.tester
 endif
 
-.PHONY: all clean docs
+.PHONY: all clean docs install
 
 all: \
 	bin/libmci.core.a \
@@ -74,6 +75,20 @@ docs:
 	make man; \
 	make changes; \
 	make linkcheck;
+
+install: all
+	-mkdir -p $(PREFIX);
+	cp bin/libmci.core.a $(PREFIX)/lib;
+	cp bin/libmci.assembler.a $(PREFIX)/lib;
+	cp bin/libmci.linker.a $(PREFIX)/lib;
+	cp bin/libmci.verifier.a $(PREFIX)/lib;
+	cp bin/libmci.optimizer.a $(PREFIX)/lib;
+	cp bin/libmci.vm.a $(PREFIX)/lib;
+	cp bin/libmci.compiler.a $(PREFIX)/lib;
+	cp bin/libmci.jit.a $(PREFIX)/lib;
+	cp bin/libmci.aot.a $(PREFIX)/lib;
+	cp bin/libmci.debugger.a $(PREFIX)/lib;
+	cp bin/mci $(PREFIX)/bin;
 
 libffi-d/bin/libffi-d.a:
 	$(MAKE) -C libffi-d;
