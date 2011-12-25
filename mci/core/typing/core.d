@@ -6,9 +6,17 @@ public abstract class CoreType : Type
 {
 }
 
-private mixin template DefineCoreType(string type, string name)
+public abstract class IntegerType : CoreType
 {
-    mixin("public final class " ~ type ~ "Type : CoreType" ~
+}
+
+public abstract class FloatingPointType : CoreType
+{
+}
+
+private mixin template DefineCoreType(string type, string name, string base)
+{
+    mixin("public final class " ~ type ~ "Type : " ~ base ~
           "{" ~
           "    private static " ~ type ~ "Type _instance;" ~
           "" ~
@@ -38,18 +46,18 @@ private mixin template DefineCoreType(string type, string name)
           "}");
 }
 
-mixin DefineCoreType!("Int8", "int8");
-mixin DefineCoreType!("UInt8", "uint8");
-mixin DefineCoreType!("Int16", "int16");
-mixin DefineCoreType!("UInt16", "uint16");
-mixin DefineCoreType!("Int32", "int32");
-mixin DefineCoreType!("UInt32", "uint32");
-mixin DefineCoreType!("Int64", "int64");
-mixin DefineCoreType!("UInt64", "uint64");
-mixin DefineCoreType!("NativeInt", "int");
-mixin DefineCoreType!("NativeUInt", "uint");
-mixin DefineCoreType!("Float32", "float32");
-mixin DefineCoreType!("Float64", "float64");
+mixin DefineCoreType!("Int8", "int8", "IntegerType");
+mixin DefineCoreType!("UInt8", "uint8", "IntegerType");
+mixin DefineCoreType!("Int16", "int16", "IntegerType");
+mixin DefineCoreType!("UInt16", "uint16", "IntegerType");
+mixin DefineCoreType!("Int32", "int32", "IntegerType");
+mixin DefineCoreType!("UInt32", "uint32", "IntegerType");
+mixin DefineCoreType!("Int64", "int64", "IntegerType");
+mixin DefineCoreType!("UInt64", "uint64", "IntegerType");
+mixin DefineCoreType!("NativeInt", "int", "IntegerType");
+mixin DefineCoreType!("NativeUInt", "uint", "IntegerType");
+mixin DefineCoreType!("Float32", "float32", "FloatingPointType");
+mixin DefineCoreType!("Float64", "float64", "FloatingPointType");
 
 public bool isCoreTypeName(string name)
 in

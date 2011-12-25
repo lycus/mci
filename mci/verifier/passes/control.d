@@ -1,8 +1,10 @@
 module mci.verifier.passes.control;
 
 import mci.core.container,
+       mci.core.tuple,
        mci.core.analysis.utilities,
        mci.core.code.functions,
+       mci.core.code.instructions,
        mci.core.code.opcodes,
        mci.verifier.base;
 
@@ -19,6 +21,26 @@ public final class TerminatorVerifier : CodeVerifier
 
             if (cfo !is last(bb.y.instructions))
                 error(cfo, "A terminator instruction must be the last instruction in a basic block.");
+        }
+    }
+}
+
+public final class JumpVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.instructions)
+            {
+                if (instr.opCode.operandType == OperandType.label)
+                {
+                    auto target = *instr.operand.peek!BasicBlock();
+
+                    if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) { return b.y is target; }))
+                        error(instr, "Target basic block '%s' is not within function '%s'.", target, function_);
+                }
+            }
         }
     }
 }

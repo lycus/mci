@@ -17,11 +17,14 @@ public final class VerificationManager
 
         addRange(_verifiers,
                  toIterable!CodeVerifier(new TerminatorVerifier(),
+                                         new JumpVerifier(),
                                          new ReturnVerifier(),
+                                         new ReturnTypeVerifier(),
                                          new FFIVerifier(),
                                          new RawVerifier(),
                                          new ConstantLoadVerifier(),
-                                         new ReturnTypeVerifier()));
+                                         new ArithmeticVerifier(),
+                                         new BitwiseVerifier(),));
     }
 
     public this()

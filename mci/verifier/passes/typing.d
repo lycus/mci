@@ -51,15 +51,62 @@ public final class ConstantLoadVerifier : CodeVerifier
                         error(instr, "The calling convention of the target function does not match that of the operand.");
 
                     if (func.returnType !is target.returnType)
-                        error(instr, "The return type of the target function signature does not match that of the operand.");
+                        error(instr, "The return type of the target function signature ('%s') does not match that of the operand ('%s').",
+                              target.returnType ? to!string(target.returnType) : "void",
+                              func.returnType ? to!string(func.returnType) : "void");
 
                     if (func.parameters.count != target.parameterTypes.count)
-                        error(instr, "The parameter count of the target function signature does not match that of the operand.");
+                        error(instr, "The parameter count of the target function signature ('%s') does not match that of the " ~
+                              "operand ('%s').", func.parameters.count, target.parameterTypes.count);
 
                     for (size_t i = 0; i < func.parameters.count; i++)
                         if (func.parameters[i].type !is target.parameterTypes[i])
-                            error(instr, "Parameter at index '" ~ to!string(i) ~
-                                  "' of the target function signature does not match that of the operand.");
+                            error(instr, "Parameter at index '%s' (type '%s') of the target function signature does not match " ~
+                                  "that of the operand ('%s').", i, target.parameterTypes[i], func.parameters[i].type);
+                }
+            }
+        }
+    }
+}
+
+public final class ArithmeticVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.instructions)
+            {
+                if (isArithmetic(instr.opCode))
+                {
+                    if (!isValidInArithmetic(instr.targetRegister.type))
+                        error(instr, "Target register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+
+                    if ((instr.opCode.registers >= 1 && !isValidInArithmetic(instr.sourceRegister1.type)) ||
+                        (instr.opCode.registers >= 2 && !isValidInArithmetic(instr.sourceRegister2.type)))
+                        error(instr, "Source register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+                }
+            }
+        }
+    }
+}
+
+public final class BitwiseVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.instructions)
+            {
+                if (isBitwise(instr.opCode))
+                {
+                    if (!isValidInBitwise(instr.targetRegister.type))
+                        error(instr, "Target register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+
+                    if ((instr.opCode.registers >= 1 && !isValidInBitwise(instr.sourceRegister1.type)) ||
+                        (instr.opCode.registers >= 2 && !isValidInBitwise(instr.sourceRegister2.type)))
+                        error(instr, "Source register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
                 }
             }
         }
@@ -75,7 +122,8 @@ public final class ReturnTypeVerifier : CodeVerifier
             auto instr = getFirstInstruction(bb.y, opReturn);
 
             if (instr.sourceRegister1.type !is function_.returnType)
-                error(instr, "The type of the source register does not match the return type of the function.");
+                error(instr, "The type of the source register ('%s') does not match the return type of the function ('%s').",
+                      instr.sourceRegister1.type, function_.returnType ? to!string(function_.returnType) : "void");
         }
     }
 }
