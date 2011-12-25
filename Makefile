@@ -89,6 +89,7 @@ install: all
 	cp bin/libmci.aot.a $(PREFIX)/lib;
 	cp bin/libmci.debugger.a $(PREFIX)/lib;
 	cp bin/mci $(PREFIX)/bin;
+	$(MAKE) -C libffi-d install;
 
 libffi-d/bin/libffi-d.a:
 	$(MAKE) -C libffi-d;
