@@ -24,7 +24,8 @@ public final class VerificationManager
                                          new RawVerifier(),
                                          new ConstantLoadVerifier(),
                                          new ArithmeticVerifier(),
-                                         new BitwiseVerifier(),));
+                                         new BitwiseVerifier(),
+                                         new ShiftVerifier()));
     }
 
     public this()

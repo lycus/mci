@@ -21,7 +21,7 @@ public final class ConstantLoadVerifier : CodeVerifier
             {
                 string loadCheck(string name, string type)
                 {
-                    return "if (instr.opCode is opLoad" ~ name ~ " && instr.targetRegister.type !is " ~ type ~ "Type.instance)" ~
+                    return "if (instr.opCode is opLoad" ~ name ~ " && !isType!" ~ type ~ "Type(instr.targetRegister.type))" ~
                            "    error(instr, \"The target of a '\" ~ opLoad" ~ name ~ ".name ~ \"' instruction must be of type '\" ~" ~
                            "          " ~ type ~ "Type.instance.name ~ \"'.\");";
                 }
@@ -132,6 +132,30 @@ public final class BitwiseVerifier : CodeVerifier
 
                     if (!areSameType(instr.targetRegister, instr.sourceRegister1, instr.sourceRegister2))
                         error(instr, "All registers must be the exact same type.");
+                }
+            }
+        }
+    }
+}
+
+public final class ShiftVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.instructions)
+            {
+                if (isShift(instr.opCode))
+                {
+                    if (!isValidInBitwise(instr.targetRegister.type))
+                        error(instr, "Target register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+
+                    if (!isValidInBitwise(instr.sourceRegister1.type))
+                        error(instr, "The first source register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+
+                    if (!isValidShiftAmountType(instr.sourceRegister2.type))
+                        error(instr, "The second source register must be of type 'uint'.");
                 }
             }
         }

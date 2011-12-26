@@ -96,6 +96,17 @@ body
            opCode is opBitNeg;
 }
 
+public bool isShift(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opShL ||
+           opCode is opShR;
+}
+
 public bool isValidInArithmetic(Type type)
 in
 {
@@ -128,4 +139,14 @@ body
             return true;
 
     return false;
+}
+
+public bool isValidShiftAmountType(Type type)
+in
+{
+    assert(type);
+}
+body
+{
+    return type is NativeUIntType.instance;
 }
