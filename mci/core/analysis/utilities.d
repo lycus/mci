@@ -107,6 +107,21 @@ body
            opCode is opShR;
 }
 
+public bool isComparison(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opCmpEq ||
+           opCode is opCmpNEq ||
+           opCode is opCmpGT ||
+           opCode is opCmpLT ||
+           opCode is opCmpGTEq ||
+           opCode is opCmpLTEq;
+}
+
 public bool isValidInArithmetic(Type type)
 in
 {

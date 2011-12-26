@@ -162,6 +162,27 @@ public final class ShiftVerifier : CodeVerifier
     }
 }
 
+public final class ComparisonVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.instructions)
+            {
+                if (isComparison(instr.opCode))
+                {
+                    if (!isType!NativeUIntType(instr.targetRegister.type))
+                        error(instr, "Target register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+
+                    if (!isValidInArithmetic(instr.sourceRegister1.type) || !isValidInArithmetic(instr.sourceRegister2.type))
+                        error(instr, "Source register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+                }
+            }
+        }
+    }
+}
+
 public final class ReturnTypeVerifier : CodeVerifier
 {
     public override void verify(Function function_)
