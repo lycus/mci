@@ -37,6 +37,8 @@ public final class ConstantLoadVerifier : CodeVerifier
                 mixin(loadCheck("F32", "Float32"));
                 mixin(loadCheck("F64", "Float64"));
                 mixin(loadCheck("Size", "NativeUInt"));
+                mixin(loadCheck("Align", "NativeUInt"));
+                mixin(loadCheck("Offset", "NativeUInt"));
 
                 if (instr.opCode is opLoadNull && !isNullable(instr.targetRegister.type))
                     error(instr, "The target of a 'load.null' opcode must be a pointer, a function pointer, an array, or a vector.");

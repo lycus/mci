@@ -297,6 +297,35 @@ target register.
 
 The target register must be of type ``uint``.
 
+load.align
+----------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    Type specification
+
+Loads the alignment of a type specification into the target register.
+
+The target register must be of type ``uint``.
+
+load.offset
+-----------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    Field reference
+
+Loads the offset of a field in its containing structure type into the
+target register.
+
+The target register must be of type ``uint``.
+
 Arithmetic and logic instructions
 +++++++++++++++++++++++++++++++++
 

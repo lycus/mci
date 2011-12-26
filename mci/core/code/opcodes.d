@@ -181,6 +181,8 @@ public enum OperationCode : ubyte
     loadFunc,
     loadNull,
     loadSize,
+    loadAlign,
+    loadOffset,
     ariAdd,
     ariSub,
     ariMul,
@@ -257,6 +259,8 @@ public OpCode opLoadF64;
 public OpCode opLoadFunc;
 public OpCode opLoadNull;
 public OpCode opLoadSize;
+public OpCode opLoadAlign;
+public OpCode opLoadOffset;
 public OpCode opAriAdd;
 public OpCode opAriSub;
 public OpCode opAriMul;
@@ -356,6 +360,8 @@ static this()
     opLoadFunc = create("load.func", OperationCode.loadFunc, OpCodeType.normal, OperandType.function_, 0, true);
     opLoadNull = create("load.null", OperationCode.loadNull, OpCodeType.normal, OperandType.none, 0, true);
     opLoadSize = create("load.size", OperationCode.loadSize, OpCodeType.normal, OperandType.type, 0, true);
+    opLoadAlign = create("load.align", OperationCode.loadAlign, OpCodeType.normal, OperandType.type, 0, true);
+    opLoadOffset = create("load.offset", OperationCode.loadOffset, OpCodeType.normal, OperandType.field, 0, true);
     opAriAdd = create("ari.add", OperationCode.ariAdd, OpCodeType.normal, OperandType.none, 2, true);
     opAriSub = create("ari.sub", OperationCode.ariSub, OpCodeType.normal, OperandType.none, 2, true);
     opAriMul = create("ari.mul", OperationCode.ariMul, OpCodeType.normal, OperandType.none, 2, true);
