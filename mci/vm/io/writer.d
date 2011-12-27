@@ -3,7 +3,7 @@ module mci.vm.io.writer;
 import mci.core.common,
        mci.core.container,
        mci.core.io,
-       mci.core.visitor,
+       mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.modules,
@@ -221,6 +221,11 @@ public final class ModuleWriter : ModuleSaver
                 writeArray(*val);
             else if (auto val = operand.peek!BasicBlock())
                 writeBasicBlockReference(*val);
+            else if (auto val = operand.peek!(Tuple!(BasicBlock, BasicBlock))())
+            {
+                writeBasicBlockReference(val.x);
+                writeBasicBlockReference(val.y);
+            }
             else if (auto val = operand.peek!Type())
                 writeTypeReference(*val);
             else if (auto val = operand.peek!Field())

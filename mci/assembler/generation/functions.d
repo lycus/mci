@@ -2,6 +2,7 @@ module mci.assembler.generation.functions;
 
 import std.conv,
        mci.core.container,
+       mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.modules,
@@ -145,6 +146,10 @@ body
                         break;
                     case OperandType.label:
                         operand = resolveBasicBlock(*instrOperand.peek!BasicBlockReferenceNode(), func);
+                        break;
+                    case OperandType.branch:
+                        auto branch = *instrOperand.peek!BranchSelectorNode();
+                        operand = tuple(resolveBasicBlock(branch.trueBlock, func), resolveBasicBlock(branch.falseBlock, func));
                         break;
                     case OperandType.type:
                         operand = resolveType(*instrOperand.peek!TypeReferenceNode(), module_, manager);

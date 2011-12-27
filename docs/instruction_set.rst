@@ -1237,7 +1237,7 @@ Performs an unconditional jump to the specified basic block.
 
 This is a terminator instruction.
 
-jump.true
+jump.cond
 ---------
 
 **Has target register**
@@ -1245,25 +1245,11 @@ jump.true
 **Source registers**
     1
 **Operand type**
-    Basic block
+    Branch selector
 
-Performs a jump to the specified basic block if the value in the source
-register (which must be of type ``uint``) does not equal 0.
-
-This is a terminator instruction.
-
-jump.false
-----------
-
-**Has target register**
-    No
-**Source registers**
-    1
-**Operand type**
-    Basic block
-
-Performs a jump to the specified basic block if the value in the source
-register (which must be of type ``uint``) equals 0.
+Performs a jump to the first basic block if the value in the source
+register (which must be of type ``uint``) does not equal 0; otherwise,
+jumps to the second basic block.
 
 This is a terminator instruction.
 

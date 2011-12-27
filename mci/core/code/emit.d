@@ -164,8 +164,18 @@ public class BasicBlockEmitter
     mixin DefineEmit!"ulong";
     mixin DefineEmit!"float";
     mixin DefineEmit!"double";
+    mixin DefineEmit!"ReadOnlyIndexable!byte";
     mixin DefineEmit!"ReadOnlyIndexable!ubyte";
+    mixin DefineEmit!"ReadOnlyIndexable!short";
+    mixin DefineEmit!"ReadOnlyIndexable!ushort";
+    mixin DefineEmit!"ReadOnlyIndexable!int";
+    mixin DefineEmit!"ReadOnlyIndexable!uint";
+    mixin DefineEmit!"ReadOnlyIndexable!long";
+    mixin DefineEmit!"ReadOnlyIndexable!ulong";
+    mixin DefineEmit!"ReadOnlyIndexable!float";
+    mixin DefineEmit!"ReadOnlyIndexable!double";
     mixin DefineEmit!"BasicBlock";
+    mixin DefineEmit!"Tuple!(BasicBlock, BasicBlock)";
     mixin DefineEmit!"Type";
     mixin DefineEmit!"Field";
     mixin DefineEmit!"Function";

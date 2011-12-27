@@ -5,6 +5,7 @@ import std.conv,
        std.string,
        mci.core.container,
        mci.core.io,
+       mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.modules,
@@ -195,6 +196,10 @@ public final class ModuleDisassembler
                             writeArray!float(operand);
                         case OperandType.float64Array:
                             writeArray!double(operand);
+                        case OperandType.branch:
+                            auto tup = *operand.peek!(Tuple!(BasicBlock, BasicBlock))();
+                            writef("%s, %s", tup.x, tup.y);
+                            break;
                         case OperandType.selector:
                             writeArray!Register(operand);
                             break;

@@ -8,6 +8,7 @@ import std.exception,
        mci.core.container,
        mci.core.io,
        mci.core.nullable,
+       mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.modules,
@@ -846,6 +847,11 @@ public final class ModuleReader : ModuleLoader
                 break;
             case OperandType.label:
                 operand = readBasicBlockReference(function_);
+                break;
+            case OperandType.branch:
+                auto trueBB = readBasicBlockReference(function_);
+                auto falseBB = readBasicBlockReference(function_);
+                operand = tuple(trueBB, falseBB);
                 break;
             case OperandType.selector:
                 auto count = _reader.read!uint();

@@ -856,6 +856,48 @@ public class BasicBlockReferenceNode : Node
     }
 }
 
+public class BranchSelectorNode : Node
+{
+    private BasicBlockReferenceNode _trueBlock;
+    private BasicBlockReferenceNode _falseBlock;
+
+    invariant()
+    {
+        assert(_trueBlock);
+        assert(_falseBlock);
+    }
+
+    public this(SourceLocation location, BasicBlockReferenceNode trueBlock, BasicBlockReferenceNode falseBlock)
+    in
+    {
+        assert(location);
+        assert(trueBlock);
+        assert(falseBlock);
+    }
+    body
+    {
+        super(location);
+
+        _trueBlock = trueBlock;
+        _falseBlock = falseBlock;
+    }
+
+    @property public final BasicBlockReferenceNode trueBlock()
+    {
+        return _trueBlock;
+    }
+
+    @property public final BasicBlockReferenceNode falseBlock()
+    {
+        return _falseBlock;
+    }
+
+    @property public override ReadOnlyIndexable!Node children()
+    {
+        return toReadOnlyIndexable!Node(_trueBlock, _falseBlock);
+    }
+}
+
 public class RegisterSelectorNode : Node
 {
     private NoNullList!RegisterReferenceNode _registers;
@@ -1026,6 +1068,7 @@ alias Algebraic!(LiteralValueNode,
                  FieldReferenceNode,
                  FunctionReferenceNode,
                  BasicBlockReferenceNode,
+                 BranchSelectorNode,
                  RegisterSelectorNode,
                  FFISignatureNode) InstructionOperand;
 

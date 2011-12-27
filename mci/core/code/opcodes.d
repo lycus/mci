@@ -42,6 +42,7 @@ public enum OperandType : ubyte
     field,
     function_,
     label,
+    branch,
     selector,
     ffi,
 }
@@ -119,6 +120,8 @@ body
             return typeid(Function);
         case OperandType.label:
             return typeid(BasicBlock);
+        case OperandType.branch:
+            return typeid(Tuple!(BasicBlock, BasicBlock));
         case OperandType.selector:
             return typeid(ReadOnlyIndexable!Register);
         case OperandType.ffi:
@@ -283,8 +286,7 @@ public enum OperationCode : ubyte
     raw,
     ffi,
     jump,
-    jumpTrue,
-    jumpFalse,
+    jumpCond,
     leave,
     return_,
     phi,
@@ -371,8 +373,7 @@ public OpCode opCallIndirect;
 public OpCode opRaw;
 public OpCode opFFI;
 public OpCode opJump;
-public OpCode opJumpTrue;
-public OpCode opJumpFalse;
+public OpCode opJumpCond;
 public OpCode opLeave;
 public OpCode opReturn;
 public OpCode opPhi;
@@ -482,8 +483,7 @@ static this()
     opRaw = create("raw", OperationCode.raw, OpCodeType.controlFlow, OperandType.uint8Array, 0, false);
     opFFI = create("ffi", OperationCode.ffi, OpCodeType.controlFlow, OperandType.ffi, 0, false);
     opJump = create("jump", OperationCode.jump, OpCodeType.controlFlow, OperandType.label, 0, false);
-    opJumpTrue = create("jump.true", OperationCode.jumpTrue, OpCodeType.controlFlow, OperandType.label, 1, false);
-    opJumpFalse = create("jump.false", OperationCode.jumpFalse, OpCodeType.controlFlow, OperandType.label, 1, false);
+    opJumpCond = create("jump.cond", OperationCode.jumpCond, OpCodeType.controlFlow, OperandType.branch, 1, false);
     opLeave = create("leave", OperationCode.leave, OpCodeType.controlFlow, OperandType.none, 0, false);
     opReturn = create("return", OperationCode.return_, OpCodeType.controlFlow, OperandType.none, 1, false);
     opPhi = create("phi", OperationCode.phi, OpCodeType.normal, OperandType.selector, 0, true);

@@ -784,13 +784,14 @@ public final class Parser
             consume("(");
 
             // If we're parsing a byte array, register selector, or FFI signature,
-            // bring the opening parenthesis back in.
-            if (isArrayOperand(operandType) || operandType == OperandType.selector || operandType == OperandType.ffi)
+            // bring the opening parenthesis back in. This is hacky, but it makes
+            // parsing easier.
+            if (isArrayOperand(operandType) || operandType == OperandType.selector)
                 _stream.movePrevious();
 
             operand = parseInstructionOperand(operandType);
 
-            if (!isArrayOperand(operandType) && operandType != OperandType.selector && operandType != OperandType.ffi)
+            if (!isArrayOperand(operandType) && operandType != OperandType.selector)
                 consume(")");
         }
 
@@ -918,6 +919,11 @@ public final class Parser
                 operand = block;
                 location = block.location;
                 break;
+            case OperandType.branch:
+                auto branch = parseBranchSelector();
+                operand = branch;
+                location = branch.location;
+                break;
             case OperandType.type:
                 auto type = parseTypeSpecification();
                 operand = type;
@@ -1003,6 +1009,22 @@ public final class Parser
         return new BasicBlockReferenceNode(name.location, name);
     }
 
+    private BranchSelectorNode parseBranchSelector()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto trueBB = parseBasicBlockReference();
+
+        consume(",");
+
+        auto falseBB = parseBasicBlockReference();
+
+        return new BranchSelectorNode(trueBB.location, trueBB, falseBB);
+    }
+
     private ArrayLiteralNode parseArrayLiteral(T)()
     out (result)
     {
@@ -1041,8 +1063,6 @@ public final class Parser
     }
     body
     {
-        auto open = consume("(");
-
         auto library = parseSimpleName();
 
         consume(",");
@@ -1067,8 +1087,6 @@ public final class Parser
                 errorGot("'cdecl' or 'stdcall'", convTok.location, convTok.value);
         }
 
-        consume(")");
-
-        return new FFISignatureNode(open.location, library, ep, callConv);
+        return new FFISignatureNode(library.location, library, ep, callConv);
     }
 }

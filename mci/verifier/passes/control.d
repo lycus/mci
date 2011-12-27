@@ -31,15 +31,22 @@ public final class JumpVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            if (auto instr = getFirstInstruction(bb.y, opJump))
             {
-                if (instr.opCode.operandType == OperandType.label)
-                {
-                    auto target = *instr.operand.peek!BasicBlock();
+                auto target = *instr.operand.peek!BasicBlock();
 
-                    if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) { return b.y is target; }))
-                        error(instr, "Target basic block '%s' is not within function '%s'.", target, function_);
-                }
+                if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) { return b.y is target; }))
+                    error(instr, "Target basic block '%s' is not within function '%s'.", target, function_);
+            }
+            else if (auto instr = getFirstInstruction(bb.y, opJumpCond))
+            {
+                auto target = *instr.operand.peek!(Tuple!(BasicBlock, BasicBlock))();
+
+                if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) { return b.y is target.x; }))
+                    error(instr, "False branch target basic block '%s' is not within function '%s'.", target.x, function_);
+
+                if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) { return b.y is target.y; }))
+                    error(instr, "True branch target basic block '%s' is not within function '%s'.", target.y, function_);
             }
         }
     }
