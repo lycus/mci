@@ -766,7 +766,7 @@ public final class ModuleReader : ModuleLoader
             auto values = new List!T();
 
             for (uint i = 0; i < count; i++)
-                values.add(_reader.read!byte());
+                values.add(_reader.read!T());
 
             return values;
         }
