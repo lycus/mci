@@ -40,6 +40,36 @@ public final class ConstantLoadVerifier : CodeVerifier
                 mixin(loadCheck("Align", "NativeUInt"));
                 mixin(loadCheck("Offset", "NativeUInt"));
 
+                string loadArrayCheck(string name, string type, string langType)
+                {
+                    return "if (instr.opCode is opLoad" ~ name ~ "A && !isContainerOf(instr.targetRegister.type, " ~ type ~ "Type.instance))" ~
+                           "{" ~
+                           "    if (!isContainerOf(instr.targetRegister.type, " ~ type ~ "Type.instance))" ~
+                           "        error(instr, \"The target of a '\" ~ opLoad" ~ name ~ "A.name ~ \"' instruction must be a pointer \" ~" ~
+                           "              \"to, or a vector/array of, '\" ~ " ~ type ~ "Type.instance.name ~ \"'.\");" ~
+                           "" ~
+                           "    if (auto vec = cast(VectorType)instr.targetRegister.type)" ~
+                           "    {" ~
+                           "        auto operandCount = (*instr.operand.peek!(ReadOnlyIndexable!" ~ langType ~ ")()).count;" ~
+                           "" ~
+                           "        if (vec.elements != operandCount)" ~
+                           "            error(instr, \"Element count of the target register ('%s') does not match that of the \" ~" ~
+                           "                  \"operand ('%s').\", vec.elements, operandCount);" ~
+                           "    }" ~
+                           "}";
+                }
+
+                mixin(loadArrayCheck("I8", "Int8", "byte"));
+                mixin(loadArrayCheck("UI8", "UInt8", "ubyte"));
+                mixin(loadArrayCheck("I16", "Int16", "short"));
+                mixin(loadArrayCheck("UI16", "UInt16", "ushort"));
+                mixin(loadArrayCheck("I32", "Int32", "int"));
+                mixin(loadArrayCheck("UI32", "UInt32", "uint"));
+                mixin(loadArrayCheck("I64", "Int64", "long"));
+                mixin(loadArrayCheck("UI64", "UInt64", "ulong"));
+                mixin(loadArrayCheck("F32", "Float32", "float"));
+                mixin(loadArrayCheck("F64", "Float64", "double"));
+
                 if (instr.opCode is opLoadNull && !isNullable(instr.targetRegister.type))
                     error(instr, "The target of a 'load.null' opcode must be a pointer, a function pointer, an array, or a vector.");
 

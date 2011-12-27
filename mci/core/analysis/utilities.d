@@ -165,3 +165,26 @@ body
 {
     return type is NativeUIntType.instance;
 }
+
+public bool isContainerOf(Type type, Type elementType)
+in
+{
+    assert(type);
+    assert(elementType);
+}
+body
+{
+    if (auto ptr = cast(PointerType)type)
+        if (ptr.elementType is elementType)
+            return true;
+
+    if (auto arr = cast(ArrayType)type)
+        if (arr.elementType is elementType)
+            return true;
+
+    if (auto vec = cast(VectorType)type)
+        if (vec.elementType is elementType)
+            return true;
+
+    return false;
+}
