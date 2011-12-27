@@ -221,11 +221,10 @@ public final class ReturnTypeVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            auto instr = getFirstInstruction(bb.y, opReturn);
-
-            if (instr.sourceRegister1.type !is function_.returnType)
-                error(instr, "The type of the source register ('%s') does not match the return type of the function ('%s').",
-                      instr.sourceRegister1.type, function_.returnType ? to!string(function_.returnType) : "void");
+            if (auto instr = getFirstInstruction(bb.y, opReturn))
+                if (instr.sourceRegister1.type !is function_.returnType)
+                    error(instr, "The type of the source register ('%s') does not match the return type of the function ('%s').",
+                          instr.sourceRegister1.type, function_.returnType ? to!string(function_.returnType) : "void");
         }
     }
 }
