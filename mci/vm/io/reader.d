@@ -672,7 +672,7 @@ public final class ModuleReader : ModuleLoader
         if (_reader.read!bool())
             retType = readTypeReference();
 
-        auto returnType = retType ? toType(readTypeReference()) : null;
+        auto returnType = retType ? toType(retType) : null;
         auto func = new Function(module_, name, returnType, attributes);
         auto paramCount = _reader.read!uint();
 
