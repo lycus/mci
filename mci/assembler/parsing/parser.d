@@ -785,12 +785,12 @@ public final class Parser
 
             // If we're parsing a byte array, register selector, or FFI signature,
             // bring the opening parenthesis back in.
-            if (operandType == OperandType.bytes || operandType == OperandType.selector || operandType == OperandType.ffi)
+            if (isArrayOperand(operandType) || operandType == OperandType.selector || operandType == OperandType.ffi)
                 _stream.movePrevious();
 
             operand = parseInstructionOperand(operandType);
 
-            if (operandType != OperandType.bytes && operandType != OperandType.selector && operandType != OperandType.ffi)
+            if (!isArrayOperand(operandType) && operandType != OperandType.selector && operandType != OperandType.ffi)
                 consume(")");
         }
 
@@ -863,8 +863,53 @@ public final class Parser
                 operand = literal;
                 location = literal.location;
                 break;
-            case OperandType.bytes:
-                auto literal = parseByteArrayLiteral();
+            case OperandType.int8Array:
+                auto literal = parseArrayLiteral!byte();
+                operand = literal;
+                location = literal.location;
+                break;
+            case OperandType.uint8Array:
+                auto literal = parseArrayLiteral!ubyte();
+                operand = literal;
+                location = literal.location;
+                break;
+            case OperandType.int16Array:
+                auto literal = parseArrayLiteral!short();
+                operand = literal;
+                location = literal.location;
+                break;
+            case OperandType.uint16Array:
+                auto literal = parseArrayLiteral!ushort();
+                operand = literal;
+                location = literal.location;
+                break;
+            case OperandType.int32Array:
+                auto literal = parseArrayLiteral!int();
+                operand = literal;
+                location = literal.location;
+                break;
+            case OperandType.uint32Array:
+                auto literal = parseArrayLiteral!uint();
+                operand = literal;
+                location = literal.location;
+                break;
+            case OperandType.int64Array:
+                auto literal = parseArrayLiteral!long();
+                operand = literal;
+                location = literal.location;
+                break;
+            case OperandType.uint64Array:
+                auto literal = parseArrayLiteral!ulong();
+                operand = literal;
+                location = literal.location;
+                break;
+            case OperandType.float32Array:
+                auto literal = parseArrayLiteral!float();
+                operand = literal;
+                location = literal.location;
+                break;
+            case OperandType.float64Array:
+                auto literal = parseArrayLiteral!double();
                 operand = literal;
                 location = literal.location;
                 break;
@@ -958,7 +1003,7 @@ public final class Parser
         return new BasicBlockReferenceNode(name.location, name);
     }
 
-    private ByteArrayLiteralNode parseByteArrayLiteral()
+    private ArrayLiteralNode parseArrayLiteral(T)()
     out (result)
     {
         assert(result);
@@ -971,7 +1016,7 @@ public final class Parser
 
         while (peek().type != TokenType.closeParen)
         {
-            values.add(parseLiteralValue!ubyte());
+            values.add(parseLiteralValue!T());
 
             if (peek().type != TokenType.closeParen)
             {
@@ -986,7 +1031,7 @@ public final class Parser
 
         next();
 
-        return new ByteArrayLiteralNode(open.location, values);
+        return new ArrayLiteralNode(open.location, values);
     }
 
     private FFISignatureNode parseFFISignature()

@@ -360,4 +360,21 @@ public final class FFISignature
     {
         return _callingConvention;
     }
+
+    public override string toString()
+    {
+        string callConv;
+
+        final switch (_callingConvention)
+        {
+            case CallingConvention.cdecl:
+                callConv = "cdecl";
+                break;
+            case CallingConvention.stdCall:
+                callConv = "stdcall";
+                break;
+        }
+
+        return _library ~ ", " ~ _entryPoint ~ ", " ~ callConv;
+    }
 }

@@ -160,49 +160,43 @@ public final class ModuleDisassembler
                 {
                     write(" (");
 
+                    void writeArray(T)(InstructionOperand operand)
+                    {
+                        auto values = *operand.peek!(ReadOnlyIndexable!T)();
+
+                        foreach (i, val; values)
+                        {
+                            write(val);
+
+                            if (i < values.count - 1)
+                                write(", ");
+                        }
+                    }
+
                     switch (instr.opCode.operandType)
                     {
-                        case OperandType.bytes:
-                            auto bytes = *operand.peek!(ReadOnlyIndexable!ubyte)();
-
-                            foreach (i, b; bytes)
-                            {
-                                write(b);
-
-                                if (i < bytes.count - 1)
-                                    write(", ");
-                            }
-
-                            break;
+                        case OperandType.int8Array:
+                            writeArray!byte(operand);
+                        case OperandType.uint8Array:
+                            writeArray!ubyte(operand);
+                        case OperandType.int16Array:
+                            writeArray!short(operand);
+                        case OperandType.uint16Array:
+                            writeArray!ushort(operand);
+                        case OperandType.int32Array:
+                            writeArray!int(operand);
+                        case OperandType.uint32Array:
+                            writeArray!uint(operand);
+                        case OperandType.int64Array:
+                            writeArray!long(operand);
+                        case OperandType.uint64Array:
+                            writeArray!ulong(operand);
+                        case OperandType.float32Array:
+                            writeArray!float(operand);
+                        case OperandType.float64Array:
+                            writeArray!double(operand);
                         case OperandType.selector:
-                            auto regs = *operand.peek!(ReadOnlyIndexable!Register)();
-
-                            foreach (i, reg; regs)
-                            {
-                                write(reg.name);
-
-                                if (i < regs.count - 1)
-                                    write(", ");
-                            }
-
-                            break;
-                        case OperandType.ffi:
-                            auto ffi = operand.peek!FFISignature();
-
-                            string callConv;
-
-                            final switch (ffi.callingConvention)
-                            {
-                                case CallingConvention.cdecl:
-                                    callConv = "cdecl";
-                                    break;
-                                case CallingConvention.stdCall:
-                                    callConv = "stdcall";
-                                    break;
-                            }
-
-                            writef("%s, %s, %s", ffi.library, ffi.entryPoint, callConv);
-
+                            writeArray!Register(operand);
                             break;
                         default:
                             write(operand);

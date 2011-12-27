@@ -28,13 +28,36 @@ public enum OperandType : ubyte
     uint64,
     float32,
     float64,
-    bytes,
+    int8Array,
+    uint8Array,
+    int16Array,
+    uint16Array,
+    int32Array,
+    uint32Array,
+    int64Array,
+    uint64Array,
+    float32Array,
+    float64Array,
     type,
     field,
     function_,
     label,
     selector,
     ffi,
+}
+
+public bool isArrayOperand(OperandType operandType)
+{
+    return operandType == OperandType.int8Array ||
+           operandType == OperandType.uint8Array ||
+           operandType == OperandType.int16Array ||
+           operandType == OperandType.uint16Array ||
+           operandType == OperandType.int32Array ||
+           operandType == OperandType.uint32Array ||
+           operandType == OperandType.int64Array ||
+           operandType == OperandType.uint64Array ||
+           operandType == OperandType.float32Array ||
+           operandType == OperandType.float64Array;
 }
 
 public TypeInfo operandToTypeInfo(OperandType operandType)
@@ -48,8 +71,6 @@ body
     {
         case OperandType.none:
             return null;
-        case OperandType.bytes:
-            return typeid(ReadOnlyIndexable!ubyte);
         case OperandType.int8:
             return typeid(byte);
         case OperandType.uint8:
@@ -70,6 +91,26 @@ body
             return typeid(float);
         case OperandType.float64:
             return typeid(double);
+        case OperandType.int8Array:
+            return typeid(ReadOnlyIndexable!byte);
+        case OperandType.uint8Array:
+            return typeid(ReadOnlyIndexable!ubyte);
+        case OperandType.int16Array:
+            return typeid(ReadOnlyIndexable!short);
+        case OperandType.uint16Array:
+            return typeid(ReadOnlyIndexable!ushort);
+        case OperandType.int32Array:
+            return typeid(ReadOnlyIndexable!int);
+        case OperandType.uint32Array:
+            return typeid(ReadOnlyIndexable!uint);
+        case OperandType.int64Array:
+            return typeid(ReadOnlyIndexable!long);
+        case OperandType.uint64Array:
+            return typeid(ReadOnlyIndexable!ulong);
+        case OperandType.float32Array:
+            return typeid(ReadOnlyIndexable!float);
+        case OperandType.float64Array:
+            return typeid(ReadOnlyIndexable!double);
         case OperandType.type:
             return typeid(Type);
         case OperandType.field:
@@ -178,6 +219,16 @@ public enum OperationCode : ubyte
     loadUI64,
     loadF32,
     loadF64,
+    loadI8A,
+    loadUI8A,
+    loadI16A,
+    loadUI16A,
+    loadI32A,
+    loadUI32A,
+    loadI64A,
+    loadUI64A,
+    loadF32A,
+    loadF64A,
     loadFunc,
     loadNull,
     loadSize,
@@ -256,6 +307,16 @@ public OpCode opLoadI64;
 public OpCode opLoadUI64;
 public OpCode opLoadF32;
 public OpCode opLoadF64;
+public OpCode opLoadI8A;
+public OpCode opLoadUI8A;
+public OpCode opLoadI16A;
+public OpCode opLoadUI16A;
+public OpCode opLoadI32A;
+public OpCode opLoadUI32A;
+public OpCode opLoadI64A;
+public OpCode opLoadUI64A;
+public OpCode opLoadF32A;
+public OpCode opLoadF64A;
 public OpCode opLoadFunc;
 public OpCode opLoadNull;
 public OpCode opLoadSize;
@@ -345,7 +406,7 @@ static this()
     }
 
     opNop = create("nop", OperationCode.nop, OpCodeType.noOperation, OperandType.none, 0, false);
-    opComment = create("comment", OperationCode.comment, OpCodeType.annotation, OperandType.bytes, 0, false);
+    opComment = create("comment", OperationCode.comment, OpCodeType.annotation, OperandType.uint8Array, 0, false);
     opDead = create("dead", OperationCode.dead, OpCodeType.annotation, OperandType.none, 0, false);
     opLoadI8 = create("load.i8", OperationCode.loadI8, OpCodeType.normal, OperandType.int8, 0, true);
     opLoadUI8 = create("load.ui8", OperationCode.loadUI8, OpCodeType.normal, OperandType.uint8, 0, true);
@@ -357,6 +418,16 @@ static this()
     opLoadUI64 = create("load.ui64", OperationCode.loadUI64, OpCodeType.normal, OperandType.uint64, 0, true);
     opLoadF32 = create("load.f32", OperationCode.loadF32, OpCodeType.normal, OperandType.float32, 0, true);
     opLoadF64 = create("load.f64", OperationCode.loadF64, OpCodeType.normal, OperandType.float64, 0, true);
+    opLoadI8A = create("load.i8a", OperationCode.loadI8A, OpCodeType.normal, OperandType.int8Array, 0, true);
+    opLoadUI8A = create("load.ui8a", OperationCode.loadUI8A, OpCodeType.normal, OperandType.uint8Array, 0, true);
+    opLoadI16A = create("load.i16a", OperationCode.loadI16A, OpCodeType.normal, OperandType.int16Array, 0, true);
+    opLoadUI16A = create("load.ui16a", OperationCode.loadUI16A, OpCodeType.normal, OperandType.uint16Array, 0, true);
+    opLoadI32A = create("load.i32a", OperationCode.loadI32A, OpCodeType.normal, OperandType.int32Array, 0, true);
+    opLoadUI32A = create("load.ui32a", OperationCode.loadUI32A, OpCodeType.normal, OperandType.uint32Array, 0, true);
+    opLoadI64A = create("load.i64a", OperationCode.loadI64A, OpCodeType.normal, OperandType.int64Array, 0, true);
+    opLoadUI64A = create("load.ui64a", OperationCode.loadUI64A, OpCodeType.normal, OperandType.uint64Array, 0, true);
+    opLoadF32A = create("load.f32a", OperationCode.loadF32A, OpCodeType.normal, OperandType.float32Array, 0, true);
+    opLoadF64A = create("load.f64a", OperationCode.loadF64A, OpCodeType.normal, OperandType.float64Array, 0, true);
     opLoadFunc = create("load.func", OperationCode.loadFunc, OpCodeType.normal, OperandType.function_, 0, true);
     opLoadNull = create("load.null", OperationCode.loadNull, OpCodeType.normal, OperandType.none, 0, true);
     opLoadSize = create("load.size", OperationCode.loadSize, OpCodeType.normal, OperandType.type, 0, true);
@@ -408,7 +479,7 @@ static this()
     opInvoke = create("invoke", OperationCode.invoke, OpCodeType.normal, OperandType.function_, 0, false);
     opInvokeTail = create("invoke.tail", OperationCode.invokeTail, OpCodeType.normal, OperandType.function_, 0, false);
     opInvokeIndirect = create("invoke.indirect", OperationCode.invokeIndirect, OpCodeType.normal, OperandType.none, 1, false);
-    opRaw = create("raw", OperationCode.raw, OpCodeType.controlFlow, OperandType.bytes, 0, false);
+    opRaw = create("raw", OperationCode.raw, OpCodeType.controlFlow, OperandType.uint8Array, 0, false);
     opFFI = create("ffi", OperationCode.ffi, OpCodeType.controlFlow, OperandType.ffi, 0, false);
     opJump = create("jump", OperationCode.jump, OpCodeType.controlFlow, OperandType.label, 0, false);
     opJumpTrue = create("jump.true", OperationCode.jumpTrue, OpCodeType.controlFlow, OperandType.label, 1, false);

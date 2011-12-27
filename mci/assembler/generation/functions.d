@@ -69,6 +69,16 @@ body
             {
                 auto instrOperand = instrNode.operand.operand;
 
+                ReadOnlyIndexable!T generateArray(T)()
+                {
+                    auto values = new List!T();
+
+                    foreach (literal; instrOperand.peek!ArrayLiteralNode().values)
+                        values.add(to!T(literal.value));
+
+                    return values;
+                }
+
                 final switch (instrNode.opCode.operandType)
                 {
                     case OperandType.none:
@@ -103,13 +113,35 @@ body
                     case OperandType.float64:
                         operand = to!double(instrOperand.peek!LiteralValueNode().value);
                         break;
-                    case OperandType.bytes:
-                        auto bytes = new List!ubyte();
-
-                        foreach (literal; instrOperand.peek!ByteArrayLiteralNode().values)
-                            bytes.add(to!ubyte(literal.value));
-
-                        operand = asReadOnlyIndexable(bytes);
+                    case OperandType.int8Array:
+                        operand = generateArray!byte();
+                        break;
+                    case OperandType.uint8Array:
+                        operand = generateArray!ubyte();
+                        break;
+                    case OperandType.int16Array:
+                        operand = generateArray!short();
+                        break;
+                    case OperandType.uint16Array:
+                        operand = generateArray!ushort();
+                        break;
+                    case OperandType.int32Array:
+                        operand = generateArray!int();
+                        break;
+                    case OperandType.uint32Array:
+                        operand = generateArray!uint();
+                        break;
+                    case OperandType.int64Array:
+                        operand = generateArray!long();
+                        break;
+                    case OperandType.uint64Array:
+                        operand = generateArray!ulong();
+                        break;
+                    case OperandType.float32Array:
+                        operand = generateArray!float();
+                        break;
+                    case OperandType.float64Array:
+                        operand = generateArray!double();
                         break;
                     case OperandType.label:
                         operand = resolveBasicBlock(*instrOperand.peek!BasicBlockReferenceNode(), func);

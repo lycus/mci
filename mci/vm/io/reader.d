@@ -760,6 +760,17 @@ public final class ModuleReader : ModuleLoader
 
         InstructionOperand operand;
 
+        ReadOnlyIndexable!T readArray(T)()
+        {
+            auto count = _reader.read!uint();
+            auto values = new List!T();
+
+            for (uint i = 0; i < count; i++)
+                values.add(_reader.read!byte());
+
+            return values;
+        }
+
         final switch (opCode.operandType)
         {
             case OperandType.none:
@@ -794,14 +805,35 @@ public final class ModuleReader : ModuleLoader
             case OperandType.float64:
                 operand = _reader.read!double();
                 break;
-            case OperandType.bytes:
-                auto count = _reader.read!uint();
-                auto bytes = new List!ubyte();
-
-                for (uint i = 0; i < count; i++)
-                    bytes.add(_reader.read!ubyte());
-
-                operand = asReadOnlyIndexable(bytes);
+            case OperandType.int8Array:
+                operand = readArray!byte();
+                break;
+            case OperandType.uint8Array:
+                operand = readArray!ubyte();
+                break;
+            case OperandType.int16Array:
+                operand = readArray!short();
+                break;
+            case OperandType.uint16Array:
+                operand = readArray!ushort();
+                break;
+            case OperandType.int32Array:
+                operand = readArray!int();
+                break;
+            case OperandType.uint32Array:
+                operand = readArray!uint();
+                break;
+            case OperandType.int64Array:
+                operand = readArray!long();
+                break;
+            case OperandType.uint64Array:
+                operand = readArray!ulong();
+                break;
+            case OperandType.float32Array:
+                operand = readArray!float();
+                break;
+            case OperandType.float64Array:
+                operand = readArray!double();
                 break;
             case OperandType.type:
                 operand = toType(readTypeReference());

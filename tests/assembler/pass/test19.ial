@@ -1,0 +1,11 @@
+function void test()
+{
+    register int32[] i32a;
+    register float32[] f32a;
+
+    block entry
+    {
+        i32a = load.i32a (123456, 6562435, 6246345, 654746234, 8968565);
+        f32a = load.f32a (15436.54, 65346.54534, 6547.5454);
+    }
+}

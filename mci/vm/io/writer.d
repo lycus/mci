@@ -169,6 +169,14 @@ public final class ModuleWriter : ModuleSaver
 
         auto operand = instruction.operand;
 
+        void writeArray(T)(ReadOnlyIndexable!T values)
+        {
+            _writer.write(cast(uint)values.count);
+
+            foreach (b; values)
+                _writer.write(b);
+        }
+
         if (operand.hasValue)
         {
             if (auto val = operand.peek!byte())
@@ -191,13 +199,26 @@ public final class ModuleWriter : ModuleSaver
                 _writer.write(*val);
             else if (auto val = operand.peek!double())
                 _writer.write(*val);
+            else if (auto val = operand.peek!(ReadOnlyIndexable!byte)())
+                writeArray(*val);
             else if (auto val = operand.peek!(ReadOnlyIndexable!ubyte)())
-            {
-                _writer.write(cast(uint)val.count);
-
-                foreach (b; *val)
-                    _writer.write(b);
-            }
+                writeArray(*val);
+            else if (auto val = operand.peek!(ReadOnlyIndexable!short)())
+                writeArray(*val);
+            else if (auto val = operand.peek!(ReadOnlyIndexable!ushort)())
+                writeArray(*val);
+            else if (auto val = operand.peek!(ReadOnlyIndexable!int)())
+                writeArray(*val);
+            else if (auto val = operand.peek!(ReadOnlyIndexable!uint)())
+                writeArray(*val);
+            else if (auto val = operand.peek!(ReadOnlyIndexable!long)())
+                writeArray(*val);
+            else if (auto val = operand.peek!(ReadOnlyIndexable!ulong)())
+                writeArray(*val);
+            else if (auto val = operand.peek!(ReadOnlyIndexable!float)())
+                writeArray(*val);
+            else if (auto val = operand.peek!(ReadOnlyIndexable!double)())
+                writeArray(*val);
             else if (auto val = operand.peek!BasicBlock())
                 writeBasicBlockReference(*val);
             else if (auto val = operand.peek!Type())

@@ -922,7 +922,7 @@ public class LiteralValueNode : Node
     }
 }
 
-public class ByteArrayLiteralNode : Node
+public class ArrayLiteralNode : Node
 {
     private NoNullList!LiteralValueNode _values;
 
@@ -1021,7 +1021,7 @@ public class FFISignatureNode : Node
 }
 
 alias Algebraic!(LiteralValueNode,
-                 ByteArrayLiteralNode,
+                 ArrayLiteralNode,
                  TypeReferenceNode,
                  FieldReferenceNode,
                  FunctionReferenceNode,
