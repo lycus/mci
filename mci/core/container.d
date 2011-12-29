@@ -249,11 +249,7 @@ in
 }
 body
 {
-    foreach (item; iter)
-        if (item == value)
-            return true;
-
-    return false;
+    return contains(iter, (T item) { return item == value; });
 }
 
 unittest
@@ -356,6 +352,62 @@ unittest
     assert(find(list, (int x) { return x == 3; }) == 3);
     assert(find(list, (int x) { return x == 4; }) == int.init);
     assert(find(list, (int x) { return x == 5; }, 6) == 6);
+}
+
+public size_t findIndex(T)(Iterable!T iter, T value)
+in
+{
+    assert(iter);
+}
+body
+{
+    return findIndex(iter, (T item) { return item == value; });
+}
+
+unittest
+{
+    auto list = new List!int();
+
+    list.add(1);
+    list.add(2);
+    list.add(3);
+
+    assert(findIndex(list, 1) == 0);
+    assert(findIndex(list, 3) == 2);
+}
+
+public size_t findIndex(T)(Iterable!T iter, scope bool delegate(T) criteria)
+in
+{
+    assert(iter);
+    assert(criteria);
+}
+body
+{
+    foreach (i, item; iter)
+        if (criteria(item))
+            return i;
+
+    assert(false);
+}
+
+unittest
+{
+    auto list = new List!int();
+
+    list.add(1);
+    list.add(2);
+    list.add(3);
+
+    assert(findIndex(list, (int x) { return x == 1; }) == 0);
+    assert(findIndex(list, (int x) { return x == 3; }) == 2);
+}
+
+unittest
+{
+    auto list = new List!int();
+
+    assertThrown!AssertError(findIndex(list, (int x) { return x == 42; }));
 }
 
 public Iterable!R map(R, T)(Iterable!T iter, scope R delegate(T) selector)
@@ -711,19 +763,14 @@ public T last(T)(Iterable!T iter)
 in
 {
     assert(iter);
+    assert(!isEmpty(iter));
 }
 body
 {
     T item;
-    bool notEmpty;
 
     foreach (i; iter)
-    {
         item = i;
-        notEmpty = true;
-    }
-
-    assert(notEmpty);
 
     return item;
 }
