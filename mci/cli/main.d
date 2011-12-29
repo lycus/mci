@@ -34,7 +34,6 @@ body
     auto cli = args[0];
 
     bool help;
-    bool version_;
 
     try
     {
@@ -43,7 +42,6 @@ body
                config.bundling,
                config.passThrough,
                "help|h", &help,
-               "version|v", &version_,
                "silent|s", &silent);
     }
     catch (Exception ex)
@@ -82,7 +80,7 @@ body
         }
     }
 
-    if (version_ || help)
+    if (help)
     {
         log("Available garbage collectors:");
         log();
@@ -90,10 +88,7 @@ body
         logf("     %s\tD Garbage Collector\t\tUses the D runtime's garbage collector.", to!string(GarbageCollectorType.dgc));
         logf("     %s\tLibC Garbage Collector\t\tUses calloc/free; performs no actual collection.", to!string(GarbageCollectorType.libc));
         log();
-    }
 
-    if (version_)
-    {
         log("System configuration:");
         log();
 
@@ -104,10 +99,9 @@ body
         logf("     Emulation Layer:\t\t\t\t%s", emulationLayerName);
         logf("     Compiler:\t\t\t\t\t%s", compilerName);
         log();
-    }
 
-    if (version_ || help)
         return ExitCode.success;
+    }
 
     if (args.length < 2)
     {
