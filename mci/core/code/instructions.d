@@ -1,6 +1,7 @@
 module mci.core.code.instructions;
 
-import std.variant,
+import std.conv,
+       std.variant,
        mci.core.container,
        mci.core.tuple,
        mci.core.code.functions,
@@ -171,5 +172,87 @@ public final class Instruction
     @property public Register sourceRegister3()
     {
         return _sourceRegister3;
+    }
+
+    public override string toString()
+    {
+        string str;
+
+        if (_targetRegister)
+            str ~= _targetRegister.toString() ~ " = ";
+
+        str ~= _opCode.toString();
+
+        if (_sourceRegister1)
+            str ~= " " ~ _sourceRegister1.toString();
+
+        if (_sourceRegister2)
+            str ~= ", " ~ _sourceRegister2.toString();
+
+        if (_sourceRegister3)
+            str ~= ", " ~ _sourceRegister3.toString();
+
+        if (operand.hasValue)
+        {
+            str ~= " (";
+
+            void writeArray(T)()
+            {
+                auto values = *_operand.peek!(ReadOnlyIndexable!T)();
+
+                foreach (i, val; values)
+                {
+                    str ~= to!string(val);
+
+                    if (i < values.count - 1)
+                        str ~= ", ";
+                }
+            }
+
+            switch (_opCode.operandType)
+            {
+                case OperandType.int8Array:
+                    writeArray!byte();
+                    break;
+                case OperandType.uint8Array:
+                    writeArray!ubyte();
+                    break;
+                case OperandType.int16Array:
+                    writeArray!short();
+                    break;
+                case OperandType.uint16Array:
+                    writeArray!ushort();
+                    break;
+                case OperandType.int32Array:
+                    writeArray!int();
+                    break;
+                case OperandType.uint32Array:
+                    writeArray!uint();
+                    break;
+                case OperandType.int64Array:
+                    writeArray!long();
+                    break;
+                case OperandType.uint64Array:
+                    writeArray!ulong();
+                    break;
+                case OperandType.float32Array:
+                    writeArray!float();
+                    break;
+                case OperandType.float64Array:
+                    writeArray!double();
+                    break;
+                case OperandType.branch:
+                    auto tup = *operand.peek!(Tuple!(BasicBlock, BasicBlock))();
+                    str ~= tup.x.toString() ~ ", " ~ tup.y.toString();
+                    break;
+                case OperandType.selector:
+                    writeArray!Register();
+                    break;
+                default:
+                    str ~= operand.toString();
+            }
+        }
+
+        return str;
     }
 }
