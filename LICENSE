@@ -30,5 +30,6 @@ This notice holds for all files shipped with the MCI. Therefore, it will
 not be present in individual files.
 
 Note that all code contributed to the MCI must be licensed under these
-terms. The project maintainers reserve the right to alter the license at
-any point in time, should this become necessary.
+terms. Additionally, copyright must be assigned to the Lycus Foundation
+when submitting contributions. The project maintainers reserve the right
+to alter the license at any point in time, should this become necessary.
