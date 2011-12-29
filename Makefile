@@ -288,9 +288,15 @@ MCI_CLI_DEPS = \
 	bin/libmci.core.a \
 	libffi-d/bin/libffi-d.a
 
+ifneq ($(shell uname), FreeBSD)
+    MCI_CLI_DFLAGS = -L-ldl
+else
+    MCI_CLI_DFLAGS =
+endif
+
 bin/mci: $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS)
 	-mkdir -p bin;
-	$(DPLC) $(DFLAGS) -L-lffi -L-ldl $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS);
+	$(DPLC) $(DFLAGS) $(MCI_CLI_DFLAGS) -L-lffi $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS);
 
 #################### mci.tester ####################
 
@@ -311,9 +317,15 @@ MCI_TESTER_DEPS = \
 	bin/libmci.core.a \
 	libffi-d/bin/libffi-d.a
 
+ifneq ($(shell uname), FreeBSD)
+    MCI_TESTER_DFLAGS = -L-ldl
+else
+    MCI_TESTER_DFLAGS =
+endif
+
 $(MCI_TESTER): $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS)
 	-mkdir -p bin;
-	$(DPLC) $(DFLAGS) -L-lffi -L-ldl $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS);
+	$(DPLC) $(DFLAGS) $(MCI_TESTER_DFLAGS) -L-lffi $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS);
 	cd bin; \
 	if [ $(BUILD) = "test" ]; then \
 		gdb --command=../mci.gdb ../$@; \
