@@ -127,7 +127,7 @@ in
 }
 body
 {
-    logf("Usage: %s [--version|-v] [--help|-h] [--silent|-s] <tool> <args>", cli);
+    logf("Usage: %s --help|-h] [--silent|-s] <tool> <args>", cli);
 }
 
 public void log(T ...)(T args)
