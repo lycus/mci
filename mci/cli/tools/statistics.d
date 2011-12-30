@@ -151,6 +151,18 @@ public final class StatisticsTool : Tool
                 return false;
             }
 
+            foreach (f; args)
+            {
+                if (file == f)
+                {
+                    logf("Error: File '%s' specified multiple times.", file);
+                    return false;
+                }
+            }
+        }
+
+        foreach (file; args)
+        {
             try
             {
                 auto manager = new ModuleManager();

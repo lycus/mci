@@ -43,9 +43,9 @@ public final class DisassemblerTool : Tool
             return false;
         }
 
-        if (args.length == 0)
+        if (args.length != 1)
         {
-            log("Error: No input modules given.");
+            log("Error: Exactly one input module must be given.");
             return false;
         }
 
@@ -61,49 +61,48 @@ public final class DisassemblerTool : Tool
             return false;
         }
 
-        foreach (file; args)
+        auto file = args[0];
+
+        if (file.length <= moduleFileExtension.length)
         {
-            if (file.length <= moduleFileExtension.length)
-            {
-                logf("Error: Input module '%s' has no name part.", file);
-                return false;
-            }
+            logf("Error: Input module '%s' has no name part.", file);
+            return false;
+        }
 
-            if (extension(file) != moduleFileExtension)
-            {
-                logf("Error: Input module '%s' does not end in '%s'.", file, moduleFileExtension);
-                return false;
-            }
+        if (extension(file) != moduleFileExtension)
+        {
+            logf("Error: Input module '%s' does not end in '%s'.", file, moduleFileExtension);
+            return false;
+        }
 
-            FileStream stream;
+        FileStream stream;
 
-            try
-            {
-                auto manager = new ModuleManager();
-                manager.attach(intrinsicModule);
+        try
+        {
+            auto manager = new ModuleManager();
+            manager.attach(intrinsicModule);
 
-                auto reader = new ModuleReader(manager);
-                auto mod = reader.load(file);
-                stream = new FileStream(output, FileAccess.write, FileMode.truncate);
-                auto disasm = new ModuleDisassembler(stream);
+            auto reader = new ModuleReader(manager);
+            auto mod = reader.load(file);
+            stream = new FileStream(output, FileAccess.write, FileMode.truncate);
+            auto disasm = new ModuleDisassembler(stream);
 
-                disasm.disassemble(mod);
-            }
-            catch (ErrnoException ex)
-            {
-                logf("Error: Could not access '%s': %s", file, ex.msg);
-                return false;
-            }
-            catch (ReaderException ex)
-            {
-                logf("Error: Could not load '%s': %s", file, ex.msg);
-                return false;
-            }
-            finally
-            {
-                if (stream)
-                    stream.close();
-            }
+            disasm.disassemble(mod);
+        }
+        catch (ErrnoException ex)
+        {
+            logf("Error: Could not access '%s': %s", file, ex.msg);
+            return false;
+        }
+        catch (ReaderException ex)
+        {
+            logf("Error: Could not load '%s': %s", file, ex.msg);
+            return false;
+        }
+        finally
+        {
+            if (stream)
+                stream.close();
         }
 
         return true;

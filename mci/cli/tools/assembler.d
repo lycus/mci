@@ -105,15 +105,18 @@ public final class AssemblerTool : Tool
                 return false;
             }
 
-            foreach (f; units)
+            foreach (f; args)
             {
-                if (file == f.x)
+                if (file == f)
                 {
                     logf("Error: File '%s' specified multiple times.", file);
                     return false;
                 }
             }
+        }
 
+        foreach (file; args)
+        {
             FileStream stream;
 
             try

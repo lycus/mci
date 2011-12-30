@@ -48,6 +48,18 @@ public final class VerifierTool : Tool
                 return false;
             }
 
+            foreach (f; args)
+            {
+                if (file == f)
+                {
+                    logf("Error: File '%s' specified multiple times.", file);
+                    return false;
+                }
+            }
+        }
+
+        foreach (file; args)
+        {
             Function currentFunc;
 
             try
