@@ -29,7 +29,7 @@ public final class Source
         initialize(source);
     }
 
-    public this(BinaryReader reader, size_t length)
+    public this(BinaryReader reader, ulong length)
     in
     {
         assert(reader);

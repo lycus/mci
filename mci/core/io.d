@@ -8,13 +8,13 @@ import std.stdio,
 
 public interface Stream
 {
-    @property public size_t position();
+    @property public ulong position();
 
-    @property public void position(size_t position);
+    @property public void position(ulong position);
 
-    @property public size_t length();
+    @property public ulong length();
 
-    @property public void length(size_t length);
+    @property public void length(ulong length);
 
     @property public bool canRead();
 
@@ -76,22 +76,22 @@ public final class FileStream : Stream
         _access = access;
     }
 
-    @property public size_t position()
+    @property public ulong position()
     {
-        return cast(size_t)_file.tell;
+        return _file.tell;
     }
 
-    @property public void position(size_t position)
+    @property public void position(ulong position)
     {
         _file.seek(position);
     }
 
-    @property public size_t length()
+    @property public ulong length()
     {
-        return cast(size_t)_file.size;
+        return _file.size;
     }
 
-    @property public void length(size_t length)
+    @property public void length(ulong length)
     {
         // We cannot just set the length of a file stream.
         assert(false);
@@ -163,24 +163,24 @@ public final class MemoryStream : Stream
         _canWrite = canWrite;
     }
 
-    @property public size_t position()
+    @property public ulong position()
     {
         return _position;
     }
 
-    @property public void position(size_t position)
+    @property public void position(ulong position)
     {
-        _position = position;
+        _position = cast(size_t)position;
     }
 
-    @property public size_t length()
+    @property public ulong length()
     {
         return _data.length;
     }
 
-    @property public void length(size_t length)
+    @property public void length(ulong length)
     {
-        _data.length = length;
+        _data.length = cast(size_t)length;
     }
 
     @property public bool canRead()
@@ -259,14 +259,14 @@ public class BinaryReader
         return value;
     }
 
-    public final T readArray(T)(size_t length)
+    public final T readArray(T)(ulong length)
         if (isArray!T && isPrimitiveType!(ArrayElementType!T))
     {
         T arr;
 
         // We have to unqualify the element type, as writing elements with
         // immutable or const will fail.
-        for (size_t i = 0; i < length; i++)
+        for (ulong i = 0; i < length; i++)
             arr ~= read!(Unqual!(ArrayElementType!T))();
 
         return arr;
