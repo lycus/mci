@@ -8,7 +8,7 @@ Installation on Linux works through a single Makefile:
 
 If you have a working compiler installed, this should just work. Note
 that you must have libffi installed, with full support for the closure
-API.
+API. On some platforms, libdl is also required for dynamic loading.
 
 There are some variables that you can override:
 
@@ -19,7 +19,7 @@ There are some variables that you can override:
         run the unit test suite after the build completes.
     * DPLC (= dmd)
       - The compiler to be used. See the COMPATIBILITY file for a
-        list of supported compilers.
+        list of supported compilers (dmd, gdmd, or ldc).
     * PREFIX (= /usr/local)
       - Specifies where to install binaries and libraries to when the
         install target is invoked.
