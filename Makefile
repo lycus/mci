@@ -17,15 +17,11 @@ ifneq ($(BUILD), debug)
 	endif
 endif
 
-DFLAGS = -w -wi -ignore -profile -m$(MODEL) -X -Xf$@.json -deps=$@.deps -of$@ -Ilibffi-d
+DFLAGS = -w -wi -ignore -unittest -m$(MODEL) -X -Xf$@.json -deps=$@.deps -of$@ -Ilibffi-d
 
 ifeq ($(BUILD), release)
 	DFLAGS += -release -O -inline
 else
-	ifeq ($(BUILD), test)
-		DFLAGS += -unittest
-	endif
-
 	DFLAGS += -debug -gc
 endif
 
