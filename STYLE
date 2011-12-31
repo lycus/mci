@@ -1,0 +1,77 @@
+            == MCI: Managed Compiler Infrastructure ==
+
+                -- Installation --
+
+This is a guide to the general code style used in the MCI source base.
+If you're contributing code to the project, you should make sure to
+follow these. We are rather strict about these rules as we believe that
+they help us keep a clean and consistent source base.
+
+        ++ Indentation ++
+
+We indent with 4 spaces, always, everywhere. Do not use hard tabs. The
+single exception to this rule is the Makefile (we don't have much choice
+in the matter here).
+
+        ++ Naming ++
+
+In general, we follow the naming conventions of Phobos, the standard
+library for D:
+
+    * Module and package names should be all lower case, and should not
+      use underscores. All module names must start with "mci" followed by
+      the name of the library/executable (for example, "mci.core.tuple").
+    * Type names should be PascalCase.
+    * Function and property names should be camelCase.
+    * Public field names should be camelCase, while private field names
+      should be _camelCase.
+    * Enum member names should be camelCase.
+    * Template mixin names should be PascalCase.
+    * The name of templates that resolve to types should be PascalCase.
+      Otherwise, they should be camelCase.
+
+You should have a VERY good reason if you're going to deviate from these
+naming rules. We want to keep the MCI source base consistent with standard
+naming in D so that it feels natural to use it together with Phobos.
+
+        ++ Comments ++
+
+Comments should be written in clear, concise English with correct grammar
+(yes, this includes punctuation). Avoid using abbreviations and acronyms
+unless they are generally well-understood in the context. Also, you should
+avoid overly verbose comments (often referred to as literate programming),
+as they make it harder to read the code. In general, don't comment on the
+obvious or on things that are considered common sense.
+
+Good comments:
+
+    * // Do some space optimizations.
+    * // Revert to the previous token.
+
+Bad comments:
+
+    * // do some space opts
+    * // revert to prev tok
+
+        ++ Contracts ++
+
+One of the most important goals of the MCI is to provide a clear and easy
+to use API surface. Therefore, we make heavy use of D's support for design
+by contract. In general, ALL public entry points to the API should contain
+contracts. It also helps to use them internally.
+
+In other words: Spam in/out contracts, invariants, and asserts everywhere
+as you see fit. Better safe than sorry. Keep in mind that these checks are
+removed from release builds, so performance is not extremely important.
+
+That being said, try not to assert the obvious. Too many redundant asserts
+can also clutter code. Strike a right balance.
+
+        ++ Storage ++
+
+One problem with global state is that it may be hard to decide whether it
+goes into thread-local or global storage. In general, go by the rule that
+if you cannot come up with a reason to put a variable in global storage,
+it should probably be in TLS. Keep in mind that the MCI does not support
+usage of the same object hierarchy from multiple threads, so you do not
+need to support any such scenarios.
