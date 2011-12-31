@@ -31,14 +31,14 @@ public final class JumpVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            if (auto instr = getFirstInstruction(bb.y, opJump))
+            if (auto instr = getFirstInstruction(bb.y, OperandType.label))
             {
                 auto target = *instr.operand.peek!BasicBlock();
 
                 if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) { return b.y is target; }))
                     error(instr, "Target basic block '%s' is not within function '%s'.", target, function_);
             }
-            else if (auto instr = getFirstInstruction(bb.y, opJumpCond))
+            else if (auto instr = getFirstInstruction(bb.y, OperandType.branch))
             {
                 auto target = *instr.operand.peek!(Tuple!(BasicBlock, BasicBlock))();
 

@@ -35,6 +35,16 @@ body
     return find(block.instructions, (Instruction i) { return i.opCode is opCode; });
 }
 
+public Instruction getFirstInstruction(BasicBlock block, OperandType operandType)
+in
+{
+    assert(block);
+}
+body
+{
+    return find(block.instructions, (Instruction i) { return i.opCode.operandType == operandType; });
+}
+
 public Instruction getFirstInstruction(BasicBlock block, OpCodeType type)
 in
 {
