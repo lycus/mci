@@ -17,12 +17,15 @@ ifneq ($(BUILD), debug)
 	endif
 endif
 
-DFLAGS = -w -wi -ignore -unittest -m$(MODEL) -X -Xf$@.json -deps=$@.deps -of$@ -Ilibffi-d
+DFLAGS += -w -wi -ignore -property
+DFLAGS += -m$(MODEL) -gc -unittest
+DFLAGS += -Ilibffi-d
+DFLAGS += -X -Xf$@.json -deps=$@.deps -of$@
 
 ifeq ($(BUILD), release)
 	DFLAGS += -release -O -inline
 else
-	DFLAGS += -debug -gc
+	DFLAGS += -debug
 endif
 
 ifeq ($(BUILD), test)
@@ -286,8 +289,6 @@ MCI_CLI_DEPS = \
 
 ifneq ($(shell uname), FreeBSD)
     MCI_CLI_DFLAGS = -L-ldl
-else
-    MCI_CLI_DFLAGS =
 endif
 
 bin/mci: $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS)
@@ -315,8 +316,6 @@ MCI_TESTER_DEPS = \
 
 ifneq ($(shell uname), FreeBSD)
     MCI_TESTER_DFLAGS = -L-ldl
-else
-    MCI_TESTER_DFLAGS =
 endif
 
 $(MCI_TESTER): $(MCI_TESTER_SOURCES) $(MCI_TESTER_DEPS)
