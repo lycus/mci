@@ -89,7 +89,7 @@ public final class AssemblerTool : Tool
             return false;
         }
 
-        auto units = new NoNullDictionary!(string, CompilationUnit)();
+        string[] files;
 
         foreach (file; args)
         {
@@ -105,7 +105,7 @@ public final class AssemblerTool : Tool
                 return false;
             }
 
-            foreach (f; args)
+            foreach (f; files)
             {
                 if (file == f)
                 {
@@ -113,7 +113,11 @@ public final class AssemblerTool : Tool
                     return false;
                 }
             }
+
+            files ~= file;
         }
+
+        auto units = new NoNullDictionary!(string, CompilationUnit)();
 
         foreach (file; args)
         {

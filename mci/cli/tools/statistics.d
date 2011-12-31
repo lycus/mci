@@ -137,6 +137,8 @@ public final class StatisticsTool : Tool
             return false;
         }
 
+        string[] files;
+
         foreach (file; args)
         {
             if (file.length <= moduleFileExtension.length)
@@ -151,7 +153,7 @@ public final class StatisticsTool : Tool
                 return false;
             }
 
-            foreach (f; args)
+            foreach (f; files)
             {
                 if (file == f)
                 {
@@ -159,6 +161,8 @@ public final class StatisticsTool : Tool
                     return false;
                 }
             }
+
+            files ~= file;
         }
 
         foreach (file; args)
