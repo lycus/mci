@@ -295,7 +295,6 @@
    <File path="parsing\parser.d" />
    <File path="parsing\tokens.d" />
   </Folder>
-  <File path="all.d" />
   <File path="exception.d" />
  </Folder>
 </DProject>

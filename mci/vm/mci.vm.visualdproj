@@ -295,6 +295,5 @@
    <File path="memory\libc.d" />
    <File path="memory\prettyprint.d" />
   </Folder>
-  <File path="all.d" />
  </Folder>
 </DProject>

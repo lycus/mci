@@ -282,7 +282,6 @@
    <File path="passes\ordering.d" />
    <File path="passes\typing.d" />
   </Folder>
-  <File path="all.d" />
   <File path="base.d" />
   <File path="exception.d" />
   <File path="manager.d" />

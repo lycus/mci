@@ -276,7 +276,5 @@
   <debugEngine>0</debugEngine>
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
- <Folder name="mci.aot">
-  <File path="all.d" />
- </Folder>
+ <Folder name="mci.aot" />
 </DProject>
