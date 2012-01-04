@@ -15,7 +15,7 @@ private __gshared NoNullDictionary!(Type, PointerType) pointerTypes;
 private __gshared NoNullDictionary!(Type, ArrayType) arrayTypes;
 private __gshared NoNullDictionary!(Tuple!(Type, uint), VectorType) vectorTypes;
 
-static this()
+shared static this()
 {
     functionPointerTypes = new typeof(functionPointerTypes)();
     pointerTypes = new typeof(pointerTypes)();

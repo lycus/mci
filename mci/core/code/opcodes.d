@@ -384,7 +384,7 @@ public __gshared OpCode opExEnd;
 
 public __gshared ReadOnlyIndexable!OpCode allOpCodes;
 
-static this()
+shared static this()
 {
     auto opCodes = new List!OpCode();
 

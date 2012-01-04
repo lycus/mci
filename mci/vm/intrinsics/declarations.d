@@ -20,7 +20,7 @@ public __gshared Function mciIs32Bit;
 
 public __gshared enum string intrinsicModuleName = "mci";
 
-static this()
+shared static this()
 {
     intrinsicModule = new typeof(intrinsicModule)(intrinsicModuleName);
     intrinsicFunctions = new typeof(intrinsicFunctions)();
