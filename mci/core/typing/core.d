@@ -4,14 +4,23 @@ import mci.core.typing.types;
 
 public abstract class CoreType : Type
 {
+    private this()
+    {
+    }
 }
 
 public abstract class IntegerType : CoreType
 {
+    private this()
+    {
+    }
 }
 
 public abstract class FloatingPointType : CoreType
 {
+    private this()
+    {
+    }
 }
 
 private mixin template DefineCoreType(string type, string name, string base)
