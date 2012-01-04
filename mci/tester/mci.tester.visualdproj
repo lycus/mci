@@ -93,6 +93,12 @@
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="mci.tester">
+  <File path="common.d" />
+  <File path="container.d" />
+  <File path="lexer.d" />
   <File path="main.d" />
+  <File path="nullable.d" />
+  <File path="tokens.d" />
+  <File path="types.d" />
  </Folder>
 </DProject>

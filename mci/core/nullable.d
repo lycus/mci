@@ -70,22 +70,6 @@ public struct Nullable(T)
     }
 }
 
-unittest
-{
-    auto x = Nullable!int();
-
-    assert(!x.hasValue);
-    assertThrown!AssertError(x.value);
-}
-
-unittest
-{
-    auto x = Nullable!int(0xdeadbeef);
-
-    assert(x.hasValue);
-    assert(x.value == 0xdeadbeef);
-}
-
 public Nullable!T nullable(T)(T value)
 {
     return Nullable!T(value);

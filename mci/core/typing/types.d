@@ -159,30 +159,6 @@ public final class PointerType : Type
     }
 }
 
-unittest
-{
-    auto mod = new Module("foo");
-
-    auto st = new StructureType(mod, "bar");
-    st.close();
-
-    auto ptr = new PointerType(st);
-
-    assert(ptr.name == "foo/bar*");
-}
-
-unittest
-{
-    auto mod = new Module("foo");
-
-    auto st = new StructureType(mod, "foo_bar_baz");
-    st.close();
-
-    auto ptr = new PointerType(st);
-
-    assert(ptr.name == "foo/foo_bar_baz*");
-}
-
 public final class FunctionPointerType : Type
 {
     private Nullable!CallingConvention _callingConvention;
@@ -257,40 +233,6 @@ public final class FunctionPointerType : Type
     }
 }
 
-unittest
-{
-    auto mod = new Module("foo");
-
-    auto st1 = new StructureType(mod, "bar");
-    st1.close();
-
-    auto st2 = new StructureType(mod, "baz");
-    st2.close();
-
-    auto params = new NoNullList!Type();
-    params.add(st2);
-    params.add(st1);
-
-    auto fpt = new FunctionPointerType(Nullable!CallingConvention(), st1, params);
-
-    assert(fpt.name == "foo/bar (foo/baz, foo/bar)");
-}
-
-unittest
-{
-    auto mod = new Module("foo");
-
-    auto st1 = new StructureType(mod, "bar");
-    st1.close();
-
-    auto params = new NoNullList!Type();
-    params.add(st1);
-
-    auto fpt = new FunctionPointerType(nullable(CallingConvention.cdecl), st1, params);
-
-    assert(fpt.name == "cdecl foo/bar (foo/bar)");
-}
-
 public final class ArrayType : Type
 {
     private Type _elementType;
@@ -324,18 +266,6 @@ public final class ArrayType : Type
     {
         return elementType.toString() ~ "[]";
     }
-}
-
-unittest
-{
-    auto mod = new Module("foo");
-
-    auto st = new StructureType(mod, "baz");
-    st.close();
-
-    auto ptr = new ArrayType(st);
-
-    assert(ptr.name == "foo/baz[]");
 }
 
 public final class VectorType : Type
@@ -385,16 +315,4 @@ public final class VectorType : Type
     {
         return elementType.toString() ~ "[" ~ to!string(_elements) ~ "]";
     }
-}
-
-unittest
-{
-    auto mod = new Module("foo");
-
-    auto st = new StructureType(mod, "baz");
-    st.close();
-
-    auto ptr = new VectorType(st, 3);
-
-    assert(ptr.name == "foo/baz[3]");
 }

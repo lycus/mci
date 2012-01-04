@@ -298,7 +298,13 @@ bin/mci: $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS)
 #################### mci.tester ####################
 
 MCI_TESTER_SOURCES = \
-	mci/tester/main.d
+	mci/tester/common.d \
+	mci/tester/container.d \
+	mci/tester/lexer.d \
+	mci/tester/main.d \
+	mci/tester/nullable.d \
+	mci/tester/tokens.d \
+	mci/tester/types.d
 
 MCI_TESTER_DEPS = \
 	bin/libmci.debugger.a \
