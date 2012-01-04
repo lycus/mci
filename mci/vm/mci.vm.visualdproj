@@ -7,7 +7,7 @@
   <multiobj>0</multiobj>
   <singleFileCompilation>0</singleFileCompilation>
   <oneobj>0</oneobj>
-  <trace>1</trace>
+  <trace>0</trace>
   <quiet>0</quiet>
   <verbose>0</verbose>
   <vtls>0</vtls>
@@ -29,7 +29,7 @@
   <useArrayBounds>0</useArrayBounds>
   <noboundscheck>0</noboundscheck>
   <useSwitchError>0</useSwitchError>
-  <useUnitTests>0</useUnitTests>
+  <useUnitTests>1</useUnitTests>
   <useInline>0</useInline>
   <release>0</release>
   <preservePaths>0</preservePaths>
@@ -99,7 +99,7 @@
   <multiobj>0</multiobj>
   <singleFileCompilation>0</singleFileCompilation>
   <oneobj>0</oneobj>
-  <trace>1</trace>
+  <trace>0</trace>
   <quiet>0</quiet>
   <verbose>0</verbose>
   <vtls>0</vtls>
@@ -121,7 +121,7 @@
   <useArrayBounds>0</useArrayBounds>
   <noboundscheck>0</noboundscheck>
   <useSwitchError>0</useSwitchError>
-  <useUnitTests>0</useUnitTests>
+  <useUnitTests>1</useUnitTests>
   <useInline>1</useInline>
   <release>1</release>
   <preservePaths>0</preservePaths>
@@ -191,7 +191,7 @@
   <multiobj>0</multiobj>
   <singleFileCompilation>0</singleFileCompilation>
   <oneobj>0</oneobj>
-  <trace>1</trace>
+  <trace>0</trace>
   <quiet>0</quiet>
   <verbose>0</verbose>
   <vtls>0</vtls>
