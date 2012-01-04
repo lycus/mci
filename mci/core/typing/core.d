@@ -36,12 +36,7 @@ private mixin template DefineCoreType(string type, string name, string base)
           "    }" ~
           "    body" ~
           "    {" ~
-          "        return _instance; " ~
-          "    }" ~
-          "" ~
-          "    static this()" ~
-          "    {" ~
-          "        _instance = new " ~ type ~ "Type();" ~
+          "        return _instance ? _instance : (_instance = new " ~ type ~ "Type()); " ~
           "    }" ~
           "" ~
           "    private this()" ~
