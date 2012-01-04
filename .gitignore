@@ -1,20 +1,19 @@
-*_ReSharper.*/*
-docs/_build
+_*/*
+
+docs/_build/*
 bin/*
+build/*
+
 */*/Debug/*
 */*/Release/*
 */*/Test/*
+
+.lock*
 
 *.suo
 *.user
 
 *.mci
 *.ast
-*.o
-*.a
-*.deps
-*.json
-*.log
-*.def
 
 *.orig
