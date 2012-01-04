@@ -18,13 +18,17 @@ ifneq ($(BUILD), debug)
 endif
 
 DFLAGS += -w -wi -ignore -property
-DFLAGS += -m$(MODEL) -gc -unittest
+DFLAGS += -m$(MODEL) -gc
 DFLAGS += -Ilibffi-d
 DFLAGS += -X -Xf$@.json -deps=$@.deps -of$@
 
 ifeq ($(BUILD), release)
 	DFLAGS += -release -O -inline
 else
+	ifeq ($(BUILD), unittest)
+		DFLAGS += unittest
+	endif
+
 	DFLAGS += -debug
 endif
 
@@ -112,7 +116,6 @@ libffi-d/bin/libffi-d.a:
 #################### mci.core ####################
 
 MCI_CORE_SOURCES = \
-	mci/core/all.d \
 	mci/core/common.d \
 	mci/core/config.d \
 	mci/core/container.d \
@@ -144,7 +147,6 @@ bin/libmci.core.a: $(MCI_CORE_SOURCES)
 #################### mci.assembler ####################
 
 MCI_ASSEMBLER_SOURCES = \
-	mci/assembler/all.d \
 	mci/assembler/exception.d \
 	mci/assembler/disassembly/ast.d \
 	mci/assembler/disassembly/modules.d \
@@ -165,17 +167,15 @@ bin/libmci.assembler.a: $(MCI_ASSEMBLER_SOURCES)
 
 #################### mci.linker ####################
 
-MCI_LINKER_SOURCES = \
-	mci/linker/all.d
+MCI_LINKER_SOURCES =
 
 bin/libmci.linker.a: $(MCI_LINKER_SOURCES)
-	-mkdir -p bin;
-	$(DPLC) $(DFLAGS) -lib $(MCI_LINKER_SOURCES);
+#	-mkdir -p bin;
+#	$(DPLC) $(DFLAGS) -lib $(MCI_LINKER_SOURCES);
 
 #################### mci.verifier ####################
 
 MCI_VERIFIER_SOURCES = \
-	mci/verifier/all.d \
 	mci/verifier/base.d \
 	mci/verifier/exception.d \
 	mci/verifier/manager.d \
@@ -189,17 +189,15 @@ bin/libmci.verifier.a: $(MCI_VERIFIER_SOURCES)
 
 #################### mci.optimizer ####################
 
-MCI_OPTIMIZER_SOURCES = \
-	mci/optimizer/all.d
+MCI_OPTIMIZER_SOURCES =
 
 bin/libmci.optimizer.a: $(MCI_OPTIMIZER_SOURCES)
-	-mkdir -p bin;
-	$(DPLC) $(DFLAGS) -lib $(MCI_OPTIMIZER_SOURCES);
+#	-mkdir -p bin;
+#	$(DPLC) $(DFLAGS) -lib $(MCI_OPTIMIZER_SOURCES);
 
 #################### mci.vm ####################
 
 MCI_VM_SOURCES = \
-	mci/vm/all.d \
 	mci/vm/memory/base.d \
 	mci/vm/memory/dgc.d \
 	mci/vm/memory/layout.d \
@@ -219,48 +217,43 @@ bin/libmci.vm.a: $(MCI_VM_SOURCES)
 
 #################### mci.interpreter ####################
 
-MCI_INTERPRETER_SOURCES = \
-	mci/interpreter/all.d
+MCI_INTERPRETER_SOURCES =
 
 bin/libmci.interpreter.a: $(MCI_INTERPRETER_SOURCES)
-	-mkdir -p bin;
-	$(DPLC) $(DFLAGS) -lib $(MCI_INTERPRETER_SOURCES);
+#	-mkdir -p bin;
+#	$(DPLC) $(DFLAGS) -lib $(MCI_INTERPRETER_SOURCES);
 
 #################### mci.compiler ####################
 
-MCI_COMPILER_SOURCES = \
-	mci/compiler/all.d
+MCI_COMPILER_SOURCES =
 
 bin/libmci.compiler.a: $(MCI_COMPILER_SOURCES)
-	-mkdir -p bin;
-	$(DPLC) $(DFLAGS) -lib $(MCI_COMPILER_SOURCES);
+#	-mkdir -p bin;
+#	$(DPLC) $(DFLAGS) -lib $(MCI_COMPILER_SOURCES);
 
 #################### mci.jit ####################
 
-MCI_JIT_SOURCES = \
-	mci/jit/all.d
+MCI_JIT_SOURCES =
 
 bin/libmci.jit.a: $(MCI_JIT_SOURCES)
-	-mkdir -p bin;
-	$(DPLC) $(DFLAGS) -lib $(MCI_JIT_SOURCES);
+#	-mkdir -p bin;
+#	$(DPLC) $(DFLAGS) -lib $(MCI_JIT_SOURCES);
 
 #################### mci.aot ####################
 
-MCI_AOT_SOURCES = \
-	mci/aot/all.d
+MCI_AOT_SOURCES =
 
 bin/libmci.aot.a: $(MCI_AOT_SOURCES)
-	-mkdir -p bin;
-	$(DPLC) $(DFLAGS) -lib $(MCI_AOT_SOURCES);
+#	-mkdir -p bin;
+#	$(DPLC) $(DFLAGS) -lib $(MCI_AOT_SOURCES);
 
 #################### mci.debugger ####################
 
-MCI_DEBUGGER_SOURCES = \
-	mci/debugger/all.d
+MCI_DEBUGGER_SOURCES =
 
 bin/libmci.debugger.a: $(MCI_DEBUGGER_SOURCES)
-	-mkdir -p bin;
-	$(DPLC) $(DFLAGS) -lib $(MCI_DEBUGGER_SOURCES);
+#	-mkdir -p bin;
+#	$(DPLC) $(DFLAGS) -lib $(MCI_DEBUGGER_SOURCES);
 
 #################### mci.cli ####################
 
@@ -279,15 +272,8 @@ MCI_CLI_SOURCES = \
 	mci/cli/tools/verifier.d
 
 MCI_CLI_DEPS = \
-	bin/libmci.debugger.a \
-	bin/libmci.aot.a \
-	bin/libmci.jit.a \
-	bin/libmci.compiler.a \
-	bin/libmci.interpreter.a \
 	bin/libmci.vm.a \
-	bin/libmci.optimizer.a \
 	bin/libmci.verifier.a \
-	bin/libmci.linker.a \
 	bin/libmci.assembler.a \
 	bin/libmci.core.a \
 	libffi-d/bin/libffi-d.a
@@ -312,15 +298,8 @@ MCI_TESTER_SOURCES = \
 	mci/tester/types.d
 
 MCI_TESTER_DEPS = \
-	bin/libmci.debugger.a \
-	bin/libmci.aot.a \
-	bin/libmci.jit.a \
-	bin/libmci.compiler.a \
-	bin/libmci.interpreter.a \
 	bin/libmci.vm.a \
-	bin/libmci.optimizer.a \
 	bin/libmci.verifier.a \
-	bin/libmci.linker.a \
 	bin/libmci.assembler.a \
 	bin/libmci.core.a \
 	libffi-d/bin/libffi-d.a
