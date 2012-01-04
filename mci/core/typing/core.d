@@ -27,7 +27,7 @@ private mixin template DefineCoreType(string type, string name, string base)
 {
     mixin("public final class " ~ type ~ "Type : " ~ base ~
           "{" ~
-          "    private static " ~ type ~ "Type _instance;" ~
+          "    private __gshared " ~ type ~ "Type _instance;" ~
           "" ~
           "    @property public static " ~ type ~ "Type instance()" ~
           "    out (result)" ~

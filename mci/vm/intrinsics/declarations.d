@@ -9,16 +9,16 @@ import mci.core.common,
        mci.core.typing.types,
        mci.vm.intrinsics.config;
 
-public Module intrinsicModule;
-public NoNullDictionary!(Function, function_t) intrinsicFunctions;
+public __gshared Module intrinsicModule;
+public __gshared NoNullDictionary!(Function, function_t) intrinsicFunctions;
 
-public Function mciGetCompiler;
-public Function mciGetArchitecture;
-public Function mciGetOperatingSystem;
-public Function mciGetEndianness;
-public Function mciIs32Bit;
+public __gshared Function mciGetCompiler;
+public __gshared Function mciGetArchitecture;
+public __gshared Function mciGetOperatingSystem;
+public __gshared Function mciGetEndianness;
+public __gshared Function mciIs32Bit;
 
-public enum string intrinsicModuleName = "mci";
+public __gshared enum string intrinsicModuleName = "mci";
 
 static this()
 {
