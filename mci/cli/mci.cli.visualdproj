@@ -278,9 +278,14 @@
  </Config>
  <Folder name="mci.cli">
   <Folder name="tools">
+   <File path="tools\aot.d" />
    <File path="tools\assembler.d" />
+   <File path="tools\debugger.d" />
    <File path="tools\disassembler.d" />
    <File path="tools\interpreter.d" />
+   <File path="tools\jit.d" />
+   <File path="tools\linker.d" />
+   <File path="tools\optimizer.d" />
    <File path="tools\statistics.d" />
    <File path="tools\verifier.d" />
   </Folder>

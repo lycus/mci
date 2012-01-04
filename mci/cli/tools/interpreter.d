@@ -8,7 +8,7 @@ public final class InterpreterTool : Tool
 {
     @property public string description()
     {
-        return "Run an assembled module with the IAL interpreter.";
+        return "Run an assembled module with the interpreter.";
     }
 
     @property public string[] options()
