@@ -10,64 +10,56 @@ import std.ascii,
        mci.core.typing.types,
        mci.vm.memory.layout;
 
-private class PrettyPrinter
+private final class PrettyPrinter
 {
     private ulong _indent;
     private string _result;
-    private bool _is32Bit;
 
-    public this(bool is32Bit)
-    {
-        _is32Bit = is32Bit;
-    }
-
-    @property public string result()
-    out (result)
-    {
-        assert(result);
-    }
-    body
-    {
-        return _result;
-    }
-
-    private void append(string s)
+    private string append(string s)
     in
     {
         assert(s);
     }
     body
     {
-        _result = _result ~ s;
+        return _result ~= s;
     }
 
-    private void indent()
+    private string indent()
     {
         for (auto i = 0; i < _indent; i++)
             append("    ");
+
+        return _result;
     }
 
-    private void beginBlock()
+    private string beginBlock()
     {
         newLine();
         append("{");
         _indent++;
+
+        return _result;
     }
 
-    private void endBlock()
+    private string endBlock()
     {
         _indent--;
         newLine();
         append("}");
+
+        return _result;
     }
 
-    private void newLine()
+    private string newLine()
     {
         append(std.ascii.newline);
         indent();
+
+        return _result;
     }
 
-    private void appendLine(string s)
+    private string appendLine(string s)
     in
     {
         assert(s);
@@ -76,9 +68,11 @@ private class PrettyPrinter
     {
         append(s);
         newLine();
+
+        return _result;
     }
 
-    public void process(Type type, ubyte* mem, string instanceName)
+    public string process(Type type, ubyte* mem, bool is32Bit, string instanceName)
     in
     {
         assert(type);
@@ -93,41 +87,29 @@ private class PrettyPrinter
 
         if (isType!Int8Type(type))
             return append(format("%s", *cast(byte*)mem));
-
-        if (isType!UInt8Type(type))
+        else if (isType!UInt8Type(type))
             return append(format("%s", *cast(ubyte*)mem));
-
-        if (isType!Int16Type(type))
+        else if (isType!Int16Type(type))
             return append(format("%s", *cast(short*)mem));
-
-        if (isType!UInt16Type(type))
+        else if (isType!UInt16Type(type))
             return append(format("%s", *cast(ushort*)mem));
-
-        if (isType!Int32Type(type))
+        else if (isType!Int32Type(type))
             return append(format("%s", *cast(int*)mem));
-
-        if (isType!UInt32Type(type))
+        else if (isType!UInt32Type(type))
             return append(format("%s", *cast(uint*)mem));
-
-        if (isType!Int64Type(type))
+        else if (isType!Int64Type(type))
             return append(format("%s", *cast(long*)mem));
-
-        if (isType!UInt64Type(type))
+        else if (isType!UInt64Type(type))
             return append(format("%s", *cast(ulong*)mem));
-
-        if (isType!Float32Type(type))
+        else if (isType!Float32Type(type))
             return append(format("%s", *cast(float*)mem));
-
-        if (isType!Float64Type(type))
+        else if (isType!Float64Type(type))
             return append(format("%s", *cast(double*)mem));
-
-        if (isType!NativeIntType(type))
+        else if (isType!NativeIntType(type))
             return append(format("%s", *cast(isize_t*)mem));
-
-        if (isType!NativeUIntType(type))
+        else if (isType!NativeUIntType(type))
             return append(format("%s", *cast(size_t*)mem));
-
-        if (auto struc = cast(StructureType)type)
+        else if (auto struc = cast(StructureType)type)
         {
             beginBlock();
 
@@ -135,18 +117,15 @@ private class PrettyPrinter
             {
                 newLine();
 
-                auto offset = computeOffset(field.y, _is32Bit);
-                process(field.y.type, mem + offset, field.x);
+                auto offset = computeOffset(field.y, is32Bit);
+                process(field.y.type, mem + offset, is32Bit, field.x);
             }
 
-            endBlock();
-
-            return;
+            return endBlock();
         }
-
-        if (auto vect = cast(VectorType)type)
+        else if (auto vect = cast(VectorType)type)
         {
-            auto elementSize = computeSize(vect.elementType, _is32Bit);
+            auto elementSize = computeSize(vect.elementType, is32Bit);
             auto p = *cast(ubyte**)mem;
 
             beginBlock();
@@ -154,16 +133,14 @@ private class PrettyPrinter
             for (auto i = 0; i < vect.elements; i++)
             {
                 newLine();
-                process(vect.elementType, p, to!string(i));
+                process(vect.elementType, p, is32Bit, to!string(i));
 
                 p += elementSize;
             }
 
-            endBlock();
+            return endBlock();
         }
-
-        // FIXME: FunctionPointerType does not imply a low-level function pointer at the memory location.
-        if (isType!PointerType(type) || isType!ArrayType(type) || isType!FunctionPointerType(type))
+        else // Pointers, arrays, and function pointers.
             return append(format("0x%s", *cast(void**)mem));
     }
 }
@@ -180,8 +157,5 @@ out (result)
 }
 body
 {
-    auto ctx = new PrettyPrinter(is32Bit);
-    ctx.process(type, mem, instanceName);
-
-    return ctx.result;
+    return (new PrettyPrinter()).process(type, mem, is32Bit, instanceName);
 }
