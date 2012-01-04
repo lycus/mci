@@ -10,7 +10,7 @@ import mci.core.common,
        mci.core.typing.members,
        mci.core.typing.types;
 
-private __gshared NoNullDictionary!(Tuple!(Nullable!CallingConvention, Type, NoNullList!Type), FunctionPointerType) functionPointerTypes;
+private __gshared NoNullDictionary!(Tuple!(CallingConvention, Type, NoNullList!Type), FunctionPointerType) functionPointerTypes;
 private __gshared NoNullDictionary!(Type, PointerType) pointerTypes;
 private __gshared NoNullDictionary!(Type, ArrayType) arrayTypes;
 private __gshared NoNullDictionary!(Tuple!(Type, uint), VectorType) vectorTypes;
@@ -23,7 +23,7 @@ shared static this()
     vectorTypes = new typeof(vectorTypes)();
 }
 
-public FunctionPointerType getFunctionPointerType(Nullable!CallingConvention callingConvention, Type returnType,
+public FunctionPointerType getFunctionPointerType(CallingConvention callingConvention, Type returnType,
                                                   NoNullList!Type parameterTypes)
 in
 {

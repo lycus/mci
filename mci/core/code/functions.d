@@ -131,6 +131,7 @@ public enum FunctionAttributes : ubyte
 
 public final class Function
 {
+    private CallingConvention _callingConvention;
     private FunctionAttributes _attributes;
     private Module _module;
     private string _name;
@@ -149,7 +150,8 @@ public final class Function
         assert(_registers);
     }
 
-    public this(Module module_, string name, Type returnType, FunctionAttributes attributes = FunctionAttributes.none)
+    public this(Module module_, string name, Type returnType, CallingConvention callingConvention = CallingConvention.standard,
+                FunctionAttributes attributes = FunctionAttributes.none)
     in
     {
         assert(module_);
@@ -161,6 +163,7 @@ public final class Function
         _module = module_;
         _name = name;
         _returnType = returnType;
+        _callingConvention = callingConvention;
         _attributes = attributes;
         _blocks = new typeof(_blocks)();
         _registers = new typeof(_registers)();
@@ -192,6 +195,11 @@ public final class Function
     @property public Type returnType()
     {
         return _returnType;
+    }
+
+    @property public CallingConvention callingConvention()
+    {
+        return _callingConvention;
     }
 
     @property public FunctionAttributes attributes()
@@ -307,15 +315,15 @@ public final class Function
 
 public enum CallingConvention : ubyte
 {
-    cdecl = 0,
-    stdCall = 1,
+    standard = 0,
+    cdecl = 1,
+    stdCall = 2,
 }
 
 public final class FFISignature
 {
     private string _library;
     private string _entryPoint;
-    private CallingConvention _callingConvention;
 
     invariant()
     {
@@ -323,7 +331,7 @@ public final class FFISignature
         assert(_entryPoint);
     }
 
-    public this(string library, string entryPoint, CallingConvention callingConvention)
+    public this(string library, string entryPoint)
     in
     {
         assert(library);
@@ -333,7 +341,6 @@ public final class FFISignature
     {
         _library = library;
         _entryPoint = entryPoint;
-        _callingConvention = callingConvention;
     }
 
     @property public string library()
@@ -356,25 +363,8 @@ public final class FFISignature
         return _entryPoint;
     }
 
-    @property public CallingConvention callingConvention()
-    {
-        return _callingConvention;
-    }
-
     public override string toString()
     {
-        string callConv;
-
-        final switch (_callingConvention)
-        {
-            case CallingConvention.cdecl:
-                callConv = "cdecl";
-                break;
-            case CallingConvention.stdCall:
-                callConv = "stdcall";
-                break;
-        }
-
-        return _library ~ ", " ~ _entryPoint ~ ", " ~ callConv;
+        return _library ~ ", " ~ _entryPoint;
     }
 }

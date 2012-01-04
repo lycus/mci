@@ -306,7 +306,7 @@ private final class VectorTypeReferenceDescriptor : TypeReferenceDescriptor
 
 private final class FunctionPointerTypeReferenceDescriptor : TypeReferenceDescriptor
 {
-    private Nullable!CallingConvention _callingConvention;
+    private CallingConvention _callingConvention;
     private TypeReferenceDescriptor _returnType;
     private NoNullList!TypeReferenceDescriptor _parameterTypes;
 
@@ -315,14 +315,14 @@ private final class FunctionPointerTypeReferenceDescriptor : TypeReferenceDescri
         assert(_parameterTypes);
     }
 
-    public this(Nullable!CallingConvention callingConvention, TypeReferenceDescriptor returnType)
+    public this(CallingConvention callingConvention, TypeReferenceDescriptor returnType)
     {
         _callingConvention = callingConvention;
         _returnType = returnType;
         _parameterTypes = new typeof(_parameterTypes)();
     }
 
-    @property public Nullable!CallingConvention callingConvention()
+    @property public CallingConvention callingConvention()
     {
         return _callingConvention;
     }
@@ -595,11 +595,7 @@ public final class ModuleReader : ModuleLoader
                 if (_reader.read!bool())
                     returnType = readTypeReference();
 
-                Nullable!CallingConvention cc;
-
-                if (_reader.read!bool())
-                    cc = nullable(_reader.read!CallingConvention());
-
+                auto cc = _reader.read!CallingConvention();
                 auto fpType = new FunctionPointerTypeReferenceDescriptor(cc, returnType);
                 auto paramCount = _reader.read!uint();
 
@@ -673,7 +669,8 @@ public final class ModuleReader : ModuleLoader
             retType = readTypeReference();
 
         auto returnType = retType ? toType(retType) : null;
-        auto func = new Function(module_, name, returnType, attributes);
+        auto cc = _reader.read!CallingConvention();
+        auto func = new Function(module_, name, returnType, cc, attributes);
         auto paramCount = _reader.read!uint();
 
         for (uint i = 0; i < paramCount; i++)
@@ -919,9 +916,8 @@ public final class ModuleReader : ModuleLoader
     {
         auto library = _reader.readString();
         auto ep = _reader.readString();
-        auto callConv = _reader.read!CallingConvention();
 
-        return new FFISignature(library, ep, callConv);
+        return new FFISignature(library, ep);
     }
 
     private static void error(T ...)(T args)

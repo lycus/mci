@@ -165,7 +165,7 @@ public final class PointerType : Type
 
 public final class FunctionPointerType : Type
 {
-    private Nullable!CallingConvention _callingConvention;
+    private CallingConvention _callingConvention;
     private Type _returnType;
     private NoNullList!Type _parameterTypes;
 
@@ -174,7 +174,7 @@ public final class FunctionPointerType : Type
         assert(_parameterTypes);
     }
 
-    package this(Nullable!CallingConvention callingConvention, Type returnType, NoNullList!Type parameterTypes)
+    package this(CallingConvention callingConvention, Type returnType, NoNullList!Type parameterTypes)
     in
     {
         assert(parameterTypes);
@@ -186,7 +186,7 @@ public final class FunctionPointerType : Type
         _parameterTypes = parameterTypes.duplicate();
     }
 
-    @property public Nullable!CallingConvention callingConvention()
+    @property public CallingConvention callingConvention()
     {
         return _callingConvention;
     }
@@ -210,17 +210,16 @@ public final class FunctionPointerType : Type
     {
         string s;
 
-        if (_callingConvention.hasValue)
+        final switch (_callingConvention)
         {
-            final switch (_callingConvention.value)
-            {
-                case CallingConvention.cdecl:
-                    s ~= "cdecl ";
-                    break;
-                case CallingConvention.stdCall:
-                    s ~= "stdcall ";
-                    break;
-            }
+            case CallingConvention.standard:
+                break;
+            case CallingConvention.cdecl:
+                s ~= "cdecl ";
+                break;
+            case CallingConvention.stdCall:
+                s ~= "stdcall ";
+                break;
         }
 
         s ~= (_returnType ? _returnType.toString() : "void") ~ " (";

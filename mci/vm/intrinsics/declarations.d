@@ -33,7 +33,7 @@ shared static this()
     }
     body
     {
-        auto f = new Function(intrinsicModule, name, returnType, FunctionAttributes.intrinsic);
+        auto f = new Function(intrinsicModule, name, returnType, CallingConvention.cdecl, FunctionAttributes.intrinsic);
 
         foreach (param; parameters)
             f.createParameter(param);

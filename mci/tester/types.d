@@ -45,7 +45,7 @@ unittest
     params.add(st2);
     params.add(st1);
 
-    auto fpt = getFunctionPointerType(Nullable!CallingConvention(), st1, params);
+    auto fpt = getFunctionPointerType(CallingConvention.standard, st1, params);
 
     assert(fpt.name == "foo/bar (foo/baz, foo/bar)");
 }
@@ -60,7 +60,7 @@ unittest
     auto params = new NoNullList!Type();
     params.add(st1);
 
-    auto fpt = getFunctionPointerType(nullable(CallingConvention.cdecl), st1, params);
+    auto fpt = getFunctionPointerType(CallingConvention.cdecl, st1, params);
 
     assert(fpt.name == "cdecl foo/bar (foo/bar)");
 }

@@ -30,7 +30,7 @@ body
         throw new GenerationException("Function " ~ module_.name ~ "/" ~ node.name.name ~ " already defined.", node.location);
 
     auto returnType = node.returnType ? resolveType(node.returnType, module_, manager) : null;
-    auto func = new Function(module_, node.name.name, returnType, node.attributes);
+    auto func = new Function(module_, node.name.name, returnType, node.callingConvention, node.attributes);
 
     foreach (param; node.parameters)
         func.createParameter(resolveType(param.type, module_, manager));
@@ -172,7 +172,7 @@ body
                     case OperandType.ffi:
                         auto ffi = *instrOperand.peek!FFISignatureNode();
 
-                        operand = new FFISignature(ffi.library.name, ffi.entryPoint.name, ffi.callingConvention);
+                        operand = new FFISignature(ffi.library.name, ffi.entryPoint.name);
                         break;
                 }
             }

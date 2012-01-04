@@ -81,7 +81,7 @@ public final class ConstantLoadVerifier : CodeVerifier
                     auto func = *instr.operand.peek!Function();
                     auto target = cast(FunctionPointerType)instr.targetRegister.type;
 
-                    if (getCallingConvention(func) != target.callingConvention)
+                    if (func.callingConvention != target.callingConvention)
                         error(instr, "The calling convention of the target function does not match that of the operand.");
 
                     if (func.returnType !is target.returnType)

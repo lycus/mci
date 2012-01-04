@@ -295,25 +295,22 @@ public final class Parser
 
         next();
 
-        Nullable!CallingConvention cc;
+        CallingConvention cc;
 
         auto ccTok = peek();
 
-        if (ccTok.type == TokenType.cdecl || ccTok.type == TokenType.stdCall)
+        switch (ccTok.type)
         {
-            next();
-
-            switch (ccTok.type)
-            {
-                case TokenType.cdecl:
-                    cc = nullable(CallingConvention.cdecl);
-                    break;
-                case TokenType.stdCall:
-                    cc = nullable(CallingConvention.stdCall);
-                    break;
-                default:
-                    break;
-            }
+            case TokenType.cdecl:
+                next();
+                cc = CallingConvention.cdecl;
+                break;
+            case TokenType.stdCall:
+                next();
+                cc = CallingConvention.stdCall;
+                break;
+            default:
+                break;
         }
 
         return new FunctionPointerTypeReferenceNode(paren.location, cc, returnType, params);
@@ -647,6 +644,25 @@ public final class Parser
         }
 
         next();
+
+        CallingConvention cc;
+
+        auto ccTok = peek();
+
+        switch (ccTok.type)
+        {
+            case TokenType.cdecl:
+                next();
+                cc = CallingConvention.cdecl;
+                break;
+            case TokenType.stdCall:
+                next();
+                cc = CallingConvention.stdCall;
+                break;
+            default:
+                break;
+        }
+
         consume("{");
 
         auto registers = new NoNullList!RegisterDeclarationNode();
@@ -671,7 +687,7 @@ public final class Parser
 
         next();
 
-        return new FunctionDeclarationNode(name.location, name, attributes, params, returnType, registers, blocks);
+        return new FunctionDeclarationNode(name.location, name, cc, attributes, params, returnType, registers, blocks);
     }
 
     private RegisterDeclarationNode parseRegisterDeclaration()
@@ -1069,24 +1085,6 @@ public final class Parser
 
         auto ep = parseSimpleName();
 
-        consume(",");
-
-        CallingConvention callConv;
-
-        auto convTok = next();
-
-        switch (convTok.type)
-        {
-            case TokenType.cdecl:
-                callConv = CallingConvention.cdecl;
-                break;
-            case TokenType.stdCall:
-                callConv = CallingConvention.stdCall;
-                break;
-            default:
-                errorGot("'cdecl' or 'stdcall'", convTok.location, convTok.value);
-        }
-
-        return new FFISignatureNode(library.location, library, ep, callConv);
+        return new FFISignatureNode(library.location, library, ep);
     }
 }

@@ -65,19 +65,6 @@ body
     return isType!PointerType(type) || isType!FunctionPointerType(type) || isType!ArrayType(type) || isType!VectorType(type);
 }
 
-public Nullable!CallingConvention getCallingConvention(Function function_)
-in
-{
-    assert(function_);
-}
-body
-{
-    if (auto ffi = getFirstInstruction(function_, opFFI))
-        return nullable((*ffi.operand.peek!FFISignature).callingConvention);
-
-    return Nullable!CallingConvention();
-}
-
 public bool isArithmetic(OpCode opCode)
 in
 {

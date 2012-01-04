@@ -125,6 +125,19 @@ public final class ModuleDisassembler
         }
 
         writeln(")");
+
+        final switch (function_.callingConvention)
+        {
+            case CallingConvention.standard:
+                break;
+            case CallingConvention.cdecl:
+                write(" cdecl");
+                break;
+            case CallingConvention.stdCall:
+                write(" stdcall");
+                break;
+        }
+
         writeln("{");
 
         foreach (reg; function_.registers)

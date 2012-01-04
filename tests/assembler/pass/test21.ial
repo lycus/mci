@@ -1,0 +1,6 @@
+function void main2() stdcall
+{
+    block entry
+    {
+    }
+}

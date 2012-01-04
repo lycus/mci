@@ -2,6 +2,6 @@ function void ffi_test()
 {
     block entry
     {
-        ffi (user32, MessageBoxA, stdcall);
+        ffi (user32, MessageBoxA);
     }
 }

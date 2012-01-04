@@ -288,7 +288,7 @@ public class VectorTypeReferenceNode : TypeReferenceNode
 
 public class FunctionPointerTypeReferenceNode : TypeReferenceNode
 {
-    private Nullable!CallingConvention _callingConvention;
+    private CallingConvention _callingConvention;
     private TypeReferenceNode _returnType;
     private NoNullList!TypeReferenceNode _parameterTypes;
 
@@ -297,7 +297,7 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
         assert(_parameterTypes);
     }
 
-    public this(SourceLocation location, Nullable!CallingConvention callingConvention, TypeReferenceNode returnType,
+    public this(SourceLocation location, CallingConvention callingConvention, TypeReferenceNode returnType,
                 NoNullList!TypeReferenceNode parameterTypes)
     in
     {
@@ -313,7 +313,7 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
         _parameterTypes = parameterTypes.duplicate();
     }
 
-    @property public final Nullable!CallingConvention callingConvention()
+    @property public final CallingConvention callingConvention()
     {
         return _callingConvention;
     }
@@ -624,6 +624,7 @@ public class ParameterNode : Node
 public class FunctionDeclarationNode : DeclarationNode
 {
     private SimpleNameNode _name;
+    private CallingConvention _callingConvention;
     private FunctionAttributes _attributes;
     private NoNullList!ParameterNode _parameters;
     private TypeReferenceNode _returnType;
@@ -638,8 +639,8 @@ public class FunctionDeclarationNode : DeclarationNode
         assert(_blocks);
     }
 
-    public this(SourceLocation location, SimpleNameNode name, FunctionAttributes attributes,
-                NoNullList!ParameterNode parameters, TypeReferenceNode returnType,
+    public this(SourceLocation location, SimpleNameNode name, CallingConvention callingConvention,
+                FunctionAttributes attributes, NoNullList!ParameterNode parameters, TypeReferenceNode returnType,
                 NoNullList!RegisterDeclarationNode registers, NoNullList!BasicBlockDeclarationNode blocks)
     in
     {
@@ -654,6 +655,7 @@ public class FunctionDeclarationNode : DeclarationNode
         super(location);
 
         _name = name;
+        _callingConvention = callingConvention;
         _attributes = attributes;
         _parameters = parameters.duplicate();
         _returnType = returnType;
@@ -664,6 +666,11 @@ public class FunctionDeclarationNode : DeclarationNode
     @property public final SimpleNameNode name()
     {
         return _name;
+    }
+
+    @property public final CallingConvention callingConvention()
+    {
+        return _callingConvention;
     }
 
     @property public final FunctionAttributes attributes()
@@ -702,7 +709,7 @@ public class FunctionDeclarationNode : DeclarationNode
 
     public override string toString()
     {
-        return "attributes: " ~ to!string(_attributes);
+        return "calling convention: " ~ to!string(_callingConvention) ~ ", attributes: " ~ to!string(_attributes);
     }
 }
 
@@ -1001,7 +1008,6 @@ public class FFISignatureNode : Node
 {
     private SimpleNameNode _library;
     private SimpleNameNode _entryPoint;
-    private CallingConvention _callingConvention;
 
     invariant()
     {
@@ -1009,8 +1015,7 @@ public class FFISignatureNode : Node
         assert(_entryPoint);
     }
 
-    public this(SourceLocation location, SimpleNameNode library, SimpleNameNode entryPoint,
-                CallingConvention callingConvention)
+    public this(SourceLocation location, SimpleNameNode library, SimpleNameNode entryPoint)
     in
     {
         assert(location);
@@ -1023,7 +1028,6 @@ public class FFISignatureNode : Node
 
         _library = library;
         _entryPoint = entryPoint;
-        _callingConvention = callingConvention;
     }
 
     @property public final SimpleNameNode library()
@@ -1046,19 +1050,9 @@ public class FFISignatureNode : Node
         return _entryPoint;
     }
 
-    @property public final CallingConvention callingConvention()
-    {
-        return _callingConvention;
-    }
-
     @property public override ReadOnlyIndexable!Node children()
     {
         return toReadOnlyIndexable!Node(_library, _entryPoint);
-    }
-
-    public override string toString()
-    {
-        return "calling convention: " ~ to!string(_callingConvention);
     }
 }
 

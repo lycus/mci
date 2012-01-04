@@ -109,6 +109,7 @@ public final class ModuleWriter : ModuleSaver
         if (function_.returnType)
             writeTypeReference(function_.returnType);
 
+        _writer.write(function_.callingConvention);
         _writer.write(cast(uint)function_.parameters.count);
 
         foreach (param; function_.parameters)
@@ -299,11 +300,7 @@ public final class ModuleWriter : ModuleSaver
         if (type.returnType)
             writeTypeReference(type.returnType);
 
-        _writer.write(type.callingConvention.hasValue);
-
-        if (type.callingConvention.hasValue)
-            _writer.write(type.callingConvention.value);
-
+        _writer.write(type.callingConvention);
         _writer.write(cast(uint)type.parameterTypes.count);
 
         foreach (param; type.parameterTypes)
@@ -399,6 +396,5 @@ public final class ModuleWriter : ModuleSaver
     {
         _writer.writeString(signature.library);
         _writer.writeString(signature.entryPoint);
-        _writer.write(signature.callingConvention);
     }
 }
