@@ -10,6 +10,10 @@ import std.conv,
 
 public abstract class Type
 {
+    package this()
+    {
+    }
+
     @property public abstract string name();
 
     public override string toString()
