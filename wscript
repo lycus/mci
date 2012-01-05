@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os, subprocess
+from waflib.Build import BuildContext, CleanContext, InstallContext, UninstallContext
 
 VERSION = '1.0'
 APPNAME = 'MCI'
@@ -90,20 +91,24 @@ def build(bld):
     program('mci/tester', 'mci.tester', deps, ['-unittest'], None)
 
     if bld.env.VIM:
-        bld.install_files(bld.env.VIM + '/syntax', 'vim/syntax/ial.vim')
-        bld.install_files(bld.env.VIM + '/ftdetect', 'vim/ftdetect/ial.vim')
+        bld.install_files(os.path.join(bld.env.VIM, 'syntax'), os.path.join('vim', 'syntax', 'ial.vim'))
+        bld.install_files(os.path.join(bld.env.VIM, 'ftdetect'), os.path.join('vim', 'ftdetect', 'ial.vim'))
 
-def _run_shell(ctx, args):
+def _run_shell(dir, ctx, args):
+    cwd = os.getcwd()
+    os.chdir(dir)
+
     code = subprocess.Popen(args, shell = True).wait()
 
     if code != 0:
         ctx.fatal(str(args) + ' exited with: ' + str(code))
 
-def _run_tests(ctx, variant):
-    os.chdir('tests')
+    os.chdir(cwd)
 
-    os.chdir('assembler')
-    _run_shell(ctx, 'rdmd tester.d ' + variant)
+def _run_tests(ctx, variant):
+    _run_shell(os.path.join(OUT, variant), ctx, os.path.join('gdb --command=' + \
+               os.path.join('..', '..', 'mci.gdb') + ' mci.tester'))
+    _run_shell(os.path.join('tests', 'assembler'), ctx, 'rdmd tester.d ' + variant)
 
 def test_debug(ctx):
     _run_tests(ctx, 'debug')
@@ -112,11 +117,9 @@ def test_release(ctx):
     _run_tests(ctx, 'release')
 
 def docs(ctx):
-    os.chdir('docs')
-
     def build_docs(targets):
         for x in targets:
-            _run_shell(ctx, 'make ' + x)
+            _run_shell('docs', ctx, 'make ' + x)
 
     build_docs(['html',
                 'dirhtml',
@@ -132,8 +135,6 @@ def docs(ctx):
                 'man',
                 'changes',
                 'linkcheck'])
-
-from waflib.Build import BuildContext, CleanContext, InstallContext, UninstallContext
 
 for x in ('debug', 'release'):
     for y in (BuildContext, CleanContext, InstallContext, UninstallContext):
