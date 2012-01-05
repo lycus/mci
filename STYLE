@@ -72,6 +72,4 @@ can also clutter code. Strike a right balance.
 One problem with global state is that it may be hard to decide whether it
 goes into thread-local or global storage. In general, go by the rule that
 if you cannot come up with a reason to put a variable in global storage,
-it should probably be in TLS. Keep in mind that the MCI does not support
-usage of the same object hierarchy from multiple threads, so you do not
-need to support any such scenarios.
+it should probably be in TLS.

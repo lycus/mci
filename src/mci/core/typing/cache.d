@@ -35,12 +35,15 @@ out (result)
 }
 body
 {
-    auto tup = tuple(callingConvention, returnType, parameterTypes.duplicate());
+    synchronized (functionPointerTypes)
+    {
+        auto tup = tuple(callingConvention, returnType, parameterTypes.duplicate());
 
-    if (auto fpType = tup in functionPointerTypes)
-        return *fpType;
+        if (auto fpType = tup in functionPointerTypes)
+            return *fpType;
 
-    return functionPointerTypes[tup] = new FunctionPointerType(callingConvention, returnType, parameterTypes);
+        return functionPointerTypes[tup] = new FunctionPointerType(callingConvention, returnType, parameterTypes);
+    }
 }
 
 public PointerType getPointerType(Type elementType)
@@ -54,10 +57,13 @@ out (result)
 }
 body
 {
-    if (auto ptrType = elementType in pointerTypes)
-        return *ptrType;
+    synchronized (pointerTypes)
+    {
+        if (auto ptrType = elementType in pointerTypes)
+            return *ptrType;
 
-    return pointerTypes[elementType] = new PointerType(elementType);
+        return pointerTypes[elementType] = new PointerType(elementType);
+    }
 }
 
 public ArrayType getArrayType(Type elementType)
@@ -71,10 +77,13 @@ out (result)
 }
 body
 {
-    if (auto arrType = elementType in arrayTypes)
-        return *arrType;
+    synchronized (arrayTypes)
+    {
+        if (auto arrType = elementType in arrayTypes)
+            return *arrType;
 
-    return arrayTypes[elementType] = new ArrayType(elementType);
+        return arrayTypes[elementType] = new ArrayType(elementType);
+    }
 }
 
 public VectorType getVectorType(Type elementType, uint elements)
@@ -89,10 +98,13 @@ out (result)
 }
 body
 {
-    auto tup = tuple(elementType, elements);
+    synchronized (vectorTypes)
+    {
+        auto tup = tuple(elementType, elements);
 
-    if (auto vecType = tup in vectorTypes)
-        return *vecType;
+        if (auto vecType = tup in vectorTypes)
+            return *vecType;
 
-    return vectorTypes[tup] = new VectorType(elementType, elements);
+        return vectorTypes[tup] = new VectorType(elementType, elements);
+    }
 }
