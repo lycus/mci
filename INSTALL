@@ -2,48 +2,73 @@
 
                 -- Installation --
 
-Installation on Linux works through a single Makefile:
+        ++ POSIX ++
 
-    $ make
+Installation on POSIX systems works through the Waf build system. You
+can obtain Waf from: http://code.google.com/p/waf
 
-If you have a working compiler installed, this should just work. Note
-that you must have libffi installed, with full support for the closure
-API. On some platforms, libdl is also required for dynamic loading.
+Once installed, you must configure the project like so:
 
-There are some variables that you can override:
+    $ waf configure
 
-    * MODEL (= 64)
-      - Which pointer size to build for (32 or 64).
-    * BUILD (= debug)
-      - The build mode (debug, release, or test). The test mode will
-        run the unit test suite after the build completes.
-    * DPLC (= dmd)
-      - The compiler to be used. See the COMPATIBILITY file for a
-        list of supported compilers (dmd, gdmd, or ldc).
-    * PREFIX (= /usr/local)
-      - Specifies where to install binaries and libraries to when the
-        install target is invoked.
+You can use the --prefix option to specify where to install to. This
+defaults to '/usr/local' normally. The MCI Waf script also supports
+two additional options:
 
-For example, to do a 32-bit release build:
+    * --lp64 (= true)
+      - Whether to build for 64-bit pointers.
+    * --vim (= <none>)
+      - Where to install Vim syntax files for IAL files. If you wish
+        to enable this, you should probably set this value to ~/.vim
+        or similar.
 
-    $ make BUILD=release MODEL=32
+You will need to have both libffi and libdl installed for the build
+to succeed. Your libffi installation must support the closure API.
 
-The resulting libraries and executables are placed into the 'bin'
-directory of the source distribution. To install, run:
+For example, to build for a 32-bit CPU, do:
 
-    $ make install
+    $ waf configure --lp64=false
 
-You may wish to install elsewhere than '/usr/local', in which case,
-you can set the PREFIX variable. For example:
+Or to include Vim syntax files:
 
-    $ make install PREFIX=/opt/mci
+    $ waf configure --vim=~/.vim
 
-You can build the documentation by doing:
+With the project configured, you can execute a build by doing:
 
-    $ make docs
+    $ waf build_release
+
+You can also use 'build_debug' to build with assertions and disable
+function inlining.
+
+Finally, to install:
+
+    $ waf install_release
+
+or 'install_debug' for a debug build.
+
+Should you wish to uninstall the installed files at a later point,
+simply execute:
+
+    $ waf uninstall_release
+
+or 'uninstall_debug' for a debug build.
+
+You can optionally build the documentation, which includes a guide
+to the compiler infrastructure and a framework reference:
+
+    $ waf docs
 
 The documentation will be placed in 'docs/_build'. You'll probably
 be interested in 'docs/_build/html/index.html' primarily.
+
+Finally, you can run the test suite to ensure everything is working
+as it should:
+
+    $ waf test_release
+
+or 'test_debug' for debug builds.
+
+        ++ Windows ++
 
 Building on Windows is only supported via Visual D. Install your
 compiler of choice and configure Visual D to use it.
