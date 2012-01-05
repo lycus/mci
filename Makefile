@@ -116,29 +116,29 @@ libffi-d/bin/libffi-d.a:
 #################### mci.core ####################
 
 MCI_CORE_SOURCES = \
-	mci/core/common.d \
-	mci/core/config.d \
-	mci/core/container.d \
-	mci/core/exception.d \
-	mci/core/io.d \
-	mci/core/meta.d \
-	mci/core/nullable.d \
-	mci/core/tuple.d \
-	mci/core/visitor.d \
-	mci/core/analysis/utilities.d \
-	mci/core/code/emit.d \
-	mci/core/code/functions.d \
-	mci/core/code/instructions.d \
-	mci/core/code/modules.d \
-	mci/core/code/opcodes.d \
-	mci/core/diagnostics/debugging.d \
-	mci/core/tree/base.d \
-	mci/core/tree/expressions.d \
-	mci/core/tree/statements.d \
-	mci/core/typing/cache.d \
-	mci/core/typing/core.d \
-	mci/core/typing/members.d \
-	mci/core/typing/types.d
+	src/mci/core/common.d \
+	src/mci/core/config.d \
+	src/mci/core/container.d \
+	src/mci/core/exception.d \
+	src/mci/core/io.d \
+	src/mci/core/meta.d \
+	src/mci/core/nullable.d \
+	src/mci/core/tuple.d \
+	src/mci/core/visitor.d \
+	src/mci/core/analysis/utilities.d \
+	src/mci/core/code/emit.d \
+	src/mci/core/code/functions.d \
+	src/mci/core/code/instructions.d \
+	src/mci/core/code/modules.d \
+	src/mci/core/code/opcodes.d \
+	src/mci/core/diagnostics/debugging.d \
+	src/mci/core/tree/base.d \
+	src/mci/core/tree/expressions.d \
+	src/mci/core/tree/statements.d \
+	src/mci/core/typing/cache.d \
+	src/mci/core/typing/core.d \
+	src/mci/core/typing/members.d \
+	src/mci/core/typing/types.d
 
 bin/libmci.core.a: $(MCI_CORE_SOURCES)
 	-mkdir -p bin;
@@ -147,19 +147,19 @@ bin/libmci.core.a: $(MCI_CORE_SOURCES)
 #################### mci.assembler ####################
 
 MCI_ASSEMBLER_SOURCES = \
-	mci/assembler/exception.d \
-	mci/assembler/disassembly/ast.d \
-	mci/assembler/disassembly/modules.d \
-	mci/assembler/generation/driver.d \
-	mci/assembler/generation/exception.d \
-	mci/assembler/generation/functions.d \
-	mci/assembler/generation/modules.d \
-	mci/assembler/generation/types.d \
-	mci/assembler/parsing/ast.d \
-	mci/assembler/parsing/exception.d \
-	mci/assembler/parsing/lexer.d \
-	mci/assembler/parsing/parser.d \
-	mci/assembler/parsing/tokens.d
+	src/mci/assembler/exception.d \
+	src/mci/assembler/disassembly/ast.d \
+	src/mci/assembler/disassembly/modules.d \
+	src/mci/assembler/generation/driver.d \
+	src/mci/assembler/generation/exception.d \
+	src/mci/assembler/generation/functions.d \
+	src/mci/assembler/generation/modules.d \
+	src/mci/assembler/generation/types.d \
+	src/mci/assembler/parsing/ast.d \
+	src/mci/assembler/parsing/exception.d \
+	src/mci/assembler/parsing/lexer.d \
+	src/mci/assembler/parsing/parser.d \
+	src/mci/assembler/parsing/tokens.d
 
 bin/libmci.assembler.a: $(MCI_ASSEMBLER_SOURCES)
 	-mkdir -p bin;
@@ -176,12 +176,12 @@ bin/libmci.linker.a: $(MCI_LINKER_SOURCES)
 #################### mci.verifier ####################
 
 MCI_VERIFIER_SOURCES = \
-	mci/verifier/base.d \
-	mci/verifier/exception.d \
-	mci/verifier/manager.d \
-	mci/verifier/passes/control.d \
-	mci/verifier/passes/ordering.d \
-	mci/verifier/passes/typing.d
+	src/mci/verifier/base.d \
+	src/mci/verifier/exception.d \
+	src/mci/verifier/manager.d \
+	src/mci/verifier/passes/control.d \
+	src/mci/verifier/passes/ordering.d \
+	src/mci/verifier/passes/typing.d
 
 bin/libmci.verifier.a: $(MCI_VERIFIER_SOURCES)
 	-mkdir -p bin;
@@ -198,18 +198,18 @@ bin/libmci.optimizer.a: $(MCI_OPTIMIZER_SOURCES)
 #################### mci.vm ####################
 
 MCI_VM_SOURCES = \
-	mci/vm/memory/base.d \
-	mci/vm/memory/dgc.d \
-	mci/vm/memory/layout.d \
-	mci/vm/memory/libc.d \
-	mci/vm/memory/prettyprint.d \
-	mci/vm/intrinsics/config.d \
-	mci/vm/intrinsics/declarations.d \
-	mci/vm/io/common.d \
-	mci/vm/io/exception.d \
-	mci/vm/io/extended.d \
-	mci/vm/io/reader.d \
-	mci/vm/io/writer.d \
+	src/mci/vm/memory/base.d \
+	src/mci/vm/memory/dgc.d \
+	src/mci/vm/memory/layout.d \
+	src/mci/vm/memory/libc.d \
+	src/mci/vm/memory/prettyprint.d \
+	src/mci/vm/intrinsics/config.d \
+	src/mci/vm/intrinsics/declarations.d \
+	src/mci/vm/io/common.d \
+	src/mci/vm/io/exception.d \
+	src/mci/vm/io/extended.d \
+	src/mci/vm/io/reader.d \
+	src/mci/vm/io/writer.d \
 
 bin/libmci.vm.a: $(MCI_VM_SOURCES)
 	-mkdir -p bin;
@@ -258,18 +258,18 @@ bin/libmci.debugger.a: $(MCI_DEBUGGER_SOURCES)
 #################### mci.cli ####################
 
 MCI_CLI_SOURCES = \
-	mci/cli/main.d \
-	mci/cli/tool.d \
-	mci/cli/tools/aot.d \
-	mci/cli/tools/assembler.d \
-	mci/cli/tools/debugger.d \
-	mci/cli/tools/disassembler.d \
-	mci/cli/tools/interpreter.d \
-	mci/cli/tools/jit.d \
-	mci/cli/tools/linker.d \
-	mci/cli/tools/optimizer.d \
-	mci/cli/tools/statistics.d \
-	mci/cli/tools/verifier.d
+	src/mci/cli/main.d \
+	src/mci/cli/tool.d \
+	src/mci/cli/tools/aot.d \
+	src/mci/cli/tools/assembler.d \
+	src/mci/cli/tools/debugger.d \
+	src/mci/cli/tools/disassembler.d \
+	src/mci/cli/tools/interpreter.d \
+	src/mci/cli/tools/jit.d \
+	src/mci/cli/tools/linker.d \
+	src/mci/cli/tools/optimizer.d \
+	src/mci/cli/tools/statistics.d \
+	src/mci/cli/tools/verifier.d
 
 MCI_CLI_DEPS = \
 	bin/libmci.vm.a \
@@ -289,13 +289,13 @@ bin/mci: $(MCI_CLI_SOURCES) $(MCI_CLI_DEPS)
 #################### mci.tester ####################
 
 MCI_TESTER_SOURCES = \
-	mci/tester/common.d \
-	mci/tester/container.d \
-	mci/tester/lexer.d \
-	mci/tester/main.d \
-	mci/tester/nullable.d \
-	mci/tester/tokens.d \
-	mci/tester/types.d
+	src/mci/tester/common.d \
+	src/mci/tester/container.d \
+	src/mci/tester/lexer.d \
+	src/mci/tester/main.d \
+	src/mci/tester/nullable.d \
+	src/mci/tester/tokens.d \
+	src/mci/tester/types.d
 
 MCI_TESTER_DEPS = \
 	bin/libmci.vm.a \

@@ -4,9 +4,9 @@ docs/_build/*
 bin/*
 build/*
 
-*/*/Debug/*
-*/*/Release/*
-*/*/Test/*
+src/*/*/Debug/*
+src/*/*/Release/*
+src/*/*/Test/*
 
 .lock*
 

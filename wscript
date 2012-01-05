@@ -57,27 +57,27 @@ def build(bld):
     def search_paths(path):
         return [os.path.join(path, '*.d'), os.path.join(path, '**', '*.d')]
 
-    includes = ['.', 'libffi-d']
+    includes = ['src', 'libffi-d']
 
     def stlib(path, target, dflags = [], install = '${PREFIX}/lib'):
-        bld.stlib(source = bld.path.ant_glob(search_paths(path)),
+        bld.stlib(source = bld.path.ant_glob(search_paths(os.path.join('src', 'mci', path))),
                   target = target,
                   includes = includes,
                   install_path = install,
                   dflags = dflags)
 
     def program(path, target, deps, dflags = [], install = '${PREFIX}/bin'):
-        bld.program(source = bld.path.ant_glob(search_paths(path)),
+        bld.program(source = bld.path.ant_glob(search_paths(os.path.join('src', 'mci', path))),
                     target = target,
                     use = deps,
                     includes = includes,
                     install_path = install,
                     dflags = dflags)
 
-    stlib('mci/core', 'mci.core')
-    stlib('mci/assembler', 'mci.assembler')
-    stlib('mci/verifier', 'mci.verifier')
-    stlib('mci/vm', 'mci.vm')
+    stlib('core', 'mci.core')
+    stlib('assembler', 'mci.assembler')
+    stlib('verifier', 'mci.verifier')
+    stlib('vm', 'mci.vm')
 
     deps = ['mci.vm',
             'mci.verifier',
@@ -86,9 +86,9 @@ def build(bld):
             'FFI',
             'DL']
 
-    program('mci/cli', 'mci.cli', deps)
+    program('cli', 'mci', deps)
 
-    program('mci/tester', 'mci.tester', deps, ['-unittest'], None)
+    program('tester', 'mci.tester', deps, ['-unittest'], None)
 
     if bld.env.VIM:
         bld.install_files(os.path.join(bld.env.VIM, 'syntax'), os.path.join('vim', 'syntax', 'ial.vim'))

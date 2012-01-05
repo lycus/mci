@@ -3,7 +3,7 @@ import std.file,
        std.process,
        std.stdio;
 
-private string windowsPath = buildPath("..", "..", "mci", "cli", "Test", "mci.exe");
+private string windowsPath = buildPath("..", "..", "src", "mci", "cli", "Test", "mci.exe");
 private string posixPath = buildPath("..", "..", "build");
 
 private int main(string[] args)
@@ -12,7 +12,7 @@ private int main(string[] args)
 
     // Figure out where mci.cli(.exe) is located.
     if (exists(posixPath))
-        cli = buildPath("..", posixPath, args[1], "mci.cli");
+        cli = buildPath("..", posixPath, args[1], "mci");
     else if (exists(windowsPath))
         cli = buildPath("..", windowsPath);
     else

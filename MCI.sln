@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.core", "mci\core\mci.core.visualdproj", "{84F6B84D-C7EF-4DCB-AF7F-9D7295CFEDB0}"
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.core", "src\mci\core\mci.core.visualdproj", "{84F6B84D-C7EF-4DCB-AF7F-9D7295CFEDB0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{15874E22-14B9-4AB7-A121-9C3AE378BEE7}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 		STYLE = STYLE
 	EndProjectSection
 EndProject
-Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.assembler", "mci\assembler\mci.assembler.visualdproj", "{97197E6E-6919-4743-9637-DF02DE3E4667}"
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.assembler", "src\mci\assembler\mci.assembler.visualdproj", "{97197E6E-6919-4743-9637-DF02DE3E4667}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Miscellaneous", "Miscellaneous", "{F6494086-CE93-4F63-8501-29FD51EA7A71}"
 	ProjectSection(SolutionItems) = preProject
@@ -38,7 +38,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{20057E24
 		docs\Makefile = docs\Makefile
 	EndProjectSection
 EndProject
-Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.tester", "mci\tester\mci.tester.visualdproj", "{409812DF-0560-45D9-B1CE-5AB1CE474A9A}"
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.tester", "src\mci\tester\mci.tester.visualdproj", "{409812DF-0560-45D9-B1CE-5AB1CE474A9A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9375480A-9B77-4DE3-B19E-F40FB454A879} = {9375480A-9B77-4DE3-B19E-F40FB454A879}
 		{4EFEDF14-10E5-4EE9-8EFB-9C4A8C131B64} = {4EFEDF14-10E5-4EE9-8EFB-9C4A8C131B64}
@@ -54,7 +54,7 @@ Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.tester", "mci\tester\mc
 		{3EA32DFA-FBB8-4EB3-8DBA-63E8FDCB8996} = {3EA32DFA-FBB8-4EB3-8DBA-63E8FDCB8996}
 	EndProjectSection
 EndProject
-Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.cli", "mci\cli\mci.cli.visualdproj", "{14CFD7AD-776F-469E-8C17-5ACE3B4603A2}"
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.cli", "src\mci\cli\mci.cli.visualdproj", "{14CFD7AD-776F-469E-8C17-5ACE3B4603A2}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9375480A-9B77-4DE3-B19E-F40FB454A879} = {9375480A-9B77-4DE3-B19E-F40FB454A879}
 		{4EFEDF14-10E5-4EE9-8EFB-9C4A8C131B64} = {4EFEDF14-10E5-4EE9-8EFB-9C4A8C131B64}
@@ -70,25 +70,25 @@ Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.cli", "mci\cli\mci.cli.
 		{3EA32DFA-FBB8-4EB3-8DBA-63E8FDCB8996} = {3EA32DFA-FBB8-4EB3-8DBA-63E8FDCB8996}
 	EndProjectSection
 EndProject
-Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.vm", "mci\vm\mci.vm.visualdproj", "{267FCE98-95C1-4C1C-90CE-56E0D903CAA7}"
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.vm", "src\mci\vm\mci.vm.visualdproj", "{267FCE98-95C1-4C1C-90CE-56E0D903CAA7}"
 EndProject
-Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.interpreter", "mci\interpreter\mci.interpreter.visualdproj", "{334A489D-8DE8-4022-A66A-B1C210ADBAE2}"
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.interpreter", "src\mci\interpreter\mci.interpreter.visualdproj", "{334A489D-8DE8-4022-A66A-B1C210ADBAE2}"
 EndProject
-Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.jit", "mci\jit\mci.jit.visualdproj", "{0ACE7F95-561C-48AD-9645-D7CC00789004}"
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.jit", "src\mci\jit\mci.jit.visualdproj", "{0ACE7F95-561C-48AD-9645-D7CC00789004}"
 EndProject
 Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "libffi-d", "libffi-d\libffi-d.visualdproj", "{9375480A-9B77-4DE3-B19E-F40FB454A879}"
 EndProject
-Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.aot", "mci\aot\mci.aot.visualdproj", "{1ABE5C71-095A-482B-9CAD-029D2EFDE4D8}"
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.aot", "src\mci\aot\mci.aot.visualdproj", "{1ABE5C71-095A-482B-9CAD-029D2EFDE4D8}"
 EndProject
-Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.compiler", "mci\compiler\mci.compiler.visualdproj", "{3EA32DFA-FBB8-4EB3-8DBA-63E8FDCB8996}"
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.compiler", "src\mci\compiler\mci.compiler.visualdproj", "{3EA32DFA-FBB8-4EB3-8DBA-63E8FDCB8996}"
 EndProject
-Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.optimizer", "mci\optimizer\mci.optimizer.visualdproj", "{3C1860CB-434C-473E-9258-B3EBD4AA8F3D}"
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.optimizer", "src\mci\optimizer\mci.optimizer.visualdproj", "{3C1860CB-434C-473E-9258-B3EBD4AA8F3D}"
 EndProject
-Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.verifier", "mci\verifier\mci.verifier.visualdproj", "{4EFEDF14-10E5-4EE9-8EFB-9C4A8C131B64}"
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.verifier", "src\mci\verifier\mci.verifier.visualdproj", "{4EFEDF14-10E5-4EE9-8EFB-9C4A8C131B64}"
 EndProject
-Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.debugger", "mci\debugger\mci.debugger.visualdproj", "{066AD282-DEFF-4D20-A0E9-B7B95B3054FB}"
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.debugger", "src\mci\debugger\mci.debugger.visualdproj", "{066AD282-DEFF-4D20-A0E9-B7B95B3054FB}"
 EndProject
-Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.linker", "mci\linker\mci.linker.visualdproj", "{5096CC5E-D3FC-4BEF-973C-52E3A3045D09}"
+Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.linker", "src\mci\linker\mci.linker.visualdproj", "{5096CC5E-D3FC-4BEF-973C-52E3A3045D09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
