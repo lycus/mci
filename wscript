@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-import os
+import os, subprocess
 
 VERSION = '1.0'
 APPNAME = 'MCI'
 
-top = '.'
-out = 'build'
+TOP = '.'
+OUT = 'build'
 
 def options(opt):
     opt.recurse('libffi-d')
@@ -86,8 +86,45 @@ def build(bld):
 
     program('mci/tester', 'mci.tester', deps, ['-unittest'], None)
 
-def test(ctx):
-    pass
+def _run_shell(ctx, args):
+    code = subprocess.Popen(args, shell = True).wait()
+
+    if code != 0:
+        ctx.fatal(str(args) + ' exited with: ' + str(code))
+
+def _run_tests(ctx, variant):
+    os.chdir('tests')
+
+    os.chdir('assembler')
+    _run_shell(ctx, 'rdmd tester.d ' + variant)
+
+def test_debug(ctx):
+    _run_tests(ctx, 'debug')
+
+def test_release(ctx):
+    _run_tests(ctx, 'release')
+
+def docs(ctx):
+    os.chdir('docs')
+
+    def build_docs(targets):
+        for x in targets:
+            _run_shell(ctx, 'make ' + x)
+
+    build_docs(['html',
+                'dirhtml',
+                'singlehtml',
+                'pickle',
+                'json',
+                'htmlhelp',
+                'qthelp',
+                'devhelp',
+                'epub',
+                'latex',
+                'text',
+                'man',
+                'changes',
+                'linkcheck'])
 
 from waflib.Build import BuildContext, CleanContext, InstallContext, UninstallContext
 

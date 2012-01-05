@@ -4,20 +4,20 @@ import std.file,
        std.stdio;
 
 private string windowsPath = buildPath("..", "..", "mci", "cli", "Test", "mci.exe");
-private string posixPath = buildPath("..", "..", "bin", "mci");
+private string posixPath = buildPath("..", "..", "build");
 
-private int main()
+private int main(string[] args)
 {
     string cli;
 
     // Figure out where mci.cli(.exe) is located.
     if (exists(posixPath))
-        cli = buildPath("..", posixPath);
+        cli = buildPath("..", posixPath, args[1], "mci.cli");
     else if (exists(windowsPath))
         cli = buildPath("..", windowsPath);
     else
     {
-        writeln("Could not locate mci.cli(.exe).");
+        writeln("Could not locate mci(.exe).");
         return 1;
     }
 
@@ -34,10 +34,8 @@ private bool test(string directory, string cli, int expected, bool error)
     chdir(directory);
 
     foreach (file; dirEntries(".", "*.ial", SpanMode.shallow, false))
-    {
         if (!invoke(file.name, cli, expected, error))
             return false;
-    }
 
     return true;
 }
