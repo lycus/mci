@@ -1,7 +1,6 @@
 _*/*
 
 docs/_build/*
-bin/*
 build/*
 
 src/*/*/Debug/*
