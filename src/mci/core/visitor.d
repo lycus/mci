@@ -8,18 +8,13 @@ import mci.core.code.functions,
 
 public abstract class ModuleVisitor
 {
-    private bool _run;
-
     public final void run(Module module_)
     in
     {
         assert(module_);
-        assert(!_run);
     }
     body
     {
-        _run = true;
-
         visit(module_);
 
         foreach (type; module_.types)
