@@ -16,7 +16,8 @@ public final class VerificationManager
         assert(_verifiers);
 
         addRange(_verifiers,
-                 toIterable!CodeVerifier(new TerminatorVerifier(),
+                 toIterable!CodeVerifier(new EntryVerifier(),
+                                         new TerminatorVerifier(),
                                          new JumpVerifier(),
                                          new ReturnVerifier(),
                                          new ReturnTypeVerifier(),

@@ -8,6 +8,15 @@ import mci.core.container,
        mci.core.code.opcodes,
        mci.verifier.base;
 
+public final class EntryVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        if (!function_.blocks.get(entryBlockName))
+            error(null, "Functions must have an 'entry' basic block.");
+    }
+}
+
 public final class TerminatorVerifier : CodeVerifier
 {
     public override void verify(Function function_)
