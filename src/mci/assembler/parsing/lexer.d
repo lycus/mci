@@ -164,6 +164,10 @@ public final class Lexer
     {
         assert(expected);
     }
+    out (result)
+    {
+        assert(result);
+    }
     body
     {
         string id;
