@@ -279,6 +279,7 @@
  <Folder name="mci.core">
   <Folder name="analysis">
    <File path="analysis\utilities.d" />
+   <File path="analysis\xref.d" />
   </Folder>
   <Folder name="code">
    <File path="code\emit.d" />
