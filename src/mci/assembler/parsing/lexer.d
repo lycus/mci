@@ -159,6 +159,28 @@ public final class Lexer
         return new MemoryTokenStream(stream);
     }
 
+    private string expect(string expected)
+    in
+    {
+        assert(expected);
+    }
+    body
+    {
+        string id;
+        auto loc = _source.location;
+
+        foreach (chr; expected)
+        {
+            auto next = _source.moveNext();
+            id ~= next;
+
+            if (next != chr)
+                errorGot(expected, loc, id);
+        }
+
+        return expected;
+    }
+
     private static void errorGot(T)(string expected, SourceLocation location, T got)
     in
     {
@@ -292,14 +314,18 @@ public final class Lexer
             if (!isIdentifierChar(idChr) && !isDigit(idChr))
                 break;
 
-            _source.moveNext();
-            id ~= idChr;
+            id ~= _source.moveNext();
         }
+
+        auto loc = makeSourceLocation(id, _source.location);
+
+        if (id == "nan" || id == "inf")
+            return new Token(TokenType.literal, id, loc);
 
         auto type = identifierToType(id);
 
         // This can be a keyword, an opcode, or an identifier.
-        return new Token(type, id, makeSourceLocation(id, _source.location));
+        return new Token(type, id, loc);
     }
 
     private Token lexQuotedIdentifier()
@@ -309,8 +335,8 @@ public final class Lexer
     }
     body
     {
-        auto loc = _source.location;
         string id;
+        auto loc = _source.location;
 
         while (true)
         {
@@ -349,14 +375,29 @@ public final class Lexer
     body
     {
         string str = [cast(char)chr];
+        auto peek = _source.next();
+        auto isN = peek == 'n';
+        auto isI = peek == 'i';
+
+        if (!isDigit(chr) && (isN || isI))
+        {
+            string id;
+
+            if (isN)
+                id = expect("nan");
+            else
+                id = expect("inf");
+
+            return new Token(TokenType.literal, id, makeSourceLocation(id, _source.location));
+        }
+
         bool isHexLiteral;
 
         // To support hex literals.
         if (chr == '0' && _source.next() == 'x')
         {
             isHexLiteral = true;
-            str ~= 'x';
-            _source.moveNext();
+            str ~= _source.moveNext();
         }
 
         while (true)
@@ -378,8 +419,7 @@ public final class Lexer
             if (!(isHexLiteral ? isHexDigit(digChr) : isDigit(digChr)))
                 break;
 
-            _source.moveNext();
-            str ~= digChr;
+            str ~= _source.moveNext();
         }
 
         return new Token(TokenType.literal, str, makeSourceLocation(str, _source.location));
@@ -402,8 +442,7 @@ public final class Lexer
                 break;
 
             hasTrailingDigit = true;
-            _source.moveNext();
-            str ~= digChr;
+            str ~= _source.moveNext();
         }
 
         if (!hasTrailingDigit)

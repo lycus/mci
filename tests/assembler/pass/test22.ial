@@ -1,0 +1,19 @@
+function void foo()
+{
+    register float32 f1;
+    register float64 f2;
+    register float64 f3;
+    register float64 f4;
+    register float64 f5;
+    register float64 f6;
+
+    block entry
+    {
+        f1 = load.f32 (nan);
+        f2 = load.f32 (-nan);
+        f3 = load.f32 (+nan);
+        f4 = load.f32 (inf);
+        f5 = load.f32 (-inf);
+        f6 = load.f32 (+inf);
+    }
+}
