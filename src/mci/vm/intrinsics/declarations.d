@@ -10,7 +10,7 @@ import mci.core.common,
        mci.vm.intrinsics.config;
 
 public __gshared Module intrinsicModule;
-public __gshared NoNullDictionary!(Function, function_t) intrinsicFunctions;
+public __gshared Lookup!(Function, function_t) intrinsicFunctions;
 
 public __gshared Function mciGetCompiler;
 public __gshared Function mciGetArchitecture;
@@ -18,12 +18,12 @@ public __gshared Function mciGetOperatingSystem;
 public __gshared Function mciGetEndianness;
 public __gshared Function mciIs32Bit;
 
-public __gshared enum string intrinsicModuleName = "mci";
+public enum string intrinsicModuleName = "mci";
 
 shared static this()
 {
     intrinsicModule = new typeof(intrinsicModule)(intrinsicModuleName);
-    intrinsicFunctions = new typeof(intrinsicFunctions)();
+    auto functions = new NoNullDictionary!(Function, function_t)();
 
     Function createFunction(string name, void* func, Type returnType, Type[] parameters = null)
     in
@@ -40,7 +40,7 @@ shared static this()
 
         f.close();
 
-        intrinsicFunctions[f] = cast(function_t)func;
+        functions[f] = cast(function_t)func;
 
         return f;
     }
@@ -50,4 +50,6 @@ shared static this()
     mciGetOperatingSystem = createFunction("mci_get_operating_system", &mci_get_operating_system, UInt8Type.instance);
     mciGetEndianness = createFunction("mci_get_endianness", &mci_get_endianness, UInt8Type.instance);
     mciIs32Bit = createFunction("mci_is_32_bit", &mci_is_32_bit, UInt8Type.instance);
+
+    intrinsicFunctions = functions;
 }
