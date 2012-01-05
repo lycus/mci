@@ -11,7 +11,7 @@ OUT = 'build'
 def options(opt):
     opt.recurse('libffi-d')
 
-    opt.load('compiler_d')
+    opt.add_option('--vim', action='store', default=None, help='Include Vim syntax files (prefix)')
 
 def configure(conf):
     conf.recurse('libffi-d')
@@ -33,7 +33,10 @@ def configure(conf):
 
         conf.env.LIB_FFI = ['ffi']
         conf.env.LIB_DL = ['dl']
+
         conf.check_dlibrary()
+
+        conf.env.VIM = conf.options.vim
 
     conf.setenv('debug')
     conf.load('dmd')
@@ -85,6 +88,10 @@ def build(bld):
     program('mci/cli', 'mci.cli', deps)
 
     program('mci/tester', 'mci.tester', deps, ['-unittest'], None)
+
+    if bld.env.VIM:
+        bld.install_files(bld.env.VIM + '/syntax', 'vim/syntax/ial.vim')
+        bld.install_files(bld.env.VIM + '/ftdetect', 'vim/ftdetect/ial.vim')
 
 def _run_shell(ctx, args):
     code = subprocess.Popen(args, shell = True).wait()
