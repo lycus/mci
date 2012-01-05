@@ -21,6 +21,8 @@ def configure(conf):
         conf.env.append_value('DFLAGS', [option])
 
     def common_options():
+        conf.load('dmd')
+
         add_option('-w')
         add_option('-wi')
         add_option('-ignore')
@@ -40,13 +42,13 @@ def configure(conf):
         conf.env.VIM = conf.options.vim
 
     conf.setenv('debug')
-    conf.load('dmd')
     common_options()
+
     add_option('-debug')
 
     conf.setenv('release')
-    conf.load('dmd')
     common_options()
+
     add_option('-release')
     add_option('-O')
     add_option('-inline')
