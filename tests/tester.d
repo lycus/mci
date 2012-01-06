@@ -1,33 +1,44 @@
-import std.file,
+import std.array,
+       std.file,
        std.path,
        std.process,
        std.stdio;
 
-private string windowsPath = buildPath("..", "..", "src", "mci", "cli", "Test", "mci.exe");
-private string posixPath = buildPath("..", "..", "build", "mci");
+private string windowsPath = buildPath("..", "src", "mci", "cli", "Test", "mci.exe");
+private string posixPath = buildPath("..", "build", "mci");
 
 private int main(string[] args)
 {
+    auto dir = args[1];
     string cli;
 
-    // Figure out where mci.cli(.exe) is located.
-    if (exists(posixPath))
-        cli = buildPath("..", posixPath);
-    else if (exists(windowsPath))
-        cli = buildPath("..", windowsPath);
+    version (Windows)
+    {
+        if (exists(windowsPath))
+            cli = buildPath("..", "..", windowsPath);
+    }
     else
+    {
+        if (exists(posixPath))
+            cli = buildPath("..", "..", posixPath);
+    }
+
+    if (!cli)
     {
         writeln("Could not locate mci(.exe).");
         return 1;
     }
 
-    return !(test("pass", cli, 0, true) && test("fail", cli, 1, false));
+    foreach (arg; args[2 .. $])
+        cli ~= " " ~ arg;
+
+    return !(test(buildPath(dir, "pass"), cli, 0, true) && test(buildPath(dir, "fail"), cli, 1, false));
 }
 
 private bool test(string directory, string cli, int expected, bool error)
 {
     scope (exit)
-        chdir("..");
+        chdir(buildPath("..", ".."));
 
     writefln("-- Testing '%s' (Expecting '%d') --", directory, expected);
 
@@ -42,8 +53,7 @@ private bool test(string directory, string cli, int expected, bool error)
 
 private bool invoke(string file, string cli, int expected, bool error)
 {
-    auto name = file[0 .. $ - 4];
-    auto command = cli ~ " asm " ~ file ~ " -o " ~ name ~ ".mci -d " ~ name ~ ".ast";
+    auto command = replace(replace(cli, "<file>", file), "<name>", file[0 .. $ - 4]);
     auto result = system(command ~ " -s");
 
     if (result != expected)

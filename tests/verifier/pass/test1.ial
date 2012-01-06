@@ -1,0 +1,7 @@
+function void foo()
+{
+    block entry
+    {
+        leave;
+    }
+}
