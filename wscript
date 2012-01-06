@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os, subprocess
-from waflib.Build import BuildContext, CleanContext, InstallContext, UninstallContext
 
 VERSION = '1.0'
 APPNAME = 'MCI'
@@ -18,40 +17,34 @@ def configure(conf):
     conf.recurse('libffi-d')
 
     def add_option(option):
-        conf.env.append_value('DFLAGS', [option])
+        conf.env.append_value('DFLAGS', option)
 
-    def common_options():
-        conf.load('dmd')
+    conf.load('dmd')
 
-        add_option('-w')
-        add_option('-wi')
-        add_option('-ignore')
-        add_option('-property')
-        add_option('-gc')
+    add_option('-w')
+    add_option('-wi')
+    add_option('-ignore')
+    add_option('-property')
+    add_option('-gc')
 
-        if conf.options.lp64 == 'true':
-            add_option('-m64')
-        else:
-            add_option('-m32')
+    if conf.options.lp64 == 'true':
+        add_option('-m64')
+    else:
+        add_option('-m32')
 
-        conf.env.LIB_FFI = ['ffi']
-        conf.env.LIB_DL = ['dl']
+    conf.env.LIB_FFI = ['ffi']
+    conf.env.LIB_DL = ['dl']
 
-        conf.check_dlibrary()
+    conf.check_dlibrary()
 
-        conf.env.VIM = conf.options.vim
+    conf.env.VIM = conf.options.vim
 
-    conf.setenv('debug')
-    common_options()
-
-    add_option('-debug')
-
-    conf.setenv('release')
-    common_options()
-
-    add_option('-release')
-    add_option('-O')
-    add_option('-inline')
+    if conf.options.mode == 'debug':
+        add_option('-debug')
+    else:
+        add_option('-release')
+        add_option('-O')
+        add_option('-inline')
 
 def build(bld):
     bld.recurse('libffi-d')
@@ -107,16 +100,9 @@ def _run_shell(dir, ctx, args):
 
     os.chdir(cwd)
 
-def _run_tests(ctx, variant):
-    _run_shell(os.path.join(OUT, variant), ctx, os.path.join('gdb --command=' + \
-               os.path.join('..', '..', 'mci.gdb') + ' mci.tester'))
-    _run_shell(os.path.join('tests', 'assembler'), ctx, 'rdmd tester.d ' + variant)
-
-def test_debug(ctx):
-    _run_tests(ctx, 'debug')
-
-def test_release(ctx):
-    _run_tests(ctx, 'release')
+def test(ctx):
+    _run_shell(OUT, ctx, os.path.join('gdb --command=' + os.path.join('..', 'mci.gdb') + ' mci.tester'))
+    _run_shell(os.path.join('tests', 'assembler'), ctx, 'rdmd tester.d')
 
 def docs(ctx):
     def build_docs(targets):
@@ -137,9 +123,3 @@ def docs(ctx):
                 'man',
                 'changes',
                 'linkcheck'])
-
-for x in ('debug', 'release'):
-    for y in (BuildContext, CleanContext, InstallContext, UninstallContext):
-        class tmp(y):
-            cmd = y.__name__.replace('Context', '').lower() + '_' + x
-            variant = x
