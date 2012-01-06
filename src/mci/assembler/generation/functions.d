@@ -181,9 +181,6 @@ body
         }
     }
 
-    if (!func.blocks.get(entryBlockName))
-        throw new GenerationException("Function " ~ module_.name ~ "/" ~ node.name.name ~ " has no entry block.", node.location);
-
     return func;
 }
 
