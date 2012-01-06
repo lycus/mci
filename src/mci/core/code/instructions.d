@@ -5,6 +5,7 @@ import std.conv,
        mci.core.container,
        mci.core.tuple,
        mci.core.code.functions,
+       mci.core.code.metadata,
        mci.core.code.opcodes,
        mci.core.typing.members,
        mci.core.typing.types;
@@ -110,6 +111,7 @@ public final class Instruction
     private Register _sourceRegister1;
     private Register _sourceRegister2;
     private Register _sourceRegister3;
+    private NoNullList!MetadataPair _metadata;
 
     public this(OpCode opCode, InstructionOperand operand, Register targetRegister,
                 Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
@@ -142,9 +144,15 @@ public final class Instruction
         _sourceRegister1 = sourceRegister1;
         _sourceRegister2 = sourceRegister2;
         _sourceRegister3 = sourceRegister3;
+        _metadata = new typeof(_metadata)();
     }
 
     @property public OpCode opCode()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _opCode;
     }
@@ -172,6 +180,16 @@ public final class Instruction
     @property public Register sourceRegister3()
     {
         return _sourceRegister3;
+    }
+
+    @property public NoNullList!MetadataPair metadata()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _metadata;
     }
 
     public override string toString()

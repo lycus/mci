@@ -5,6 +5,7 @@ import std.conv,
        mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.instructions,
+       mci.core.code.metadata,
        mci.core.code.modules,
        mci.core.code.opcodes,
        mci.core.typing.cache,
@@ -177,7 +178,13 @@ body
                 }
             }
 
-            bb.instructions.add(new Instruction(instrNode.opCode, operand, target, source1, source2, source3));
+            auto instr = new Instruction(instrNode.opCode, operand, target, source1, source2, source3);
+
+            if (instrNode.metadata)
+                foreach (md; instrNode.metadata.metadata)
+                    instr.metadata.add(new MetadataPair(md.key.name, md.value.name));
+
+            bb.instructions.add(instr);
         }
     }
 

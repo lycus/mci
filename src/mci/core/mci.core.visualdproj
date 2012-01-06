@@ -285,6 +285,7 @@
    <File path="code\emit.d" />
    <File path="code\functions.d" />
    <File path="code\instructions.d" />
+   <File path="code\metadata.d" />
    <File path="code\modules.d" />
    <File path="code\opcodes.d" />
   </Folder>
