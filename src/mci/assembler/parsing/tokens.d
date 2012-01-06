@@ -1,6 +1,7 @@
 module mci.assembler.parsing.tokens;
 
 import mci.core.container,
+       mci.core.nullable,
        mci.core.code.opcodes,
        mci.core.diagnostics.debugging;
 
@@ -53,20 +54,30 @@ public enum TokenType : ubyte
     string,
 }
 
-public TokenType charToType(dchar chr)
+private __gshared TokenType[char] delimiters;
+
+shared static this()
 {
-    return ['{' : TokenType.openBrace,
-            '}' : TokenType.closeBrace,
-            '(' : TokenType.openParen,
-            ')' : TokenType.closeParen,
-            '[' : TokenType.openBracket,
-            ']' : TokenType.closeBracket,
-            ':' : TokenType.colon,
-            ';' : TokenType.semicolon,
-            ',' : TokenType.comma,
-            '=' : TokenType.equals,
-            '*' : TokenType.star,
-            '/' : TokenType.slash][cast(char)chr];
+    delimiters = ['{' : TokenType.openBrace,
+                  '}' : TokenType.closeBrace,
+                  '(' : TokenType.openParen,
+                  ')' : TokenType.closeParen,
+                  '[' : TokenType.openBracket,
+                  ']' : TokenType.closeBracket,
+                  ':' : TokenType.colon,
+                  ';' : TokenType.semicolon,
+                  ',' : TokenType.comma,
+                  '=' : TokenType.equals,
+                  '*' : TokenType.star,
+                  '/' : TokenType.slash];
+}
+
+public Nullable!TokenType delimiterCharToType(char chr)
+{
+    if (auto type = chr in delimiters)
+        return nullable(*type);
+
+    return Nullable!TokenType();
 }
 
 public TokenType identifierToType(string identifier)

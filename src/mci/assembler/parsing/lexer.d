@@ -281,25 +281,15 @@ public final class Lexer
     private Token lexDelimiter(dchar chr)
     {
         // Simple operators/delimiters.
-        switch (chr)
+        auto delim = delimiterCharToType(cast(char)chr);
+
+        if (delim.hasValue)
         {
-            case '{':
-            case '}':
-            case '(':
-            case ')':
-            case '[':
-            case ']':
-            case ':':
-            case ';':
-            case ',':
-            case '=':
-            case '*':
-            case '/':
-                auto str = to!string(chr);
-                return new Token(charToType(chr), str, makeSourceLocation(str, _source.location));
-            default:
-                return null;
+            auto str = to!string(chr);
+            return new Token(delim.value, str, makeSourceLocation(str, _source.location));
         }
+         else
+            return null;
     }
 
     private Token lexIdentifier(dchar chr)
