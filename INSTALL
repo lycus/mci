@@ -17,9 +17,14 @@ two additional options:
 
     * --lp64 (= true)
       - Whether to build for 64-bit pointers.
+    * --mode (= debug)
+      - Which mode to build in. Building in 'debug' disables any and
+        all optimizations, while 'release' enables optimization and
+        inlining. Note that both modes will generate debug information
+        and emit array bounds checks.
     * --vim (= <none>)
       - Where to install Vim syntax files for IAL files. If you wish
-        to enable this, you should probably set this value to ~/.vim
+        to enable this, you should probably set this value to '~/.vim'
         or similar.
 
 You will need to have both libffi and libdl installed for the build
@@ -33,25 +38,23 @@ Or to include Vim syntax files:
 
     $ waf configure --vim=~/.vim
 
+You will likely want to build a release version if you're not a
+contributor to the project, so:
+
+    $ waf configure --mode=release
+
 With the project configured, you can execute a build by doing:
 
-    $ waf build_release
+    $ waf build
 
-You can also use 'build_debug' to build with assertions and disable
-function inlining.
+To install the project:
 
-Finally, to install:
-
-    $ waf install_release
-
-or 'install_debug' for a debug build.
+    $ waf install
 
 Should you wish to uninstall the installed files at a later point,
 simply execute:
 
-    $ waf uninstall_release
-
-or 'uninstall_debug' for a debug build.
+    $ waf uninstall
 
 You can optionally build the documentation, which includes a guide
 to the compiler infrastructure and a framework reference:
@@ -64,9 +67,7 @@ be interested in 'docs/_build/html/index.html' primarily.
 Finally, you can run the test suite to ensure everything is working
 as it should:
 
-    $ waf test_release
-
-or 'test_debug' for debug builds.
+    $ waf test
 
         ++ Windows ++
 
