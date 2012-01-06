@@ -46,6 +46,76 @@ public abstract class Node
     }
 }
 
+public class MetadataNode : Node
+{
+    private SimpleNameNode _key;
+    private SimpleNameNode _value;
+
+    invariant()
+    {
+        assert(_key);
+        assert(_value);
+    }
+
+    public this(SourceLocation location, SimpleNameNode key, SimpleNameNode value)
+    in
+    {
+        assert(key);
+        assert(value);
+        assert(location);
+    }
+    body
+    {
+        super(location);
+
+        _key = key;
+        _value = value;
+    }
+
+    @property public final SimpleNameNode key()
+    {
+        return _key;
+    }
+
+    @property public final SimpleNameNode value()
+    {
+        return _value;
+    }
+
+    @property public override ReadOnlyIndexable!Node children()
+    {
+        return toReadOnlyIndexable!Node(_key, _value);
+    }
+}
+
+public class MetadataListNode : Node
+{
+    private NoNullList!MetadataNode _metadata;
+
+    public this(SourceLocation location, NoNullList!MetadataNode metadata)
+    in
+    {
+        assert(location);
+        assert(metadata);
+    }
+    body
+    {
+        super(location);
+
+        _metadata = metadata.duplicate();
+    }
+
+    @property public final ReadOnlyIndexable!MetadataNode metadata()
+    {
+        return _metadata;
+    }
+
+    @property public override ReadOnlyIndexable!Node children()
+    {
+        return new List!Node(castItems!Node(_metadata));
+    }
+}
+
 public abstract class DeclarationNode : Node
 {
     protected this(SourceLocation location)
@@ -1107,6 +1177,7 @@ public class InstructionNode : Node
     private RegisterReferenceNode _source2;
     private RegisterReferenceNode _source3;
     private InstructionOperandNode _operand;
+    private MetadataListNode _metadata;
 
     invariant()
     {
@@ -1115,7 +1186,7 @@ public class InstructionNode : Node
 
     public this(SourceLocation location, OpCode opCode, RegisterReferenceNode target,
                 RegisterReferenceNode source1, RegisterReferenceNode source2, RegisterReferenceNode source3,
-                InstructionOperandNode operand)
+                InstructionOperandNode operand, MetadataListNode metadata)
     in
     {
         assert(location);
@@ -1131,6 +1202,7 @@ public class InstructionNode : Node
         _source2 = source2;
         _source3 = source3;
         _operand = operand;
+        _metadata = metadata;
     }
 
     @property public final OpCode opCode()
@@ -1163,9 +1235,14 @@ public class InstructionNode : Node
         return _operand;
     }
 
+    @property public final MetadataListNode metadata()
+    {
+        return _metadata;
+    }
+
     @property public override ReadOnlyIndexable!Node children()
     {
-        return toReadOnlyIndexable!Node(target, source1, source2, source3, operand);
+        return toReadOnlyIndexable!Node(_target, _source1, _source2, _source3, _operand, _metadata);
     }
 
     public override string toString()

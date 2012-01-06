@@ -567,6 +567,53 @@ public final class Parser
         return new SimpleNameNode(name.location, name.value);
     }
 
+    private MetadataNode parseMetadata()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto key = parseSimpleName();
+
+        consume(":");
+
+        auto value = parseSimpleName();
+
+        return new MetadataNode(key.location, key, value);
+    }
+
+    private MetadataListNode parseMetadataList()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto open = consume("[");
+
+        auto metadata = new NoNullList!MetadataNode();
+
+        while (peek().type != TokenType.closeBracket)
+        {
+            metadata.add(parseMetadata());
+
+            if (peek().type != TokenType.closeBracket)
+            {
+                consume(",");
+
+                auto closeBracket = peek();
+
+                if (closeBracket.type == TokenType.closeBracket)
+                    errorGot("metadata pair", closeBracket.location, closeBracket.value);
+            }
+        }
+
+        next();
+
+        return new MetadataListNode(open.location, metadata);
+    }
+
     private FunctionDeclarationNode parseFunctionDeclaration()
     out (result)
     {
@@ -739,6 +786,11 @@ public final class Parser
     }
     body
     {
+        MetadataListNode metadata;
+
+        if (peek().type == TokenType.openBracket)
+            metadata = parseMetadataList();
+
         RegisterReferenceNode target;
 
         next();
@@ -766,10 +818,9 @@ public final class Parser
             if (op.name == opCodeTok.value)
                 opCode = op;
 
-        if (target is null && opCode.hasTarget)
+        if (!target && opCode.hasTarget)
             error("Opcode " ~ opCode.name ~ " expects a target register", opCodeTok.location);
-
-        if (target !is null && !opCode.hasTarget)
+        else if (target && !opCode.hasTarget)
             error("Opcode " ~ opCode.name ~ " does not expect a target register", target.location);
 
         RegisterReferenceNode source1;
@@ -813,7 +864,8 @@ public final class Parser
 
         consume(";");
 
-        return new InstructionNode(opCodeTok.location, opCode, target, source1, source2, source3, operand);
+        return new InstructionNode(opCodeTok.location, opCode, target, source1, source2,
+                                   source3, operand, metadata);
     }
 
     private InstructionOperandNode parseInstructionOperand(OperandType operandType)

@@ -1,0 +1,11 @@
+function void main()
+{
+    register int32 x;
+    register int32 y;
+    register int32 z;
+
+    block entry
+    {
+        [foo : bar] x = ari.add y, z;
+    }
+}
