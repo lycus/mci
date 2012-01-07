@@ -102,8 +102,8 @@ def _run_shell(dir, ctx, args):
 
 def test(ctx):
     _run_shell(OUT, ctx, os.path.join('gdb --command=' + os.path.join('..', 'mci.gdb') + ' mci.tester'))
-    _run_shell(os.path.join('tests', 'assembler'), ctx, 'rdmd tester.d "assembler" "asm <file> -o <name>.mci -d <name>.ast"')
-    _run_shell(os.path.join('tests', 'verifier'), ctx, 'rdmd tester.d "verifier" "asm <file> -o <name>.mci -d <name>.ast -v"')
+    _run_shell('tests', ctx, 'rdmd tester.d "assembler" "asm <file> -o <name>.mci -d <name>.ast"')
+    _run_shell('tests', ctx, 'rdmd tester.d "verifier" "asm <file> -o <name>.mci -d <name>.ast -v"')
 
 def docs(ctx):
     def build_docs(targets):
