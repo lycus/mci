@@ -73,3 +73,18 @@ One problem with global state is that it may be hard to decide whether it
 goes into thread-local or global storage. In general, go by the rule that
 if you cannot come up with a reason to put a variable in global storage,
 it should probably be in TLS.
+
+        ++ Const/Immutable/Shared ++
+
+You should generally avoid these type modifiers.
+
+There are lots of problems with shared, in particular. It only ensures safety
+on a low level, which is almost always useless in the MCI. Apart from that,
+it is a highly viral type modifier which tends to make it extremely annoying
+to work with the API. A cast can remove it, but that goes against the entire
+safety it's supposed to offer. So, avoid this modifier by all means.
+
+The const and immutable modifiers are much less problematic, but unfortunately
+are not implemented correctly and without bugs in any current compilers. For
+this reason, we generally avoid them as well. We do plan to make more use of
+them once compilers get less broken support for them.
