@@ -27,7 +27,8 @@ public final class VerificationManager
                                          new ArithmeticVerifier(),
                                          new BitwiseVerifier(),
                                          new ShiftVerifier(),
-                                         new ComparisonVerifier()));
+                                         new ComparisonVerifier(),
+                                         new MemoryVerifier()));
     }
 
     public this()

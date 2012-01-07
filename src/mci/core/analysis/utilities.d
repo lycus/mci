@@ -153,16 +153,6 @@ body
     return false;
 }
 
-public bool isValidShiftAmountType(Type type)
-in
-{
-    assert(type);
-}
-body
-{
-    return type is NativeUIntType.instance;
-}
-
 public bool isContainerOf(Type type, Type elementType)
 in
 {

@@ -1,0 +1,17 @@
+function void vector_shift()
+{
+    register int32[3] vec1;
+    register int32[3] vec2;
+    register int32[3] vec3;
+    register uint amt1;
+    register uint[3] amt2;
+
+    block entry
+    {
+        vec1 = load.i32a (1, 2, 3);
+        vec2 = shl vec1, amt1;
+        vec3 = shl vec1, amt2;
+
+        leave;
+    }
+}

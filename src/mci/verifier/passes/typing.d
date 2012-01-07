@@ -22,7 +22,7 @@ public final class ConstantLoadVerifier : CodeVerifier
             {
                 string loadCheck(string name, string type)
                 {
-                    return "if (instr.opCode is opLoad" ~ name ~ " && !isType!" ~ type ~ "Type(instr.targetRegister.type))" ~
+                    return "if (instr.opCode is opLoad" ~ name ~ " && instr.targetRegister.type !is " ~ type ~ "Type.instance)" ~
                            "    error(instr, \"The target of a '\" ~ opLoad" ~ name ~ ".name ~ \"' instruction must be of type '\" ~" ~
                            "          " ~ type ~ "Type.instance.name ~ \"'.\");";
                 }
@@ -187,8 +187,17 @@ public final class ShiftVerifier : CodeVerifier
                     if (!isValidInBitwise(instr.sourceRegister1.type))
                         error(instr, "The first source register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
 
-                    if (!isValidShiftAmountType(instr.sourceRegister2.type))
-                        error(instr, "The second source register must be of type 'uint'.");
+                    if (!areSameType(instr.targetRegister, instr.sourceRegister1))
+                        error(instr, "Target register and first source register must be the exact same type.");
+
+                    if (auto sourceVec = cast(VectorType)instr.sourceRegister1.type)
+                    {
+                        if (auto amountVec = cast(VectorType)instr.sourceRegister2.type)
+                            if (amountVec !is getVectorType(NativeUIntType.instance, sourceVec.elements))
+                                error(instr, "If it is a vector, the second source register's element count must match the first source register's.");
+                    }
+                    else if (instr.sourceRegister2.type !is NativeUIntType.instance)
+                        error(instr, "The second source register must be of type `uint` if the first is not a vector.");
                 }
             }
         }
@@ -230,11 +239,44 @@ public final class ReturnTypeVerifier : CodeVerifier
     public override void verify(Function function_)
     {
         foreach (bb; function_.blocks)
-        {
             if (auto instr = getFirstInstruction(bb.y, opReturn))
                 if (instr.sourceRegister1.type !is function_.returnType)
                     error(instr, "The type of the source register ('%s') does not match the return type of the function ('%s').",
                           instr.sourceRegister1.type, function_.returnType ? to!string(function_.returnType) : "void");
+    }
+}
+
+public final class MemoryVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.instructions)
+            {
+                if (instr.opCode is opMemAlloc || instr.opCode is opMemGCAlloc)
+                {
+                    if (instr.sourceRegister1.type !is NativeUIntType.instance)
+                        error(instr, "Source register must be of type 'uint'.");
+
+                    if (!isType!PointerType(instr.targetRegister.type) &&
+                        !isType!ArrayType(instr.targetRegister.type))
+                        error(instr, "Target register must be a pointer or an array.");
+                }
+                else if (instr.opCode is opMemNew || instr.opCode is opMemGCNew)
+                {
+                    if (!isType!PointerType(instr.targetRegister.type) &&
+                        !isType!VectorType(instr.targetRegister.type))
+                        error(instr, "Target register must be a pointer or a vector.");
+                }
+                else if (instr.opCode is opMemFree || instr.opCode is opMemGCFree)
+                {
+                    if (!isType!PointerType(instr.targetRegister.type) &&
+                        !isType!ArrayType(instr.targetRegister.type) &&
+                        !isType!VectorType(instr.targetRegister.type))
+                        error(instr, "Target register must be a pointer, an array, or a vector.");
+                }
+            }
         }
     }
 }
