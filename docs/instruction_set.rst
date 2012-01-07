@@ -34,61 +34,6 @@ comment
 
 Similar to nop_, but allows attaching arbitrary data to it.
 
-raw
----
-
-**Has target registers**
-    No
-**Source registers**
-    0
-**Operand type**
-    Byte array
-
-This instruction tells the code generator to insert raw machine code (which
-is given as the byte array operand) in the generated machine code stream.
-
-This instruction has a number of consequences:
-
-* The function cannot be pure.
-* The function cannot be inlined.
-* All optimizations that would affect the layout of the stack cannot happen.
-* Execution of the function within the interpreter becomes impossible.
-* It must be the only instruction in the function.
-
-Of course, usage of this instruction results in unportable code.
-
-This instruction is primarily intended to allow the implementation of
-inline assembly in high-level languages. While it doesn't give a clear way
-to access IAL registers, the MCI ABI guarantees a well-defined layout of
-locals and arguments on the stack when this instruction is present.
-
-It should be noted that this is not sufficient to implement full-blown
-inline assembly as in many C and C++ compilers. A general requirement of
-inline assembly using this instruction is that the raw blob must contain
-code that is neutral to relocations, as it is not in any way guaranteed
-where the code blob will be emitted in memory.
-
-ffi
----
-
-**Has target register**
-    No
-**Source registers**
-    0
-**Operand type**
-    FFI signature
-
-This instruction marks the function as an FFI function. FFI functions must
-only contain this one instruction, which points the code generator to the
-actual function entry point in a native library.
-
-When using this instruction, a function cannot be pure and is not allowed
-to be inlined.
-
-Note that the native function isn't linked to statically. The execution
-engine (either the interpreter or the JIT/AOT engine) will attempt to
-locate the native entry point when the FFI function is called.
-
 Constant load instructions
 ++++++++++++++++++++++++++
 
@@ -1326,6 +1271,61 @@ The target register and selector registers must all be of the same type.
 Note that this instruction doesn't count as a control flow instruction.
 That is to say, multiple phi instructions are allowed in a basic block
 while in SSA form, and they do not act as terminators.
+
+raw
+---
+
+**Has target registers**
+    No
+**Source registers**
+    0
+**Operand type**
+    Byte array
+
+This instruction tells the code generator to insert raw machine code (which
+is given as the byte array operand) in the generated machine code stream.
+
+This instruction has a number of consequences:
+
+* The function cannot be pure.
+* The function cannot be inlined.
+* All optimizations that would affect the layout of the stack cannot happen.
+* Execution of the function within the interpreter becomes impossible.
+* It must be the only instruction in the function.
+
+Of course, usage of this instruction results in unportable code.
+
+This instruction is primarily intended to allow the implementation of
+inline assembly in high-level languages. While it doesn't give a clear way
+to access IAL registers, the MCI ABI guarantees a well-defined layout of
+locals and arguments on the stack when this instruction is present.
+
+It should be noted that this is not sufficient to implement full-blown
+inline assembly as in many C and C++ compilers. A general requirement of
+inline assembly using this instruction is that the raw blob must contain
+code that is neutral to relocations, as it is not in any way guaranteed
+where the code blob will be emitted in memory.
+
+ffi
+---
+
+**Has target register**
+    No
+**Source registers**
+    0
+**Operand type**
+    FFI signature
+
+This instruction marks the function as an FFI function. FFI functions must
+only contain this one instruction, which points the code generator to the
+actual function entry point in a native library.
+
+When using this instruction, a function cannot be pure and is not allowed
+to be inlined.
+
+Note that the native function isn't linked to statically. The execution
+engine (either the interpreter or the JIT/AOT engine) will attempt to
+locate the native entry point when the FFI function is called.
 
 Exception handling instructions
 +++++++++++++++++++++++++++++++
