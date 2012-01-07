@@ -16,6 +16,8 @@ def options(opt):
 def configure(conf):
     conf.recurse('libffi-d')
 
+    conf.env.VIM = conf.options.vim
+
     def add_option(option):
         conf.env.append_value('DFLAGS', option)
 
@@ -32,19 +34,17 @@ def configure(conf):
     else:
         add_option('-m32')
 
-    conf.env.LIB_FFI = ['ffi']
-    conf.env.LIB_DL = ['dl']
-
-    conf.check_dlibrary()
-
-    conf.env.VIM = conf.options.vim
-
     if conf.options.mode == 'debug':
         add_option('-debug')
     else:
         add_option('-release')
         add_option('-O')
         add_option('-inline')
+
+    conf.env.LIB_FFI = ['ffi']
+    conf.env.LIB_DL = ['dl']
+
+    conf.check_dlibrary()
 
 def build(bld):
     bld.recurse('libffi-d')
@@ -53,16 +53,17 @@ def build(bld):
         return [os.path.join(path, '*.d'), os.path.join(path, '**', '*.d')]
 
     includes = ['src', 'libffi-d']
+    src = os.path.join('src', 'mci')
 
     def stlib(path, target, dflags = [], install = '${PREFIX}/lib'):
-        bld.stlib(source = bld.path.ant_glob(search_paths(os.path.join('src', 'mci', path))),
+        bld.stlib(source = bld.path.ant_glob(search_paths(os.path.join(src, path))),
                   target = target,
                   includes = includes,
                   install_path = install,
                   dflags = dflags)
 
     def program(path, target, deps, dflags = [], install = '${PREFIX}/bin'):
-        bld.program(source = bld.path.ant_glob(search_paths(os.path.join('src', 'mci', path))),
+        bld.program(source = bld.path.ant_glob(search_paths(os.path.join(src, path))),
                     target = target,
                     use = deps,
                     includes = includes,
