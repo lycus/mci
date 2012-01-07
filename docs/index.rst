@@ -24,7 +24,7 @@ Framework reference
    :maxdepth: 1
    :numbered:
 
-Indices and Tables
+Indices and tables
 ==================
 
 * :ref:`genindex`
