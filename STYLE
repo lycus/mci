@@ -1,6 +1,6 @@
             == MCI: Managed Compiler Infrastructure ==
 
-                -- Installation --
+                -- Style --
 
 This is a guide to the general code style used in the MCI source base.
 If you're contributing code to the project, you should make sure to
