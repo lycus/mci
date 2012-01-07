@@ -1,0 +1,13 @@
+function void foo()
+{
+    register int32[3] x;
+    register int32[3] y;
+    register uint[3] z;
+
+    block entry
+    {
+        z = cmp.eq x, y;
+
+        leave;
+    }
+}

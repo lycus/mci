@@ -7,6 +7,7 @@ import std.conv,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.opcodes,
+       mci.core.typing.cache,
        mci.core.typing.core,
        mci.core.typing.types,
        mci.verifier.base;
@@ -204,11 +205,20 @@ public final class ComparisonVerifier : CodeVerifier
             {
                 if (isComparison(instr.opCode))
                 {
-                    if (!isType!NativeUIntType(instr.targetRegister.type))
-                        error(instr, "Target register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
-
                     if (!isValidInArithmetic(instr.sourceRegister1.type) || !isValidInArithmetic(instr.sourceRegister2.type))
                         error(instr, "Source register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+
+                    if (!areSameType(instr.sourceRegister1, instr.sourceRegister2))
+                        error(instr, "Both source registers must be the exact same type.");
+
+                    if (auto vec = cast(VectorType)instr.sourceRegister1.type)
+                    {
+                        if (instr.targetRegister.type !is getVectorType(NativeUIntType.instance, vec.elements))
+                            error(instr, "Target register must be a vector of 'uint' with the same amount of elements as the " ~
+                                  "source registers when comparing vectors.");
+                    }
+                    else if (instr.targetRegister.type !is NativeUIntType.instance)
+                        error(instr, "Target register must be of type 'uint' when comparing non-vector types.");
                 }
             }
         }
