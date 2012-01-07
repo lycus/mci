@@ -1,0 +1,6 @@
+function void foo()
+{
+    block entry
+    {
+    }
+}

@@ -1,0 +1,12 @@
+function void foo2()
+{
+    block entry
+    {
+        raw (00, 01, 02, 03);
+    }
+
+    block bar
+    {
+        leave;
+    }
+}

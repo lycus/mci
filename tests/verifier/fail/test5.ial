@@ -1,0 +1,8 @@
+function void foo() stdcall
+{
+    block entry
+    {
+        nop;
+        ffi (foo, bar);
+    }
+}

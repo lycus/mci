@@ -1,0 +1,12 @@
+function void ffi_test() cdecl
+{
+    block entry
+    {
+        ffi (some_lib, some_ep);
+    }
+
+    block foo
+    {
+        leave;
+    }
+}

@@ -1,7 +1,20 @@
+type Foo
+{
+    field instance int32 bar;
+}
+
 function void foo()
 {
+    register uint x;
+    register uint y;
+    register uint z;
+
     block entry
     {
+        x = load.size (Foo);
+        y = load.align (Foo);
+        z = load.offset (Foo:bar);
+
         leave;
     }
 }

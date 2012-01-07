@@ -1,0 +1,9 @@
+function void foo()
+{
+    register int64 x;
+
+    block entry
+    {
+        return x;
+    }
+}

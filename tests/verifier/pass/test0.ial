@@ -1,0 +1,15 @@
+function void array_loads()
+{
+    register int32[] foo;
+    register int32[5] bar;
+    register int32* baz;
+
+    block entry
+    {
+        foo = load.i32a (0, 1, 2, 3, 4, 5, 6, 7, 8);
+        bar = load.i32a (0, 1, 2, 3, 4);
+        baz = load.i32a (0, 1, 2);
+
+        leave;
+    }
+}

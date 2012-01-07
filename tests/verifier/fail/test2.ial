@@ -1,0 +1,7 @@
+function int32 foo()
+{
+    block entry
+    {
+        leave;
+    }
+}

@@ -1,0 +1,11 @@
+function void array_load()
+{
+    register uint8[20] foo;
+
+    block entry
+    {
+        foo = load.ui8a (0, 1, 2, 3);
+
+        leave;
+    }
+}
