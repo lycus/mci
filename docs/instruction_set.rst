@@ -1306,6 +1306,8 @@ inline assembly using this instruction is that the raw blob must contain
 code that is neutral to relocations, as it is not in any way guaranteed
 where the code blob will be emitted in memory.
 
+This is a terminator instruction.
+
 ffi
 ---
 
@@ -1326,6 +1328,8 @@ to be inlined.
 Note that the native function isn't linked to statically. The execution
 engine (either the interpreter or the JIT/AOT engine) will attempt to
 locate the native entry point when the FFI function is called.
+
+This is a terminator instruction.
 
 Exception handling instructions
 +++++++++++++++++++++++++++++++
