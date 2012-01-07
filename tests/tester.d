@@ -37,18 +37,27 @@ private int main(string[] args)
 
 private bool test(string directory, string cli, int expected, bool error)
 {
-    scope (exit)
-        chdir(buildPath("..", ".."));
-
     writefln("-- Testing '%s' (Expecting '%d') --", directory, expected);
 
     chdir(directory);
 
-    foreach (file; dirEntries(".", "*.ial", SpanMode.shallow, false))
-        if (!invoke(file.name, cli, expected, error))
-            return false;
+    ulong passes;
+    ulong failures;
 
-    return true;
+    foreach (file; dirEntries(".", "*.ial", SpanMode.shallow, false))
+    {
+        if (invoke(file.name, cli, expected, error))
+            passes++;
+        else
+            failures++;
+    }
+
+    writeln();
+    writefln("== Passes: %s - Failures: %s ==", passes, failures);
+
+    chdir(buildPath("..", ".."));
+
+    return !failures;
 }
 
 private bool invoke(string file, string cli, int expected, bool error)
