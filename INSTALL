@@ -13,7 +13,7 @@ Once installed, you must configure the project like so:
 
 You can use the --prefix option to specify where to install to. This
 defaults to '/usr/local' normally. The MCI Waf script also supports
-two additional options:
+some additional options:
 
     * --lp64 (= true)
       - Whether to build for 64-bit pointers.
