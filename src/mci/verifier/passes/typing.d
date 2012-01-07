@@ -42,7 +42,7 @@ public final class ConstantLoadVerifier : CodeVerifier
 
                 string loadArrayCheck(string name, string type, string langType)
                 {
-                    return "if (instr.opCode is opLoad" ~ name ~ "A && !isContainerOf(instr.targetRegister.type, " ~ type ~ "Type.instance))" ~
+                    return "if (instr.opCode is opLoad" ~ name ~ "A)" ~
                            "{" ~
                            "    if (!isContainerOf(instr.targetRegister.type, " ~ type ~ "Type.instance))" ~
                            "        error(instr, \"The target of a '\" ~ opLoad" ~ name ~ "A.name ~ \"' instruction must be a pointer \" ~" ~
