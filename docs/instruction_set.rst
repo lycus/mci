@@ -1356,6 +1356,7 @@ The following conversions are valid:
   ``int16``, ``uint16``, ``int32``, ``uint32``, ``int64``, ``uint64``,
   ``int``, ``uint``, ``float32``, and ``float64``).
 * ``T*`` -> ``uint`` or ``int`` for any ``T``.
+* ``uint`` or ``int`` -> ``T*`` for any ``T``.
 * ``T*`` -> ``U*`` for any ``T`` and any ``U``.
 * ``T*`` -> ``T[]`` for any ``T``.
 * ``T[]`` -> ``T*`` for any ``T``.
