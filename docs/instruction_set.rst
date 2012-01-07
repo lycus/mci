@@ -179,6 +179,158 @@ Loads a constant 64-bit floating-point value into the target register.
 
 The target register must be of type ``float64``.
 
+load.i8a
+--------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    8-bit signed integer array
+
+Loads a constant array of 8-bit signed integers into the target register.
+
+The target register must be of type ``int8[]``, ``int8*``, or a vector of
+``int8`` with an element count matching that of the array operand.
+
+load.ui8a
+---------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    8-bit unsigned integer array
+
+Loads a constant array of 8-bit unsigned integers into the target register.
+
+The target register must be of type ``uint8[]``, ``uint8*``, or a vector of
+``uint8`` with an element count matching that of the array operand.
+
+load.i16a
+---------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    16-bit signed integer array
+
+Loads a constant array of 16-bit signed integers into the target register.
+
+The target register must be of type ``int16[]``, ``int16*``, or a vector
+of ``int16`` with an element count matching that of the array operand.
+
+load.ui16a
+----------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    16-bit unsigned integer array
+
+Loads a constant array of 16-bit unsigned integers into the target register.
+
+The target register must be of type ``uint16[]``, ``uint16*``, or a vector
+of ``uint16`` with an element count matching that of the array operand.
+
+load.i32a
+---------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    32-bit signed integer array
+
+Loads a constant array of 32-bit signed integers into the target register.
+
+The target register must be of type ``int32[]``, ``int32*``, or a vector
+of ``int32`` with an element count matching that of the array operand.
+
+load.ui32a
+----------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    32-bit unsigned integer array
+
+Loads a constant array of 32-bit unsigned integers into the target register.
+
+The target register must be of type ``uint32[]``, ``uint32*``, or a vector
+of ``uint32`` with an element count matching that of the array operand.
+
+load.i64a
+---------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    64-bit signed integer array
+
+Loads a constant array of 64-bit signed integers into the target register.
+
+The target register must be of type ``int64[]``, ``int64*``, or a vector
+of ``int64`` with an element count matching that of the array operand.
+
+load.ui64a
+----------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    64-bit unsigned integer array
+
+Loads a constant array of 64-bit unsigned integers into the target register.
+
+The target register must be of type ``uint64[]``, ``uint64*``, or a vector
+of ``uint64`` with an element count matching that of the array operand.
+
+load.f32a
+---------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    32-bit floating-point value array
+
+Loads a constant array of 32-bit floating-point values into the target
+register.
+
+The target register must be of type ``float32[]``, ``float32*``, or a vector
+of ``float32`` with an element count matching that of the array operand.
+
+load.f64a
+---------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    64-bit floating-point value array
+
+Loads a constant array of 64-bit floating-point values into the target
+register.
+
+The target register must be of type ``float64[]``, ``float64*``, or a vector
+of ``float64`` with an element count matching that of the array operand.
+
 load.func
 ---------
 
