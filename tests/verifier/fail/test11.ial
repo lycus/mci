@@ -7,7 +7,7 @@ function void vector_shift()
     block entry
     {
         vec1 = load.i32a (1, 2, 3);
-        vec2 = shl vec, amt;
+        vec2 = shl vec1, amt;
 
         leave;
     }
