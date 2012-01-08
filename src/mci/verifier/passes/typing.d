@@ -323,3 +323,32 @@ public final class MemoryAliasVerifier : CodeVerifier
         }
     }
 }
+
+public final class ArrayVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.instructions)
+            {
+                if (isArray(instr.opCode))
+                {
+                    if (!isType!ArrayType(instr.sourceRegister1.type) &&
+                        !isType!VectorType(instr.sourceRegister1.type))
+                        error(instr, "The first source register must be an array or a vector.");
+
+                    if (instr.sourceRegister2.type !is NativeUIntType.instance)
+                        error(instr, "The second source register must be of type 'uint'.");
+                }
+
+                if (instr.opCode is opArrayGet && instr.targetRegister.type !is getElementType(instr.sourceRegister1.type))
+                        error(instr, "The target register must be of the first source register's element type.");
+                else if (instr.opCode is opArraySet && instr.sourceRegister3.type !is getElementType(instr.sourceRegister1.type))
+                        error(instr, "The third source register must be of the first source register's element type.");
+                else if (instr.opCode is opArrayAddr && instr.targetRegister.type !is getPointerType(getElementType(instr.sourceRegister1.type)))
+                        error(instr, "The target register must be a pointer to the first source register's element type.");
+            }
+        }
+    }
+}

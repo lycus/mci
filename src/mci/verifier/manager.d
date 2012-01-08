@@ -29,7 +29,8 @@ public final class VerificationManager
                                          new ShiftVerifier(),
                                          new ComparisonVerifier(),
                                          new MemoryVerifier(),
-                                         new MemoryAliasVerifier()));
+                                         new MemoryAliasVerifier(),
+                                         new ArrayVerifier()));
     }
 
     public this()

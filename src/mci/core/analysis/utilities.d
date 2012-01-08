@@ -119,6 +119,18 @@ body
            opCode is opCmpLTEq;
 }
 
+public bool isArray(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opArrayGet ||
+           opCode is opArraySet ||
+           opCode is opArrayAddr;
+}
+
 public bool isValidInArithmetic(Type type)
 in
 {
@@ -174,4 +186,19 @@ body
             return true;
 
     return false;
+}
+
+public Type getElementType(Type type)
+in
+{
+    assert(isType!PointerType(type) || isType!ArrayType(type) || isType!VectorType(type));
+}
+body
+{
+    if (auto vec = cast(VectorType)type)
+        return vec.elementType;
+    else if (auto arr = cast(ArrayType)type)
+        return arr.elementType;
+    else
+        return (cast(PointerType)type).elementType;
 }
