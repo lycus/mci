@@ -876,12 +876,12 @@ array.get
 **Operand type**
     None
 
-Fetches at the index given in the second source register from the array
-given in the first source register and assigns it to the target register.
-The first source register must be an array or vector type, while the
-second register must be of type ``uint``.
+Fetches the value at the index given in the second source register from
+the array given in the first source register and assigns it to the target
+register. The first source register must be an array or vector type, while
+the second register must be of type ``uint``.
 
-The target vector must be of the first source register's element type.
+The target register must be of the first source register's element type.
 
 array.set
 ---------
