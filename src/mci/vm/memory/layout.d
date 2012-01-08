@@ -102,7 +102,7 @@ body
     return offset;
 }
 
-private uint computeAlignment(Type type, bool is32Bit)
+public uint computeAlignment(Type type, bool is32Bit)
 {
     if (auto struc = cast(StructureType)type)
     {
