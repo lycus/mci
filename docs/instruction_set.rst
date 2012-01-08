@@ -914,7 +914,8 @@ of the array given in the first source register and assigns it to the
 target register. The first source register must be an array or vector
 type, while the second source register must be of type ``uint``.
 
-The target register must be the first source register's element type.
+The target register must be a pointer to the first source register's element
+type.
 
 Structure field instructions
 ++++++++++++++++++++++++++++
