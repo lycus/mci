@@ -5,6 +5,15 @@ import mci.core.code.functions,
        mci.core.typing.members,
        mci.verifier.base;
 
+public final class EntryVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        if (!function_.blocks.get(entryBlockName))
+            error(null, "Functions must have an 'entry' basic block.");
+    }
+}
+
 public final class FieldStorageVerifier : CodeVerifier
 {
     public override void verify(Function function_)
