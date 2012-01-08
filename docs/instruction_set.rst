@@ -817,7 +817,7 @@ mem.get
 Dereferences the pointer in the source register and assigns the resulting
 element value to the target register.
 
-If the deference operation failed in some way (e.g. the source pointer is
+If the dereference operation failed in some way (e.g. the source pointer is
 null or points to invalid memory), undefined behavior occurs.
 
 The source register must be a pointer, while the target register must be
