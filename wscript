@@ -31,15 +31,19 @@ def configure(conf):
 
     if conf.options.lp64 == 'true':
         add_option('-m64')
-    else:
+    elif conf.options.lp64 == 'false':
         add_option('-m32')
+    else:
+        conf.fatal('--lp64 must be either true or false.')
 
     if conf.options.mode == 'debug':
         add_option('-debug')
-    else:
+    elif conf.options.mode == 'release':
         add_option('-release')
         add_option('-O')
         add_option('-inline')
+    else:
+        conf.fatal('--mode must be either debug or release.')
 
     conf.env.LIB_FFI = ['ffi']
     conf.env.LIB_DL = ['dl']
