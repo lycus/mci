@@ -38,32 +38,45 @@ body
 
     func.close();
 
+    return func;
+}
+
+public void generateFunctionBody(FunctionDeclarationNode node, Function function_, Module module_, ModuleManager manager)
+in
+{
+    assert(node);
+    assert(function_);
+    assert(module_);
+    assert(manager);
+}
+body
+{
     foreach (reg; node.registers)
     {
-        if (func.registers.get(reg.name.name))
+        if (function_.registers.get(reg.name.name))
             throw new GenerationException("Register " ~ reg.name.name ~ " already defined.", reg.location);
 
-        func.createRegister(reg.name.name, resolveType(reg.type, module_, manager));
+        function_.createRegister(reg.name.name, resolveType(reg.type, module_, manager));
     }
 
     foreach (block; node.blocks)
     {
-        if (func.blocks.get(block.name.name))
+        if (function_.blocks.get(block.name.name))
             throw new GenerationException("Basic block " ~ block.name.name ~ " already defined.", block.location);
 
-        func.createBasicBlock(block.name.name);
+        function_.createBasicBlock(block.name.name);
     }
 
     foreach (block; node.blocks)
     {
-        auto bb = func.blocks.get(block.name.name);
+        auto bb = function_.blocks.get(block.name.name);
 
         foreach (instrNode; block.instructions)
         {
-            auto source1 = instrNode.source1 ? resolveRegister(instrNode.source1, func) : null;
-            auto source2 = instrNode.source2 ? resolveRegister(instrNode.source2, func) : null;
-            auto source3 = instrNode.source3 ? resolveRegister(instrNode.source3, func) : null;
-            auto target = instrNode.target ? resolveRegister(instrNode.target, func) : null;
+            auto source1 = instrNode.source1 ? resolveRegister(instrNode.source1, function_) : null;
+            auto source2 = instrNode.source2 ? resolveRegister(instrNode.source2, function_) : null;
+            auto source3 = instrNode.source3 ? resolveRegister(instrNode.source3, function_) : null;
+            auto target = instrNode.target ? resolveRegister(instrNode.target, function_) : null;
 
             mci.core.code.instructions.InstructionOperand operand;
 
@@ -146,11 +159,11 @@ body
                         operand = generateArray!double();
                         break;
                     case OperandType.label:
-                        operand = resolveBasicBlock(*instrOperand.peek!BasicBlockReferenceNode(), func);
+                        operand = resolveBasicBlock(*instrOperand.peek!BasicBlockReferenceNode(), function_);
                         break;
                     case OperandType.branch:
                         auto branch = *instrOperand.peek!BranchSelectorNode();
-                        operand = tuple(resolveBasicBlock(branch.trueBlock, func), resolveBasicBlock(branch.falseBlock, func));
+                        operand = tuple(resolveBasicBlock(branch.trueBlock, function_), resolveBasicBlock(branch.falseBlock, function_));
                         break;
                     case OperandType.type:
                         operand = resolveType(*instrOperand.peek!TypeReferenceNode(), module_, manager);
@@ -166,7 +179,7 @@ body
                         auto registers = new NoNullList!Register();
 
                         foreach (reg; regs)
-                            registers.add(resolveRegister(reg, func));
+                            registers.add(resolveRegister(reg, function_));
 
                         operand = asReadOnlyIndexable(registers);
                         break;
@@ -187,8 +200,6 @@ body
             bb.instructions.add(instr);
         }
     }
-
-    return func;
 }
 
 public Function resolveFunction(FunctionReferenceNode node, Module module_, ModuleManager manager)

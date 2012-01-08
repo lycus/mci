@@ -1,0 +1,17 @@
+function void foo()
+{
+    block entry
+    {
+        invoke (bar);
+        leave;
+    }
+}
+
+function void bar()
+{
+    block entry
+    {
+        invoke (foo);
+        leave;
+    }
+}

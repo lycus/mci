@@ -2,6 +2,7 @@ module mci.assembler.generation.driver;
 
 import mci.core.container,
        mci.core.tuple,
+       mci.core.code.functions,
        mci.core.code.modules,
        mci.core.typing.members,
        mci.core.typing.types,
@@ -211,9 +212,14 @@ public final class FunctionCreationPass : GeneratorPass
         {
             state.currentFile = unit.x;
 
+            auto funcs = new List!(Tuple!(FunctionDeclarationNode, Function))();
+
             foreach (node; unit.y.nodes)
                 if (auto func = cast(FunctionDeclarationNode)node)
-                    generateFunction(func, state.module_, state.manager);
+                    funcs.add(tuple(func, generateFunction(func, state.module_, state.manager)));
+
+            foreach (func; funcs)
+                generateFunctionBody(func.x, func.y, state.module_, state.manager);
         }
     }
 }
