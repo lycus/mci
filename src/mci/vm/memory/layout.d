@@ -60,6 +60,7 @@ public uint computeOffset(Field field, bool is32Bit)
 in
 {
     assert(field);
+    assert(field.storage == FieldStorage.instance);
 }
 body
 {
