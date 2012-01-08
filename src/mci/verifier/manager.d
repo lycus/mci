@@ -14,6 +14,11 @@ public final class VerificationManager
     invariant()
     {
         assert(_verifiers);
+    }
+
+    public this()
+    {
+        _verifiers = new typeof(_verifiers)();
 
         addRange(_verifiers,
                  toIterable!CodeVerifier(new EntryVerifier(),
@@ -31,11 +36,6 @@ public final class VerificationManager
                                          new MemoryVerifier(),
                                          new MemoryAliasVerifier(),
                                          new ArrayVerifier()));
-    }
-
-    public this()
-    {
-        _verifiers = new typeof(_verifiers)();
     }
 
     public void verify(Function function_)
