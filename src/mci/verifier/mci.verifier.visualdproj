@@ -279,6 +279,7 @@
  <Folder name="mci.verifier">
   <Folder name="passes">
    <File path="passes\control.d" />
+   <File path="passes\misc.d" />
    <File path="passes\ordering.d" />
    <File path="passes\typing.d" />
   </Folder>

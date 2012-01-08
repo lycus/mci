@@ -3,6 +3,7 @@ module mci.verifier.manager;
 import mci.core.container,
        mci.core.code.functions,
        mci.verifier.passes.control,
+       mci.verifier.passes.misc,
        mci.verifier.passes.ordering,
        mci.verifier.passes.typing,
        mci.verifier.base;
@@ -35,7 +36,8 @@ public final class VerificationManager
                                          new ComparisonVerifier(),
                                          new MemoryVerifier(),
                                          new MemoryAliasVerifier(),
-                                         new ArrayVerifier()));
+                                         new ArrayVerifier(),
+                                         new FieldStorageVerifier()));
     }
 
     public void verify(Function function_)
