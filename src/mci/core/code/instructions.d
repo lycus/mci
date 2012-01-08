@@ -269,6 +269,8 @@ public final class Instruction
                 default:
                     str ~= operand.toString();
             }
+
+            str ~= ")";
         }
 
         return str;
