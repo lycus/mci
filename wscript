@@ -101,10 +101,14 @@ def _run_shell(dir, ctx, args):
 
     os.chdir(cwd)
 
-def test(ctx):
+def _run_tests(ctx):
     _run_shell(OUT, ctx, os.path.join('gdb --command=' + os.path.join('..', 'mci.gdb') + ' mci.tester'))
     _run_shell('tests', ctx, 'rdmd tester.d "assembler" "asm <file> -o <name>.mci -d <name>.ast"')
     _run_shell('tests', ctx, 'rdmd tester.d "verifier" "asm <file> -o <name>.mci -d <name>.ast -v"')
+
+def test(ctx):
+    from waflib import Options
+    Options.commands = ['build', '_run_tests'] + Options.commands
 
 def docs(ctx):
     def build_docs(targets):
