@@ -33,7 +33,7 @@ public final class FieldStorageVerifier : CodeVerifier
                     else if (instr.opCode is opFieldGGet || instr.opCode is opFieldGSet ||
                              instr.opCode is opFieldGAddr)
                     {
-                        if (field.storage != FieldStorage.static_)
+                        if (field.storage == FieldStorage.instance)
                             error(instr, "Field reference must have static storage.");
                     }
                 }

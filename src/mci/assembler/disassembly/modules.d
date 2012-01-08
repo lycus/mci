@@ -84,6 +84,9 @@ public final class ModuleDisassembler
                 case FieldStorage.static_:
                     write("static");
                     break;
+                case FieldStorage.thread:
+                    write("thread");
+                    break;
             }
 
             writefln(" %s %s;", field.y.type, field.y.name);

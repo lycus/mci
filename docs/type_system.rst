@@ -85,6 +85,15 @@ Examples::
         field static int32 bar;
     }
 
+    // A type with a thread-local field. The field has distinct values for
+    // each running thread in the program. Thread-local fields are similar
+    // to static fields in that ``field.gset`` and related instructions must
+    // be used to access them.
+    type Foo3
+    {
+        field thread int32 bar;
+    }
+
 A structure can also specify its alignment (this is normally decided by the
 compiler). The alignment must be either be zero or a power of two. If it is
 zero, the compiler picks the alignment (that is to say, zero is like the

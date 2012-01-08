@@ -8,6 +8,7 @@ public enum FieldStorage : ubyte
 {
     instance = 0,
     static_ = 1,
+    thread = 2,
 }
 
 public final class Field
