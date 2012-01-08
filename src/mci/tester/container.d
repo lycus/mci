@@ -113,7 +113,8 @@ unittest
 {
     auto list = new List!int();
 
-    assertThrown!AssertError(findIndex(list, (int x) { return x == 42; }));
+    debug
+        assertThrown!AssertError(findIndex(list, (int x) { return x == 42; }));
 }
 
 unittest
@@ -262,14 +263,16 @@ unittest
 {
     auto list = new List!int();
 
-    assertThrown!AssertError(first(list));
+    debug
+        assertThrown!AssertError(first(list));
 }
 
 unittest
 {
     auto list = new List!int();
 
-    assertThrown!AssertError(last(list));
+    debug
+        assertThrown!AssertError(last(list));
 }
 
 unittest
@@ -384,14 +387,16 @@ unittest
 {
     auto list = new NoNullList!string();
 
-    assertThrown!AssertError(list.add(null));
+    debug
+        assertThrown!AssertError(list.add(null));
 }
 
 unittest
 {
     auto list = new NoNullList!string();
 
-    assertThrown!AssertError(list.remove(null));
+    debug
+        assertThrown!AssertError(list.remove(null));
 }
 
 unittest

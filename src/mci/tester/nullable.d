@@ -9,7 +9,8 @@ unittest
     auto x = Nullable!int();
 
     assert(!x.hasValue);
-    assertThrown!AssertError(x.value);
+    debug
+        assertThrown!AssertError(x.value);
 }
 
 unittest
