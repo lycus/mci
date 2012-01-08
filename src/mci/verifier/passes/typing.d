@@ -280,3 +280,46 @@ public final class MemoryVerifier : CodeVerifier
         }
     }
 }
+
+public final class MemoryAliasVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.instructions)
+            {
+                if (instr.opCode is opMemGet)
+                {
+                    if (auto ptr = cast(PointerType)instr.sourceRegister1.type)
+                    {
+                        if (instr.targetRegister.type !is ptr.elementType)
+                            error(instr, "The target register must be the element type of the source register's pointer type.");
+                    }
+                    else
+                        error(instr, "The source register must be a pointer.");
+                }
+                else if (instr.opCode is opMemSet)
+                {
+                    if (auto ptr = cast(PointerType)instr.sourceRegister1.type)
+                    {
+                        if (instr.sourceRegister2.type !is ptr.elementType)
+                            error(instr, "The second source register must be the element type of the first source register's pointer type.");
+                    }
+                    else
+                        error(instr, "The first source register must be a pointer.");
+                }
+                else if (instr.opCode is opMemAddr)
+                {
+                    if (auto ptr = cast(PointerType)instr.targetRegister.type)
+                    {
+                        if (ptr.elementType !is instr.sourceRegister1.type)
+                            error(instr, "The target register must be a pointer to the type of the source register.");
+                    }
+                    else
+                        error(instr, "The target register must be a pointer.");
+                }
+            }
+        }
+    }
+}

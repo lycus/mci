@@ -28,7 +28,8 @@ public final class VerificationManager
                                          new BitwiseVerifier(),
                                          new ShiftVerifier(),
                                          new ComparisonVerifier(),
-                                         new MemoryVerifier()));
+                                         new MemoryVerifier(),
+                                         new MemoryAliasVerifier()));
     }
 
     public this()
