@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-import os, subprocess
+import os, shutil, subprocess
+from waflib import Build, Options, Scripting
 
-VERSION = '1.0'
 APPNAME = 'MCI'
+VERSION = '1.0'
 
 TOP = '.'
 OUT = 'build'
@@ -111,7 +112,6 @@ def _run_tests(ctx):
     _run_shell('tests', ctx, 'rdmd tester.d "verifier" "asm <file> -o <name>.mci -d <name>.ast -v"')
 
 def test(ctx):
-    from waflib import Options
     Options.commands = ['build', '_run_tests'] + Options.commands
 
 def docs(ctx):
@@ -137,3 +137,40 @@ def docs(ctx):
 def dist(dst):
     with open('.gitignore', 'r') as f:
         dst.excl = ' '.join(l.strip() for l in f if l.strip())
+
+class PackageContext(Build.InstallContext):
+    cmd = 'package'
+    fun = 'build'
+
+    def init_dirs(self, *k, **kw):
+        super(PackageContext, self).init_dirs(*k, **kw)
+        self.tmp = self.bldnode.make_node('package_tmp_dir')
+
+        try:
+            shutil.rmtree(self.tmp.abspath())
+        except:
+            pass
+        if os.path.exists(self.tmp.abspath()):
+            self.fatal('Could not remove the temporary directory %r' % self.tmp)
+
+        self.tmp.mkdir()
+        self.options.destdir = self.tmp.abspath()
+
+    def execute(self, *k, **kw):
+        back = self.options.destdir
+
+        try:
+            super(PackageContext, self).execute(*k, **kw)
+        finally:
+            self.options.destdir = back
+
+        files = self.tmp.ant_glob('**')
+
+        ctx = Scripting.Dist()
+        ctx.arch_name = '%s-%s-bin.tar.bz2' % (APPNAME, VERSION)
+        ctx.files = files
+        ctx.tar_prefix = ''
+        ctx.base_path = self.tmp
+        ctx.archive()
+
+        shutil.rmtree(self.tmp.abspath())
