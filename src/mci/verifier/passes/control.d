@@ -80,7 +80,7 @@ public final class FFIVerifier : CodeVerifier
             if (function_.blocks.count != 1)
                 error(inst, "FFI functions may only have an 'entry' basic block.");
 
-            auto bb = function_.blocks.get(entryBlockName);
+            auto bb = function_.blocks[entryBlockName];
 
             if (bb.instructions.count != 1 || bb.instructions[0] !is inst)
                 error(inst, "FFI functions may only contain one 'ffi' instruction, terminating the 'entry' block.");
@@ -100,7 +100,7 @@ public final class RawVerifier : CodeVerifier
             if (function_.blocks.count != 1)
                 error(inst, "Raw functions may only have an 'entry' basic block.");
 
-            auto bb = function_.blocks.get(entryBlockName);
+            auto bb = function_.blocks[entryBlockName];
 
             if (bb.instructions.count != 1 || bb.instructions[0] !is inst)
                 error(inst, "Raw functions may only contain one 'raw' instruction, terminating the 'entry' block.");

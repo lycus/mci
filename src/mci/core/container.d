@@ -923,9 +923,14 @@ public class Dictionary(K, V) : Map!(K, V)
 
         _aa[key] = value;
 
-        foreach (tup; _list)
+        foreach (i, tup; _list)
+        {
             if (tup.x == key)
+            {
+                _list[i] = tuple(key, value);
                 return value;
+            }
+        }
 
         _list.add(tuple(key, value));
 
@@ -970,6 +975,15 @@ public class Dictionary(K, V) : Map!(K, V)
     public final V* get(K key)
     {
         return key in _aa;
+    }
+
+    public Tuple!(K, V)* opBinaryRight(string op : "in")(Tuple!(K, V) item)
+    {
+        foreach (tup; _list)
+            if (tup == item)
+                return &tup;
+
+        return null;
     }
 
     public final void add(Tuple!(K, V) item)
