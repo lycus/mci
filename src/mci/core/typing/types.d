@@ -210,18 +210,6 @@ public final class FunctionPointerType : Type
     {
         string s;
 
-        final switch (_callingConvention)
-        {
-            case CallingConvention.standard:
-                break;
-            case CallingConvention.cdecl:
-                s ~= "cdecl ";
-                break;
-            case CallingConvention.stdCall:
-                s ~= "stdcall ";
-                break;
-        }
-
         s ~= (_returnType ? _returnType.toString() : "void") ~ " (";
 
         foreach (i, param; _parameterTypes)
@@ -232,7 +220,21 @@ public final class FunctionPointerType : Type
                 s ~= ", ";
         }
 
-        return s ~ ")";
+        s ~= ")";
+
+        final switch (_callingConvention)
+        {
+            case CallingConvention.standard:
+                break;
+            case CallingConvention.cdecl:
+                s ~= " cdecl ";
+                break;
+            case CallingConvention.stdCall:
+                s ~= " stdcall ";
+                break;
+        }
+
+        return s;
     }
 }
 
