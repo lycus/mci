@@ -627,6 +627,11 @@ public class List(T) : Indexable!T
         return false;
     }
 
+    public final override hash_t toHash()
+    {
+        return typeid(T[]).getHash(&_array);
+    }
+
     @property public final size_t count()
     {
         return _array.length;
@@ -948,6 +953,11 @@ public class Dictionary(K, V) : Map!(K, V)
         return false;
     }
 
+    public final override hash_t toHash()
+    {
+        return typeid(V[K]).getHash(&_aa);
+    }
+
     public final V* opBinaryRight(string op : "in")(K key)
     {
         return key in _aa;
@@ -1159,6 +1169,11 @@ public class ArrayQueue(T) : Queue!T
         }
 
         return false;
+    }
+
+    public final override hash_t toHash()
+    {
+        return typeid(List!T).getHash(&_list) + typeid(T).getHash(&_size) + typeid(T).getHash(&_head) + typeid(T).getHash(&_tail);
     }
 
     @property public final size_t count()
