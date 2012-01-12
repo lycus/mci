@@ -632,6 +632,17 @@ public class List(T) : Indexable!T
         return typeid(T[]).getHash(&_array);
     }
 
+    public final override int opCmp(Object o)
+    {
+        if (this is o)
+            return 0;
+
+        if (auto list = cast(List!T)o)
+            return typeid(T[]).compare(&_array, &list._array);
+
+        return 1;
+    }
+
     @property public final size_t count()
     {
         return _array.length;
@@ -958,6 +969,17 @@ public class Dictionary(K, V) : Map!(K, V)
         return typeid(V[K]).getHash(&_aa);
     }
 
+    public final override int opCmp(Object o)
+    {
+        if (this is o)
+            return 0;
+
+        if (auto dict = cast(Dictionary!(K, V))o)
+            return typeid(V[K]).compare(&_aa, &dict._aa);
+
+        return 1;
+    }
+
     public final V* opBinaryRight(string op : "in")(K key)
     {
         return key in _aa;
@@ -1173,7 +1195,30 @@ public class ArrayQueue(T) : Queue!T
 
     public final override hash_t toHash()
     {
-        return typeid(List!T).getHash(&_list) + typeid(T).getHash(&_size) + typeid(T).getHash(&_head) + typeid(T).getHash(&_tail);
+        return typeid(List!T).getHash(&_list) + typeid(size_t).getHash(&_size) +
+               typeid(size_t).getHash(&_head) + typeid(size_t).getHash(&_tail);
+    }
+
+    public final override int opCmp(Object o)
+    {
+        if (this is o)
+            return 0;
+
+        if (auto q = cast(ArrayQueue!T)o)
+        {
+            if (!typeid(size_t).equals(&_size, &rhs._size))
+                return typeid(size_t).compare(&_size, &rhs._size);
+
+            if (!typeid(size_t).equals(&_head, &rhs._head))
+                return typeid(size_t).compare(&_head, &rhs._head);
+
+            if (!typeid(size_t).equals(&_tail, &rhs._tail))
+                return typeid(size_t).compare(&_tail, &rhs._tail);
+
+            return typeid(List!T).compare(&_list, &q._list);
+        }
+
+        return 1;
     }
 
     @property public final size_t count()
