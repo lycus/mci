@@ -227,10 +227,10 @@ public final class FunctionPointerType : Type
             case CallingConvention.standard:
                 break;
             case CallingConvention.cdecl:
-                s ~= " cdecl ";
+                s ~= " cdecl";
                 break;
             case CallingConvention.stdCall:
-                s ~= " stdcall ";
+                s ~= " stdcall";
                 break;
         }
 
