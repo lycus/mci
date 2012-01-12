@@ -37,12 +37,13 @@ body
 {
     synchronized (functionPointerTypes)
     {
-        auto tup = tuple(callingConvention, returnType, parameterTypes.duplicate());
+        auto params = parameterTypes.duplicate();
+        auto tup = tuple(callingConvention, returnType, params);
 
         if (auto fpType = tup in functionPointerTypes)
             return *fpType;
 
-        return functionPointerTypes[tup] = new FunctionPointerType(callingConvention, returnType, parameterTypes);
+        return functionPointerTypes[tup] = new FunctionPointerType(callingConvention, returnType, params);
     }
 }
 
