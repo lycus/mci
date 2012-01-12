@@ -1437,6 +1437,7 @@ raw
 
 This instruction tells the code generator to insert raw machine code (which
 is given as the byte array operand) in the generated machine code stream.
+This must be the only instruction in a raw function.
 
 This instruction has a number of consequences:
 
