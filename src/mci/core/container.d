@@ -1206,14 +1206,14 @@ public class ArrayQueue(T) : Queue!T
 
         if (auto q = cast(ArrayQueue!T)o)
         {
-            if (!typeid(size_t).equals(&_size, &rhs._size))
-                return typeid(size_t).compare(&_size, &rhs._size);
+            if (!typeid(size_t).equals(&_size, &q._size))
+                return typeid(size_t).compare(&_size, &q._size);
 
-            if (!typeid(size_t).equals(&_head, &rhs._head))
-                return typeid(size_t).compare(&_head, &rhs._head);
+            if (!typeid(size_t).equals(&_head, &q._head))
+                return typeid(size_t).compare(&_head, &q._head);
 
-            if (!typeid(size_t).equals(&_tail, &rhs._tail))
-                return typeid(size_t).compare(&_tail, &rhs._tail);
+            if (!typeid(size_t).equals(&_tail, &q._tail))
+                return typeid(size_t).compare(&_tail, &q._tail);
 
             return typeid(List!T).compare(&_list, &q._list);
         }
