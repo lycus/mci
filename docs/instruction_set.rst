@@ -781,7 +781,7 @@ mem.gcnew
 **Operand type**
     None
 
-Similar to mem.new_. The difference is that this instruction allcoates
+Similar to mem.new_. The difference is that this instruction allocates
 the memory from the GC currently in use.
 
 mem.gcfree
