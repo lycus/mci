@@ -24,14 +24,14 @@ public final class VerifierTool : Tool
         return null;
     }
 
-    public bool run(string[] args)
+    public ubyte run(string[] args)
     {
         args = args[1 .. $];
 
         if (args.length == 0)
         {
             log("Error: No input modules given.");
-            return false;
+            return 2;
         }
 
         string[] files;
@@ -41,13 +41,13 @@ public final class VerifierTool : Tool
             if (file.length <= moduleFileExtension.length)
             {
                 logf("Error: Input module '%s' has no name part.", file);
-                return false;
+                return 2;
             }
 
             if (extension(file) != moduleFileExtension)
             {
                 logf("Error: Input module '%s' does not end in '%s'.", file, moduleFileExtension);
-                return false;
+                return 2;
             }
 
             foreach (f; files)
@@ -55,7 +55,7 @@ public final class VerifierTool : Tool
                 if (file == f)
                 {
                     logf("Error: File '%s' specified multiple times.", file);
-                    return false;
+                    return 2;
                 }
             }
 
@@ -84,12 +84,12 @@ public final class VerifierTool : Tool
             catch (ErrnoException ex)
             {
                 logf("Error: Could not access '%s': %s", file, ex.msg);
-                return false;
+                return 1;
             }
             catch (ReaderException ex)
             {
                 logf("Error: Could not load '%s': %s", file, ex.msg);
-                return false;
+                return 1;
             }
             catch (VerifierException ex)
             {
@@ -102,10 +102,10 @@ public final class VerifierTool : Tool
                     log(ex.instruction);
                 }
 
-                return false;
+                return 1;
             }
         }
 
-        return true;
+        return 0;
     }
 }

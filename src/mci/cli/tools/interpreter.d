@@ -17,7 +17,7 @@ public final class InterpreterTool : Tool
                 "\t--collector=<type>\t-c <type>\tSpecify which garbage collector to use."];
     }
 
-    public bool run(string[] args)
+    public ubyte run(string[] args)
     {
         bool optimize;
         GarbageCollectorType gcType;
@@ -34,9 +34,9 @@ public final class InterpreterTool : Tool
         catch (Exception ex)
         {
             logf("Error: Could not parse command line: %s", ex.msg);
-            return false;
+            return 2;
         }
 
-        return true;
+        return 0;
     }
 }

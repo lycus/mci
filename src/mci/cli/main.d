@@ -6,13 +6,6 @@ import std.conv,
        mci.core.config,
        mci.cli.tool;
 
-private enum ExitCode : ubyte
-{
-    success,
-    error,
-    failure,
-}
-
 public enum GarbageCollectorType : ubyte
 {
     libc = 0,
@@ -21,7 +14,7 @@ public enum GarbageCollectorType : ubyte
 
 private bool silent;
 
-private ExitCode run(string[] args)
+private ubyte run(string[] args)
 in
 {
     assert(args);
@@ -47,7 +40,7 @@ body
     catch (Exception ex)
     {
         logf("Error: Could not parse command line: %s", ex.msg);
-        return ExitCode.failure;
+        return 2;
     }
 
     log("Managed Compiler Infrastructure (MCI) 1.0 Command Line Interface");
@@ -100,13 +93,13 @@ body
         logf("     Compiler:\t\t\t\t\t%s", compilerName);
         log();
 
-        return ExitCode.success;
+        return 0;
     }
 
     if (args.length < 2)
     {
         usage(cli);
-        return ExitCode.failure;
+        return 2;
     }
 
     auto tool = getTool(args[1]);
@@ -114,10 +107,10 @@ body
     if (!tool)
     {
         logf("Error: No such tool: '%s'", args[1]);
-        return ExitCode.failure;
+        return 2;
     }
 
-    return tool.run(args[1 .. $]) ? ExitCode.success : ExitCode.error;
+    return tool.run(args[1 .. $]);
 }
 
 private void usage(string cli)

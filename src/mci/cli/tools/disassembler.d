@@ -25,7 +25,7 @@ public final class DisassemblerTool : Tool
         return ["\t--output=<file>\t\t-o <file>\tSpecify module output file."];
     }
 
-    public bool run(string[] args)
+    public ubyte run(string[] args)
     {
         string output = "out.ial";
 
@@ -40,25 +40,25 @@ public final class DisassemblerTool : Tool
         catch (Exception ex)
         {
             logf("Error: Could not parse command line: %s", ex.msg);
-            return false;
+            return 2;
         }
 
         if (args.length != 1)
         {
             log("Error: Exactly one input module must be given.");
-            return false;
+            return 2;
         }
 
         if (output.length <= inputFileExtension.length)
         {
             logf("Error: Output file '%s' has no name part.", output);
-            return false;
+            return 2;
         }
 
         if (extension(output) != inputFileExtension)
         {
             logf("Error: Output file '%s' does not end in '%s'.", output, inputFileExtension);
-            return false;
+            return 2;
         }
 
         auto file = args[0];
@@ -66,13 +66,13 @@ public final class DisassemblerTool : Tool
         if (file.length <= moduleFileExtension.length)
         {
             logf("Error: Input module '%s' has no name part.", file);
-            return false;
+            return 2;
         }
 
         if (extension(file) != moduleFileExtension)
         {
             logf("Error: Input module '%s' does not end in '%s'.", file, moduleFileExtension);
-            return false;
+            return 2;
         }
 
         FileStream stream;
@@ -92,12 +92,12 @@ public final class DisassemblerTool : Tool
         catch (ErrnoException ex)
         {
             logf("Error: Could not access '%s': %s", file, ex.msg);
-            return false;
+            return 1;
         }
         catch (ReaderException ex)
         {
             logf("Error: Could not load '%s': %s", file, ex.msg);
-            return false;
+            return 1;
         }
         finally
         {

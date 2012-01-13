@@ -16,8 +16,8 @@ public final class DebuggerTool : Tool
         return null;
     }
 
-    public bool run(string[] args)
+    public ubyte run(string[] args)
     {
-        return true;
+        return 0;
     }
 }

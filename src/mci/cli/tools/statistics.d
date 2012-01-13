@@ -111,7 +111,7 @@ public final class StatisticsTool : Tool
                 "\t--types\t\t\t-t\t\tPrint a type list."];
     }
 
-    public bool run(string[] args)
+    public ubyte run(string[] args)
     {
         bool printFuncs;
         bool printTypes;
@@ -128,13 +128,13 @@ public final class StatisticsTool : Tool
         catch (Exception ex)
         {
             logf("Error: Could not parse command line: %s", ex.msg);
-            return false;
+            return 2;
         }
 
         if (args.length == 0)
         {
             log("Error: No input modules given.");
-            return false;
+            return 2;
         }
 
         string[] files;
@@ -144,13 +144,13 @@ public final class StatisticsTool : Tool
             if (file.length <= moduleFileExtension.length)
             {
                 logf("Error: Input module '%s' has no name part.", file);
-                return false;
+                return 2;
             }
 
             if (extension(file) != moduleFileExtension)
             {
                 logf("Error: Input module '%s' does not end in '%s'.", file, moduleFileExtension);
-                return false;
+                return 2;
             }
 
             foreach (f; files)
@@ -158,7 +158,7 @@ public final class StatisticsTool : Tool
                 if (file == f)
                 {
                     logf("Error: File '%s' specified multiple times.", file);
-                    return false;
+                    return 2;
                 }
             }
 
@@ -212,15 +212,15 @@ public final class StatisticsTool : Tool
             catch (ErrnoException ex)
             {
                 logf("Error: Could not access '%s': %s", file, ex.msg);
-                return false;
+                return 1;
             }
             catch (ReaderException ex)
             {
                 logf("Error: Could not load '%s': %s", file, ex.msg);
-                return false;
+                return 1;
             }
         }
 
-        return true;
+        return 0;
     }
 }

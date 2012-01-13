@@ -23,7 +23,7 @@ public interface Tool
 
     @property public string[] options();
 
-    public abstract bool run(string[] args)
+    public abstract ubyte run(string[] args)
     in
     {
         assert(args);

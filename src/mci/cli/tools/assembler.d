@@ -43,7 +43,7 @@ public final class AssemblerTool : Tool
                 "\t--collector=<type>\t-c <type>\tSpecify which garbage collector to use if running the module."];
     }
 
-    public bool run(string[] args)
+    public ubyte run(string[] args)
     {
         string output = "out.mci";
         string dump;
@@ -68,25 +68,25 @@ public final class AssemblerTool : Tool
         catch (Exception ex)
         {
             logf("Error: Could not parse command line: %s", ex.msg);
-            return false;
+            return 2;
         }
 
         if (args.length == 0)
         {
             log("Error: No files given.");
-            return false;
+            return 2;
         }
 
         if (output.length <= moduleFileExtension.length)
         {
             logf("Error: Output file '%s' has no name part.", output);
-            return false;
+            return 2;
         }
 
         if (extension(output) != moduleFileExtension)
         {
             logf("Error: Output file '%s' does not end in '%s'.", output, moduleFileExtension);
-            return false;
+            return 2;
         }
 
         string[] files;
@@ -96,13 +96,13 @@ public final class AssemblerTool : Tool
             if (file.length <= inputFileExtension.length)
             {
                 logf("Error: File '%s' has no name part.", file);
-                return false;
+                return 2;
             }
 
             if (extension(file) != inputFileExtension)
             {
                 logf("Error: File '%s' does not end in '%s'.", file, inputFileExtension);
-                return false;
+                return 2;
             }
 
             foreach (f; files)
@@ -110,7 +110,7 @@ public final class AssemblerTool : Tool
                 if (file == f)
                 {
                     logf("Error: File '%s' specified multiple times.", file);
-                    return false;
+                    return 2;
                 }
             }
 
@@ -136,27 +136,27 @@ public final class AssemblerTool : Tool
             catch (ErrnoException ex)
             {
                 logf("Error: Could not read '%s': %s", file, ex.msg);
-                return false;
+                return 1;
             }
             catch (UtfException ex)
             {
                 logf("Error: UTF-8 decoding failed; file '%s' is probably not plain text.", file);
-                return false;
+                return 1;
             }
             catch (LexerException ex)
             {
                 logf("Error: Lexing failed in '%s' %s: %s", file, ex.location, ex.msg);
-                return false;
+                return 1;
             }
             catch (ParserException ex)
             {
                 logf("Error: Parsing failed in '%s' %s: %s", file, ex.location, ex.msg);
-                return false;
+                return 1;
             }
             catch (AssemblerException ex)
             {
                 logf("Error: Internal error in '%s': %s", file, ex.msg);
-                return false;
+                return 1;
             }
             finally
             {
@@ -182,7 +182,7 @@ public final class AssemblerTool : Tool
             catch (ErrnoException ex)
             {
                 logf("Error: Could not write '%s': %s", dump, ex.msg);
-                return false;
+                return 1;
             }
             finally
             {
@@ -226,7 +226,7 @@ public final class AssemblerTool : Tool
                         log(ex.instruction);
                     }
 
-                    return false;
+                    return 1;
                 }
             }
 
@@ -235,14 +235,14 @@ public final class AssemblerTool : Tool
         catch (ErrnoException ex)
         {
             logf("Error: Could not write '%s': %s", output, ex.msg);
-            return false;
+            return 1;
         }
         catch (GenerationException ex)
         {
             logf("Error: Generation failed in '%s' %s: %s", driver.currentFile, ex.location, ex.msg);
-            return false;
+            return 1;
         }
 
-        return true;
+        return 0;
     }
 }
