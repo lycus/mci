@@ -243,6 +243,14 @@ public final class ModuleWriter : ModuleSaver
             else
                 writeFFISignature(*operand.peek!FFISignature());
         }
+
+        _writer.write(cast(uint)instruction.metadata.count);
+
+        foreach (md; instruction.metadata)
+        {
+            _writer.writeString(md.key);
+            _writer.writeString(md.value);
+        }
     }
 
     private void writeRegisterReference(Register register)

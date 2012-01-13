@@ -11,6 +11,7 @@ import std.exception,
        mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.instructions,
+       mci.core.code.metadata,
        mci.core.code.modules,
        mci.core.code.opcodes,
        mci.core.typing.cache,
@@ -864,7 +865,14 @@ public final class ModuleReader : ModuleLoader
                 break;
         }
 
-        return new Instruction(opCode, operand, target, source1, source2, source3);
+        auto instr = new Instruction(opCode, operand, target, source1, source2, source3);
+
+        auto mdCount = _reader.read!uint();
+
+        for (uint i = 0; i < mdCount; i++)
+            instr.metadata.add(new MetadataPair(_reader.readString(), _reader.readString()));
+
+        return instr;
     }
 
     private Register readRegisterReference(Function function_)
