@@ -7,7 +7,7 @@ categories of types:
 
 * Primitive types: Integer and floating-point types (``int32``, ``int64``,
   ``float32``, ``float64``, etc).
-* Structure types: Similar to ``struct``\ s and ``union``\ s in C.
+* Structure types: Similar to ``struct``\ s in C.
 * Type specifications: These are said to have one or more "element types".
 
   - Pointer types: Ye olde ``int32*`` and so on.
