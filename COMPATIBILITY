@@ -22,6 +22,9 @@ The following architectures are supported:
     * Itanium (64-bit)
     * MIPS (32-bit and 64-bit)
 
+Note that PowerPC, Itanium, and MIPS support is not actually implemented,
+but is on our roadmap.
+
 Architecture must be determinable when compiling, or the compilation
 process will be aborted.
 
