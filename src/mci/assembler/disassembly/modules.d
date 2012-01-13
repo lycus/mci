@@ -154,7 +154,24 @@ public final class ModuleDisassembler
             writeln("    {");
 
             foreach (instr; block.y.instructions)
+            {
+                if (!instr.metadata.empty)
+                {
+                    write("[");
+
+                    foreach (i, md; instr.metadata)
+                    {
+                        writef("'%s' : '%s'", md.key, md.value);
+
+                        if (i != instr.metadata.count - 1)
+                            writeln(",");
+                    }
+
+                    writeln("]");
+                }
+
                 writeln("        %s;", instr);
+            }
 
             writeln("    }");
             writeln();

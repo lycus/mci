@@ -6,6 +6,7 @@ function void main()
 
     block entry
     {
-        [foo : bar] x = ari.add y, z;
+        [foo : bar]
+        x = ari.add y, z;
     }
 }

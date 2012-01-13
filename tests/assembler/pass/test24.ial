@@ -6,6 +6,9 @@ function void main()
 
     block entry
     {
-        [foo : bar, 'asdf' : 'fdsa', 'a' : 'b'] x = ari.add y, z;
+        [foo : bar,
+         'asdf' : 'fdsa',
+         'a' : 'b']
+        x = ari.add y, z;
     }
 }
