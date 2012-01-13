@@ -210,7 +210,7 @@ public final class FunctionPointerType : Type
     {
         string s;
 
-        s ~= (_returnType ? _returnType.toString() : "void") ~ " (";
+        s ~= (_returnType ? _returnType.toString() : "void") ~ "(";
 
         foreach (i, param; _parameterTypes)
         {

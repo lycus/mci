@@ -47,7 +47,7 @@ unittest
 
     auto fpt = getFunctionPointerType(CallingConvention.standard, st1, params);
 
-    assert(fpt.name == "foo/bar (foo/baz, foo/bar)");
+    assert(fpt.name == "foo/bar(foo/baz, foo/bar)");
 }
 
 unittest
@@ -62,7 +62,7 @@ unittest
 
     auto fpt = getFunctionPointerType(CallingConvention.cdecl, st1, params);
 
-    assert(fpt.name == "cdecl foo/bar (foo/bar)");
+    assert(fpt.name == "foo/bar(foo/bar) cdecl");
 }
 
 unittest
