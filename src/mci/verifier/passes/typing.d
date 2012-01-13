@@ -254,7 +254,7 @@ public final class MemoryVerifier : CodeVerifier
         {
             foreach (instr; bb.y.instructions)
             {
-                if (instr.opCode is opMemAlloc || instr.opCode is opMemGCAlloc)
+                if (instr.opCode is opMemAlloc || instr.opCode is opMemGCAlloc || instr.opCode is opMemSAlloc)
                 {
                     if (instr.sourceRegister1.type !is NativeUIntType.instance)
                         error(instr, "Source register must be of type 'uint'.");

@@ -798,6 +798,21 @@ Similar to mem.free_. The difference is that this instruction frees the
 memory from the GC currently in use. Using this instruction  is not usually
 necessary, but can be done if desired.
 
+mem.salloc
+----------
+
+**Has target register**
+    Yes
+**Source registers**
+    1
+**Operand type**
+    None
+
+Similar to mem.alloc_. This instruction, however, allocates the memory on the
+stack. This means that memory allocated with this instruction shall not be
+freed manually with mem.free_ or mem.gcfree_, as the code generator inserts
+cleanup code automatically.
+
 Memory aliasing instructions
 ++++++++++++++++++++++++++++
 
