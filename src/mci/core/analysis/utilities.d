@@ -131,6 +131,40 @@ body
            opCode is opArrayAddr;
 }
 
+public bool isMemoryAllocation(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opMemAlloc ||
+           opCode is opMemGCAlloc ||
+           opCode is opMemSAlloc;
+}
+
+public bool isMemoryNew(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opMemNew ||
+           opCode is opMemGCNew;
+}
+
+public bool isMemoryFree(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opMemFree ||
+           opCode is opMemGCFree;
+}
+
 public bool isValidInArithmetic(Type type)
 in
 {

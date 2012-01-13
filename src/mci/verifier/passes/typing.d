@@ -254,7 +254,7 @@ public final class MemoryVerifier : CodeVerifier
         {
             foreach (instr; bb.y.instructions)
             {
-                if (instr.opCode is opMemAlloc || instr.opCode is opMemGCAlloc || instr.opCode is opMemSAlloc)
+                if (isMemoryAllocation(instr.opCode))
                 {
                     if (instr.sourceRegister1.type !is NativeUIntType.instance)
                         error(instr, "Source register must be of type 'uint'.");
@@ -263,13 +263,13 @@ public final class MemoryVerifier : CodeVerifier
                         !isType!ArrayType(instr.targetRegister.type))
                         error(instr, "Target register must be a pointer or an array.");
                 }
-                else if (instr.opCode is opMemNew || instr.opCode is opMemGCNew)
+                else if (isMemoryNew(instr.opCode))
                 {
                     if (!isType!PointerType(instr.targetRegister.type) &&
                         !isType!VectorType(instr.targetRegister.type))
                         error(instr, "Target register must be a pointer or a vector.");
                 }
-                else if (instr.opCode is opMemFree || instr.opCode is opMemGCFree)
+                else if (isMemoryFree(instr.opCode))
                 {
                     if (!isType!PointerType(instr.targetRegister.type) &&
                         !isType!ArrayType(instr.targetRegister.type) &&
