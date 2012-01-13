@@ -74,7 +74,7 @@ body
     else static if (direction == "right")
         return cast(T)(x >> y | x << z);
     else
-        assert(false, "Direction must be \"left\" or \"right\"");
+        assert(false, "Direction must be \"left\" or \"right\".");
 }
 
 public enum Compiler : ubyte
