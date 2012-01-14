@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os, shutil, subprocess
-from waflib import Options
+from waflib import Options, Utils
 
 APPNAME = 'MCI'
 VERSION = '1.0'
@@ -47,7 +47,9 @@ def configure(conf):
         conf.fatal('--mode must be either debug or release.')
 
     conf.env.LIB_FFI = ['ffi']
-    conf.env.LIB_DL = ['dl']
+
+    if not Utils.unversioned_sys_platform().lower().endswith('bsd'):
+        conf.env.LIB_DL = ['dl']
 
     conf.check_dlibrary()
 
@@ -84,8 +86,10 @@ def build(bld):
             'mci.verifier',
             'mci.assembler',
             'mci.core',
-            'FFI',
-            'DL']
+            'FFI']
+
+    if not Utils.unversioned_sys_platform().lower().endswith('bsd'):
+        deps += ['DL']
 
     program('cli', 'mci', deps)
 
