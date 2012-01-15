@@ -95,6 +95,27 @@ public final class Source
         return decode(_source, index);
     }
 
+    public dchar peek(size_t offset)
+    {
+        if (!offset)
+            return _current;
+
+        auto idx = _position;
+
+        for (size_t i = 0; i < offset; i++)
+        {
+            if (idx >= _source.length)
+                return dchar.init;
+
+            auto chr = decode(_source, idx);
+
+            if (i == offset - 1)
+                return chr;
+        }
+
+        assert(false);
+    }
+
     public void reset()
     {
         _position = 0;

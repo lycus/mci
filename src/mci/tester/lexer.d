@@ -4,6 +4,32 @@ import mci.assembler.parsing.lexer;
 
 unittest
 {
+    enum string str = "abcdefghijklmnopqrstuvwxyz";
+
+    auto source = new Source(str);
+
+    assert(source.current == dchar.init);
+    assert(source.peek(0) == dchar.init);
+    assert(source.peek(1) == 'a');
+    assert(source.peek(2) == 'b');
+
+    source.moveNext();
+
+    assert(source.current == 'a');
+    assert(source.peek(0) == 'a');
+    assert(source.peek(1) == 'b');
+    assert(source.peek(2) == 'c');
+
+    for (size_t i = 0; i < str.length - 1; i++)
+        source.moveNext();
+
+    assert(source.current == 'z');
+    assert(source.peek(0) == 'z');
+    assert(source.peek(1) == dchar.init);
+}
+
+unittest
+{
     auto source = new Source("abcdefghijklmnopqrstuvwxyz");
 
     assert(source.current == dchar.init);
