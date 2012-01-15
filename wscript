@@ -111,7 +111,12 @@ def _run_shell(dir, ctx, args):
     os.chdir(cwd)
 
 def _run_tests(ctx):
-    _run_shell(OUT, ctx, os.path.join('gdb --command=' + os.path.join('..', 'mci.gdb') + ' mci.tester'))
+    if 'darwin' in Utils.unversioned_sys_platform():
+        cmd = './mci.tester'
+    else:
+        cmd = 'gdb --command=' + os.path.join('..', 'mci.gdb') + ' mci.tester'
+
+    _run_shell(OUT, ctx, cmd)
     _run_shell('tests', ctx, 'rdmd tester.d "assembler" "asm <file> -o <name>.mci -d <name>.ast"')
     _run_shell('tests', ctx, 'rdmd tester.d "verifier" "asm <file> -o <name>.mci -d <name>.ast -v"')
 
