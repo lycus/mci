@@ -1,6 +1,7 @@
 module mci.vm.memory.dgc;
 
 import core.memory,
+       core.thread,
        std.conv,
        mci.core.container,
        mci.core.typing.types,
@@ -27,11 +28,14 @@ public final class DGeneration : GCGeneration
 
 public final class DGarbageCollector : GarbageCollector
 {
+    private static bool _isThisThreadAttached;
+    private Object _attachmentSync;
     private DGeneration _generation;
     private NoNullList!GCGeneration _generations;
 
     public this()
     {
+        _attachmentSync = new typeof(_attachmentSync)();
         _generation = new typeof(_generation)();
         _generations = new typeof(_generations)();
 
@@ -60,6 +64,30 @@ public final class DGarbageCollector : GarbageCollector
     public void collect()
     {
         _generation.collect();
+    }
+
+    public void attach()
+    {
+        synchronized (_attachmentSync)
+        {
+            if (!_isThisThreadAttached)
+            {
+                thread_attachThis();
+                _isThisThreadAttached = true;
+            }
+        }
+    }
+
+    public void detach()
+    {
+        synchronized (_attachmentSync)
+        {
+            if (_isThisThreadAttached)
+            {
+                thread_detachThis();
+                _isThisThreadAttached = false;
+            }
+        }
     }
 
     public void addPressure(size_t amount)

@@ -107,6 +107,10 @@ public interface GarbageCollector
 
     public void collect();
 
+    public void attach();
+
+    public void detach();
+
     public void addPressure(size_t amount);
 
     public void removePressure(size_t amount);

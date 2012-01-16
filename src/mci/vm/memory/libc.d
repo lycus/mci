@@ -91,6 +91,16 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         // memory manager, not a garbage collector.
     }
 
+    public void attach()
+    {
+        // Do nothing.
+    }
+
+    public void detach()
+    {
+        // Do nothing.
+    }
+
     public void addPressure(size_t amount)
     {
         // Do nothing.
