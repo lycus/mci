@@ -813,6 +813,21 @@ stack. This means that memory allocated with this instruction shall not be
 freed manually with mem.free_ or mem.gcfree_, as the code generator inserts
 cleanup code automatically.
 
+mem.snew
+--------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    None
+
+Similar to mem.new_. This instruction, however, allocates the memory on the
+stack. This means that memory allocated with this instruction shall not be
+freed manually with mem.free_ or mem.gcfree_, as the code generator inserts
+cleanup code automatically.
+
 Memory aliasing instructions
 ++++++++++++++++++++++++++++
 
