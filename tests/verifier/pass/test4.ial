@@ -1,0 +1,9 @@
+function int32() foo()
+{
+    register int32() fptr;
+
+    block entry
+    {
+        return fptr;
+    }
+}

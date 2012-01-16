@@ -37,12 +37,12 @@ public struct Nullable(T)
         return _hasValue ? _value : def;
     }
 
-    public equals_t opEquals(const Nullable!T rhs) const
+    public equals_t opEquals(Nullable!T rhs) const
     {
         return _hasValue == rhs._hasValue && typeid(T).equals(&_value, &rhs._value);
     }
 
-    public int opCmp(const Nullable!T rhs) const
+    public int opCmp(ref const Nullable!T rhs) const
     {
         if (_hasValue != rhs._hasValue)
             return typeid(bool).compare(&_hasValue, &rhs._hasValue);
