@@ -86,6 +86,7 @@ def build(bld):
             'mci.verifier',
             'mci.assembler',
             'mci.core',
+            'libffi-d',
             'FFI']
 
     if not Utils.unversioned_sys_platform().lower().endswith('bsd'):
