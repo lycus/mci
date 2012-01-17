@@ -152,6 +152,17 @@ public interface Queue(T) : Countable!T
     public T* peek();
 }
 
+public interface Stack(T) : ReadOnlyCollection!T
+{
+    public void push(T item);
+
+    public T pop();
+
+    public T* peek();
+
+    public void clear();
+}
+
 public Iterable!T asIterable(T)(Iterable!T items)
 {
     return items;
@@ -1345,5 +1356,154 @@ public class ArrayQueue(T) : Queue!T
             return null;
 
         return &_list._array[_head];
+    }
+}
+
+public class ArrayStack(T) : Stack!T
+{
+    private List!T _list;
+    private size_t _size;
+
+    public this()
+    {
+        _list = new typeof(_list);
+    }
+
+    public this(Iterable!T iter)
+    in
+    {
+        assert(iter);
+    }
+    body
+    {
+        foreach (item; iter)
+            push(item);
+    }
+
+    public final int opApply(scope int delegate(ref T) dg)
+    {
+        for (size_t i = 0; i < _size; i++)
+        {
+            auto item = _list[i];
+            auto status = dg(item);
+
+            if (status != 0)
+                return status;
+        }
+
+        return 0;
+    }
+
+    public final int opApply(scope int delegate(ref size_t, ref T) dg)
+    {
+        for (size_t i = 0; i < _size; i++)
+        {
+            auto item = _list[i];
+            auto status = dg(i, item);
+
+            if (status != 0)
+                return status;
+        }
+
+        return 0;
+    }
+
+    public final override equals_t opEquals(Object o)
+    {
+        if (this is o)
+            return true;
+
+        if (auto s = cast(ArrayStack!T)o)
+        {
+            if (_size != s._size)
+                return false;
+
+            for (size_t i = 0; i < _size; i++)
+                if (_list[i] != s._list[i])
+                    return false;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public final override hash_t toHash()
+    {
+        return typeid(List!T).getHash(&_list) + typeid(size_t).getHash(&_size);
+    }
+
+    public final override int opCmp(Object o)
+    {
+        if (this is o)
+            return 0;
+
+        if (auto s = cast(ArrayStack!T)o)
+        {
+            if (!typeid(size_t).equals(&_size, &s._size))
+                return typeid(size_t).compare(&_size, &s._size);
+
+            return typeid(List!T).compare(&_list, &s._list);
+        }
+
+        return 1;
+    }
+
+    @property public final size_t count()
+    {
+        return _size;
+    }
+
+    @property public final bool empty()
+    {
+        return !_size;
+    }
+
+    public ArrayStack!T duplicate()
+    {
+        auto s = new ArrayStack!T();
+
+        s._list = _list.duplicate();
+        s._size = _size;
+
+        return s;
+    }
+
+    public T* opBinaryRight(string op : "in")(T item)
+    {
+        if (auto ptr = item in _list)
+            return ptr;
+
+        return null;
+    }
+
+    public void push(T item)
+    {
+        // Just grow the list.
+        if (_size == _list.count)
+            _list.add(T.init);
+
+        _list[_size++] = item;
+    }
+
+    public T pop()
+    {
+        auto val = _list[--_size];
+
+        // This is important, or we'll keep the object from being collected.
+        _list[_size] = T.init;
+
+        return val;
+    }
+
+    public T* peek()
+    {
+        return &_list._array[_size - 1];
+    }
+
+    public void clear()
+    {
+        _list.clear();
+        _size = 0;
     }
 }

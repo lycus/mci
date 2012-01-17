@@ -536,3 +536,61 @@ unittest
 
     assert(q1 != q2);
 }
+
+unittest
+{
+    auto st = new ArrayStack!int();
+
+    st.push(1);
+    st.push(2);
+    st.push(3);
+
+    assert(st.count == 3);
+    assert(!st.empty);
+}
+
+unittest
+{
+    auto st = new ArrayStack!int();
+
+    st.push(5);
+
+    assert(*st.peek() == 5);
+}
+
+unittest
+{
+    auto st = new ArrayStack!int();
+
+    st.push(1);
+    st.push(2);
+    st.push(3);
+
+    st.pop();
+    st.pop();
+    st.pop();
+
+    assert(st.count == 0);
+    assert(st.empty);
+}
+
+unittest
+{
+    auto st = new ArrayStack!int();
+
+    assert(st.empty);
+}
+
+unittest
+{
+    auto st = new ArrayStack!int();
+
+    st.push(1);
+    st.push(2);
+    st.push(3);
+
+    st.clear();
+
+    assert(st.count == 0);
+    assert(st.empty);
+}
