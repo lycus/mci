@@ -151,7 +151,8 @@ in
 body
 {
     return opCode is opMemNew ||
-           opCode is opMemGCNew;
+           opCode is opMemGCNew ||
+           opCode is opMemSNew;
 }
 
 public bool isMemoryFree(OpCode opCode)
