@@ -259,6 +259,8 @@ public enum OperationCode : ubyte
     memGCFree,
     memSAlloc,
     memSNew,
+    memPin,
+    memUnpin,
     memGet,
     memSet,
     memAddr,
@@ -348,6 +350,8 @@ public __gshared OpCode opMemGCNew;
 public __gshared OpCode opMemGCFree;
 public __gshared OpCode opMemSAlloc;
 public __gshared OpCode opMemSNew;
+public __gshared OpCode opMemPin;
+public __gshared OpCode opMemUnpin;
 public __gshared OpCode opMemGet;
 public __gshared OpCode opMemSet;
 public __gshared OpCode opMemAddr;
@@ -460,6 +464,8 @@ shared static this()
     opMemGCFree = create("mem.gcfree", OperationCode.memGCFree, OpCodeType.normal, OperandType.none, 1, false);
     opMemSAlloc = create("mem.salloc", OperationCode.memSAlloc, OpCodeType.normal, OperandType.none, 1, true);
     opMemSNew = create("mem.snew", OperationCode.memSNew, OpCodeType.normal, OperandType.none, 0, true);
+    opMemPin = create("mem.pin", OperationCode.memPin, OpCodeType.normal, OperandType.none, 1, true);
+    opMemUnpin = create("mem.unpin", OperationCode.memUnpin, OpCodeType.normal, OperandType.none, 1, false);
     opMemGet = create("mem.get", OperationCode.memGet, OpCodeType.normal, OperandType.none, 1, true);
     opMemSet = create("mem.set", OperationCode.memSet, OpCodeType.normal, OperandType.none, 2, false);
     opMemAddr = create("mem.addr", OperationCode.memAddr, OpCodeType.normal, OperandType.none, 1, true);

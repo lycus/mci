@@ -66,6 +66,17 @@ public final class DGarbageCollector : GarbageCollector
             GC.free(&data);
     }
 
+    public size_t pin(RuntimeObject data)
+    {
+        // This is not a compacting GC.
+        return 0;
+    }
+
+    public void unpin(size_t handle)
+    {
+        // This is not a compacting GC.
+    }
+
     public void collect()
     {
         _generation.collect();

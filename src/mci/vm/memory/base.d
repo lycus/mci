@@ -103,6 +103,14 @@ public interface GarbageCollector
 
     public void free(RuntimeObject data);
 
+    public size_t pin(RuntimeObject data)
+    in
+    {
+        assert(data);
+    }
+
+    public void unpin(size_t handle);
+
     public void collect();
 
     public void attach();

@@ -828,6 +828,51 @@ stack. This means that memory allocated with this instruction shall not be
 freed manually with mem.free_ or mem.gcfree_, as the code generator inserts
 cleanup code automatically.
 
+mem.pin
+-------
+
+**Has target register**
+    Yes
+**Source registers**
+    1
+**Operand type**
+    None
+
+Pins a pointer previously allocated with mem.gcnew_ or mem.gcalloc_ so that
+the object it points to cannot be relocated by a compacting GC. This is
+useful when calling into external code via ffi_, as the GC cannot track
+GC-managed memory beyond managed code. This also implies that the memory
+which is pinned will never be collected until it is unpinned. Therefore,
+memory leaks can happen if care is not taken to correctly mem.unpin_ the
+memory.
+
+Passing a null pointer to this instruction results in undefined behavior.
+The resulting value of this instruction is an opaque handle which only has
+meaning to the specific GC implementation. The handle is intended for use
+with mem.unpin_ later.
+
+The source register must be any pointer-like type (a pointer, an array, or a
+vector).
+
+The target register must be of type ``uint``.
+
+mem.unpin
+---------
+
+**Has target register**
+    No
+**Source registers**
+    1
+**Operand type**
+    None
+
+Unpins memory previously pinned with mem.pin_. The source register must be
+a handle returned by mem.pin_. Any invalid handle value will result in
+undefined behavior.
+
+Care should be taken to only unpin the memory once it is certain that the
+memory is no longer referenced outside managed code.
+
 Memory aliasing instructions
 ++++++++++++++++++++++++++++
 

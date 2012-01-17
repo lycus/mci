@@ -1,6 +1,7 @@
 module mci.vm.memory.libc;
 
-import core.stdc.stdlib,
+import core.atomic,
+       core.stdc.stdlib,
        std.conv,
        mci.core.container,
        mci.core.typing.types,
@@ -90,6 +91,17 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
 
         synchronized (_lock)
             _objectCount--;
+    }
+
+    public size_t pin(RuntimeObject data)
+    {
+        // Do nothing.
+        return 0;
+    }
+
+    public void unpin(size_t handle)
+    {
+        // Do nothing.
     }
 
     public void collect()
