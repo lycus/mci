@@ -879,14 +879,17 @@ body
     return l;
 }
 
-public class Dictionary(K, V) : Map!(K, V)
+public class Dictionary(K, V, bool order = true) : Map!(K, V)
 {
     private V[K] _aa;
-    private List!(Tuple!(K, V)) _list;
+
+    static if (order)
+        private List!(Tuple!(K, V)) _list;
 
     public this()
     {
-        _list = new typeof(_list)();
+        static if (order)
+            _list = new typeof(_list)();
     }
 
     public this(Map!(K, V) items)
@@ -904,12 +907,26 @@ public class Dictionary(K, V) : Map!(K, V)
 
     public final int opApply(scope int delegate(ref Tuple!(K, V)) dg)
     {
-        foreach (tup; _list)
+        static if (order)
         {
-            auto status = dg(tup);
+            foreach (tup; _list)
+            {
+                auto status = dg(tup);
 
-            if (status != 0)
-                return status;
+                if (status != 0)
+                    return status;
+            }
+        }
+        else
+        {
+            foreach (k, v; _aa)
+            {
+                auto tup = tuple(k, v);
+                auto status = dg(tup);
+
+                if (status != 0)
+                    return status;
+            }
         }
 
         return 0;
@@ -917,12 +934,30 @@ public class Dictionary(K, V) : Map!(K, V)
 
     public final int opApply(scope int delegate(ref size_t, ref Tuple!(K, V)) dg)
     {
-        foreach (i, tup; _list)
+        static if (order)
         {
-            auto status = dg(i, tup);
+            foreach (i, tup; _list)
+            {
+                auto status = dg(i, tup);
 
-            if (status != 0)
-                return status;
+                if (status != 0)
+                    return status;
+            }
+        }
+        else
+        {
+            size_t i = 0;
+
+            foreach (k, v; _aa)
+            {
+                auto tup = tuple(k, v);
+                auto status = dg(i, tup);
+
+                if (status != 0)
+                    return status;
+
+                i++;
+            }
         }
 
         return 0;
@@ -939,16 +974,19 @@ public class Dictionary(K, V) : Map!(K, V)
 
         _aa[key] = value;
 
-        foreach (i, tup; _list)
+        static if (order)
         {
-            if (tup.x == key)
+            foreach (i, tup; _list)
             {
-                _list[i] = tuple(key, value);
-                return value;
+                if (tup.x == key)
+                {
+                    _list[i] = tuple(key, value);
+                    return value;
+                }
             }
-        }
 
-        _list.add(tuple(key, value));
+            _list.add(tuple(key, value));
+        }
 
         return value;
     }
@@ -999,7 +1037,9 @@ public class Dictionary(K, V) : Map!(K, V)
     {
         auto d = new Dictionary!(K, V)();
         d._aa = _aa.dup;
-        d._list = _list.duplicate();
+
+        static if (order)
+            d._list = _list.duplicate();
 
         return d;
     }
@@ -1011,9 +1051,18 @@ public class Dictionary(K, V) : Map!(K, V)
 
     public Tuple!(K, V)* opBinaryRight(string op : "in")(Tuple!(K, V) item)
     {
-        foreach (tup; _list)
-            if (tup == item)
-                return &tup;
+        static if (order)
+        {
+            foreach (tup; _list)
+                if (tup == item)
+                    return &tup;
+        }
+        else
+        {
+            foreach (k, v; _aa)
+                if (tuple(k, v) == item)
+                    return new Tuple!(K, V)(k, v);
+        }
 
         return null;
     }
@@ -1033,7 +1082,9 @@ public class Dictionary(K, V) : Map!(K, V)
         onClear();
 
         _aa = null;
-        _list.clear();
+
+        static if (order)
+            _list.clear();
     }
 
     public final void add(K key, V value)
@@ -1041,14 +1092,18 @@ public class Dictionary(K, V) : Map!(K, V)
         onAdd(key, value);
 
         _aa[key] = value;
-        _list.add(tuple(key, value));
+
+        static if (order)
+            _list.add(tuple(key, value));
     }
 
     public final void remove(K key)
     {
         onRemove(key);
 
-        _list.remove(tuple(key, _aa[key]));
+        static if (order)
+            _list.remove(tuple(key, _aa[key]));
+
         _aa.remove(key);
     }
 
@@ -1056,9 +1111,16 @@ public class Dictionary(K, V) : Map!(K, V)
     {
         auto arr = new List!K();
 
-        // Retain insertion order.
-        foreach (tup; _list)
-            arr.add(tup.x);
+        static if (order)
+        {
+            foreach (tup; _list)
+                arr.add(tup.x);
+        }
+        else
+        {
+            foreach (k, v; _aa)
+                arr.add(k);
+        }
 
         return arr;
     }
@@ -1067,9 +1129,16 @@ public class Dictionary(K, V) : Map!(K, V)
     {
         auto arr = new List!V();
 
-        // Retain insertion order.
-        foreach (tup; _list)
-            arr.add(tup.y);
+        static if (order)
+        {
+            foreach (tup; _list)
+                arr.add(tup.y);
+        }
+        else
+        {
+            foreach (k, v; _aa)
+                arr.add(v);
+        }
 
         return arr;
     }
@@ -1087,8 +1156,8 @@ public class Dictionary(K, V) : Map!(K, V)
     }
 }
 
-public class NoNullDictionary(K, V)
-    if (isNullable!V) : Dictionary!(K, V)
+public class NoNullDictionary(K, V, bool order = true)
+    if (isNullable!V) : Dictionary!(K, V, order)
 {
     public this()
     {
@@ -1109,7 +1178,9 @@ public class NoNullDictionary(K, V)
     {
         auto d = new NoNullDictionary!(K, V)();
         d._aa = _aa.dup;
-        d._list = _list.duplicate();
+
+        static if (order)
+            d._list = _list.duplicate();
 
         return d;
     }
