@@ -61,6 +61,10 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
     {
         auto length = __traits(classInstanceSize, RuntimeObject);
         auto mem = calloc(1, length + size);
+
+        if (!mem)
+            return null;
+
         auto obj = emplace!RuntimeObject(mem[0 .. length], type, _generation);
 
         synchronized (_lock)
@@ -75,6 +79,9 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
 
     public void free(RuntimeObject data)
     {
+        if (!data)
+            return;
+
         synchronized (_cbLock)
             foreach (cb; _freeCallbacks)
                 cb(data);

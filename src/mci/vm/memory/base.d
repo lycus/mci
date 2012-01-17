@@ -99,16 +99,8 @@ public interface GarbageCollector
     {
         assert(type);
     }
-    out (result)
-    {
-        assert(result);
-    }
 
-    public void free(RuntimeObject data)
-    in
-    {
-        assert(data);
-    }
+    public void free(RuntimeObject data);
 
     public void collect();
 

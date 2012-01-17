@@ -51,6 +51,10 @@ public final class DGarbageCollector : GarbageCollector
     {
         auto length = __traits(classInstanceSize, RuntimeObject);
         auto mem = GC.calloc(length + size);
+
+        if (!mem)
+            return null;
+
         auto obj = emplace!RuntimeObject(mem[0 .. length], type, _generation);
 
         return obj;
@@ -58,7 +62,8 @@ public final class DGarbageCollector : GarbageCollector
 
     public void free(RuntimeObject data)
     {
-        GC.free(&data);
+        if (data)
+            GC.free(&data);
     }
 
     public void collect()
