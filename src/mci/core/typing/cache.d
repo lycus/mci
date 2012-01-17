@@ -10,10 +10,10 @@ import mci.core.common,
        mci.core.typing.members,
        mci.core.typing.types;
 
-private __gshared NoNullDictionary!(Tuple!(CallingConvention, Type, NoNullList!Type), FunctionPointerType) functionPointerTypes;
-private __gshared NoNullDictionary!(Type, PointerType) pointerTypes;
-private __gshared NoNullDictionary!(Type, ArrayType) arrayTypes;
-private __gshared NoNullDictionary!(Tuple!(Type, uint), VectorType) vectorTypes;
+private __gshared NoNullDictionary!(Tuple!(CallingConvention, Type, NoNullList!Type), FunctionPointerType, false) functionPointerTypes;
+private __gshared NoNullDictionary!(Type, PointerType, false) pointerTypes;
+private __gshared NoNullDictionary!(Type, ArrayType, false) arrayTypes;
+private __gshared NoNullDictionary!(Tuple!(Type, uint), VectorType, false) vectorTypes;
 
 shared static this()
 {
