@@ -37,7 +37,8 @@ public interface ReadOnlyCollection(T) : Countable!T
     public T* opBinaryRight(string op : "in")(T item)
     in
     {
-        assert(item);
+        if (isNullable!T)
+            assert(item);
     }
 }
 
@@ -161,6 +162,23 @@ public interface Stack(T) : ReadOnlyCollection!T
     public T* peek();
 
     public void clear();
+}
+
+public interface Set(T) : ReadOnlyCollection!T
+{
+    public void add(T item)
+    in
+    {
+        if (isNullable!T)
+            assert(item);
+    }
+
+    public void remove(T item)
+    in
+    {
+        if (isNullable!T)
+            assert(item);
+    }
 }
 
 public Iterable!T asIterable(T)(Iterable!T items)
