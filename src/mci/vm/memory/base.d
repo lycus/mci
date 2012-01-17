@@ -1,6 +1,7 @@
 module mci.vm.memory.base;
 
-import mci.core.container,
+import std.bitmanip,
+       mci.core.container,
        mci.core.typing.types;
 
 public final class RuntimeObject
@@ -73,7 +74,7 @@ public final class RuntimeObject
     }
 }
 
-package struct GCHeader
+package union GCHeader
 {
 }
 
