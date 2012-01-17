@@ -9,7 +9,7 @@ import mci.core.container,
 public abstract class XRefVisitor: ModuleVisitor
 {
     // TODO: Replace this with a hash set as soon this is implemented.
-    private Dictionary!(Module, int) _modules; 
+    private HashSet!Module _modules;
 
     public this()
     {
@@ -20,13 +20,8 @@ public abstract class XRefVisitor: ModuleVisitor
     {
         if (auto func = instruction.operand.peek!Function())
         {
-            auto module_ = func.module_;
-
-            if (_modules.get(module_))
-                return;
-
-            _modules.add(module_, 0);
-            run(module_);
+            _modules.add(func.module_);
+            run(func.module_);
         }
     }
 }
