@@ -7,6 +7,7 @@ public final class RuntimeObject
 {
     private Type _type;
     private GCGeneration _generation;
+    public GCHeader header;
 
     invariant()
     {
@@ -70,6 +71,10 @@ public final class RuntimeObject
     {
         return cast(RuntimeObject)(data - __traits(classInstanceSize, RuntimeObject));
     }
+}
+
+package struct GCHeader
+{
 }
 
 public interface GCGeneration
