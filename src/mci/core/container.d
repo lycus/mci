@@ -166,7 +166,7 @@ public interface Stack(T) : ReadOnlyCollection!T
 
 public interface Set(T) : ReadOnlyCollection!T
 {
-    public void add(T item)
+    public bool add(T item)
     in
     {
         if (isNullable!T)
@@ -658,7 +658,7 @@ public class List(T) : Indexable!T
 
     public final override hash_t toHash()
     {
-        return typeid(T[]).getHash(&_array);
+        return typeid(typeof(_array)).getHash(&_array);
     }
 
     public final override int opCmp(Object o)
@@ -667,7 +667,7 @@ public class List(T) : Indexable!T
             return 0;
 
         if (auto list = cast(List!T)o)
-            return typeid(T[]).compare(&_array, &list._array);
+            return typeid(typeof(_array)).compare(&_array, &list._array);
 
         return 1;
     }
@@ -1033,7 +1033,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
 
     public final override hash_t toHash()
     {
-        return typeid(V[K]).getHash(&_aa);
+        return typeid(typeof(_aa)).getHash(&_aa);
     }
 
     public final override int opCmp(Object o)
@@ -1042,7 +1042,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
             return 0;
 
         if (auto dict = cast(Dictionary!(K, V, order))o)
-            return typeid(V[K]).compare(&_aa, &dict._aa);
+            return typeid(typeof(_aa)).compare(&_aa, &dict._aa);
 
         return 1;
     }
@@ -1062,9 +1062,9 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
         return _aa.length == 0;
     }
 
-    public Dictionary!(K, V) duplicate()
+    public Dictionary!(K, V, order) duplicate()
     {
-        auto d = new Dictionary!(K, V)();
+        auto d = new Dictionary!(K, V, order)();
         d._aa = _aa.dup;
 
         static if (order)
@@ -1203,9 +1203,9 @@ public class NoNullDictionary(K, V, bool order = true)
             add(item);
     }
 
-    public override NoNullDictionary!(K, V) duplicate()
+    public override NoNullDictionary!(K, V, order) duplicate()
     {
-        auto d = new NoNullDictionary!(K, V)();
+        auto d = new NoNullDictionary!(K, V, order)();
         d._aa = _aa.dup;
 
         static if (order)
@@ -1295,8 +1295,8 @@ public class ArrayQueue(T) : Queue!T
 
     public final override hash_t toHash()
     {
-        return typeid(List!T).getHash(&_list) + typeid(size_t).getHash(&_size) +
-               typeid(size_t).getHash(&_head) + typeid(size_t).getHash(&_tail);
+        return typeid(typeof(_list)).getHash(&_list) + typeid(typeof(_size)).getHash(&_size) +
+               typeid(typeof(_head)).getHash(&_head) + typeid(typeof(_tail)).getHash(&_tail);
     }
 
     public final override int opCmp(Object o)
@@ -1306,16 +1306,16 @@ public class ArrayQueue(T) : Queue!T
 
         if (auto q = cast(ArrayQueue!T)o)
         {
-            if (!typeid(size_t).equals(&_size, &q._size))
-                return typeid(size_t).compare(&_size, &q._size);
+            if (!typeid(typeof(_size)).equals(&_size, &q._size))
+                return typeid(typeof(_size)).compare(&_size, &q._size);
 
-            if (!typeid(size_t).equals(&_head, &q._head))
-                return typeid(size_t).compare(&_head, &q._head);
+            if (!typeid(typeof(_head)).equals(&_head, &q._head))
+                return typeid(typeof(_head)).compare(&_head, &q._head);
 
-            if (!typeid(size_t).equals(&_tail, &q._tail))
-                return typeid(size_t).compare(&_tail, &q._tail);
+            if (!typeid(typeof(_tail)).equals(&_tail, &q._tail))
+                return typeid(typeof(_tail)).compare(&_tail, &q._tail);
 
-            return typeid(List!T).compare(&_list, &q._list);
+            return typeid(typeof(_list)).compare(&_list, &q._list);
         }
 
         return 1;
@@ -1384,7 +1384,7 @@ public class ArrayStack(T) : Stack!T
 
     public this()
     {
-        _list = new typeof(_list);
+        _list = new typeof(_list)();
     }
 
     public this(Iterable!T iter)
@@ -1448,7 +1448,7 @@ public class ArrayStack(T) : Stack!T
 
     public final override hash_t toHash()
     {
-        return typeid(List!T).getHash(&_list) + typeid(size_t).getHash(&_size);
+        return typeid(typeof(_list)).getHash(&_list) + typeid(typeof(_size)).getHash(&_size);
     }
 
     public final override int opCmp(Object o)
@@ -1458,10 +1458,10 @@ public class ArrayStack(T) : Stack!T
 
         if (auto s = cast(ArrayStack!T)o)
         {
-            if (!typeid(size_t).equals(&_size, &s._size))
-                return typeid(size_t).compare(&_size, &s._size);
+            if (!typeid(typeof(_size)).equals(&_size, &s._size))
+                return typeid(typeof(_size)).compare(&_size, &s._size);
 
-            return typeid(List!T).compare(&_list, &s._list);
+            return typeid(typeof(_list)).compare(&_list, &s._list);
         }
 
         return 1;
@@ -1523,5 +1523,127 @@ public class ArrayStack(T) : Stack!T
     {
         _list.clear();
         _size = 0;
+    }
+}
+
+public final class HashSet(T) : Set!T
+{
+    static if (isNullable!T)
+        private NoNullDictionary!(T, T, false) _dict;
+    else
+        private Dictionary!(T, T, false) _dict;
+
+    public this()
+    {
+        _dict = new typeof(_dict)();
+    }
+
+    public this(Iterable!T iter)
+    in
+    {
+        assert(iter);
+    }
+    body
+    {
+        foreach (item; iter)
+            add(item);
+    }
+
+    public final int opApply(scope int delegate(ref T) dg)
+    {
+        foreach (tup; _dict)
+        {
+            auto item = tup.x;
+            auto status = dg(item);
+
+            if (status != 0)
+                return status;
+        }
+
+        return 0;
+    }
+
+    public final int opApply(scope int delegate(ref size_t, ref T) dg)
+    {
+        foreach (i, tup; _dict)
+        {
+            auto item = tup.x;
+            auto status = dg(i, item);
+
+            if (status != 0)
+                return status;
+        }
+
+        return 0;
+    }
+
+    public final override equals_t opEquals(Object o)
+    {
+        if (this is o)
+            return true;
+
+        if (auto set = cast(HashSet!T)o)
+            return _dict == set._dict;
+
+        return false;
+    }
+
+    public final override hash_t toHash()
+    {
+        return typeid(typeof(_dict)).getHash(&_dict);
+    }
+
+    public final override int opCmp(Object o)
+    {
+        if (this is o)
+            return 0;
+
+        if (auto set = cast(HashSet!T)o)
+            return typeid(typeof(_dict)).compare(&_dict, &set._dict);
+
+        return 1;
+    }
+
+    @property public final size_t count()
+    {
+        return _dict.count;
+    }
+
+    @property public final bool empty()
+    {
+        return _dict.empty;
+    }
+
+    public HashSet!T duplicate()
+    {
+        auto set = new HashSet!T();
+
+        set._dict = _dict.duplicate();
+
+        return set;
+    }
+
+    public T* opBinaryRight(string op : "in")(T item)
+    {
+        return item in _dict;
+    }
+
+    public bool add(T item)
+    {
+        if (item in _dict)
+            return false;
+
+        _dict.add(item, item);
+        return true;
+    }
+
+    public void remove(T item)
+    {
+        _dict.remove(item);
+    }
+
+    public void clear()
+    {
+        _dict.clear();
     }
 }

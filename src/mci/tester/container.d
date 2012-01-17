@@ -594,3 +594,84 @@ unittest
     assert(st.count == 0);
     assert(st.empty);
 }
+
+unittest
+{
+    auto set = new HashSet!int();
+
+    set.add(1);
+    set.add(2);
+    set.add(3);
+
+    assert(1 in set);
+    assert(2 in set);
+    assert(3 in set);
+}
+
+unittest
+{
+    auto set = new HashSet!string();
+
+    debug
+        assertThrown!AssertError(set.add(null));
+}
+
+unittest
+{
+    auto set = new HashSet!int();
+
+    assert(set.add(1));
+}
+
+unittest
+{
+    auto set = new HashSet!int();
+
+    set.add(1);
+
+    assert(!set.add(1));
+}
+
+unittest
+{
+    auto set = new HashSet!int();
+
+    assert(set.count == 0);
+    assert(set.empty);
+}
+
+unittest
+{
+    auto set = new HashSet!int();
+
+    set.add(1);
+    set.add(2);
+
+    assert(set.count == 2);
+    assert(!set.empty);
+}
+
+unittest
+{
+    auto set = new HashSet!int();
+
+    set.add(1);
+    set.remove(1);
+
+    assert(set.count == 0);
+    assert(set.empty);
+}
+
+unittest
+{
+    auto set = new HashSet!int();
+
+    set.add(1);
+    set.add(2);
+    set.add(3);
+
+    set.clear();
+
+    assert(set.count == 0);
+    assert(set.empty);
+}
