@@ -996,7 +996,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
         if (this is o)
             return true;
 
-        if (auto dict = cast(Dictionary!(K, V))o)
+        if (auto dict = cast(Dictionary!(K, V, order))o)
             return _aa == dict._aa;
 
         return false;
@@ -1012,7 +1012,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
         if (this is o)
             return 0;
 
-        if (auto dict = cast(Dictionary!(K, V))o)
+        if (auto dict = cast(Dictionary!(K, V, order))o)
             return typeid(V[K]).compare(&_aa, &dict._aa);
 
         return 1;
