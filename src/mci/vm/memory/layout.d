@@ -36,10 +36,6 @@ body
 
     auto structType = cast(StructureType)type;
 
-    if (structType.alignment == 1)
-        return aggregate(filter(structType.fields, (Tuple!(string, Field) f) { return f.y.storage == FieldStorage.instance; }),
-                         (uint x, Tuple!(string, Field) f) { return x + computeSize(f.y.type, is32Bit); });
-
     uint size;
 
     foreach (field; structType.fields)
@@ -69,36 +65,20 @@ body
     auto alignment = field.declaringType.alignment;
     uint offset;
 
-    if (alignment == 1)
+    foreach (fld; field.declaringType.fields)
     {
-        foreach (f; field.declaringType.fields)
-        {
-            if (f.y.storage != FieldStorage.instance)
-                continue;
+        if (fld.y.storage != FieldStorage.instance)
+            continue;
 
-            if (f.y !is field)
-                break;
+        if (fld.y is field)
+            break;
 
-            offset += computeSize(f.y.type, is32Bit);
-        }
-    }
-    else
-    {
-        foreach (fld; field.declaringType.fields)
-        {
-            if (fld.y.storage != FieldStorage.instance)
-                continue;
+        auto al = alignment ? alignment : computeAlignment(fld.y.type, is32Bit);
 
-            if (fld.y is field)
-                break;
+        if (offset % al)
+            offset += al - offset % al;
 
-            auto al = alignment ? alignment : computeAlignment(fld.y.type, is32Bit);
-
-            if (offset % al)
-                offset += al - offset % al;
-
-            offset += computeSize(fld.y.type, is32Bit);
-        }
+        offset += computeSize(fld.y.type, is32Bit);
     }
 
     return offset;
