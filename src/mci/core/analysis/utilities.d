@@ -131,41 +131,6 @@ body
            opCode is opArrayAddr;
 }
 
-public bool isMemoryAllocation(OpCode opCode)
-in
-{
-    assert(opCode);
-}
-body
-{
-    return opCode is opMemAlloc ||
-           opCode is opMemGCAlloc ||
-           opCode is opMemSAlloc;
-}
-
-public bool isMemoryNew(OpCode opCode)
-in
-{
-    assert(opCode);
-}
-body
-{
-    return opCode is opMemNew ||
-           opCode is opMemGCNew ||
-           opCode is opMemSNew;
-}
-
-public bool isMemoryFree(OpCode opCode)
-in
-{
-    assert(opCode);
-}
-body
-{
-    return opCode is opMemFree ||
-           opCode is opMemGCFree;
-}
-
 public bool isValidInArithmetic(Type type)
 in
 {
@@ -236,4 +201,17 @@ body
         return arr.elementType;
     else
         return (cast(PointerType)type).elementType;
+}
+
+public bool isTypeSpecification(Type type)
+in
+{
+    assert(type);
+}
+body
+{
+    return isType!PointerType(type) ||
+           isType!ReferenceType(type) ||
+           isType!ArrayType(type) ||
+           isType!VectorType(type);
 }

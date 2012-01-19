@@ -254,7 +254,7 @@ public final class MemoryVerifier : CodeVerifier
         {
             foreach (instr; bb.y.instructions)
             {
-                if (isMemoryAllocation(instr.opCode))
+                if (instr.opCode is opMemAlloc)
                 {
                     if (instr.sourceRegister1.type !is NativeUIntType.instance)
                         error(instr, "Source register must be of type 'uint'.");
@@ -263,18 +263,25 @@ public final class MemoryVerifier : CodeVerifier
                         !isType!ArrayType(instr.targetRegister.type))
                         error(instr, "Target register must be a pointer or an array.");
                 }
-                else if (isMemoryNew(instr.opCode))
+                else if (instr.opCode is opMemNew)
                 {
                     if (!isType!PointerType(instr.targetRegister.type) &&
+                        !isType!ReferenceType(instr.targetRegister.type) &&
                         !isType!VectorType(instr.targetRegister.type))
-                        error(instr, "Target register must be a pointer or a vector.");
+                        error(instr, "Target register must be a pointer, a reference, or an array.");
                 }
-                else if (isMemoryFree(instr.opCode))
+                else if (instr.opCode is opMemFree)
                 {
-                    if (!isType!PointerType(instr.targetRegister.type) &&
-                        !isType!ArrayType(instr.targetRegister.type) &&
-                        !isType!VectorType(instr.targetRegister.type))
-                        error(instr, "Target register must be a pointer, an array, or a vector.");
+                    if (!isTypeSpecification(instr.sourceRegister1.type))
+                        error(instr, "Source register must be a pointer, a reference, an array, or a vector.");
+                }
+                else if (instr.opCode is opMemSAlloc || instr.opCode is opMemSNew)
+                {
+                    if (instr.opCode is opMemSAlloc && instr.sourceRegister1.type !is NativeUIntType.instance)
+                        error(instr, "Source register must be of type 'uint'.");
+
+                    if (!isType!PointerType(instr.targetRegister.type))
+                        error(instr, "Target register must be a pointer.");
                 }
             }
         }

@@ -694,12 +694,15 @@ mem.alloc
 **Operand type**
     None
 
-Allocates memory from the native heap.
+Allocates memory from either the native heap (if the target register is a
+pointer) or from the GC currently in use (if the target register is an
+array).
 
 The source register indicates how many elements to allocate memory for.
-This means that the total amount of memory allocated is the size of the
-target register's element type times the element count. The source
-register must be of type ``uint``.
+This means that if the target register is a pointer, the total amount of
+memory allocated is the size of the target register's element type times
+the element count. Otherwise, it represents the amount of array elements
+to be allocated. The source register must be of type ``uint``.
 
 If the requested amount of memory could not be allocated, a null pointer
 is assigned to the target register; otherwise, the pointer to the allocated
@@ -708,7 +711,7 @@ memory is assigned.
 If the allocation was successful, all allocated memory is guaranteed to be
 completely zeroed out.
 
-The target register must be a pointer.
+The target register must be a pointer or an array.
 
 mem.new
 -------
@@ -720,11 +723,13 @@ mem.new
 **Operand type**
     None
 
-Allocates memory from the native heap.
+Allocates memory from the native heap (if the target register is a pointer)
+or from the GC currently in use (if the target register is a reference or a
+vector).
 
 This operation allocates memory for a single fixed-size value. Thus, the
 the amount of memory allocated is the size of the element type of the
-target register.
+target register (for vectors, this includes all elements).
 
 If the requested amount of memory could not be allocated, a null pointer
 is assigned to the target register; otherwise, the pointer to the allocated
@@ -733,7 +738,7 @@ memory is assigned.
 If the allocation was successful, all allocated memory is guaranteed to be
 completely zeroed out.
 
-The target register must be a pointer.
+The target register must be a pointer, a reference, or a vector.
 
 mem.free
 --------
@@ -753,53 +758,7 @@ is in some way invalid (e.g. it points to the interior of a block of
 allocated memory or has never been allocated in the first place), undefined
 behavior occurs.
 
-The source register must be a pointer.
-
-mem.gcalloc
------------
-
-**Has target register**
-    Yes
-**Source registers**
-    1
-**Operand type**
-    None
-
-Has the same core semantics as mem.alloc_. This instruction, however,
-allocates the memory from the GC currently in use.
-
-The target register must be an array.
-
-mem.gcnew
----------
-
-**Has target register**
-    Yes
-**Source registers**
-    0
-**Operand type**
-    None
-
-Has the same core semantics as mem.new_. This instruction, however,
-allocates the memory from the GC currently in use.
-
-The target register must be a reference or a vector.
-
-mem.gcfree
-----------
-
-**Has target register**
-    No
-**Source registers**
-    1
-**Operand type**
-    None
-
-Frees memory previously allocated with mem.gcalloc_ or mem.gcnew_. Using
-this instruction explicitly is completely optional, but may be desirable
-in some situations.
-
-The source register must be a reference, an array, or a vector.
+The source register must be a pointer, a reference, an array, or a vector.
 
 mem.salloc
 ----------
@@ -813,8 +772,10 @@ mem.salloc
 
 Similar to mem.alloc_. This instruction, however, allocates the memory on the
 stack. This means that memory allocated with this instruction shall not be
-freed manually with mem.free_ or mem.gcfree_, as the code generator inserts
-cleanup code automatically.
+freed manually with mem.free_, as the code generator inserts cleanup code
+automatically.
+
+The target register must be a pointer.
 
 mem.snew
 --------
@@ -828,8 +789,8 @@ mem.snew
 
 Similar to mem.new_. This instruction, however, allocates the memory on the
 stack. This means that memory allocated with this instruction shall not be
-freed manually with mem.free_ or mem.gcfree_, as the code generator inserts
-cleanup code automatically.
+freed manually with mem.free_, as the code generator inserts cleanup code
+automatically.
 
 mem.pin
 -------

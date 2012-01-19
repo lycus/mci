@@ -840,9 +840,9 @@ public final class Parser
                 opCode = op;
 
         if (!target && opCode.hasTarget)
-            error("Opcode " ~ opCode.name ~ " expects a target register", opCodeTok.location);
+            error("Opcode '" ~ opCode.name ~ "' expects a target register", opCodeTok.location);
         else if (target && !opCode.hasTarget)
-            error("Opcode " ~ opCode.name ~ " does not expect a target register", target.location);
+            error("Opcode '" ~ opCode.name ~ "' does not expect a target register", target.location);
 
         RegisterReferenceNode source1;
         RegisterReferenceNode source2;
