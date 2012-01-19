@@ -291,6 +291,7 @@
   <Folder name="memory">
    <File path="memory\base.d" />
    <File path="memory\dgc.d" />
+   <File path="memory\info.d" />
    <File path="memory\layout.d" />
    <File path="memory\libc.d" />
    <File path="memory\prettyprint.d" />
