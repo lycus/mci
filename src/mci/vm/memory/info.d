@@ -78,10 +78,13 @@ in
 }
 body
 {
-    auto tup = tuple(type, is32Bit);
+    synchronized (typeInfoCache)
+    {
+        auto tup = tuple(type, is32Bit);
 
-    if (auto info = tup in typeInfoCache)
-        return *info;
+        if (auto info = tup in typeInfoCache)
+            return *info;
 
-    return typeInfoCache[tup] = new RuntimeTypeInfo(type, computeRealSize(type, is32Bit));
+        return typeInfoCache[tup] = new RuntimeTypeInfo(type, computeRealSize(type, is32Bit));
+    }
 }
