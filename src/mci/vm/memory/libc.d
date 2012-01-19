@@ -5,13 +5,22 @@ import core.atomic,
        std.conv,
        mci.core.container,
        mci.core.typing.types,
-       mci.vm.memory.base;
+       mci.vm.memory.base,
+       mci.vm.memory.info;
 
-public final class LibCGeneration : GCGeneration
+public final class LibCGarbageCollector : InteractiveGarbageCollector
 {
-    @property public ubyte id()
+    private Object _lock;
+    private Object _cbLock;
+    private NoNullList!(void delegate(RuntimeObject)) _allocCallbacks;
+    private NoNullList!(void delegate(RuntimeObject)) _freeCallbacks;
+
+    public this()
     {
-        return 0;
+        _lock = new typeof(_lock)();
+        _cbLock = new typeof(_cbLock)();
+        _allocCallbacks = new typeof(_allocCallbacks)();
+        _freeCallbacks = new typeof(_freeCallbacks)();
     }
 
     @property public ulong collections()
@@ -19,57 +28,15 @@ public final class LibCGeneration : GCGeneration
         return 0;
     }
 
-    public void collect()
-    {
-        // We do no actual collection, since this is just a plain
-        // memory manager, not a garbage collector.
-    }
-}
-
-public final class LibCGarbageCollector : InteractiveGarbageCollector
-{
-    private LibCGeneration _generation;
-    private NoNullList!GCGeneration _generations;
-    private Object _lock;
-    private Object _cbLock;
-    private NoNullList!(void delegate(RuntimeObject)) _allocCallbacks;
-    private NoNullList!(void delegate(RuntimeObject)) _freeCallbacks;
-    private size_t _objectCount;
-
-    public this()
-    {
-        _generation = new typeof(_generation)();
-        _generations = new typeof(_generations)();
-        _lock = new typeof(_lock)();
-        _cbLock = new typeof(_cbLock)();
-        _allocCallbacks = new typeof(_allocCallbacks)();
-        _freeCallbacks = new typeof(_freeCallbacks)();
-
-        _generations.add(_generation);
-    }
-
-    ~this()
-    {
-        assert(!_objectCount);
-    }
-
-    @property public ReadOnlyIndexable!GCGeneration generations()
-    {
-        return _generations;
-    }
-
-    public RuntimeObject allocate(Type type, size_t size)
+    public RuntimeObject allocate(RuntimeTypeInfo type, size_t extraSize = 0)
     {
         auto length = __traits(classInstanceSize, RuntimeObject);
-        auto mem = calloc(1, length + size);
+        auto mem = calloc(1, length + type.size + extraSize);
 
         if (!mem)
             return null;
 
-        auto obj = emplace!RuntimeObject(mem[0 .. length], type, _generation);
-
-        synchronized (_lock)
-            _objectCount++;
+        auto obj = emplace!RuntimeObject(mem[0 .. length], type);
 
         synchronized (_cbLock)
             foreach (cb; _allocCallbacks)
@@ -88,20 +55,23 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
                 cb(data);
 
         .free(&data);
+    }
 
-        synchronized (_lock)
-            _objectCount--;
+    public void addRoot(ubyte* ptr)
+    {
+    }
+
+    public void removeRoot(ubyte* ptr)
+    {
     }
 
     public size_t pin(RuntimeObject data)
     {
-        // Do nothing.
         return 0;
     }
 
     public void unpin(size_t handle)
     {
-        // Do nothing.
     }
 
     public void collect()
@@ -110,24 +80,24 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         // memory manager, not a garbage collector.
     }
 
+    public void minimize()
+    {
+    }
+
     public void attach()
     {
-        // Do nothing.
     }
 
     public void detach()
     {
-        // Do nothing.
     }
 
     public void addPressure(size_t amount)
     {
-        // Do nothing.
     }
 
     public void removePressure(size_t amount)
     {
-        // Do nothing.
     }
 
     public void addAllocateCallback(void delegate(RuntimeObject) callback)

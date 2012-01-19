@@ -1,0 +1,9 @@
+type S
+{
+}
+
+type R
+{
+    field instance S& s;
+    field instance S&* s2;
+}

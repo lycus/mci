@@ -11,6 +11,8 @@ categories of types:
 * Type specifications: These are said to have one or more "element types".
 
   - Pointer types: Ye olde ``int32*`` and so on.
+  - Reference types: Similar to pointers, but can only refer to structure
+    types, and may only have one indirection (for example, ``Foo&``).
   - Array types: Simple one-dimensional arrays with a dynamic length (for
     example, ``float64[]``).
   - Vector types: Similar to arrays, but they have a fixed, static length
@@ -30,6 +32,7 @@ Notation             Meaning
 ``T[]``              Array of ``T``.
 ``T[E]``             Vector of ``T`` with ``E`` elements.
 ``T*``               Pointer to ``T``.
+``T&``               Reference to ``T``.
 ``R(T1, ...)``       Function pointer returning ``R``, taking ``T1``, ... arguments.
 ``R(T1, ...) cdecl`` Function pointer with ``cdecl`` calling convention.
 ==================== ===============================================================
@@ -95,7 +98,7 @@ Examples::
     }
 
 A structure can also specify its alignment (this is normally decided by the
-compiler). The alignment must be either be zero or a power of two. If it is
+compiler). The alignment must either be zero or a power of two. If it is
 zero, the compiler picks the alignment (that is to say, zero is like the
 default). Examples::
 
@@ -114,14 +117,19 @@ default). Examples::
     {
     }
 
-Structures can be created in two ways:
+Structures can be created in several ways:
 
-* On the stack: Simply declare a register typed to be an instance of the
-  structure. This makes it a value instance that lives on the stack (and
-  thus does not participate in any dynamic memory allocation).
-* On the heap: Allocate an instance with either ``mem.new`` or
-  ``mem.gcnew``. This will result in a pointer to the instance which sits
-  somewhere in either the native or managed heap.
+* On the stack as a value: Simply declare a register typed as the structure.
+  This makes it live on the stack with value semantics, and it will not
+  participate in any kind of dynamic memory allocation.
+* On the stack, dynamically allocated: Declare a register as a pointer to
+  the structure and allocate the memory with ``mem.salloc`` or ``mem.snew``.
+* On the heap, dynamically allocated: Declare a register as either a pointer
+  to the structure, or as a vector or array of the structure. Then, allocate
+  memory with ``mem.alloc`` or ``mem.new``.
+* On the heap, GC-tracked: Declare a register as a reference to the structure
+  and allocate an instance with ``mem.gcnew``. Additionally, references can
+  be contained in vectors and arrays, and in other GC-tracked structures.
 
 Type specifications
 +++++++++++++++++++
@@ -143,18 +151,35 @@ Examples:
 * Pointer to pointer to ``uint``: ``uint**``
 
 Pointers are convertible to any other pointer type (including function
-pointers), as well as arrays of the element type, and the primitives
-``int`` and ``uint``.
+pointers) and the primitives ``int`` and ``uint``.
+
+Reference types
+---------------
+
+References are similar to pointers, but are tracked by the GC. Any
+structure type allocated with the ``mem.gcalloc`` and ``mem.gcnew``
+instructions will result in a reference (vectors and arrays are also
+references, but this is implicit).
+
+Examples:
+
+* Reference to a struct called Foo: ``Foo&``
+
+References cannot be converted, nor can anything be converted to a
+reference.
 
 Array types
 -----------
 
-An array is very similar to a pointer in that it is semantically just
-a pointer to a block of memory where the elements reside. Elements are
-guaranteed to be contiguous in memory. Additionally, arrays don't know
-their length.
+These are single-dimensional, length-aware collections of elements. The
+exact start and end of an array in memory is undefined, but all elements
+are guaranteed to be laid out contiguously. In other words, an array can
+be iterated by fetching the address of the first element and incrementing
+the pointer.
 
 Reading beyond the bounds of an array results in undefined behavior.
+
+Arrays can only be allocated as GC-tracked objects.
 
 Examples:
 
@@ -162,28 +187,26 @@ Examples:
 * Array of pointers to ``float64``: ``float64*[]``
 * Array of arrays of ``int8``: ``int8[][]``
 
-Arrays are convertible to pointers to the element type.
+Any array-to-array conversion is valid as long as the source array's element
+type is convertible to the target array's element type.
 
 Vector types
 ------------
 
 Vectors are similar to arrays in that they contain a series of contiguous
 elements. Vectors, however, have a fixed, static length. This makes them
-very easy to use with vectorization technology such as SIMD.
+very easy to use with vectorization technology such as SIMD, as the JIT
+compiler can unroll the SIMD operations statically.
 
 Reading beyond the bounds of a vector results in undefined behavior.
 
-It should be noted that, while vectors are similar to arrays, they are not
-laid out in memory in the same way that arrays are. For vectors to be
-useful in SIMD, their first element needs to be aligned correctly. On most
-processors, this is on a 16-byte (128-bit) boundary, but can also be on an
-8-byte (64-bit) and 32-byte (256-bit) boundary. This means that more memory
-than what is strictly required might be allocated in order to satisfy such
-alignment requirements. This also means that vectors don't point directly
-to the first element (like arrays do), but rather to the beginning of the
-entire memory block. In practice, this means that to get a pointer to the
-vector that can be used to iterate its elements, one must retrieve the
-address of the first element in the vector and use that.
+Vectors, unlike arrays, have certain alignment requirements due to most
+SIMD hardware. Usually, the first element will be aligned on either a
+8-byte, 16-byte, or 32-byte boundary, although the exact alignment is
+undefined. As with arrays, this means that the first element's address must
+be fetched in order to iterate a vector in memory.
+
+Vectors can only be allocated as GC-tracked objects.
 
 Examples:
 
@@ -202,6 +225,10 @@ These are simply pointers to functions in memory. A function pointer
 carries information about the calling convention, return type, and
 parameter types. Calling convention is optional; if it is not specified,
 the default IAL calling convention is assumed.
+
+Equality between function pointers pointing to the same function is
+guaranteed if the function pointers are loaded using ``load.func``. All
+other guarantees are up to the operating system the code is running on.
 
 Examples:
 

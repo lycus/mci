@@ -163,6 +163,41 @@ public final class PointerType : Type
     }
 }
 
+public final class ReferenceType : Type
+{
+    private StructureType _elementType;
+
+    invariant()
+    {
+        assert(_elementType);
+    }
+
+    package this(StructureType elementType)
+    in
+    {
+        assert(elementType);
+    }
+    body
+    {
+        _elementType = elementType;
+    }
+
+    @property public StructureType elementType()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _elementType;
+    }
+
+    @property public override string name()
+    {
+        return elementType.toString() ~ "&";
+    }
+}
+
 public final class FunctionPointerType : Type
 {
     private CallingConvention _callingConvention;

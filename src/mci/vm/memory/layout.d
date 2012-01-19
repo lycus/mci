@@ -29,7 +29,9 @@ body
     if (isType!NativeIntType(type) || isType!NativeUIntType(type))
         return is32Bit ? 4 : 8;
 
-    if (isType!PointerType(type) || isType!ArrayType(type) || isType!VectorType(type) || isType!FunctionPointerType(type))
+    if (isType!PointerType(type) || isType!ReferenceType(type) ||
+        isType!ArrayType(type) || isType!VectorType(type) ||
+        isType!FunctionPointerType(type))
         return is32Bit ? 4 : 8;
 
     auto structType = cast(StructureType)type;

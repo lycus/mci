@@ -2,60 +2,37 @@ module mci.vm.memory.base;
 
 import std.bitmanip,
        mci.core.container,
-       mci.core.typing.types;
+       mci.core.typing.types,
+       mci.vm.memory.info;
 
 public final class RuntimeObject
 {
-    private Type _type;
-    private GCGeneration _generation;
+    private RuntimeTypeInfo _typeInfo;
     public GCHeader header;
 
     invariant()
     {
-        assert(_type);
-        assert(_generation);
+        assert(_typeInfo);
     }
 
-    public this(Type type, GCGeneration generation)
+    public this(RuntimeTypeInfo typeInfo)
     in
     {
-        assert(type);
-        assert(generation);
+        assert(typeInfo);
     }
     body
     {
-        _type = type;
-        _generation = generation;
+        _typeInfo = typeInfo;
     }
 
-    @property public Type type()
+    @property public RuntimeTypeInfo typeInfo()
     out (result)
     {
         assert(result);
     }
     body
     {
-        return _type;
-    }
-
-    @property public GCGeneration generation()
-    out (result)
-    {
-        assert(result);
-    }
-    body
-    {
-        return _generation;
-    }
-
-    @property package void generation(GCGeneration generation)
-    in
-    {
-        assert(generation);
-    }
-    body
-    {
-        _generation = generation;
+        return _typeInfo;
     }
 
     @property public ubyte* data()
@@ -78,30 +55,29 @@ package union GCHeader
 {
 }
 
-public interface GCGeneration
-{
-    @property public ubyte id();
-
-    @property public ulong collections();
-
-    public void collect();
-}
-
 public interface GarbageCollector
 {
-    @property public ReadOnlyIndexable!GCGeneration generations()
-    out (result)
-    {
-        assert(result);
-    }
+    @property public ulong collections();
 
-    public RuntimeObject allocate(Type type, size_t size)
+    public RuntimeObject allocate(RuntimeTypeInfo type, size_t extraSize = 0)
     in
     {
         assert(type);
     }
 
     public void free(RuntimeObject data);
+
+    public void addRoot(ubyte* ptr)
+    in
+    {
+        assert(ptr);
+    }
+
+    public void removeRoot(ubyte* ptr)
+    in
+    {
+        assert(ptr);
+    }
 
     public size_t pin(RuntimeObject data)
     in
@@ -113,6 +89,8 @@ public interface GarbageCollector
 
     public void collect();
 
+    public void minimize();
+
     public void attach();
 
     public void detach();
@@ -120,6 +98,26 @@ public interface GarbageCollector
     public void addPressure(size_t amount);
 
     public void removePressure(size_t amount);
+}
+
+public interface GCGeneration
+{
+    @property public ubyte id();
+
+    @property public ulong collections();
+
+    public void collect();
+
+    public void minimize();
+}
+
+public interface GenerationalGarbageCollector : GarbageCollector
+{
+    @property public ReadOnlyIndexable!GCGeneration generations()
+    out (result)
+    {
+        assert(result);
+    }
 }
 
 public interface InteractiveGarbageCollector : GarbageCollector

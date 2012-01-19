@@ -331,6 +331,11 @@ public final class ModuleWriter : ModuleSaver
             _writer.write(TypeReferenceType.pointer);
             writeTypeReference(ptrType.elementType);
         }
+        else if (auto refType = cast(ReferenceType)type)
+        {
+            _writer.write(TypeReferenceType.reference);
+            writeTypeReference(refType.elementType);
+        }
         else if (auto arrType = cast(ArrayType)type)
         {
             _writer.write(TypeReferenceType.array);

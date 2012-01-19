@@ -12,6 +12,7 @@ import mci.core.common,
 
 private __gshared NoNullDictionary!(Tuple!(CallingConvention, Type, NoNullList!Type), FunctionPointerType, false) functionPointerTypes;
 private __gshared NoNullDictionary!(Type, PointerType, false) pointerTypes;
+private __gshared NoNullDictionary!(StructureType, ReferenceType, false) referenceTypes;
 private __gshared NoNullDictionary!(Type, ArrayType, false) arrayTypes;
 private __gshared NoNullDictionary!(Tuple!(Type, uint), VectorType, false) vectorTypes;
 
@@ -19,6 +20,7 @@ shared static this()
 {
     functionPointerTypes = new typeof(functionPointerTypes)();
     pointerTypes = new typeof(pointerTypes)();
+    referenceTypes = new typeof(referenceTypes)();
     arrayTypes = new typeof(arrayTypes)();
     vectorTypes = new typeof(vectorTypes)();
 }
@@ -64,6 +66,26 @@ body
             return *ptrType;
 
         return pointerTypes[elementType] = new PointerType(elementType);
+    }
+}
+
+public ReferenceType getReferenceType(StructureType elementType)
+in
+{
+    assert(elementType);
+}
+out (result)
+{
+    assert(result);
+}
+body
+{
+    synchronized (referenceTypes)
+    {
+        if (auto refType = elementType in referenceTypes)
+            return *refType;
+
+        return referenceTypes[elementType] = new ReferenceType(elementType);
     }
 }
 

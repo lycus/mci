@@ -231,6 +231,36 @@ private final class PointerTypeReferenceDescriptor : TypeReferenceDescriptor
     }
 }
 
+private final class ReferenceTypeReferenceDescriptor : TypeReferenceDescriptor
+{
+    private StructureTypeReferenceDescriptor _elementType;
+
+    invariant()
+    {
+        assert(_elementType);
+    }
+
+    public this(StructureTypeReferenceDescriptor elementType)
+    in
+    {
+        assert(elementType);
+    }
+    body
+    {
+        _elementType = elementType;
+    }
+
+    @property public StructureTypeReferenceDescriptor elementType()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _elementType;
+    }
+}
+
 private final class ArrayTypeReferenceDescriptor : TypeReferenceDescriptor
 {
     private TypeReferenceDescriptor _elementType;
@@ -464,6 +494,8 @@ public final class ModuleReader : ModuleLoader
         }
         else if (auto ptrType = cast(PointerTypeReferenceDescriptor)descriptor)
             return getPointerType(toType(ptrType.elementType));
+        else if (auto refType = cast(ReferenceTypeReferenceDescriptor)descriptor)
+             return getReferenceType(cast(StructureType)toType(refType.elementType));
         else if (auto arrType = cast(ArrayTypeReferenceDescriptor)descriptor)
             return getArrayType(toType(arrType.elementType));
         else if (auto vecType = cast(VectorTypeReferenceDescriptor)descriptor)
@@ -581,6 +613,14 @@ public final class ModuleReader : ModuleLoader
                 auto element = readTypeReference();
 
                 return new PointerTypeReferenceDescriptor(element);
+            case TypeReferenceType.reference:
+                auto element = readTypeReference();
+
+                if (auto struc = cast(StructureTypeReferenceDescriptor)element)
+                    return new ReferenceTypeReferenceDescriptor(struc);
+
+                error("Structure type expected.");
+                assert(false);
             case TypeReferenceType.array:
                 auto element = readTypeReference();
 
@@ -588,6 +628,9 @@ public final class ModuleReader : ModuleLoader
             case TypeReferenceType.vector:
                 auto element = readTypeReference();
                 auto elements = _reader.read!uint();
+
+                if (!elements)
+                    error("Vector element count cannot be zero.");
 
                 return new VectorTypeReferenceDescriptor(element, elements);
             case TypeReferenceType.function_:
@@ -621,7 +664,7 @@ public final class ModuleReader : ModuleLoader
         auto declType = readTypeReference();
 
         if (!isType!StructureTypeReferenceDescriptor(declType))
-            error("Structure type expected");
+            error("Structure type expected.");
 
         auto type = cast(StructureType)toType(declType);
         auto name = _reader.readString();

@@ -191,8 +191,8 @@ load.i8a
 
 Loads a constant array of 8-bit signed integers into the target register.
 
-The target register must be of type ``int8[]``, ``int8*``, or a vector of
-``int8`` with an element count matching that of the array operand.
+The target register must be of type ``int8[]`` or a vector of ``int8`` with
+an element count matching that of the array operand.
 
 load.ui8a
 ---------
@@ -206,8 +206,8 @@ load.ui8a
 
 Loads a constant array of 8-bit unsigned integers into the target register.
 
-The target register must be of type ``uint8[]``, ``uint8*``, or a vector of
-``uint8`` with an element count matching that of the array operand.
+The target register must be of type ``uint8[]`` or a vector of ``uint8``
+with an element count matching that of the array operand.
 
 load.i16a
 ---------
@@ -221,8 +221,8 @@ load.i16a
 
 Loads a constant array of 16-bit signed integers into the target register.
 
-The target register must be of type ``int16[]``, ``int16*``, or a vector
-of ``int16`` with an element count matching that of the array operand.
+The target register must be of type ``int16[]`` or a vector of ``int16``
+with an element count matching that of the array operand.
 
 load.ui16a
 ----------
@@ -236,8 +236,8 @@ load.ui16a
 
 Loads a constant array of 16-bit unsigned integers into the target register.
 
-The target register must be of type ``uint16[]``, ``uint16*``, or a vector
-of ``uint16`` with an element count matching that of the array operand.
+The target register must be of type ``uint16[]`` or a vector of ``uint16``
+with an element count matching that of the array operand.
 
 load.i32a
 ---------
@@ -251,8 +251,8 @@ load.i32a
 
 Loads a constant array of 32-bit signed integers into the target register.
 
-The target register must be of type ``int32[]``, ``int32*``, or a vector
-of ``int32`` with an element count matching that of the array operand.
+The target register must be of type ``int32[]`` or a vector of ``int32``
+with an element count matching that of the array operand.
 
 load.ui32a
 ----------
@@ -266,8 +266,8 @@ load.ui32a
 
 Loads a constant array of 32-bit unsigned integers into the target register.
 
-The target register must be of type ``uint32[]``, ``uint32*``, or a vector
-of ``uint32`` with an element count matching that of the array operand.
+The target register must be of type ``uint32[]`` or a vector of ``uint32``
+with an element count matching that of the array operand.
 
 load.i64a
 ---------
@@ -281,8 +281,8 @@ load.i64a
 
 Loads a constant array of 64-bit signed integers into the target register.
 
-The target register must be of type ``int64[]``, ``int64*``, or a vector
-of ``int64`` with an element count matching that of the array operand.
+The target register must be of type ``int64[]`` or a vector of ``int64``
+with an element count matching that of the array operand.
 
 load.ui64a
 ----------
@@ -296,8 +296,8 @@ load.ui64a
 
 Loads a constant array of 64-bit unsigned integers into the target register.
 
-The target register must be of type ``uint64[]``, ``uint64*``, or a vector
-of ``uint64`` with an element count matching that of the array operand.
+The target register must be of type ``uint64[]`` or a vector of ``uint64``
+with an element count matching that of the array operand.
 
 load.f32a
 ---------
@@ -312,8 +312,8 @@ load.f32a
 Loads a constant array of 32-bit floating-point values into the target
 register.
 
-The target register must be of type ``float32[]``, ``float32*``, or a vector
-of ``float32`` with an element count matching that of the array operand.
+The target register must be of type ``float32[]`` or a vector of ``float32``
+with an element count matching that of the array operand.
 
 load.f64a
 ---------
@@ -328,8 +328,8 @@ load.f64a
 Loads a constant array of 64-bit floating-point values into the target
 register.
 
-The target register must be of type ``float64[]``, ``float64*``, or a vector
-of ``float64`` with an element count matching that of the array operand.
+The target register must be of type ``float64[]`` or a vector of ``float64``
+with an element count matching that of the array operand.
 
 load.func
 ---------
@@ -371,13 +371,8 @@ load.null
 
 Loads a null value into the target register.
 
-The target register must be a pointer, a function pointer, an array, or a
-vector, i.e.::
-
-    register int* a;
-    register void(int32) b;
-    register float32[] c;
-    register int8[3] d;
+The target register must be a pointer, a function pointer, an array, a
+vector, or a reference.
 
 load.size
 ---------
@@ -391,6 +386,9 @@ load.size
 
 Loads the absolute size of a type specification's layout in memory into the
 target register.
+
+Note that for vectors, this is not the full size of the vector, but rather
+the size of the reference to the vector (as with arrays and pointers).
 
 The target register must be of type ``uint``.
 
@@ -710,7 +708,7 @@ memory is assigned.
 If the allocation was successful, all allocated memory is guaranteed to be
 completely zeroed out.
 
-The target register must be a pointer or an array.
+The target register must be a pointer.
 
 mem.new
 -------
@@ -735,7 +733,7 @@ memory is assigned.
 If the allocation was successful, all allocated memory is guaranteed to be
 completely zeroed out.
 
-The target register must be a pointer or a vector.
+The target register must be a pointer.
 
 mem.free
 --------
@@ -755,8 +753,7 @@ is in some way invalid (e.g. it points to the interior of a block of
 allocated memory or has never been allocated in the first place), undefined
 behavior occurs.
 
-The source register must be any pointer-like type (that is, a pointer, an
-array, or a vector).
+The source register must be a pointer.
 
 mem.gcalloc
 -----------
@@ -768,8 +765,10 @@ mem.gcalloc
 **Operand type**
     None
 
-Similar to mem.alloc_. This difference is that this instruction allocates
-the memory from the GC currently in use.
+Has the same core semantics as mem.alloc_. This instruction, however,
+allocates the memory from the GC currently in use.
+
+The target register must be an array.
 
 mem.gcnew
 ---------
@@ -781,8 +780,10 @@ mem.gcnew
 **Operand type**
     None
 
-Similar to mem.new_. The difference is that this instruction allocates
-the memory from the GC currently in use.
+Has the same core semantics as mem.new_. This instruction, however,
+allocates the memory from the GC currently in use.
+
+The target register must be a reference or a vector.
 
 mem.gcfree
 ----------
@@ -794,9 +795,11 @@ mem.gcfree
 **Operand type**
     None
 
-Similar to mem.free_. The difference is that this instruction frees the
-memory from the GC currently in use. Using this instruction  is not usually
-necessary, but can be done if desired.
+Frees memory previously allocated with mem.gcalloc_ or mem.gcnew_. Using
+this instruction explicitly is completely optional, but may be desirable
+in some situations.
+
+The source register must be a reference, an array, or a vector.
 
 mem.salloc
 ----------
@@ -838,9 +841,9 @@ mem.pin
 **Operand type**
     None
 
-Pins a pointer previously allocated with mem.gcnew_ or mem.gcalloc_ so that
-the object it points to cannot be relocated by a compacting GC. This is
-useful when calling into external code via ffi_, as the GC cannot track
+Pins a reference previously allocated with mem.gcnew_ or mem.gcalloc_ so
+that the object it points to cannot be relocated by a compacting GC. This
+is useful when calling into external code via ffi_, as the GC cannot track
 GC-managed memory beyond managed code. This also implies that the memory
 which is pinned will never be collected until it is unpinned. Therefore,
 memory leaks can happen if care is not taken to correctly mem.unpin_ the
@@ -851,8 +854,7 @@ The resulting value of this instruction is an opaque handle which only has
 meaning to the specific GC implementation. The handle is intended for use
 with mem.unpin_ later.
 
-The source register must be any pointer-like type (a pointer, an array, or a
-vector).
+The source register must be a reference, an array, or a vector.
 
 The target register must be of type ``uint``.
 
@@ -992,6 +994,22 @@ type, while the second source register must be of type ``uint``.
 The target register must be a pointer to the first source register's element
 type.
 
+array.len
+---------
+
+**Has target register**
+    Yes
+**Source registers**
+    1
+**Operand type**
+    None
+
+Loads the length of an array into the target register. For arrays, this is
+the dynamic size, while for vectors, it is the fixed size. The source
+register must be an array or a vector.
+
+The target register must be of type ``uint``.
+
 Structure field instructions
 ++++++++++++++++++++++++++++
 
@@ -1010,8 +1028,8 @@ field.get
 
 Fetches the value of the field given as the operand on the structure
 given in the source register and assigns it to the target register. The
-source register must either be a structure or a pointer to a structure
-with at most one indirection.
+source register must either be a structure or a pointer or reference to a
+structure with at most one indirection.
 
 The target register's type must match the field type.
 
@@ -1029,9 +1047,9 @@ field.set
 
 Sets the value of the field given in the operand on the structure given
 in the first source register to the value in the second source register.
-The first source register must be a structure or a pointer to a structure
-with a most one indirection. The second source register must match the
-field's type.
+The first source register must be a structure or a pointer or reference
+to a structure with a most one indirection. The second source register
+must match the field's type.
 
 This instruction is only valid on instance fields.
 
@@ -1047,8 +1065,8 @@ field.addr
 
 Gets the address of the field given as the operand on the structure given
 in the source register and assigns it to the target register. The source
-register must be a structure or pointer to a structure with at most one
-indirection.
+register must be a structure or a pointer or reference to a structure with
+at most one indirection.
 
 The target register must be a pointer to the type of the field given in
 the operand.
@@ -1588,11 +1606,9 @@ The following conversions are valid:
 * ``T`` -> ``U`` for any primitives ``T`` and ``U`` (``int8``, ``uint8``,
   ``int16``, ``uint16``, ``int32``, ``uint32``, ``int64``, ``uint64``,
   ``int``, ``uint``, ``float32``, and ``float64``).
+* ``T*`` -> ``U*`` for any ``T`` and any ``U``.
 * ``T*`` -> ``uint`` or ``int`` for any ``T``.
 * ``uint`` or ``int`` -> ``T*`` for any ``T``.
-* ``T*`` -> ``U*`` for any ``T`` and any ``U``.
-* ``T*`` -> ``T[]`` for any ``T``.
-* ``T[]`` -> ``T*`` for any ``T``.
 * ``T[E]`` -> ``U[E]`` for any valid ``T`` -> ``U`` conversion.
 * ``R1(T1, ...)`` -> ``R2(U1, ...)`` for any ``R1``, any ``R2``, and any
   amount and type of ``T`` \ :sub:`n` and ``U`` \ :sub:`m`.

@@ -80,6 +80,8 @@ body
         return resolveFunctionPointerType(fpType, module_, manager);
     else if (auto ptrType = cast(PointerTypeReferenceNode)node)
         return getPointerType(resolveType(ptrType.elementType, module_, manager));
+    else if (auto refType = cast(ReferenceTypeReferenceNode)node)
+        return getReferenceType(cast(StructureType)resolveType(refType.elementType, module_, manager));
     else if (auto arrType = cast(ArrayTypeReferenceNode)node)
         return getArrayType(resolveType(arrType.elementType, module_, manager));
     else if (auto vecType = cast(VectorTypeReferenceNode)node)

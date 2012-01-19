@@ -281,6 +281,39 @@ public class PointerTypeReferenceNode : TypeReferenceNode
     }
 }
 
+public class ReferenceTypeReferenceNode : TypeReferenceNode
+{
+    private StructureTypeReferenceNode _elementType;
+
+    invariant()
+    {
+        assert(_elementType);
+    }
+
+    public this(SourceLocation location, StructureTypeReferenceNode elementType)
+    in
+    {
+        assert(location);
+        assert(elementType);
+    }
+    body
+    {
+        super(location);
+
+        _elementType = elementType;
+    }
+
+    @property public final StructureTypeReferenceNode elementType()
+    {
+        return _elementType;
+    }
+
+    @property public override ReadOnlyIndexable!Node children()
+    {
+        return toReadOnlyIndexable!Node(_elementType);
+    }
+}
+
 public class ArrayTypeReferenceNode : TypeReferenceNode
 {
     private TypeReferenceNode _elementType;

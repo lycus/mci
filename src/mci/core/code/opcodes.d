@@ -267,6 +267,7 @@ public enum OperationCode : ubyte
     arrayGet,
     arraySet,
     arrayAddr,
+    arrayLen,
     fieldGet,
     fieldSet,
     fieldAddr,
@@ -358,6 +359,7 @@ public __gshared OpCode opMemAddr;
 public __gshared OpCode opArrayGet;
 public __gshared OpCode opArraySet;
 public __gshared OpCode opArrayAddr;
+public __gshared OpCode opArrayLen;
 public __gshared OpCode opFieldGet;
 public __gshared OpCode opFieldSet;
 public __gshared OpCode opFieldAddr;
@@ -472,6 +474,7 @@ shared static this()
     opArrayGet = create("array.get", OperationCode.arrayGet, OpCodeType.normal, OperandType.none, 2, true);
     opArraySet = create("array.set", OperationCode.arraySet, OpCodeType.normal, OperandType.none, 3, false);
     opArrayAddr = create("array.addr", OperationCode.arrayAddr, OpCodeType.normal, OperandType.none, 2, true);
+    opArrayLen = create("array.len", OperationCode.arrayLen, OpCodeType.normal, OperandType.none, 1, true);
     opFieldGet = create("field.get", OperationCode.fieldGet, OpCodeType.normal, OperandType.field, 1, true);
     opFieldSet = create("field.set", OperationCode.fieldSet, OpCodeType.normal, OperandType.field, 2, false);
     opFieldAddr = create("field.addr", OperationCode.fieldAddr, OpCodeType.normal, OperandType.field, 1, true);

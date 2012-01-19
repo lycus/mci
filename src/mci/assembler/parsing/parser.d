@@ -368,6 +368,24 @@ public final class Parser
         assert(false);
     }
 
+    private TypeReferenceNode parseStructureTypeSpecification()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto node = parseStructureTypeReference();
+
+        if (peek().type == TokenType.and)
+        {
+            next();
+            return new ReferenceTypeReferenceNode(node.location, node);
+        }
+
+        return node;
+    }
+
     private StructureTypeReferenceNode parseStructureTypeReference()
     out (result)
     {
@@ -433,7 +451,7 @@ public final class Parser
                 return new Float64TypeReferenceNode(tok.location);
             default:
                 _stream.movePrevious();
-                return parseStructureTypeReference();
+                return parseStructureTypeSpecification();
         }
     }
 

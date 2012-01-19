@@ -21,6 +21,7 @@ public enum TokenType : ubyte
     comma,
     equals,
     star,
+    and,
     slash,
     type,
     field,
@@ -70,6 +71,7 @@ shared static this()
                   ',' : TokenType.comma,
                   '=' : TokenType.equals,
                   '*' : TokenType.star,
+                  '&' : TokenType.and,
                   '/' : TokenType.slash];
 }
 

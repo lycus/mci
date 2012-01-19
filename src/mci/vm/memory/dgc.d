@@ -5,57 +5,34 @@ import core.memory,
        std.conv,
        mci.core.container,
        mci.core.typing.types,
-       mci.vm.memory.base;
-
-public final class DGeneration : GCGeneration
-{
-    @property public ubyte id()
-    {
-        return 0;
-    }
-
-    @property public ulong collections()
-    {
-        // There's currently no reliable way to get this from the D GC.
-        return 0;
-    }
-
-    public void collect()
-    {
-        return GC.collect();
-    }
-}
+       mci.vm.memory.base,
+       mci.vm.memory.info;
 
 public final class DGarbageCollector : GarbageCollector
 {
     private static bool _isThisThreadAttached;
     private Object _attachmentSync;
-    private DGeneration _generation;
-    private NoNullList!GCGeneration _generations;
 
     public this()
     {
         _attachmentSync = new typeof(_attachmentSync)();
-        _generation = new typeof(_generation)();
-        _generations = new typeof(_generations)();
-
-        _generations.add(_generation);
     }
 
-    @property public ReadOnlyIndexable!GCGeneration generations()
+    @property public ulong collections()
     {
-        return _generations;
+        // We can't query D's GC about this.
+        return 0;
     }
 
-    public RuntimeObject allocate(Type type, size_t size)
+    public RuntimeObject allocate(RuntimeTypeInfo type, size_t extraSize = 0)
     {
         auto length = __traits(classInstanceSize, RuntimeObject);
-        auto mem = GC.calloc(length + size);
+        auto mem = GC.calloc(length + type.size + extraSize);
 
         if (!mem)
             return null;
 
-        auto obj = emplace!RuntimeObject(mem[0 .. length], type, _generation);
+        auto obj = emplace!RuntimeObject(mem[0 .. length], type);
 
         return obj;
     }
@@ -64,6 +41,16 @@ public final class DGarbageCollector : GarbageCollector
     {
         if (data)
             GC.free(&data);
+    }
+
+    public void addRoot(ubyte* ptr)
+    {
+        GC.addRoot(ptr);
+    }
+
+    public void removeRoot(ubyte* ptr)
+    {
+        GC.removeRoot(ptr);
     }
 
     public size_t pin(RuntimeObject data)
@@ -79,7 +66,12 @@ public final class DGarbageCollector : GarbageCollector
 
     public void collect()
     {
-        _generation.collect();
+        GC.collect();
+    }
+
+    public void minimize()
+    {
+        GC.minimize();
     }
 
     public void attach()
