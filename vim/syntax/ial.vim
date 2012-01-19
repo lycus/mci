@@ -18,8 +18,8 @@ syn keyword ialInstruction              load.i64 load.ui64 load.f32 load.f64 loa
 syn keyword ialInstruction              load.ui16a load.i32a load.ui32a load.i64a load.ui64a load.f32a load.f64a
 syn keyword ialInstruction              load.func load.null load.size load.align load.offset ari.add ari.sub ari.mul
 syn keyword ialInstruction              ari.div ari.rem ari.neg bit.and bit.or bit.xor bit.neg not shl shr conv mem.alloc
-syn keyword ialInstruction              mem.new mem.free mem.gcalloc mem.gcnew mem.gcfree mem.salloc mem.pin mem.unpinmem.get
-syn keyword ialInstruction              mem.set mem.addr array.get array.set array.addr array.len field.get field.set field.addr
+syn keyword ialInstruction              mem.new mem.free mem.salloc mem.pin mem.unpin mem.get mem.set mem.addr
+syn keyword ialInstruction              array.get array.set array.addr array.len field.get field.set field.addr
 syn keyword ialInstruction              field.gget field.gset field.gaddr cmp.eq cmp.neq cmp.gt cmp.lt cmp.gteq cmp.lteq
 syn keyword ialInstruction              arg.push arg.pop invoke invoke.tail invoke.indirect call call.tail call.indirect
 syn keyword ialInstruction              raw ffi jump jump.cond leave return phi ex.throw ex.try ex.handle ex.end
