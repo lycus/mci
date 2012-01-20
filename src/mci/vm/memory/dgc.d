@@ -10,14 +10,6 @@ import core.memory,
 
 public final class DGarbageCollector : GarbageCollector
 {
-    private static bool _isThisThreadAttached;
-    private Object _attachmentSync;
-
-    public this()
-    {
-        _attachmentSync = new typeof(_attachmentSync)();
-    }
-
     @property public ulong collections()
     {
         // We can't query D's GC about this.
@@ -76,26 +68,10 @@ public final class DGarbageCollector : GarbageCollector
 
     public void attach()
     {
-        synchronized (_attachmentSync)
-        {
-            if (!_isThisThreadAttached)
-            {
-                thread_attachThis();
-                _isThisThreadAttached = true;
-            }
-        }
     }
 
     public void detach()
     {
-        synchronized (_attachmentSync)
-        {
-            if (_isThisThreadAttached)
-            {
-                thread_detachThis();
-                _isThisThreadAttached = false;
-            }
-        }
     }
 
     public void addPressure(size_t amount)
