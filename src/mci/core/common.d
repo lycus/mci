@@ -8,14 +8,14 @@ import core.stdc.stdlib,
 
 static if (is32Bit)
 {
-    alias int isize_t;
+    public alias int isize_t;
 }
 else
 {
-    alias long isize_t;
+    public alias long isize_t;
 }
 
-alias void function() function_t;
+public alias void function() function_t;
 
 public bool isType(U, T)(T obj)
 in

@@ -1159,15 +1159,15 @@ public class FFISignatureNode : Node
     }
 }
 
-alias Algebraic!(LiteralValueNode,
-                 ArrayLiteralNode,
-                 TypeReferenceNode,
-                 FieldReferenceNode,
-                 FunctionReferenceNode,
-                 BasicBlockReferenceNode,
-                 BranchSelectorNode,
-                 RegisterSelectorNode,
-                 FFISignatureNode) InstructionOperand;
+public alias Algebraic!(LiteralValueNode,
+                        ArrayLiteralNode,
+                        TypeReferenceNode,
+                        FieldReferenceNode,
+                        FunctionReferenceNode,
+                        BasicBlockReferenceNode,
+                        BranchSelectorNode,
+                        RegisterSelectorNode,
+                        FFISignatureNode) InstructionOperand;
 
 public class InstructionOperandNode : Node
 {

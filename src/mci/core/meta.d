@@ -14,5 +14,5 @@ public template isPrimitiveType(T)
 
 public template ArrayElementType(T : T[])
 {
-    alias T ArrayElementType;
+    public alias T ArrayElementType;
 }
