@@ -74,6 +74,12 @@ goes into thread-local or global storage. In general, go by the rule that
 if you cannot come up with a reason to put a variable in global storage,
 it should probably be in TLS.
 
+        ++ Visiblity Modifiers ++
+
+Use visibility modifiers on all declarations except imports (which are private
+by default). It is better to be explicit about visibility so that mistakes
+such as accidentally exposing private code won't happen.
+
         ++ Const/Immutable/Shared ++
 
 You should generally avoid these type modifiers.
