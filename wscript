@@ -121,7 +121,8 @@ def test(ctx):
 
     if ctx.env.VALGRIND:
         cmd = 'valgrind --suppressions=' + os.path.join('..', 'mci.valgrind')
-        cmd += ' --leak-check=full --track-fds=yes --num-callers=50 --show-reachable=yes --undef-value-errors=no'
+        cmd += ' --leak-check=full --track-fds=yes --num-callers=50 --show-reachable=yes'
+        cmd += ' --undef-value-errors=no --error-exitcode=1'
         cmd += ' ./mci.tester'
         _run_shell(OUT, ctx, cmd)
 
