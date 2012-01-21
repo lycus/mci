@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os, shutil, subprocess
-from waflib import Options, Utils
+from waflib import Build, Options, Utils
 
 APPNAME = 'MCI'
 VERSION = '1.0'
@@ -12,12 +12,14 @@ OUT = 'build'
 def options(opt):
     opt.recurse('libffi-d')
 
-    opt.add_option('--vim', action='store', default=None, help='Include Vim syntax files (prefix)')
+    opt.add_option('--vim', action = 'store', default = None, help = 'Include Vim syntax files (prefix)')
+    opt.add_option('--valgrind', action = 'store', default = 'true', help = 'Use Valgrind for unit tests')
 
 def configure(conf):
     conf.recurse('libffi-d')
 
     conf.env.VIM = conf.options.vim
+    conf.env.VALGRIND = conf.options.valgrind
 
     def add_option(option):
         conf.env.append_value('DFLAGS', option)
@@ -111,18 +113,24 @@ def _run_shell(dir, ctx, args):
 
     os.chdir(cwd)
 
-def _run_tests(ctx):
+def test(ctx):
     if 'darwin' in Utils.unversioned_sys_platform():
-        cmd = './mci.tester'
+        _run_shell(OUT, ctx, './mci.tester')
     else:
-        cmd = 'gdb --command=' + os.path.join('..', 'mci.gdb') + ' mci.tester'
+        _run_shell(OUT, ctx, 'gdb --command=' + os.path.join('..', 'mci.gdb') + ' mci.tester')
 
-    _run_shell(OUT, ctx, cmd)
+    if ctx.env.VALGRIND:
+        cmd = 'valgrind --suppressions=' + os.path.join('..', 'mci.valgrind')
+        cmd += ' --leak-check=full --track-fds=yes --num-callers=50 --show-reachable=yes --undef-value-errors=no'
+        cmd += ' ./mci.tester'
+        _run_shell(OUT, ctx, cmd)
+
     _run_shell('tests', ctx, 'rdmd tester.d "assembler" "asm <file> -o <name>.mci -d <name>.ast"')
     _run_shell('tests', ctx, 'rdmd tester.d "verifier" "asm <file> -o <name>.mci -d <name>.ast -v"')
 
-def test(ctx):
-    Options.commands = ['build', '_run_tests'] + Options.commands
+class TestContext(Build.BuildContext):
+    cmd = 'test'
+    fun = 'test'
 
 def docs(ctx):
     def build_docs(targets):
