@@ -23,7 +23,7 @@ static if (operatingSystem == OperatingSystem.windows)
 
         private this()
         {
-            _callbacks = typeof(_callbacks)();
+            _callbacks = new typeof(_callbacks)();
         }
 
         public void add(WindowsThreadEventCallback cb)
