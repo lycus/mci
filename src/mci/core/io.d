@@ -2,6 +2,7 @@ module mci.core.io;
 
 import std.stdio,
        std.traits,
+       std.range,
        mci.core.common,
        mci.core.config,
        mci.core.meta;
@@ -260,14 +261,14 @@ public class BinaryReader
     }
 
     public final T readArray(T)(ulong length)
-        if (isArray!T && isPrimitiveType!(ArrayElementType!T))
+        if (isArray!T && isPrimitiveType!(ElementEncodingType!T))
     {
         T arr;
 
         // We have to unqualify the element type, as writing elements with
         // immutable or const will fail.
         for (ulong i = 0; i < length; i++)
-            arr ~= read!(Unqual!(ArrayElementType!T))();
+            arr ~= read!(Unqual!(ElementEncodingType!T))();
 
         return arr;
     }
@@ -314,7 +315,7 @@ public class BinaryWriter
     }
 
     public final void writeArray(T)(T value)
-        if (isArray!T && isPrimitiveType!(ArrayElementType!T))
+        if (isArray!T && isPrimitiveType!(ElementEncodingType!T))
     {
         foreach (item; value)
             write(item);
