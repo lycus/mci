@@ -277,6 +277,10 @@
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="mci.vm">
+  <Folder name="thread">
+   <File path="thread\thread.d" />
+   <File path="thread\tls.d" />
+  </Folder>
   <Folder name="intrinsics">
    <File path="intrinsics\config.d" />
    <File path="intrinsics\declarations.d" />
