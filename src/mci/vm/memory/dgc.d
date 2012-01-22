@@ -1,6 +1,7 @@
 module mci.vm.memory.dgc;
 
-import core.memory,
+import core.exception,
+       core.memory,
        core.thread,
        std.conv,
        mci.core.container,
@@ -18,15 +19,22 @@ public final class DGarbageCollector : GarbageCollector
 
     public RuntimeObject allocate(RuntimeTypeInfo type, size_t extraSize = 0)
     {
-        auto length = __traits(classInstanceSize, RuntimeObject);
-        auto mem = GC.calloc(length + type.size + extraSize);
+        try
+        {
+            auto length = __traits(classInstanceSize, RuntimeObject);
+            auto mem = GC.calloc(length + type.size + extraSize);
 
-        if (!mem)
+            if (!mem)
+                return null;
+
+            auto obj = emplace!RuntimeObject(mem[0 .. length], type);
+
+            return obj;
+        }
+        catch (OutOfMemoryError)
+        {
             return null;
-
-        auto obj = emplace!RuntimeObject(mem[0 .. length], type);
-
-        return obj;
+        }
     }
 
     public void free(RuntimeObject data)
