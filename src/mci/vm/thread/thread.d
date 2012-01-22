@@ -28,7 +28,9 @@ static if (operatingSystem == OperatingSystem.windows)
         {
             auto key = Thread.getThis();
 
-            if (!(cb = callbacks.get(key)))
+            cb = callbacks.get(key);
+
+            if (!cb)
                 return;
 
             callbacks.remove(key);
