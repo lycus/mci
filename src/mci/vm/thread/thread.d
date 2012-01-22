@@ -37,7 +37,7 @@ static if (operatingSystem == OperatingSystem.windows)
         (*cb)();
     }
 
-    public void registerThreadCleanup(ThreadCallback cb)
+    public void registerThreadCleanup(ThreadEventCallback cb)
     in
     {
         assert(cb);
