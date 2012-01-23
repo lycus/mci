@@ -19,6 +19,10 @@ def configure(conf):
     conf.recurse('libffi-d')
 
     conf.env.VIM = conf.options.vim
+
+    if conf.options.valgrind != 'true' and conf.options.valgrind != 'false':
+        conf.fatal('--valgrind must be either true or false.')
+
     conf.env.VALGRIND = conf.options.valgrind
 
     def add_option(option):
@@ -119,7 +123,7 @@ def test(ctx):
     else:
         _run_shell(OUT, ctx, 'gdb --command=' + os.path.join('..', 'mci.gdb') + ' mci.tester')
 
-    if ctx.env.VALGRIND:
+    if ctx.env.VALGRIND == 'true':
         cmd = 'valgrind --suppressions=' + os.path.join('..', 'mci.valgrind')
         cmd += ' --leak-check=full --track-fds=yes --num-callers=50 --show-reachable=yes'
         cmd += ' --undef-value-errors=no --error-exitcode=1'
