@@ -13,7 +13,7 @@ def options(opt):
     opt.recurse('libffi-d')
 
     opt.add_option('--vim', action = 'store', default = None, help = 'Include Vim syntax files (prefix)')
-    opt.add_option('--valgrind', action = 'store', default = 'true', help = 'Use Valgrind for unit tests')
+    opt.add_option('--valgrind', action = 'store', default = 'false', help = 'Use Valgrind for unit tests')
 
 def configure(conf):
     conf.recurse('libffi-d')
