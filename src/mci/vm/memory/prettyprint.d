@@ -156,7 +156,7 @@ private final class PrettyPrinter
             return endBlock();
         }
         else // Pointers, references, and function pointers.
-            return append(format("0x%x", *cast(size_t**)mem));
+            return append(format("0x%x", *cast(size_t*)mem));
     }
 }
 
