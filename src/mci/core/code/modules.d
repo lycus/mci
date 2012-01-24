@@ -93,9 +93,20 @@ public final class ModuleManager
 
         static if (isPosix)
         {
-            addRange(_probePaths, [buildPath("usr", "local", "lib"),
-                                   buildPath("usr", "lib"),
-                                   "/lib"]);
+            static if (operatingSystem == OperatingSystem.osx)
+            {
+                auto home = std.process.environment["HOME"];
+
+                if (home)
+                    _probePaths.add(buildPath(home, "lib"));
+            }
+
+            _probePaths.add(buildPath("usr", "local", "lib"));
+
+            static if (operatingSystem == OperatingSystem.osx)
+                addRange(_probePaths, ["/lib", buildPath("usr", "lib")]);
+            else
+                addRange(_probePaths, [buildPath("usr", "lib"), "/lib"]);
         }
         else
         {
