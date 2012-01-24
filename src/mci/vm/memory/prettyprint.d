@@ -8,6 +8,7 @@ import std.ascii,
        mci.core.typing.core,
        mci.core.typing.members,
        mci.core.typing.types,
+       mci.vm.memory.base,
        mci.vm.memory.layout;
 
 private final class PrettyPrinter
@@ -82,7 +83,7 @@ private final class PrettyPrinter
     {
         append(format("[%s] ", type.name));
 
-        if (instanceName.length)
+        if (instanceName)
             append(instanceName ~ ": ");
 
         if (isType!Int8Type(type))
@@ -123,25 +124,39 @@ private final class PrettyPrinter
 
             return endBlock();
         }
-        else if (auto vect = cast(VectorType)type)
+        else if (isType!VectorType(type) || isType!ArrayType(type))
         {
-            auto elementSize = computeSize(vect.elementType, is32Bit);
-            auto p = *cast(ubyte**)mem;
+            auto vec = cast(VectorType)type;
+            auto arr = cast(ArrayType)type;
+
+            auto rto = *cast(RuntimeObject*)mem;
+
+            if (!rto)
+                return append(format("0x%x", cast(size_t)0));
+
+            auto p = rto.data;
+
+            auto elementCount = arr ? *cast(size_t*)p : vec.elements;
+            auto elementType = arr ? arr.elementType : vec.elementType;
+            auto elementSize = computeSize(elementType, is32Bit);
+
+            if (arr)
+                p += computeSize(NativeUIntType.instance, is32Bit);
 
             beginBlock();
 
-            for (auto i = 0; i < vect.elements; i++)
+            for (size_t i = 0; i < elementCount; i++)
             {
                 newLine();
-                process(vect.elementType, p, is32Bit, to!string(i));
+                process(elementType, p, is32Bit, to!string(i));
 
                 p += elementSize;
             }
 
             return endBlock();
         }
-        else // Pointers, arrays, and function pointers.
-            return append(format("0x%s", *cast(void**)mem));
+        else // Pointers, references, and function pointers.
+            return append(format("0x%s", *cast(size_t**)mem));
     }
 }
 
