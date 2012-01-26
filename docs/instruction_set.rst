@@ -802,9 +802,9 @@ mem.pin
 **Operand type**
     None
 
-Pins a reference previously allocated with mem.gcnew_ or mem.gcalloc_ so
-that the object it points to cannot be relocated by a compacting GC. This
-is useful when calling into external code via ffi_, as the GC cannot track
+Pins a reference previously allocated with mem.new_ or mem.alloc_ so that
+the object it points to cannot be relocated by a compacting GC. This is
+useful when calling into external code via ffi_, as the GC cannot track
 GC-managed memory beyond managed code. This also implies that the memory
 which is pinned will never be collected until it is unpinned. Therefore,
 memory leaks can happen if care is not taken to correctly mem.unpin_ the
