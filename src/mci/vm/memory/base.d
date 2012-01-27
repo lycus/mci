@@ -1,9 +1,12 @@
 module mci.vm.memory.base;
 
 import std.bitmanip,
+       mci.core.config,
        mci.core.container,
+       mci.core.typing.core,
        mci.core.typing.types,
-       mci.vm.memory.info;
+       mci.vm.memory.info,
+       mci.vm.memory.layout;
 
 public final class RuntimeObject
 {
@@ -55,6 +58,11 @@ package union GCHeader
 {
 }
 
+public bool isSystemAligned(ubyte* ptr)
+{
+    return !(cast(size_t)ptr % computeSize(NativeUIntType.instance, is32Bit));
+}
+
 public interface GarbageCollector
 {
     @property public ulong collections();
@@ -64,25 +72,53 @@ public interface GarbageCollector
     {
         assert(type);
     }
+    out (result)
+    {
+        if (result)
+            assert(isSystemAligned(cast(ubyte*)result));
+    }
 
-    public void free(RuntimeObject data);
+    public void free(RuntimeObject data)
+    in
+    {
+        if (data)
+            assert(isSystemAligned(cast(ubyte*)data));
+    }
 
     public void addRoot(ubyte* ptr)
     in
     {
         assert(ptr);
+        assert(isSystemAligned(ptr));
     }
 
     public void removeRoot(ubyte* ptr)
     in
     {
         assert(ptr);
+        assert(isSystemAligned(ptr));
+    }
+
+    public void addRange(ubyte* ptr, size_t words)
+    in
+    {
+        assert(ptr);
+        assert(isSystemAligned(ptr));
+        assert(words);
+    }
+
+    public void removeRange(ubyte* ptr)
+    in
+    {
+        assert(ptr);
+        assert(isSystemAligned(ptr));
     }
 
     public size_t pin(RuntimeObject data)
     in
     {
         assert(data);
+        assert(isSystemAligned(cast(ubyte*)data));
     }
 
     public void unpin(size_t handle);

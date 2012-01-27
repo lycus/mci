@@ -65,6 +65,14 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
     {
     }
 
+    public void addRange(ubyte* ptr, size_t words)
+    {
+    }
+
+    public void removeRange(ubyte* ptr)
+    {
+    }
+
     public size_t pin(RuntimeObject data)
     {
         return 0;

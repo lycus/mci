@@ -53,6 +53,16 @@ public final class DGarbageCollector : GarbageCollector
         GC.removeRoot(ptr);
     }
 
+    public void addRange(ubyte* ptr, size_t words)
+    {
+        GC.addRange(ptr, words * size_t.sizeof);
+    }
+
+    public void removeRange(ubyte* ptr)
+    {
+        GC.removeRange(ptr);
+    }
+
     public size_t pin(RuntimeObject data)
     {
         // This is not a compacting GC.
