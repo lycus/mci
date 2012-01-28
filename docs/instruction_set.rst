@@ -1290,7 +1290,8 @@ call
     Function reference
 
 This performs a call to the function given as operand. This instruction
-expects that the function has a return type (i.e. it does not return void).
+expects that the function has a return type (i.e. it does not return
+``void``).
 
 This instruction should follow immediately after a correct sequence of
 arg.push_ instructions.
@@ -1322,9 +1323,10 @@ call.indirect
     None
 
 Performs a function call like the call_ instruction, but indirectly. The
-source register must be a function pointer to a function returning non-void,
-and the this instruction must (like call_) be immediately preceeded by a
-correct arg.push_ sequence matching the function pointer's signature.
+source register must be a function pointer to a function returning
+non-``void``, and the this instruction must (like call_) be immediately
+preceeded by a correct arg.push_ sequence matching the function pointer's
+signature.
 
 The result of the call is assigned to the target register.
 
@@ -1339,7 +1341,8 @@ invoke
     Function reference
 
 This instruction does the same thing as call_, but only works for functions
-with no return type (i.e. returning void), and thus has no target register.
+with no return type (i.e. returning ``void``), and thus has no target
+register.
 
 invoke.tail
 -----------
@@ -1352,8 +1355,8 @@ invoke.tail
     Function reference
 
 This instruction does the same thing as call.tail_, but only works for
-functions with no return type (i.e. returning void), and thus has no target
-register.
+functions with no return type (i.e. returning ``void``), and thus has no
+target register.
 
 invoke.indirect
 ---------------
@@ -1366,8 +1369,8 @@ invoke.indirect
     None
 
 This instruction does the same thing as call.indirect_, but only works for
-function pointers with no return type (i.e. returning void), and thus has no
-target register.
+function pointers with no return type (i.e. returning ``void``), and thus
+has no target register.
 
 Control flow instructions
 +++++++++++++++++++++++++
@@ -1416,7 +1419,7 @@ leave
     None
 
 Leaves (i.e. returns from) the current function. This is only valid if
-the function returns void (or, in other words, has no return type).
+the function returns ``void`` (or, in other words, has no return type).
 
 This is a terminator instruction.
 
@@ -1432,7 +1435,7 @@ return
 
 Returns from the current function with the value in the source register
 as the return value. This is only valid in functions that don't return
-void (i.e. have a return type).
+``void`` (i.e. have a return type).
 
 The source register must be the exact same type as the function's return
 type.
@@ -1570,6 +1573,7 @@ The following conversions are valid:
 * ``T*`` -> ``U*`` for any ``T`` and any ``U``.
 * ``T*`` -> ``uint`` or ``int`` for any ``T``.
 * ``uint`` or ``int`` -> ``T*`` for any ``T``.
+* ``T&`` -> ``U&`` for any ``T`` and any ``U``.
 * ``T[E]`` -> ``U[E]`` for any valid ``T`` -> ``U`` conversion.
 * ``R1(T1, ...)`` -> ``R2(U1, ...)`` for any ``R1``, any ``R2``, and any
   amount and type of ``T`` \ :sub:`n` and ``U`` \ :sub:`m`.

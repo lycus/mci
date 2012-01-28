@@ -156,17 +156,14 @@ pointers) and the primitives ``int`` and ``uint``.
 Reference types
 ---------------
 
-References are similar to pointers, but are tracked by the GC. Any
-structure type allocated with the ``mem.gcalloc`` and ``mem.gcnew``
-instructions will result in a reference (vectors and arrays are also
-references, but this is implicit).
+References are similar to pointers, but are tracked by the GC (vectors
+and arrays are also references, but this is implicit).
 
 Examples:
 
 * Reference to a struct called Foo: ``Foo&``
 
-References cannot be converted, nor can anything be converted to a
-reference.
+Any reference-to-reference conversion is valid.
 
 Array types
 -----------
@@ -233,11 +230,11 @@ other guarantees are up to the operating system the code is running on.
 Examples:
 
 * Function returning ``int32``, taking no parameters: ``int32()``
-* Function returning void (i.e. nothing), taking ``float32``:
+* Function returning ``void`` (i.e. nothing), taking ``float32``:
   ``void(float32)``
-* Function returning void, taking ``float32`` and ``int32``:
+* Function returning ``void``, taking ``float32`` and ``int32``:
   ``void(float32, int32)``
-* Function returning void, taking no parameters, with ``cdecl`` calling
+* Function returning ``void``, taking no parameters, with ``cdecl`` calling
   convention: ``void() cdecl``
 
 Function pointers are convertible to any pointer type.
