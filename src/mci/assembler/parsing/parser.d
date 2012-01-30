@@ -227,13 +227,10 @@ public final class Parser
 
         LiteralValueNode alignment;
 
-        if (peek().type == TokenType.openParen)
+        if (peek().type == TokenType.align_)
         {
             next();
-
             alignment = parseLiteralValue!uint();
-
-            consume(")");
         }
 
         consume("{");
@@ -786,6 +783,14 @@ public final class Parser
 
         auto name = parseSimpleName();
 
+        BasicBlockReferenceNode unwind;
+
+        if (peek().type == TokenType.unwind)
+        {
+            next();
+            unwind = parseBasicBlockReference();
+        }
+
         consume("{");
 
         auto instructions = new NoNullList!InstructionNode();
@@ -797,7 +802,7 @@ public final class Parser
 
         next();
 
-        return new BasicBlockDeclarationNode(name.location, name, instructions);
+        return new BasicBlockDeclarationNode(name.location, name, unwind, instructions);
     }
 
     private InstructionNode parseInstruction()

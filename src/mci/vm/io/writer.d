@@ -124,6 +124,9 @@ public final class ModuleWriter : ModuleSaver
 
         foreach (block; function_.blocks)
             writeBasicBlock(block.y);
+
+        foreach (block; function_.blocks)
+            writeBasicBlockUnwindSpecification(block.y);
     }
 
     private void writeRegister(Register register)
@@ -145,6 +148,20 @@ public final class ModuleWriter : ModuleSaver
     body
     {
         _writer.writeString(block.name);
+    }
+
+    private void writeBasicBlockUnwindSpecification(BasicBlock block)
+    in
+    {
+        assert(block);
+    }
+    body
+    {
+        writeBasicBlockReference(block);
+        _writer.write(cast(bool)block.unwindBlock);
+
+        if (block.unwindBlock)
+            writeBasicBlockReference(block.unwindBlock);
     }
 
     private void writeInstruction(Instruction instruction)

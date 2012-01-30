@@ -150,7 +150,12 @@ public final class ModuleDisassembler
 
         foreach (block; function_.blocks)
         {
-            writefln("    block %s", block.y.name);
+            writef("    block %s", block.y.name);
+
+            if (block.y.unwindBlock)
+                writef(" unwind %s", block.y.unwindBlock.name);
+
+            writeln();
             writeln("    {");
 
             foreach (instr; block.y.instructions)

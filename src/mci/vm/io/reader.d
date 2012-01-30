@@ -724,13 +724,16 @@ public final class ModuleReader : ModuleLoader
 
         auto regCount = _reader.read!uint();
 
-        for (uint j = 0; j < regCount; j++)
+        for (uint i = 0; i < regCount; i++)
             readRegister(func);
 
         auto bbCount = _reader.read!uint();
 
-        for (uint j = 0; j < bbCount; j++)
+        for (uint i = 0; i < bbCount; i++)
             readBasicBlock(func);
+
+        for (uint i = 0; i < bbCount; i++)
+            readBasicBlockUnwindSpecification(func);
 
         return func;
     }
@@ -764,6 +767,25 @@ public final class ModuleReader : ModuleLoader
     body
     {
         return function_.createBasicBlock(_reader.readString());
+    }
+
+    private BasicBlock readBasicBlockUnwindSpecification(Function function_)
+    in
+    {
+        assert(function_);
+    }
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto bb = readBasicBlockReference(function_);
+
+        if (_reader.read!bool())
+            bb.unwindBlock = readBasicBlockReference(function_);
+
+        return bb;
     }
 
     private Instruction readInstruction(Function function_)

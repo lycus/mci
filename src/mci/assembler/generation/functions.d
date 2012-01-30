@@ -69,6 +69,16 @@ body
 
     foreach (block; node.blocks)
     {
+        auto bb = function_.blocks[block.name.name];
+
+        if (block.unwindBlock)
+            bb.unwindBlock = resolveBasicBlock(block.unwindBlock, function_);
+
+        bb.close();
+    }
+
+    foreach (block; node.blocks)
+    {
         auto bb = function_.blocks.get(block.name.name);
 
         foreach (instrNode; block.instructions)

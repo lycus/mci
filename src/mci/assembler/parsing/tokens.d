@@ -24,6 +24,7 @@ public enum TokenType : ubyte
     and,
     slash,
     type,
+    align_,
     field,
     instance,
     static_,
@@ -38,6 +39,7 @@ public enum TokenType : ubyte
     noCallInlining,
     register,
     block,
+    unwind,
     void_,
     int8,
     uint8,
@@ -91,6 +93,7 @@ in
 body
 {
     auto keywordsToTypes = ["type" : TokenType.type,
+                            "align" : TokenType.align_,
                             "field" : TokenType.field,
                             "instance" : TokenType.instance,
                             "static" : TokenType.static_,
@@ -104,6 +107,7 @@ body
                             "nocallinline" : TokenType.noCallInlining,
                             "register" : TokenType.register,
                             "block" : TokenType.block,
+                            "unwind" : TokenType.unwind,
                             "void" : TokenType.void_,
                             "int8" : TokenType.int8,
                             "uint8" : TokenType.uint8,

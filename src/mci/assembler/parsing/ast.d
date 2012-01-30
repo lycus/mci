@@ -861,6 +861,7 @@ public class RegisterDeclarationNode : Node
 public class BasicBlockDeclarationNode : Node
 {
     private SimpleNameNode _name;
+    private BasicBlockReferenceNode _unwindBlock;
     private NoNullList!InstructionNode _instructions;
 
     invariant()
@@ -869,7 +870,7 @@ public class BasicBlockDeclarationNode : Node
         assert(_instructions);
     }
 
-    public this(SourceLocation location, SimpleNameNode name, NoNullList!InstructionNode instructions)
+    public this(SourceLocation location, SimpleNameNode name, BasicBlockReferenceNode unwindBlock, NoNullList!InstructionNode instructions)
     in
     {
         assert(location);
@@ -881,12 +882,18 @@ public class BasicBlockDeclarationNode : Node
         super(location);
 
         _name = name;
+        _unwindBlock = unwindBlock;
         _instructions = instructions.duplicate();
     }
 
     @property public final SimpleNameNode name()
     {
         return _name;
+    }
+
+    @property public final BasicBlockReferenceNode unwindBlock()
+    {
+        return _unwindBlock;
     }
 
     @property public final ReadOnlyIndexable!InstructionNode instructions()
@@ -896,7 +903,7 @@ public class BasicBlockDeclarationNode : Node
 
     @property public override ReadOnlyIndexable!Node children()
     {
-        return new List!Node(concat(toReadOnlyIndexable!Node(_name), castItems!Node(_instructions)));
+        return new List!Node(concat(toReadOnlyIndexable!Node(_name, _unwindBlock), castItems!Node(_instructions)));
     }
 }
 

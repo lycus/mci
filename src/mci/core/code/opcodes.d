@@ -292,10 +292,9 @@ public enum OperationCode : ubyte
     leave,
     return_,
     phi,
-    exThrow,
-    exTry,
-    exHandle,
-    exEnd,
+    ehThrow,
+    ehRethrow,
+    ehCatch,
 }
 
 public __gshared OpCode opNop;
@@ -381,10 +380,9 @@ public __gshared OpCode opJumpCond;
 public __gshared OpCode opLeave;
 public __gshared OpCode opReturn;
 public __gshared OpCode opPhi;
-public __gshared OpCode opExThrow;
-public __gshared OpCode opExTry;
-public __gshared OpCode opExHandle;
-public __gshared OpCode opExEnd;
+public __gshared OpCode opEHThrow;
+public __gshared OpCode opEHRethrow;
+public __gshared OpCode opEHCatch;
 
 public __gshared ReadOnlyIndexable!OpCode allOpCodes;
 
@@ -493,10 +491,9 @@ shared static this()
     opLeave = create("leave", OperationCode.leave, OpCodeType.controlFlow, OperandType.none, 0, false);
     opReturn = create("return", OperationCode.return_, OpCodeType.controlFlow, OperandType.none, 1, false);
     opPhi = create("phi", OperationCode.phi, OpCodeType.normal, OperandType.selector, 0, true);
-    opExThrow = create("ex.throw", OperationCode.exThrow, OpCodeType.controlFlow, OperandType.uint32, 1, false);
-    opExTry = create("ex.try", OperationCode.exTry, OpCodeType.annotation, OperandType.none, 0, false);
-    opExHandle = create("ex.handle", OperationCode.exHandle, OpCodeType.normal, OperandType.uint32, 0, true);
-    opExEnd = create("ex.end", OperationCode.exEnd, OpCodeType.annotation, OperandType.none, 0, false);
+    opEHThrow = create("eh.throw", OperationCode.ehThrow, OpCodeType.controlFlow, OperandType.none, 1, false);
+    opEHRethrow = create("eh.rethrow", OperationCode.ehRethrow, OpCodeType.controlFlow, OperandType.none, 0, false);
+    opEHCatch = create("eh.catch", OperationCode.ehCatch, OpCodeType.normal, OperandType.none, 0, true);
 
     allOpCodes = opCodes;
 }

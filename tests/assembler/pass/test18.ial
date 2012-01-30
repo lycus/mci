@@ -1,3 +1,3 @@
-type Foo (256)
+type Foo align 256
 {
 }

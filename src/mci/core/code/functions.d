@@ -10,7 +10,9 @@ public final class BasicBlock
 {
     private Function _function;
     private string _name;
+    private BasicBlock _unwindBlock;
     private NoNullList!Instruction _instructions;
+    private bool _isClosed;
 
     invariant()
     {
@@ -52,6 +54,26 @@ public final class BasicBlock
         return _name;
     }
 
+    @property public BasicBlock unwindBlock()
+    in
+    {
+        assert(_isClosed);
+    }
+    body
+    {
+        return _unwindBlock;
+    }
+
+    @property public void unwindBlock(BasicBlock unwindBlock)
+    in
+    {
+        assert(!_isClosed);
+    }
+    body
+    {
+        _unwindBlock = unwindBlock;
+    }
+
     @property public NoNullList!Instruction instructions()
     out (result)
     {
@@ -60,6 +82,21 @@ public final class BasicBlock
     body
     {
         return _instructions;
+    }
+
+    @property public bool isClosed()
+    {
+        return _isClosed;
+    }
+
+    public void close()
+    in
+    {
+        assert(!_isClosed);
+    }
+    body
+    {
+        _isClosed = true;
     }
 
     public override string toString()
