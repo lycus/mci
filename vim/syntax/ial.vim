@@ -22,7 +22,7 @@ syn keyword ialInstruction              mem.new mem.free mem.salloc mem.pin mem.
 syn keyword ialInstruction              array.get array.set array.addr array.len field.get field.set field.addr
 syn keyword ialInstruction              field.gget field.gset field.gaddr cmp.eq cmp.neq cmp.gt cmp.lt cmp.gteq cmp.lteq
 syn keyword ialInstruction              arg.push arg.pop invoke invoke.tail invoke.indirect call call.tail call.indirect
-syn keyword ialInstruction              raw ffi jump jump.cond leave return phi ex.throw ex.try ex.handle ex.end
+syn keyword ialInstruction              raw ffi jump jump.cond leave return phi eh.throw eh.rethrow eh.catch
 
 syn keyword ialTodo                     contained TODO FIXME HACK UNDONE XXX NOTE
 syn match   ialComment                  "//.*$" contains=ialTodo
