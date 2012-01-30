@@ -1545,7 +1545,60 @@ This is a terminator instruction.
 Exception handling instructions
 +++++++++++++++++++++++++++++++
 
-.. TODO: Figure out how we want to do EH.
+eh.throw
+--------
+
+**Has target register**
+    No
+**Source registers**
+    1
+**Operand type**
+    None
+
+Throws an exception. This causes the runtime to unwind the stack until an
+appropriate unwind block is found. If an unwind block is found, control
+transfers to that block. If none is found, the program is terminated.
+
+The source register must be a reference.
+
+This is a terminator instruction.
+
+eh.rethrow
+----------
+
+**Has target register**
+    No
+**Source registers**
+    0
+**Operand type**
+    None
+
+Rethrows an in-flight exception. This is different from using ``eh.throw``
+to rethrow an exception reference in that this instruction does not reset
+the stack trace.
+
+This instruction may only appear in unwind blocks.
+
+This is a terminator instruction.
+
+eh.catch
+--------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    None
+
+This catches the current in-flight exception and assigns it to the target
+register. Note that this is not type-safe; it's similar to casting one
+reference type to another with ``conv``. In order to determine the exact
+exception type, language/ABI-specific checks must be made.
+
+The target register must be a reference.
+
+This instruction may only appear in unwind blocks.
 
 Miscellaneous instructions
 ++++++++++++++++++++++++++
