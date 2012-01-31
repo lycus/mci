@@ -1545,6 +1545,8 @@ This is a terminator instruction.
 Exception handling instructions
 +++++++++++++++++++++++++++++++
 
+These are used to indicate and handle errors.
+
 eh.throw
 --------
 
