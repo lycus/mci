@@ -16,6 +16,7 @@ Infrastructure guide
    type_system.rst
    instruction_set.rst
    intrinsics.rst
+   concurrency.rst
 
 Framework reference
 +++++++++++++++++++
