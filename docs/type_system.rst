@@ -103,17 +103,17 @@ zero, the compiler picks the alignment (that is to say, zero is like the
 default). Examples::
 
     // Use automatic alignment.
-    type Foo3 (0)
+    type Foo3 align 0
     {
     }
 
     // Align fields sequentially.
-    type Foo4 (1)
+    type Foo4 align 1
     {
     }
 
     // Align fields on a boundary of 16 bytes.
-    type Foo5 (16)
+    type Foo5 align 16
     {
     }
 
