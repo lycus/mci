@@ -8,7 +8,6 @@ import mci.core.container,
 
 public abstract class XRefVisitor: ModuleVisitor
 {
-    // TODO: Replace this with a hash set as soon this is implemented.
     private HashSet!Module _modules;
 
     public this()
