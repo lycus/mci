@@ -9,9 +9,35 @@ they help us keep a clean and consistent source base.
 
         ++ Indentation ++
 
-We indent with 4 spaces, always, everywhere. Do not use hard tabs. The
-single exception to this rule is the Makefile (we don't have much choice
-in the matter here).
+We indent with 4 spaces, always, everywhere. Do not use hard tabs.
+
+        ++ Braces ++
+
+Braces always go on a separate line. Never put them on the same line as
+anything else except in lambda bodies. In other words, use Allman style
+everywhere.
+
+        ++ Spacing ++
+
+One place where spacing is very important is in expressions. You should
+always put a space on all sides of binary and ternary operators, for example.
+Note that this is not necessary for unary operators, including typeof, typeid,
+is, assert, and so on.
+
+Spacing is not necessary in function calls either (other than after a comma).
+For example, you should do:
+
+    * foo();
+    * foo(bar);
+    * foo(bar, baz);
+    * foo!bar(baz);
+    * foo!(bar, baz)();
+
+Additionally, always put a space after a block statement keyword. That is:
+
+    * if (...)
+    * while (...)
+    * for (...)
 
         ++ Naming ++
 
@@ -94,3 +120,23 @@ The const and immutable modifiers are much less problematic, but unfortunately
 are not implemented correctly and without bugs in any current compilers. For
 this reason, we generally avoid them as well. We do plan to make more use of
 them once compilers get less broken support for them.
+
+        ++ Scope Modifier ++
+
+Using the scope modifier on delegate parameters when possible is, in general,
+good practice. It helps ensure that delegates aren't unnecessarily allocated
+in the GC heap when they aren't escaped from the function using them.
+
+        ++ Initialization Types ++
+
+When initializing fields or global variables, it is generally preferable to
+use typeof:
+
+    * foo = new typeof(foo)(); // For classes.
+    * bar = typeof(bar)(); // For structs.
+
+This usually results in less typing and makes it easier to refactor code.
+
+This is, of course, only usable when the field or variable is not declared as
+an interface or abstract class, so in those cases, it is fine to use an
+explicit type.
