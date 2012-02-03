@@ -56,6 +56,8 @@ public final class RuntimeObject
 
 package union GCHeader
 {
+    // Temporary padding until we make use of this union.
+    uint bits;
 }
 
 public bool isSystemAligned(ubyte* ptr)
