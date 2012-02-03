@@ -23,6 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Miscellaneous", "Miscellane
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{9956EC64-ACD3-4F73-A4E9-DEC06207DC54}"
 	ProjectSection(SolutionItems) = preProject
+		docs\concurrency.rst = docs\concurrency.rst
 		docs\index.rst = docs\index.rst
 		docs\instruction_set.rst = docs\instruction_set.rst
 		docs\intrinsics.rst = docs\intrinsics.rst

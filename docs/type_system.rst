@@ -159,7 +159,26 @@ Reference types
 References are similar to pointers, but are tracked by the GC (vectors
 and arrays are also references, but this is implicit).
 
-Examples:
+It is important to note that a reference value must be aligned on a native
+word-size boundary. For example, this is problematic::
+
+    type BadAlign align 1
+    {
+        field instance uint8 a;
+
+        // This field will now be unaligned. This is undefined behavior.
+        field instance BadAlign& b;
+    }
+
+Care should be taken when using an explicit alignment specification on
+structures that contain references. The MCI's garbage collector, optimizer,
+and code generator all assume that reference fields are aligned.
+
+In addition to this rule, the object that the reference points to must be on
+a native word-size boundary as well. This is less important to users, as the
+``mem.new`` instruction guarantees this.
+
+Examples of references:
 
 * Reference to a struct called Foo: ``Foo&``
 

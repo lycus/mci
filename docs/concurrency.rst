@@ -18,4 +18,5 @@ reference values (this includes array and vector references). What this
 means is that dereferencing a reference (or an array/vector) will never
 result in an invalid memory access due to concurrency (save for the null
 case, naturally). Note that this is only guaranteed for references that are
-correctly aligned on a native word-size boundary.
+correctly aligned on a native word-size boundary (which is required for
+references to work correctly either way).
