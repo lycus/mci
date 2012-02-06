@@ -5,7 +5,7 @@ import mci.core.common,
 
 public class VMBinaryReader : BinaryReader
 {
-    public this(FileStream file, Endianness endianness = Endianness.littleEndian)
+    public this(Stream file, Endianness endianness = Endianness.littleEndian)
     in
     {
         assert(file);
@@ -26,7 +26,7 @@ public class VMBinaryReader : BinaryReader
 
 public class VMBinaryWriter : BinaryWriter
 {
-    public this(FileStream file, Endianness endianness = Endianness.littleEndian)
+    public this(Stream file, Endianness endianness = Endianness.littleEndian)
     in
     {
         assert(file);

@@ -218,7 +218,7 @@ public final class MemoryStream : Stream
 
 public class BinaryReader
 {
-    private FileStream _file;
+    private Stream _file;
     private Endianness _endianness;
 
     invariant()
@@ -228,7 +228,7 @@ public class BinaryReader
         assert(!_file.isClosed);
     }
 
-    public this(FileStream file, Endianness endianness = Endianness.littleEndian)
+    public this(Stream file, Endianness endianness = Endianness.littleEndian)
     in
     {
         assert(file);
@@ -276,7 +276,7 @@ public class BinaryReader
 
 public class BinaryWriter
 {
-    private FileStream _file;
+    private Stream _file;
     private Endianness _endianness;
 
     invariant()
@@ -286,7 +286,7 @@ public class BinaryWriter
         assert(!_file.isClosed);
     }
 
-    public this(FileStream file, Endianness endianness = Endianness.littleEndian)
+    public this(Stream file, Endianness endianness = Endianness.littleEndian)
     in
     {
         assert(file);
@@ -319,5 +319,83 @@ public class BinaryWriter
     {
         foreach (item; value)
             write(item);
+    }
+}
+
+public class TextWriter : BinaryWriter
+{
+    private ulong _indent;
+
+    public this(Stream file, Endianness endianness = Endianness.littleEndian)
+    in
+    {
+        assert(file);
+        assert(file.canRead);
+        assert(!file.isClosed);
+    }
+    body
+    {
+        super(file, endianness);
+    }
+
+    public void indent()
+    {
+        if (_indent != typeof(_indent).max)
+            _indent++;
+    }
+
+    public void dedent()
+    {
+        if (_indent != typeof(_indent).min)
+            _indent--;
+    }
+
+    public void write(T ...)(T args)
+    {
+        foreach (arg; args)
+            writeArray(to!string(arg));
+    }
+
+    public void writeln(T ...)(T args)
+    {
+        write(args);
+        write(newline);
+    }
+
+    public void writef(T ...)(T args)
+    {
+        write(format(args));
+    }
+
+    public void writefln(T ...)(T args)
+    {
+        writef(args);
+        writeln();
+    }
+
+    public void writei(T ...)(T args)
+    {
+        for (auto i = 0; i < _indent; i++)
+            write("    ");
+
+        foreach (arg; args)
+            write(arg);
+    }
+
+    public void writeiln(T ...)(T args)
+    {
+        writei(args);
+        writeln();
+    }
+
+    public void writeif(T ...)(T args)
+    {
+        writei(format(args));
+    }
+
+    public void writeifln(T ...)(T args)
+    {
+        writeif(args);
+        writeln();
     }
 }
