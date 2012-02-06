@@ -215,3 +215,78 @@ body
            isType!ArrayType(type) ||
            isType!VectorType(type);
 }
+
+public bool isDirectCallSite(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opCall ||
+           opCode is opCallTail ||
+           opCode is opInvoke ||
+           opCode is opInvokeTail;
+}
+
+public bool isIndirectCallSite(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opCallIndirect ||
+           opCode is opInvokeIndirect;
+}
+
+public bool isCallSite(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return isDirectCallSite(opCode) ||
+           isIndirectCallSite(opCode);
+}
+
+public bool containsManagedCode(BasicBlock block)
+{
+    return !getFirstInstruction(block, opFFI) && !getFirstInstruction(block, opRaw);
+}
+
+public ReadOnlyIndexable!Type getSignature(Function function_, ref Type returnType)
+{
+    returnType = function_.returnType;
+
+    auto types = new NoNullList!Type();
+
+    foreach (param; function_.parameters)
+        types.add(param.type);
+
+    return types;
+}
+
+public ReadOnlyIndexable!Type getSignature(FunctionPointerType type, ref Type returnType)
+{
+    returnType = type.returnType;
+
+    return type.parameterTypes;
+}
+
+public ReadOnlyIndexable!Type getSignature(Instruction callSite, ref Type returnType)
+in
+{
+    assert(isCallSite(callSite.opCode));
+}
+body
+{
+    if (isDirectCallSite(callSite.opCode))
+        return getSignature(*callSite.operand.peek!Function(), returnType);
+
+    if (isIndirectCallSite(callSite.opCode))
+        return getSignature(cast(FunctionPointerType)callSite.sourceRegister1.type, returnType);
+
+    assert(false);
+}

@@ -350,12 +350,58 @@ public final class ArrayVerifier : CodeVerifier
                 }
 
                 if (instr.opCode is opArrayGet && instr.targetRegister.type !is getElementType(instr.sourceRegister1.type))
-                        error(instr, "The target register must be of the first source register's element type.");
+                    error(instr, "The target register must be of the first source register's element type.");
                 else if (instr.opCode is opArraySet && instr.sourceRegister3.type !is getElementType(instr.sourceRegister1.type))
-                        error(instr, "The third source register must be of the first source register's element type.");
+                    error(instr, "The third source register must be of the first source register's element type.");
                 else if (instr.opCode is opArrayAddr && instr.targetRegister.type !is getPointerType(getElementType(instr.sourceRegister1.type)))
-                        error(instr, "The target register must be a pointer to the first source register's element type.");
+                    error(instr, "The target register must be a pointer to the first source register's element type.");
             }
+        }
+    }
+}
+
+public final class CallSiteTypeVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instrIndex, instr; bb.y.instructions)
+            {
+                if (!isCallSite(instr.opCode))
+                    continue;
+
+                Type returnType;
+                auto argTypes = getSignature(instr, returnType);
+                auto argCount = argTypes.count;
+
+                foreach (argIndex, argType; argTypes)
+                {
+                    auto pushOp = bb.y.instructions[instrIndex - argCount + argIndex];
+
+                    if (pushOp.sourceRegister1.type !is argType)
+                        error(pushOp, "The source register must be of type '%s'.", argType.name);
+                }
+            }
+        }
+    }
+}
+
+public final class FunctionArgumentTypeVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        auto entry = function_.blocks[entryBlockName];
+
+        if (!containsManagedCode(entry))
+            return;
+
+        foreach (i, param; function_.parameters)
+        {
+            auto popOp = entry.instructions[i];
+
+            if (popOp.targetRegister.type !is param.type)
+                error(popOp, "The target register must be of type '%s'.", param.type.name);
         }
     }
 }

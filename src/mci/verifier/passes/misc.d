@@ -1,8 +1,10 @@
 module mci.verifier.passes.misc;
 
-import mci.core.code.functions,
+import mci.core.analysis.utilities,
+       mci.core.code.functions,
        mci.core.code.opcodes,
        mci.core.typing.members,
+       mci.core.typing.types,
        mci.verifier.base;
 
 public final class EntryVerifier : CodeVerifier
@@ -39,5 +41,64 @@ public final class FieldStorageVerifier : CodeVerifier
                 }
             }
         }
+    }
+}
+
+public final class CallSiteCountVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            size_t pushCount;
+            size_t required;
+
+            foreach (instr; bb.y.instructions)
+            {
+                if (instr.opCode is opArgPush)
+                {
+                    pushCount++;
+                    continue;
+                }
+                else if (isDirectCallSite(instr.opCode))
+                    required = (*instr.operand.peek!Function()).parameters.count;
+                else if (isIndirectCallSite(instr.opCode))
+                    required = (cast(FunctionPointerType)instr.sourceRegister1.type).parameterTypes.count;
+                else
+                    continue;
+
+                if (pushCount != required)
+                    error(instr, "Expected %s 'arg.push' instructions.", required);
+
+                pushCount = 0;
+                required = 0;
+            }
+        }
+    }
+}
+
+public final class FunctionArgumentCountVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        auto entry = function_.blocks[entryBlockName];
+
+        if (!containsManagedCode(entry))
+            return;
+
+        auto required = function_.parameters.count;
+
+        for (size_t i = 0; i < required; i++)
+        {
+            auto instr = entry.instructions[i];
+
+            if (instr.opCode !is opArgPop)
+                error(instr, "Expected %s 'arg.pop' instructions.", required);
+        }
+
+        auto instr = entry.instructions[required];
+
+        if (instr.opCode is opArgPop)
+            error(instr, "Expected %s 'arg.pop' instructions.", required);
     }
 }
