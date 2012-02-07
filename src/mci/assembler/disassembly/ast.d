@@ -1,9 +1,6 @@
 module mci.assembler.disassembly.ast;
 
-import std.algorithm,
-       std.conv,
-       std.stdio,
-       std.string,
+import std.string,
        mci.core.io,
        mci.assembler.parsing.ast,
        mci.assembler.parsing.parser;
@@ -11,33 +8,32 @@ import std.algorithm,
 public final class TreeDisassembler
 {
     private string _inputFile;
-    private FileStream _file;
-    private BinaryWriter _writer;
-    private ubyte _indent;
+    private Stream _stream;
+    private TextWriter _writer;
     private bool _done;
 
     invariant()
     {
         assert(_inputFile);
-        assert(_file);
-        assert(_file.canWrite);
-        assert(!_file.isClosed);
+        assert(_stream);
+        assert(_stream.canWrite);
+        assert(!_stream.isClosed);
         assert(_writer);
     }
 
-    public this(string inputFile, FileStream file)
+    public this(string inputFile, Stream stream)
     in
     {
         assert(inputFile);
-        assert(file);
-        assert(file.canWrite);
-        assert(!file.isClosed);
+        assert(stream);
+        assert(stream.canWrite);
+        assert(!stream.isClosed);
     }
     body
     {
         _inputFile = inputFile;
-        _file = file;
-        _writer = new BinaryWriter(file);
+        _stream = stream;
+        _writer = new typeof(_writer)(stream);
     }
 
     public void disassemble(CompilationUnit unit)
@@ -53,7 +49,7 @@ public final class TreeDisassembler
         foreach (node; unit.nodes)
             writeNode(node);
 
-        writeln();
+        _writer.writeln();
     }
 
     private void writeNode(Node node)
@@ -63,68 +59,21 @@ public final class TreeDisassembler
     }
     body
     {
-        writeif("[%s in %s %s", split(typeid(node).name, ".")[$ - 1][0 .. $ - 4], _inputFile, node.location);
+        _writer.writeif("[%s in %s %s", split(typeid(node).name, ".")[$ - 1][0 .. $ - 4], _inputFile, node.location);
 
         auto str = node.toString();
 
         if (str.length)
-            writef(" -> %s", str);
+            _writer.writef(" -> %s", str);
 
-        writeln("]");
+        _writer.writeln("]");
 
-        indent();
+        _writer.indent();
 
         foreach (child; node.children)
             if (child)
                 writeNode(child);
 
-        dedent();
-    }
-
-    private void indent()
-    {
-        _indent++;
-    }
-
-    private void dedent()
-    {
-        _indent--;
-    }
-
-    private void write(T ...)(T args)
-    {
-        foreach (arg; args)
-            _writer.writeArray(to!string(arg));
-    }
-
-    private void writeln(T ...)(T args)
-    {
-        write(args);
-        write(newline);
-    }
-
-    private void writef(T ...)(T args)
-    {
-        write(format(args));
-    }
-
-    private void writefln(T ...)(T args)
-    {
-        writef(args);
-        writeln();
-    }
-
-    private void writei(T ...)(T args)
-    {
-        for (auto i = 0; i < _indent; i++)
-            _writer.writeArray("    ");
-
-        foreach (arg; args)
-            _writer.writeArray(to!string(arg));
-    }
-
-    private void writeif(T ...)(T args)
-    {
-        writei(format(args));
+        _writer.dedent();
     }
 }

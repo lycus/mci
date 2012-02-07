@@ -1,9 +1,6 @@
 module mci.assembler.disassembly.modules;
 
-import std.conv,
-       std.stdio,
-       std.string,
-       mci.core.container,
+import mci.core.container,
        mci.core.io,
        mci.core.tuple,
        mci.core.code.functions,
@@ -15,29 +12,29 @@ import std.conv,
 
 public final class ModuleDisassembler
 {
-    private FileStream _file;
-    private BinaryWriter _writer;
+    private Stream _stream;
+    private TextWriter _writer;
     private bool _done;
 
     invariant()
     {
-        assert(_file);
-        assert(_file.canWrite);
-        assert(!_file.isClosed);
+        assert(_stream);
+        assert(_stream.canWrite);
+        assert(!_stream.isClosed);
         assert(_writer);
     }
 
-    public this(FileStream file)
+    public this(Stream stream)
     in
     {
-        assert(file);
-        assert(file.canWrite);
-        assert(!file.isClosed);
+        assert(stream);
+        assert(stream.canWrite);
+        assert(!stream.isClosed);
     }
     body
     {
-        _file = file;
-        _writer = new BinaryWriter(file);
+        _stream = stream;
+        _writer = new typeof(_writer)(stream);
     }
 
     public void disassemble(Module module_)
@@ -64,36 +61,36 @@ public final class ModuleDisassembler
     }
     body
     {
-        writef("type %s", type.name);
+        _writer.writef("type %s", type.name);
 
         if (type.alignment)
-            writef(" (%s)", type.alignment);
+            _writer.writef(" align %s", type.alignment);
 
-        writeln();
-        writeln("{");
+        _writer.writeln();
+        _writer.writeln("{");
 
         foreach (field; type.fields)
         {
-            write("    field ");
+            _writer.write("    field ");
 
             final switch (field.y.storage)
             {
                 case FieldStorage.instance:
-                    write("instance");
+                    _writer.write("instance");
                     break;
                 case FieldStorage.static_:
-                    write("static");
+                    _writer.write("static");
                     break;
                 case FieldStorage.thread:
-                    write("thread");
+                    _writer.write("thread");
                     break;
             }
 
-            writefln(" %s %s;", field.y.type, field.y.name);
+            _writer.writefln(" %s %s;", field.y.type, field.y.name);
         }
 
-        writeln("}");
-        writeln();
+        _writer.writeln("}");
+        _writer.writeln();
     }
 
     private void writeFunction(Function function_)
@@ -103,109 +100,86 @@ public final class ModuleDisassembler
     }
     body
     {
-        write("function ");
+        _writer.write("function ");
 
         if (function_.attributes & FunctionAttributes.pure_)
-            write("pure ");
+            _writer.write("pure ");
 
         if (function_.attributes & FunctionAttributes.noOptimization)
-            write("nooptimize ");
+            _writer.write("nooptimize ");
 
         if (function_.attributes & FunctionAttributes.noInlining)
-            write("noinline ");
+            _writer.write("noinline ");
 
         if (function_.attributes & FunctionAttributes.noCallInlining)
-            write("nocallinline ");
+            _writer.write("nocallinline ");
 
-        writef("%s %s (", function_.returnType ? function_.returnType.toString() : "void", function_.name);
+        _writer.writef("%s %s (", function_.returnType ? function_.returnType.toString() : "void", function_.name);
 
         foreach (i, param; function_.parameters)
         {
-            write(param.type);
+            _writer.write(param.type);
 
             if (i < function_.parameters.count - 1)
-                write(", ");
+                _writer.write(", ");
         }
 
-        writeln(")");
+        _writer.writeln(")");
 
         final switch (function_.callingConvention)
         {
             case CallingConvention.standard:
                 break;
             case CallingConvention.cdecl:
-                write(" cdecl");
+                _writer.write(" cdecl");
                 break;
             case CallingConvention.stdCall:
-                write(" stdcall");
+                _writer.write(" stdcall");
                 break;
         }
 
-        writeln("{");
+        _writer.writeln("{");
 
         foreach (reg; function_.registers)
-            writefln("    register %s %s;", reg.y.type, reg.y.name);
+            _writer.writefln("    register %s %s;", reg.y.type, reg.y.name);
 
-        writeln();
+        _writer.writeln();
 
         foreach (block; function_.blocks)
         {
-            writef("    block %s", block.y.name);
+            _writer.writef("    block %s", block.y.name);
 
             if (block.y.unwindBlock)
-                writef(" unwind %s", block.y.unwindBlock.name);
+                _writer.writef(" unwind %s", block.y.unwindBlock.name);
 
-            writeln();
-            writeln("    {");
+            _writer.writeln();
+            _writer.writeln("    {");
 
             foreach (instr; block.y.instructions)
             {
                 if (!instr.metadata.empty)
                 {
-                    write("[");
+                    _writer.write("[");
 
                     foreach (i, md; instr.metadata)
                     {
-                        writef("'%s' : '%s'", md.key, md.value);
+                        _writer.writef("'%s' : '%s'", md.key, md.value);
 
                         if (i != instr.metadata.count - 1)
-                            writeln(",");
+                            _writer.writeln(",");
                     }
 
-                    writeln("]");
+                    _writer.writeln("]");
                 }
 
-                writeln("        %s;", instr);
+                _writer.writeln("        %s;", instr);
             }
 
-            writeln("    }");
-            writeln();
+            _writer.writeln("    }");
+            _writer.writeln();
         }
 
-        writeln("}");
-        writeln();
-    }
-
-    private void write(T ...)(T args)
-    {
-        foreach (arg; args)
-            _writer.writeArray(to!string(arg));
-    }
-
-    private void writeln(T ...)(T args)
-    {
-        write(args);
-        write(newline);
-    }
-
-    private void writef(T ...)(T args)
-    {
-        write(format(args));
-    }
-
-    private void writefln(T ...)(T args)
-    {
-        writef(args);
-        writeln();
+        _writer.writeln("}");
+        _writer.writeln();
     }
 }
