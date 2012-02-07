@@ -1,8 +1,10 @@
 module mci.core.io;
 
-import std.stdio,
-       std.traits,
+import std.conv,
        std.range,
+       std.stdio,
+       std.string,
+       std.traits,
        mci.core.common,
        mci.core.config,
        mci.core.meta;
