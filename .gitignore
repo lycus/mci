@@ -5,7 +5,6 @@ build/*
 
 src/*/*/Debug/*
 src/*/*/Release/*
-src/*/*/Test/*
 
 .lock*
 
