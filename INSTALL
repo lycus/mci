@@ -12,20 +12,26 @@ Once installed, you must configure the project like so:
     $ waf configure
 
 You can use the --prefix option to specify where to install to. This
-defaults to '/usr/local' normally. The MCI Waf script also supports
-some additional options:
+defaults to "/usr/local" normally. The --check-d-compiler switch can be
+used to specify which compiler to build with. This will typically be
+"dmd", "gdc", or "ldc".
 
-    * --lp64 (= true)
+The MCI Waf script also supports some additional options:
+
+    * --lp64 (= "true")
       - Whether to build for 64-bit pointers.
-    * --mode (= debug)
-      - Which mode to build in. Building in 'debug' disables any and
-        all optimizations, while 'release' enables optimization and
+    * --mode (= "debug")
+      - Which mode to build in. Building in "debug" disables any and
+        all optimizations, while "release" enables optimization and
         inlining. Note that both modes will generate debug information
         and emit array bounds checks.
     * --vim (= <none>)
       - Where to install Vim syntax files for IAL files. If you wish
-        to enable this, you should probably set this value to '~/.vim'
+        to enable this, you should probably set this value to "~/.vim"
         or similar.
+    * --valgrind (= "false")
+      - Whether to run the unit test suite with Valgrind. Note that
+        this is disabled on OS X regardless of this setting.
 
 You will need to have both libffi and libdl installed for the build
 to succeed. Your libffi installation must support the closure API.

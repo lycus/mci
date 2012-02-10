@@ -9,7 +9,6 @@ The following compilers are supported:
     * Digital Mars D (DMD)
     * GNU D Compiler (GDC)
     * LLVM D Compiler (LDC)
-    * Stupid D Compiler (SDC)
 
 The MCI will probably compile even if you're using an unsupported
 compiler, but we cannot in any way guarantee support.
@@ -39,8 +38,7 @@ The following operating systems are supported:
     * AIX
     * Hurd
 
-Operating system must be determinable when compiling, or the compilation
-process will be aborted.
+Operating system must be determinable when compiling.
 
 The following emulation layers can optionally be used:
 
@@ -52,3 +50,6 @@ Byte order must also be determined when compiling.
 The MCI also depends on the libffi library with full support for the
 closure API. As far as we are aware, this configuration is available
 across all combinations of supported architectures and operating systems.
+In addition, on POSIX, we make use of libdl for dynamically loading shared
+object files in the VM. This library is present on virtually any POSIX
+system, except BSD (where it's included in the standard C library anyway).
