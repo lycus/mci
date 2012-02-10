@@ -28,13 +28,37 @@ def configure(conf):
     def add_option(option):
         conf.env.append_value('DFLAGS', option)
 
-    conf.load('dmd')
+    if conf.env.COMPILER_D == 'dmd':
+        add_option('-w')
+        add_option('-wi')
+        add_option('-ignore')
+        add_option('-property')
+        add_option('-gc')
 
-    add_option('-w')
-    add_option('-wi')
-    add_option('-ignore')
-    add_option('-property')
-    add_option('-gc')
+        if conf.options.mode == 'debug':
+            add_option('-debug')
+        elif conf.options.mode == 'release':
+            add_option('-release')
+            add_option('-O')
+            add_option('-inline')
+        else:
+            conf.fatal('--mode must be either debug or release.')
+    elif conf.env.COMPILER_D == 'gdc':
+        add_option('-Wall')
+        add_option('-fignore-unknown-pragmas')
+        add_option('-fproperty')
+        add_option('-g')
+        add_option('-fdebug-c')
+
+        if conf.options.mode == 'debug':
+            add_option('-fdebug')
+        elif conf.options.mode == 'release':
+            add_option('-frelease')
+            add_option('-O3')
+        else:
+            conf.fatal('--mode must be either debug or release.')
+    else:
+        conf.fatal('Unsupported D compiler.')
 
     if conf.options.lp64 == 'true':
         add_option('-m64')
@@ -42,15 +66,6 @@ def configure(conf):
         add_option('-m32')
     else:
         conf.fatal('--lp64 must be either true or false.')
-
-    if conf.options.mode == 'debug':
-        add_option('-debug')
-    elif conf.options.mode == 'release':
-        add_option('-release')
-        add_option('-O')
-        add_option('-inline')
-    else:
-        conf.fatal('--mode must be either debug or release.')
 
     conf.env.LIB_FFI = ['ffi']
 
