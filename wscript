@@ -140,6 +140,8 @@ def _run_shell(dir, ctx, args):
     os.chdir(cwd)
 
 def test(ctx):
+    '''runs the unit test suite and infrastructure tests'''
+
     if 'darwin' in Utils.unversioned_sys_platform():
         _run_shell(OUT, ctx, './mci.tester')
     else:
@@ -160,6 +162,8 @@ class TestContext(Build.BuildContext):
     fun = 'test'
 
 def docs(ctx):
+    '''builds the documentation'''
+
     def build_docs(targets):
         for x in targets:
             _run_shell('docs', ctx, 'make ' + x)
@@ -180,5 +184,7 @@ def docs(ctx):
                 'linkcheck'])
 
 def dist(dst):
+    '''makes a tarball for redistributing the sources'''
+
     with open('.gitignore', 'r') as f:
         dst.excl = ' '.join(l.strip() for l in f if l.strip())
