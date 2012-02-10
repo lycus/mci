@@ -115,7 +115,14 @@ def build(bld):
 
     program('cli', 'mci', deps)
 
-    program('tester', 'mci.tester', deps, ['-unittest'], None)
+    if bld.env.COMPILER_D == 'dmd':
+        unittest = '-unittest'
+    elif bld.env.COMPILER_D == 'gdc':
+        unittest = '-funittest'
+    else:
+        bld.fatal('Unsupported D compiler.')
+
+    program('tester', 'mci.tester', deps, unittest, None)
 
     if bld.env.VIM:
         bld.install_files(os.path.join(bld.env.VIM, 'syntax'), os.path.join('vim', 'syntax', 'ial.vim'))
