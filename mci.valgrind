@@ -214,3 +214,109 @@
    fun:_D2rt6dmain24mainUiPPaZi7tryExecMFMDFZvZv
    fun:main
 }
+
+{
+   <druntime_leak16>
+   Memcheck:Leak
+   fun:calloc
+   fun:_d_monitor_create
+   fun:_d_monitorenter
+   fun:_D2gc3gcx2GC6mallocMFmkPmZPv
+   fun:_d_newclass
+   fun:thread_attachThis
+   fun:thread_init
+   fun:gc_init
+   fun:_D2rt6dmain24mainUiPPaZi6runAllMFZv
+   fun:_D2rt6dmain24mainUiPPaZi7tryExecMFMDFZvZv
+   fun:main
+}
+
+{
+   <druntime_leak17>
+   Memcheck:Leak
+   fun:malloc
+   fun:thread_attachThis
+   fun:thread_init
+   fun:gc_init
+   fun:_D2rt6dmain24mainUiPPaZi6runAllMFZv
+   fun:_D2rt6dmain24mainUiPPaZi7tryExecMFMDFZvZv
+   fun:main
+}
+
+{
+   <druntime_leak18>
+   Memcheck:Leak
+   fun:calloc
+   fun:_d_monitor_create
+   fun:_d_monitorenter
+   fun:_D3mci4core6typing5cache14getPointerTypeFC3mci4core6typing5types4TypeZC3mci4core6typing5types11PointerType
+   fun:_D3mci6tester5types9__modtestFZv
+   fun:_D4core7runtime18runModuleUnitTestsUZb14__foreachbody5MFKPS6object10ModuleInfoZi
+   fun:_D6object10ModuleInfo7opApplyFMDFKPS6object10ModuleInfoZiZi
+   fun:runModuleUnitTests
+   fun:_D2rt6dmain24mainUiPPaZi6runAllMFZv
+   fun:_D2rt6dmain24mainUiPPaZi7tryExecMFMDFZvZv
+   fun:main
+}
+
+{
+   <druntime_leak19>
+   Memcheck:Leak
+   fun:calloc
+   fun:_d_monitor_create
+   fun:_d_monitorenter
+   fun:_D3mci4core6typing5cache22getFunctionPointerTypeFE3mci4core4code9functions17CallingConventionC3mci4core6typing5types4TypeC3mci4core9container45__T10NoNullListTC3mci4core6typing5types4TypeZ10NoNullListZC3mci4core6typing5types19FunctionPointerType
+   fun:_D3mci6tester5types9__modtestFZv
+   fun:_D4core7runtime18runModuleUnitTestsUZb14__foreachbody5MFKPS6object10ModuleInfoZi
+   fun:_D6object10ModuleInfo7opApplyFMDFKPS6object10ModuleInfoZiZi
+   fun:runModuleUnitTests
+   fun:_D2rt6dmain24mainUiPPaZi6runAllMFZv
+   fun:_D2rt6dmain24mainUiPPaZi7tryExecMFMDFZvZv
+   fun:main
+}
+
+{
+   <druntime_leak20>
+   Memcheck:Leak
+   fun:calloc
+   fun:_d_monitor_create
+   fun:_d_monitorenter
+   fun:_D3mci4core6typing5cache12getArrayTypeFC3mci4core6typing5types4TypeZC3mci4core6typing5types9ArrayType
+   fun:_D3mci6tester5types9__modtestFZv
+   fun:_D4core7runtime18runModuleUnitTestsUZb14__foreachbody5MFKPS6object10ModuleInfoZi
+   fun:_D6object10ModuleInfo7opApplyFMDFKPS6object10ModuleInfoZiZi
+   fun:runModuleUnitTests
+   fun:_D2rt6dmain24mainUiPPaZi6runAllMFZv
+   fun:_D2rt6dmain24mainUiPPaZi7tryExecMFMDFZvZv
+   fun:main
+}
+
+{
+   <druntime_leak21>
+   Memcheck:Leak
+   fun:calloc
+   fun:_d_monitor_create
+   fun:_d_monitorenter
+   fun:_D3mci4core6typing5cache13getVectorTypeFC3mci4core6typing5types4TypekZC3mci4core6typing5types10VectorType
+   fun:_D3mci6tester5types9__modtestFZv
+   fun:_D4core7runtime18runModuleUnitTestsUZb14__foreachbody5MFKPS6object10ModuleInfoZi
+   fun:_D6object10ModuleInfo7opApplyFMDFKPS6object10ModuleInfoZiZi
+   fun:runModuleUnitTests
+   fun:_D2rt6dmain24mainUiPPaZi6runAllMFZv
+   fun:_D2rt6dmain24mainUiPPaZi7tryExecMFMDFZvZv
+   fun:main
+}
+
+{
+   <druntime_leak22>
+   Memcheck:Leak
+   fun:calloc
+   fun:_d_monitor_create
+   fun:_d_monitorenter
+   fun:_D4core6thread14thread_joinAllUZv16__foreachbody109MFKC4core6thread6ThreadZi
+   fun:thread_joinAll
+   fun:_D2rt6dmain24mainUiPPaZi6runAllMFZv
+   fun:_D2rt6dmain24mainUiPPaZi7tryExecMFMDFZvZv
+   fun:main
+}
+
