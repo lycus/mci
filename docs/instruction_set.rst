@@ -194,6 +194,9 @@ Loads a constant array of 8-bit signed integers into the target register.
 The target register must be of type ``int8[]``, ``int8*``, or a vector of
 ``int8`` with an element count matching that of the array operand.
 
+When the target register is a pointer, the data must be explicitly freed with
+mem.free_.
+
 load.ui8a
 ---------
 
@@ -208,6 +211,9 @@ Loads a constant array of 8-bit unsigned integers into the target register.
 
 The target register must be of type ``uint8[]``, ``uint8*``, or a vector of
 ``uint8`` with an element count matching that of the array operand.
+
+When the target register is a pointer, the data must be explicitly freed with
+mem.free_.
 
 load.i16a
 ---------
@@ -224,6 +230,9 @@ Loads a constant array of 16-bit signed integers into the target register.
 The target register must be of type ``int16[]``, ``int16*``, or a vector of
 ``int16`` with an element count matching that of the array operand.
 
+When the target register is a pointer, the data must be explicitly freed with
+mem.free_.
+
 load.ui16a
 ----------
 
@@ -238,6 +247,9 @@ Loads a constant array of 16-bit unsigned integers into the target register.
 
 The target register must be of type ``uint16[]``, ``uint16*``, or a vector of
 ``uint16`` with an element count matching that of the array operand.
+
+When the target register is a pointer, the data must be explicitly freed with
+mem.free_.
 
 load.i32a
 ---------
@@ -254,6 +266,9 @@ Loads a constant array of 32-bit signed integers into the target register.
 The target register must be of type ``int32[]``, ``int32*``, or a vector of
 ``int32`` with an element count matching that of the array operand.
 
+When the target register is a pointer, the data must be explicitly freed with
+mem.free_.
+
 load.ui32a
 ----------
 
@@ -268,6 +283,9 @@ Loads a constant array of 32-bit unsigned integers into the target register.
 
 The target register must be of type ``uint32[]``, ``uint32*``, or a vector of
 ``uint32`` with an element count matching that of the array operand.
+
+When the target register is a pointer, the data must be explicitly freed with
+mem.free_.
 
 load.i64a
 ---------
@@ -284,6 +302,9 @@ Loads a constant array of 64-bit signed integers into the target register.
 The target register must be of type ``int64[]``, ``int64*``, or a vector of
 ``int64`` with an element count matching that of the array operand.
 
+When the target register is a pointer, the data must be explicitly freed with
+mem.free_.
+
 load.ui64a
 ----------
 
@@ -298,6 +319,9 @@ Loads a constant array of 64-bit unsigned integers into the target register.
 
 The target register must be of type ``uint64[]``, ``uint64*``, or a vector of
 ``uint64`` with an element count matching that of the array operand.
+
+When the target register is a pointer, the data must be explicitly freed with
+mem.free_.
 
 load.f32a
 ---------
@@ -315,6 +339,9 @@ register.
 The target register must be of type ``float32[]``, ``float32*``, or a vector
 of ``float32`` with an element count matching that of the array operand.
 
+When the target register is a pointer, the data must be explicitly freed with
+mem.free_.
+
 load.f64a
 ---------
 
@@ -330,6 +357,9 @@ register.
 
 The target register must be of type ``float64[]``, ``float64*``, or a vector
 of ``float64`` with an element count matching that of the array operand.
+
+When the target register is a pointer, the data must be explicitly freed with
+mem.free_.
 
 load.func
 ---------
