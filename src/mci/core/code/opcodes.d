@@ -250,6 +250,8 @@ public enum OperationCode : ubyte
     not,
     shL,
     shR,
+    roL,
+    roR,
     conv,
     memAlloc,
     memNew,
@@ -265,6 +267,22 @@ public enum OperationCode : ubyte
     arraySet,
     arrayAddr,
     arrayLen,
+    arrayAriAdd,
+    arrayAriSub,
+    arrayAriMul,
+    arrayAriDiv,
+    arrayAriRem,
+    arrayAriNeg,
+    arrayBitAnd,
+    arrayBitOr,
+    arrayBitXOr,
+    arrayBitNeg,
+    arrayNot,
+    arrayShL,
+    arrayShR,
+    arrayRoL,
+    arrayRoR,
+    arrayConv,
     fieldGet,
     fieldSet,
     fieldAddr,
@@ -338,6 +356,8 @@ public __gshared OpCode opBitNeg;
 public __gshared OpCode opNot;
 public __gshared OpCode opShL;
 public __gshared OpCode opShR;
+public __gshared OpCode opRoL;
+public __gshared OpCode opRoR;
 public __gshared OpCode opConv;
 public __gshared OpCode opMemAlloc;
 public __gshared OpCode opMemNew;
@@ -353,6 +373,22 @@ public __gshared OpCode opArrayGet;
 public __gshared OpCode opArraySet;
 public __gshared OpCode opArrayAddr;
 public __gshared OpCode opArrayLen;
+public __gshared OpCode opArrayAriAdd;
+public __gshared OpCode opArrayAriSub;
+public __gshared OpCode opArrayAriMul;
+public __gshared OpCode opArrayAriDiv;
+public __gshared OpCode opArrayAriRem;
+public __gshared OpCode opArrayAriNeg;
+public __gshared OpCode opArrayBitAnd;
+public __gshared OpCode opArrayBitOr;
+public __gshared OpCode opArrayBitXOr;
+public __gshared OpCode opArrayBitNeg;
+public __gshared OpCode opArrayNot;
+public __gshared OpCode opArrayShL;
+public __gshared OpCode opArrayShR;
+public __gshared OpCode opArrayRoL;
+public __gshared OpCode opArrayRoR;
+public __gshared OpCode opArrayConv;
 public __gshared OpCode opFieldGet;
 public __gshared OpCode opFieldSet;
 public __gshared OpCode opFieldAddr;
@@ -449,6 +485,8 @@ shared static this()
     opNot = create("not", OperationCode.not, OpCodeType.normal, OperandType.none, 1, true);
     opShL = create("shl", OperationCode.shL, OpCodeType.normal, OperandType.none, 2, true);
     opShR = create("shr", OperationCode.shR, OpCodeType.normal, OperandType.none, 2, true);
+    opRoL = create("rol", OperationCode.roL, OpCodeType.normal, OperandType.none, 2, true);
+    opRoR = create("ror", OperationCode.roR, OpCodeType.normal, OperandType.none, 2, true);
     opConv = create("conv", OperationCode.conv, OpCodeType.normal, OperandType.none, 1, true);
     opMemAlloc = create("mem.alloc", OperationCode.memAlloc, OpCodeType.normal, OperandType.none, 1, true);
     opMemNew = create("mem.new", OperationCode.memNew, OpCodeType.normal, OperandType.none, 0, true);
@@ -464,6 +502,22 @@ shared static this()
     opArraySet = create("array.set", OperationCode.arraySet, OpCodeType.normal, OperandType.none, 3, false);
     opArrayAddr = create("array.addr", OperationCode.arrayAddr, OpCodeType.normal, OperandType.none, 2, true);
     opArrayLen = create("array.len", OperationCode.arrayLen, OpCodeType.normal, OperandType.none, 1, true);
+    opArrayAriAdd = create("array.ari.add", OperationCode.arrayAriAdd, OpCodeType.normal, OperandType.none, 2, false);
+    opArrayAriSub = create("array.ari.sub", OperationCode.arrayAriSub, OpCodeType.normal, OperandType.none, 2, false);
+    opArrayAriMul = create("array.ari.mul", OperationCode.arrayAriMul, OpCodeType.normal, OperandType.none, 2, false);
+    opArrayAriDiv = create("array.ari.div", OperationCode.arrayAriDiv, OpCodeType.normal, OperandType.none, 2, false);
+    opArrayAriRem = create("array.ari.rem", OperationCode.arrayAriRem, OpCodeType.normal, OperandType.none, 2, false);
+    opArrayAriNeg = create("array.ari.neg", OperationCode.arrayAriNeg, OpCodeType.normal, OperandType.none, 1, false);
+    opArrayBitAnd = create("array.bit.and", OperationCode.arrayBitAnd, OpCodeType.normal, OperandType.none, 2, false);
+    opArrayBitOr = create("array.bit.or", OperationCode.arrayBitOr, OpCodeType.normal, OperandType.none, 2, false);
+    opArrayBitXOr = create("array.bit.xor", OperationCode.arrayBitXOr, OpCodeType.normal, OperandType.none, 2, false);
+    opArrayBitNeg = create("array.bit.neg", OperationCode.arrayBitNeg, OpCodeType.normal, OperandType.none, 1, false);
+    opArrayNot = create("array.not", OperationCode.arrayNot, OpCodeType.normal, OperandType.none, 1, false);
+    opArrayShL = create("array.shl", OperationCode.arrayShL, OpCodeType.normal, OperandType.none, 2, false);
+    opArrayShR = create("array.shr", OperationCode.arrayShR, OpCodeType.normal, OperandType.none, 2, false);
+    opArrayRoL = create("array.rol", OperationCode.arrayRoL, OpCodeType.normal, OperandType.none, 2, false);
+    opArrayRoR = create("array.ror", OperationCode.arrayRoR, OpCodeType.normal, OperandType.none, 2, false);
+    opArrayConv = create("array.conv", OperationCode.arrayConv, OpCodeType.normal, OperandType.none, 2, false);
     opFieldGet = create("field.get", OperationCode.fieldGet, OpCodeType.normal, OperandType.field, 1, true);
     opFieldSet = create("field.set", OperationCode.fieldSet, OpCodeType.normal, OperandType.field, 2, false);
     opFieldAddr = create("field.addr", OperationCode.fieldAddr, OpCodeType.normal, OperandType.field, 1, true);

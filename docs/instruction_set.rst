@@ -469,10 +469,15 @@ ari.add
 Adds the value in the first source register to the value in the second
 source register and stores the result in the target register.
 
-All three registers must be of the exact same type. Allowed types are
-``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
-well as any pointer type. Vectors of all of these are also allowed.
+This instruction can have one of two forms:
+
+* All three registers must be of the exact same type. Allowed types are
+  ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+  ``int64``, ``uint64``, ``int``, ``uint``, ``float32``, and ``float64``.
+  This performs regular arithmetic.
+* The target register is a pointer type. The first source register must
+  also be a pointer type, and the second source register must be ``uint``.
+  This performs pointer arithmetic.
 
 ari.sub
 -------
@@ -487,10 +492,15 @@ ari.sub
 Subtracts the value in the first source register from the value in the second
 source register and stores the result in the target register.
 
-All three registers must be of the exact same type. Allowed types are
-``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
-well as any pointer type. Vectors of all of these are also allowed.
+This instruction can have one of two forms:
+
+* All three registers must be of the exact same type. Allowed types are
+  ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+  ``int64``, ``uint64``, ``int``, ``uint``, ``float32``, and ``float64``.
+  This performs regular arithmetic.
+* The target register is a pointer type. The first source register must
+  also be a pointer type, and the second source register must be ``uint``.
+  This performs pointer arithmetic.
 
 ari.mul
 -------
@@ -507,8 +517,7 @@ second source register and stores the result in the target register.
 
 All three registers must be of the exact same type. Allowed types are
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
-well as any pointer type. Vectors of all of these are also allowed.
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, and ``float64``.
 
 ari.div
 -------
@@ -525,8 +534,7 @@ source register and stores the result in the target register.
 
 All three registers must be of the exact same type. Allowed types are
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
-well as any pointer type. Vectors of all of these are also allowed.
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, and ``float64``.
 
 ari.rem
 -------
@@ -544,8 +552,7 @@ register.
 
 All three registers must be of the exact same type. Allowed types are
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
-well as any pointer type. Vectors of all of these are also allowed.
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, and ``float64``.
 
 ari.neg
 -------
@@ -562,8 +569,7 @@ register.
 
 Both registers must be of the exact same type. Allowed types are
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
-well as any pointer type. Vectors of all of these are also allowed.
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, and ``float64``.
 
 bit.and
 -------
@@ -580,8 +586,7 @@ the result to the target register.
 
 All three registers must be of the exact same type. Allowed types are
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, as well as any pointer type.
-Vectors of all of these are also allowed.
+``int64``, ``uint64``, ``int``,  and ``uint``.
 
 bit.or
 ------
@@ -598,8 +603,7 @@ the result to the target register.
 
 All three registers must be of the exact same type. Allowed types are
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, as well as any pointer type.
-Vectors of all of these are also allowed.
+``int64``, ``uint64``, ``int``, and ``uint``.
 
 bit.xor
 -------
@@ -616,8 +620,7 @@ the result to the target register.
 
 All three registers must be of the exact same type. Allowed types are
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, as well as any pointer type.
-Vectors of all of these are also allowed.
+``int64``, ``uint64``, ``int``, and ``uint``.
 
 bit.neg
 -------
@@ -634,8 +637,7 @@ and assigns the result to the target register.
 
 Both registers must be of the exact same type. Allowed types are
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, as well as any pointer type.
-Vectors of all of these are also allowed.
+``int64``, ``uint64``, ``int``, and ``uint``.
 
 not
 ---
@@ -653,9 +655,8 @@ result to the target register.
 If the source equals 0, the result is 1. In all other cases, the result is 0.
 
 Both registers must be of the exact same type. Allowed types are
-``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, as
-well as any pointer type. Vectors of all of these are also allowed.
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``, ``int64``,
+``uint64``, ``int``, ``uint``, ``float32``, and ``float64``.
 
 shl
 ---
@@ -698,6 +699,46 @@ shift (i.e. it is done with sign extension); otherwise, a logical shift is done
 
 If the second source register is larger than the amount of bits of the first
 source register's type, that amount will be used instead.
+
+The first register and the target register must be of the exact same type.
+Allowed types are ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``,
+``uint32``, ``int64``, ``uint64``, ``int``, and ``uint``.
+
+The second register must be of type ``uint``.
+
+rol
+---
+
+**Has target register**
+    Yes
+**Source registers**
+    2
+**Operand type**
+    None
+
+Rotate the bits of the value in the first source register left by the amount
+given in the second source register. This is similar to shl_, but instead of
+performing zero extension, the rotated bits are inserted.
+
+The first register and the target register must be of the exact same type.
+Allowed types are ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``,
+``uint32``, ``int64``, ``uint64``, ``int``, and ``uint``.
+
+The second register must be of type ``uint``.
+
+ror
+---
+
+**Has target register**
+    Yes
+**Source registers**
+    2
+**Operand type**
+    None
+
+Rotate the bits of the value in the first source register right by the amount
+given in the second source register. This is similar to shr_, but instead of
+performing zero/sign extension, the rotated bits are inserted.
 
 The first register and the target register must be of the exact same type.
 Allowed types are ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``,
@@ -998,6 +1039,302 @@ the dynamic size, while for vectors, it is the fixed size. The source
 register must be an array or a vector.
 
 The target register must be of type ``uint``.
+
+array.ari.add
+-------------
+
+**Has target register**
+    No
+**Source registers**
+    2
+**Operand type**
+    None
+
+Performs arithmetic addition on elements of an array or vector.
+
+The first source register must be an array or vector of the types allowed in
+ari.add_.
+
+If the first source register is an array or vector of a pointer type, the
+second source register must either be of type ``uint`` or an array or vector
+of these. Otherwise, the second source register must be of the element type
+of the first source register, or be an array or vector of the first source
+register's element type.
+
+array.ari.sub
+-------------
+
+**Has target register**
+    No
+**Source registers**
+    2
+**Operand type**
+    None
+
+Performs arithmetic subtraction on elements of an array or vector.
+
+The first source register must be an array or vector of the types allowed in
+ari.sub_.
+
+If the first source register is an array or vector of a pointer type, the
+second source register must either be of type ``uint`` or an array or vector
+of these. Otherwise, the second source register must be of the element type
+of the first source register, or be an array or vector of the first source
+register's element type.
+
+array.ari.mul
+-------------
+
+**Has target register**
+    No
+**Source registers**
+    2
+**Operand type**
+    None
+
+Performs arithmetic multiplication on elements of an array or vector.
+
+The first source register must be an array or vector of the types allowed in
+ari.mul_.
+
+The second source register must be of the element type of the first source
+register, or be an array or vector of the first source register's element
+type.
+
+array.ari.div
+-------------
+
+**Has target register**
+    No
+**Source registers**
+    2
+**Operand type**
+    None
+
+Performs arithmetic division on elements of an array or vector.
+
+The first source register must be an array or vector of the types allowed in
+ari.div_.
+
+The second source register must be of the element type of the first source
+register, or be an array or vector of the first source register's element
+type.
+
+array.ari.rem
+-------------
+
+**Has target register**
+    No
+**Source registers**
+    2
+**Operand type**
+    None
+
+Computes the remainder resulting from dividing elements of an array or vector
+with the given value(s).
+
+The first source register must be an array or vector of the types allowed in
+ari.rem_.
+
+The second source register must be of the element type of the first source
+register, or be an array or vector of the first source register's element
+type.
+
+array.ari.neg
+-------------
+
+**Has target register**
+    No
+**Source registers**
+    1
+**Operand type**
+    None
+
+Negates all elements of an array or vector.
+
+The first source register must be an array or vector of the types allowed in
+ari.neg_.
+
+array.bit.and
+-------------
+
+**Has target register**
+    No
+**Source registers**
+    2
+**Operand type**
+    None
+
+Performs bit-wise AND on elements of an array or vector.
+
+The first source register must be an array or vector of the types allowed in
+bit.and_.
+
+The second source register must be of the element type of the first source
+register, or be an array or vector of the first source register's element
+type.
+
+array.bit.or
+------------
+
+**Has target register**
+    No
+**Source registers**
+    2
+**Operand type**
+    None
+
+Performs bit-wise OR on elements of an array or vector.
+
+The first source register must be an array or vector of the types allowed in
+bit.or_.
+
+The second source register must be of the element type of the first source
+register, or be an array or vector of the first source register's element
+type.
+
+array.bit.xor
+-------------
+
+**Has target register**
+    No
+**Source registers**
+    2
+**Operand type**
+    None
+
+Performs bit-wise XOR on elements of an array or vector.
+
+The first source register must be an array or vector of the types allowed in
+bit.xor_.
+
+The second source register must be of the element type of the first source
+register, or be an array or vector of the first source register's element
+type.
+
+array.bit.neg
+-------------
+
+**Has target register**
+    No
+**Source registers**
+    1
+**Operand type**
+    None
+
+Performs a bit-wise complement negation operation on all elements of an array
+or vector.
+
+The first source register must be an array or vector of the types allowed in
+bit.neg_.
+
+array.not
+---------
+
+**Has target register**
+    No
+**Source registers**
+    1
+**Operand type**
+    None
+
+Performs a logical negation on all elements of an array or vector.
+
+The first source register must be an array or vector of the types allowed in
+not_.
+
+array.shl
+---------
+
+**Has target register**
+    No
+**Source registers**
+    2
+**Operand type**
+    None
+
+Performs a left shift of the bits of elements in an array or vector.
+
+The first source register must be an array or vector of the types allowed in
+shl_.
+
+The second source register must be of type ``uint`` or an array or vector of
+these.
+
+array.shr
+---------
+
+**Has target register**
+    No
+**Source registers**
+    2
+**Operand type**
+    None
+
+Performs a right shift of the bits of elements in an array or vector.
+
+The first source register must be an array or vector of the types allowed in
+shr_.
+
+The second source register must be of type ``uint`` or an array or vector of
+these.
+
+array.rol
+---------
+
+**Has target register**
+    No
+**Source registers**
+    2
+**Operand type**
+    None
+
+Performs a left rotation of bits of the elements in an array or vector.
+
+The first source register must be an array or vector of the types allowed in
+rol_.
+
+The second source register must be of type ``uint`` or an array or vector of
+these.
+
+array.ror
+---------
+
+**Has target register**
+    No
+**Source registers**
+    2
+**Operand type**
+    None
+
+Performs a right rotation of bits of the elements in an array or vector.
+
+The first source register must be an array or vector of the types allowed in
+ror_.
+
+The second source register must be of type ``uint`` or an array or vector of
+these.
+
+array.conv
+----------
+
+**Has target register**
+    No
+**Source registers**
+    2
+**Operand type**
+    None
+
+Converts elements in the array or vector in the first source register to
+the element type of the array or vector in the second source register and
+assigns them to the second source register's elements incrementally.
+
+The following conversions are valid:
+
+* ``T[E]`` -> ``U[E]`` for any valid ``T`` -> ``U`` conversion.
+* ``T[]`` -> ``U[]`` for any valid ``T`` -> ``U`` conversion.
+
+See also conv_.
 
 Structure field instructions
 ++++++++++++++++++++++++++++
