@@ -30,7 +30,7 @@ comment
 **Source registers**
     0
 **Operand type**
-    Byte array
+    8-bit unsigned integer array
 
 Similar to nop_, but allows attaching arbitrary data to it.
 
@@ -675,10 +675,9 @@ source register's type, that amount will be used instead.
 
 The first register and the target register must be of the exact same type.
 Allowed types are ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``,
-``uint32``, ``int64``, ``uint64``, ``int``, ``uint``, as well as any pointer
-type. Vectors of all of these are also allowed.
+``uint32``, ``int64``, ``uint64``, ``int``, and ``uint``.
 
-The second register must be of type ``uint`` or a vector of these.
+The second register must be of type ``uint``.
 
 shr
 ---
@@ -702,10 +701,9 @@ source register's type, that amount will be used instead.
 
 The first register and the target register must be of the exact same type.
 Allowed types are ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``,
-``uint32``, ``int64``, ``uint64``, ``int``, ``uint``, as well as any pointer
-type. Vectors of all of these are also allowed.
+``uint32``, ``int64``, ``uint64``, ``int``, and ``uint``.
 
-The second register must be of type ``uint`` or a vector of these.
+The second register must be of type ``uint``.
 
 Memory management instructions
 ++++++++++++++++++++++++++++++
@@ -1520,7 +1518,7 @@ raw
 **Source registers**
     0
 **Operand type**
-    Byte array
+    8-bit unsigned integer array
 
 This instruction tells the code generator to insert raw machine code (which
 is given as the byte array operand) in the generated machine code stream.
@@ -1659,7 +1657,6 @@ The following conversions are valid:
 * ``T*`` -> ``uint`` or ``int`` for any ``T``.
 * ``uint`` or ``int`` -> ``T*`` for any ``T``.
 * ``T&`` -> ``U&`` for any ``T`` and any ``U``.
-* ``T[E]`` -> ``U[E]`` for any valid ``T`` -> ``U`` conversion.
 * ``R1(T1, ...)`` -> ``R2(U1, ...)`` for any ``R1``, any ``R2``, and any
   amount and type of ``T`` \ :sub:`n` and ``U`` \ :sub:`m`.
 * ``R(T1, ...)`` -> ``U*`` for any ``R``, any amount and type of ``T``
