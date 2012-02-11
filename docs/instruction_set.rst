@@ -191,8 +191,8 @@ load.i8a
 
 Loads a constant array of 8-bit signed integers into the target register.
 
-The target register must be of type ``int8[]`` or a vector of ``int8`` with
-an element count matching that of the array operand.
+The target register must be of type ``int8[]``, ``int8*``, or a vector of
+``int8`` with an element count matching that of the array operand.
 
 load.ui8a
 ---------
@@ -206,8 +206,8 @@ load.ui8a
 
 Loads a constant array of 8-bit unsigned integers into the target register.
 
-The target register must be of type ``uint8[]`` or a vector of ``uint8``
-with an element count matching that of the array operand.
+The target register must be of type ``uint8[]``, ``uint8*``, or a vector of
+``uint8`` with an element count matching that of the array operand.
 
 load.i16a
 ---------
@@ -221,8 +221,8 @@ load.i16a
 
 Loads a constant array of 16-bit signed integers into the target register.
 
-The target register must be of type ``int16[]`` or a vector of ``int16``
-with an element count matching that of the array operand.
+The target register must be of type ``int16[]``, ``int16*``, or a vector of
+``int16`` with an element count matching that of the array operand.
 
 load.ui16a
 ----------
@@ -236,8 +236,8 @@ load.ui16a
 
 Loads a constant array of 16-bit unsigned integers into the target register.
 
-The target register must be of type ``uint16[]`` or a vector of ``uint16``
-with an element count matching that of the array operand.
+The target register must be of type ``uint16[]``, ``uint16*``, or a vector of
+``uint16`` with an element count matching that of the array operand.
 
 load.i32a
 ---------
@@ -251,8 +251,8 @@ load.i32a
 
 Loads a constant array of 32-bit signed integers into the target register.
 
-The target register must be of type ``int32[]`` or a vector of ``int32``
-with an element count matching that of the array operand.
+The target register must be of type ``int32[]``, ``int32*``, or a vector of
+``int32`` with an element count matching that of the array operand.
 
 load.ui32a
 ----------
@@ -266,8 +266,8 @@ load.ui32a
 
 Loads a constant array of 32-bit unsigned integers into the target register.
 
-The target register must be of type ``uint32[]`` or a vector of ``uint32``
-with an element count matching that of the array operand.
+The target register must be of type ``uint32[]``, ``uint32*``, or a vector of
+``uint32`` with an element count matching that of the array operand.
 
 load.i64a
 ---------
@@ -281,8 +281,8 @@ load.i64a
 
 Loads a constant array of 64-bit signed integers into the target register.
 
-The target register must be of type ``int64[]`` or a vector of ``int64``
-with an element count matching that of the array operand.
+The target register must be of type ``int64[]``, ``int64*``, or a vector of
+``int64`` with an element count matching that of the array operand.
 
 load.ui64a
 ----------
@@ -296,8 +296,8 @@ load.ui64a
 
 Loads a constant array of 64-bit unsigned integers into the target register.
 
-The target register must be of type ``uint64[]`` or a vector of ``uint64``
-with an element count matching that of the array operand.
+The target register must be of type ``uint64[]``, ``uint64*``, or a vector of
+``uint64`` with an element count matching that of the array operand.
 
 load.f32a
 ---------
@@ -312,8 +312,8 @@ load.f32a
 Loads a constant array of 32-bit floating-point values into the target
 register.
 
-The target register must be of type ``float32[]`` or a vector of ``float32``
-with an element count matching that of the array operand.
+The target register must be of type ``float32[]``, ``float32*``, or a vector
+of ``float32`` with an element count matching that of the array operand.
 
 load.f64a
 ---------
@@ -328,8 +328,8 @@ load.f64a
 Loads a constant array of 64-bit floating-point values into the target
 register.
 
-The target register must be of type ``float64[]`` or a vector of ``float64``
-with an element count matching that of the array operand.
+The target register must be of type ``float64[]``, ``float64*``, or a vector
+of ``float64`` with an element count matching that of the array operand.
 
 load.func
 ---------
@@ -356,8 +356,8 @@ can be assigned to a register declared as::
     register int32(float32, float64) bar;
 
 The target may also have a specified calling convention (``cdecl`` or
-``stdcall``), in which case the given function must be an FFI function with
-a matching calling convention.
+``stdcall``), in which case the given function must have a matching calling
+convention.
 
 load.null
 ---------

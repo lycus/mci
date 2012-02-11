@@ -217,7 +217,7 @@ compiler can unroll the SIMD operations statically.
 Reading beyond the bounds of a vector results in undefined behavior.
 
 Vectors, unlike arrays, have certain alignment requirements due to most
-SIMD hardware. Usually, the first element will be aligned on either a
+SIMD hardware. Usually, the first element will be aligned on either an
 8-byte, 16-byte, or 32-byte boundary, although the exact alignment is
 undefined. As with arrays, this means that the first element's address must
 be fetched in order to iterate a vector in memory.
