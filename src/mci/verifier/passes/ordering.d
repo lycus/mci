@@ -54,3 +54,28 @@ public final class FunctionArgumentOrderVerifier : CodeVerifier
         }
     }
 }
+
+public final class PhiOrderVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        auto entry = function_.blocks[entryBlockName];
+
+        foreach (bb; function_.blocks)
+            if (auto phi = getFirstInstruction(entry, opPhi))
+                error(phi, "The 'phi' instruction is not valid in the 'entry' basic block.");
+
+        foreach (bb; function_.blocks)
+        {
+            auto valid = true;
+
+            foreach (instr; bb.y.instructions)
+            {
+                if (instr.opCode is opPhi && !valid)
+                    error(instr, "The 'phi' instruction is only valid at the beginning of a basic block.");
+                else
+                    valid = false;
+            }
+        }
+    }
+}

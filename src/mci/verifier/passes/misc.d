@@ -1,7 +1,10 @@
 module mci.verifier.passes.misc;
 
-import mci.core.analysis.utilities,
+import mci.core.container,
+       mci.core.analysis.cfg,
+       mci.core.analysis.utilities,
        mci.core.code.functions,
+       mci.core.code.instructions,
        mci.core.code.opcodes,
        mci.core.typing.members,
        mci.core.typing.types,
@@ -44,6 +47,21 @@ public final class FieldStorageVerifier : CodeVerifier
     }
 }
 
+public final class PhiRegisterCountVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.instructions)
+            {
+                if (instr.opCode is opPhi && !instr.operand.peek!(ReadOnlyIndexable!Register)().count)
+                    error(instr, "The 'phi' instruction requires one or more registers.");
+            }
+        }
+    }
+}
+
 public final class CallSiteCountVerifier : CodeVerifier
 {
     public override void verify(Function function_)
@@ -72,6 +90,29 @@ public final class CallSiteCountVerifier : CodeVerifier
 
                 pushCount = 0;
                 required = 0;
+            }
+        }
+    }
+}
+
+public final class PhiPredecessorVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.instructions)
+            {
+                if (instr.opCode is opPhi)
+                {
+                    auto predecessors = getPredecessors(bb.y);
+                    auto registers = instr.operand.peek!(ReadOnlyIndexable!Register)();
+
+                    if (registers.count != predecessors.count)
+                        error(instr, "The 'phi' instruction must have as many registers in the selector as its basic block has predecessors.");
+
+                    // TODO: Verify each register.
+                }
             }
         }
     }

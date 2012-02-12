@@ -523,6 +523,19 @@ public final class FunctionArgumentTypeVerifier : CodeVerifier
     }
 }
 
+public final class PhiTypeVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+            foreach (instr; bb.y.instructions)
+                if (instr.opCode is opPhi)
+                    foreach (reg; *instr.operand.peek!(ReadOnlyIndexable!Register)())
+                        if (reg.type !is instr.targetRegister.type)
+                            error(instr, "The type of selector registers must match the 'phi' instruction's target register type.");
+    }
+}
+
 public final class ExceptionTypeVerifier : CodeVerifier
 {
     public override void verify(Function function_)

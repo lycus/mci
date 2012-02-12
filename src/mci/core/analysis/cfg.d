@@ -26,6 +26,26 @@ body
     return new List!BasicBlock();
 }
 
+public ReadOnlyIndexable!BasicBlock getPredecessors(BasicBlock block)
+in
+{
+    assert(block);
+}
+out (result)
+{
+    assert(result);
+}
+body
+{
+    auto list = new NoNullList!BasicBlock();
+
+    foreach (bb; block.function_.blocks)
+        if (isDirectlyReachableFrom(block, bb.y))
+            list.add(bb.y);
+
+    return list;
+}
+
 public bool isDirectlyReachableFrom(BasicBlock toBlock, BasicBlock fromBlock)
 in
 {
