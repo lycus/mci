@@ -1336,6 +1336,102 @@ The following conversions are valid:
 
 See also conv_.
 
+array.cmp.eq
+------------
+
+**Has target register**
+    No
+**Source registers**
+    3
+**Operand type**
+    None
+
+Performs a cmp.eq_ on all elements of arrays or vectors.
+
+The first source register must be an array or vector of ``uint``. The second
+and third source registers must be arrays or vectors having the same element
+type.
+
+array.cmp.neq
+-------------
+
+**Has target register**
+    No
+**Source registers**
+    3
+**Operand type**
+    None
+
+Performs a cmp.neq_ on all elements of arrays or vectors.
+
+The first source register must be an array or vector of ``uint``. The second
+and third source registers must be arrays or vectors having the same element
+type.
+
+array.cmp.gt
+------------
+
+**Has target register**
+    No
+**Source registers**
+    3
+**Operand type**
+    None
+
+Performs a cmp.gt_ on all elements of arrays or vectors.
+
+The first source register must be an array or vector of ``uint``. The second
+and third source registers must be arrays or vectors having the same element
+type.
+
+array.cmp.lt
+------------
+
+**Has target register**
+    No
+**Source registers**
+    3
+**Operand type**
+    None
+
+Performs a cmp.lt_ on all elements of arrays or vectors.
+
+The first source register must be an array or vector of ``uint``. The second
+and third source registers must be arrays or vectors having the same element
+type.
+
+array.cmp.gteq
+--------------
+
+**Has target register**
+    No
+**Source registers**
+    3
+**Operand type**
+    None
+
+Performs a cmp.gteq_ on all elements of arrays or vectors.
+
+The first source register must be an array or vector of ``uint``. The second
+and third source registers must be arrays or vectors having the same element
+type.
+
+array.cmp.lteq
+--------------
+
+**Has target register**
+    No
+**Source registers**
+    3
+**Operand type**
+    None
+
+Performs a cmp.lteq_ on all elements of arrays or vectors.
+
+The first source register must be an array or vector of ``uint``. The second
+and third source registers must be arrays or vectors having the same element
+type.
+
 Structure field instructions
 ++++++++++++++++++++++++++++
 

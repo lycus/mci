@@ -283,6 +283,12 @@ public enum OperationCode : ubyte
     arrayRoL,
     arrayRoR,
     arrayConv,
+    arrayCmpEq,
+    arrayCmpNEq,
+    arrayCmpGT,
+    arrayCmpLT,
+    arrayCmpGTEq,
+    arrayCmpLTEq,
     fieldGet,
     fieldSet,
     fieldAddr,
@@ -389,6 +395,12 @@ public __gshared OpCode opArrayShR;
 public __gshared OpCode opArrayRoL;
 public __gshared OpCode opArrayRoR;
 public __gshared OpCode opArrayConv;
+public __gshared OpCode opArrayCmpEq;
+public __gshared OpCode opArrayCmpNEq;
+public __gshared OpCode opArrayCmpGT;
+public __gshared OpCode opArrayCmpLT;
+public __gshared OpCode opArrayCmpGTEq;
+public __gshared OpCode opArrayCmpLTEq;
 public __gshared OpCode opFieldGet;
 public __gshared OpCode opFieldSet;
 public __gshared OpCode opFieldAddr;
@@ -518,6 +530,12 @@ shared static this()
     opArrayRoL = create("array.rol", OperationCode.arrayRoL, OpCodeType.normal, OperandType.none, 2, false);
     opArrayRoR = create("array.ror", OperationCode.arrayRoR, OpCodeType.normal, OperandType.none, 2, false);
     opArrayConv = create("array.conv", OperationCode.arrayConv, OpCodeType.normal, OperandType.none, 2, false);
+    opArrayCmpEq = create("array.cmp.eq", OperationCode.arrayCmpEq, OpCodeType.normal, OperandType.none, 3, false);
+    opArrayCmpNEq = create("array.cmp.neq", OperationCode.arrayCmpNEq, OpCodeType.normal, OperandType.none, 3, false);
+    opArrayCmpGT = create("array.cmp.gt", OperationCode.arrayCmpGT, OpCodeType.normal, OperandType.none, 3, false);
+    opArrayCmpLT = create("array.cmp.lt", OperationCode.arrayCmpLT, OpCodeType.normal, OperandType.none, 3, false);
+    opArrayCmpGTEq = create("array.cmp.gteq", OperationCode.arrayCmpGTEq, OpCodeType.normal, OperandType.none, 3, false);
+    opArrayCmpLTEq = create("array.cmp.lteq", OperationCode.arrayCmpLTEq, OpCodeType.normal, OperandType.none, 3, false);
     opFieldGet = create("field.get", OperationCode.fieldGet, OpCodeType.normal, OperandType.field, 1, true);
     opFieldSet = create("field.set", OperationCode.fieldSet, OpCodeType.normal, OperandType.field, 2, false);
     opFieldAddr = create("field.addr", OperationCode.fieldAddr, OpCodeType.normal, OperandType.field, 1, true);
