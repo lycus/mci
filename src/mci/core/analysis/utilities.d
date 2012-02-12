@@ -177,6 +177,16 @@ body
     return isType!IntegerType(type);
 }
 
+public bool isValidInComparison(Type type)
+in
+{
+    assert(type);
+}
+body
+{
+    return isValidInArithmetic(type) || isType!PointerType(type);
+}
+
 public bool isContainerOf(Type type, Type elementType)
 in
 {

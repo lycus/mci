@@ -216,8 +216,8 @@ public final class ComparisonVerifier : CodeVerifier
             {
                 if (isComparison(instr.opCode))
                 {
-                    if (!isValidInArithmetic(instr.sourceRegister1.type) || !isValidInArithmetic(instr.sourceRegister2.type))
-                        error(instr, "Source register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+                    if (!isValidInComparison(instr.sourceRegister1.type) || !isValidInComparison(instr.sourceRegister2.type))
+                        error(instr, "Source register must be a primitive or a pointer");
 
                     if (!areSameType(instr.sourceRegister1, instr.sourceRegister2))
                         error(instr, "Both source registers must be the exact same type.");

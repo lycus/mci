@@ -1469,12 +1469,8 @@ The source registers must be of the exact same type, and can be one of
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
 ``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
 pointer type (in which case the pointers are compared for equality).
-Vectors of these types are also allowed; they are compared
-element-by-element and are considered equal if all elements are equal.
 
-The target register must be of type `uint`, or a vector of `uint` (with
-the same amount of elements as the source vectors) if the comparison
-involved vectors.
+The target register must be of type `uint`.
 
 cmp.neq
 -------
@@ -1493,12 +1489,8 @@ The source registers must be of the exact same type, and can be one of
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
 ``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
 pointer type (in which case the pointers are compared for equality).
-Vectors of these types are also allowed; they are compared
-element-by-element and are considered unequal if all elements are unequal.
 
-The target register must be of type `uint`, or a vector of `uint` (with
-the same amount of elements as the source vectors) if the comparison
-involved vectors.
+The target register must be of type `uint`.
 
 cmp.gt
 ------
@@ -1517,14 +1509,9 @@ is set to 1; otherwise, 0.
 The source registers must be of the exact same type, and can be one of
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
 ``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
-pointer type (in which case the pointers are compared). Vectors of these
-types are also allowed; they are compared element-by-element and the first
-vector is considered greater than the second vector if all elements are
-greater.
+pointer type (in which case the pointers are compared).
 
-The target register must be of type `uint`, or a vector of `uint` (with
-the same amount of elements as the source vectors) if the comparison
-involved vectors.
+The target register must be of type `uint`.
 
 cmp.lt
 ------
@@ -1543,14 +1530,9 @@ is set to 1; otherwise, 0.
 The source registers must be of the exact same type, and can be one of
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
 ``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
-pointer type (in which case the pointers are compared). Vectors of these
-types are also allowed; they are compared element-by-element and the first
-vector is considered lesser than the second vector if all elements are
-lesser.
+pointer type (in which case the pointers are compared).
 
-The target register must be of type `uint`, or a vector of `uint` (with
-the same amount of elements as the source vectors) if the comparison
-involved vectors.
+The target register must be of type `uint`.
 
 cmp.gteq
 --------
@@ -1569,14 +1551,9 @@ target register is set to 1; otherwise, 0.
 The source registers must be of the exact same type, and can be one of
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
 ``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
-pointer type (in which case the pointers are compared). Vectors of these
-types are also allowed; they are compared element-by-element and the first
-vector is considered greater than or equal to the second vector if all
-elements are greater or equal.
+pointer type (in which case the pointers are compared).
 
-The target register must be of type `uint`, or a vector of `uint` (with
-the same amount of elements as the source vectors) if the comparison
-involved vectors.
+The target register must be of type `uint`.
 
 cmp.lteq
 --------
@@ -1595,14 +1572,9 @@ target register is set to 1; otherwise, 0.
 The source registers must be of the exact same type, and can be one of
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
 ``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
-pointer type (in which case the pointers are compared). Vectors of these
-types are also allowed; they are compared element-by-element and the first
-vector is considered lesser than or equal to the second vector if all
-elements are lesser or equal.
+pointer type (in which case the pointers are compared).
 
-The target register must be of type `uint`, or a vector of `uint` (with
-the same amount of elements as the source vectors) if the comparison
-involved vectors.
+The target register must be of type `uint`.
 
 Function invocation instructions
 ++++++++++++++++++++++++++++++++
