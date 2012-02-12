@@ -38,7 +38,7 @@ public final class VerificationManager
                                          new ConstantLoadVerifier(),
                                          new ArithmeticVerifier(),
                                          new BitwiseVerifier(),
-                                         new ShiftVerifier(),
+                                         new BitShiftVerifier(),
                                          new ComparisonVerifier(),
                                          new MemoryVerifier(),
                                          new MemoryAliasVerifier(),

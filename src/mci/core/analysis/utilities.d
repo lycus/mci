@@ -62,7 +62,11 @@ in
 }
 body
 {
-    return isType!PointerType(type) || isType!FunctionPointerType(type) || isType!ArrayType(type) || isType!VectorType(type);
+    return isType!PointerType(type) ||
+           isType!FunctionPointerType(type) ||
+           isType!ReferenceType(type) ||
+           isType!ArrayType(type) ||
+           isType!VectorType(type);
 }
 
 public bool isArithmetic(OpCode opCode)
@@ -104,6 +108,27 @@ body
            opCode is opShR;
 }
 
+public bool isRotate(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opRoL ||
+           opCode is opRoR;
+}
+
+public bool isBitShift(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return isShift(opCode) || isRotate(opCode);
+}
+
 public bool isComparison(OpCode opCode)
 in
 {
@@ -128,7 +153,8 @@ body
 {
     return opCode is opArrayGet ||
            opCode is opArraySet ||
-           opCode is opArrayAddr;
+           opCode is opArrayAddr ||
+           opCode is opArrayLen;
 }
 
 public bool isValidInArithmetic(Type type)
@@ -138,14 +164,7 @@ in
 }
 body
 {
-    if (isType!CoreType(type) || isType!PointerType(type))
-        return true;
-
-    if (auto vec = cast(VectorType)type)
-        if (isType!CoreType(vec.elementType) || isType!PointerType(vec.elementType))
-            return true;
-
-    return false;
+    return isType!CoreType(type);
 }
 
 public bool isValidInBitwise(Type type)
@@ -155,14 +174,7 @@ in
 }
 body
 {
-    if (isType!IntegerType(type) || isType!PointerType(type))
-        return true;
-
-    if (auto vec = cast(VectorType)type)
-        if (isType!IntegerType(vec.elementType) || isType!PointerType(vec.elementType))
-            return true;
-
-    return false;
+    return isType!IntegerType(type);
 }
 
 public bool isContainerOf(Type type, Type elementType)

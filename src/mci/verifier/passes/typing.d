@@ -72,9 +72,8 @@ public final class ConstantLoadVerifier : CodeVerifier
                 mixin(loadArrayCheck("F64", "Float64", "double"));
 
                 if (instr.opCode is opLoadNull && !isNullable(instr.targetRegister.type))
-                    error(instr, "The target of a 'load.null' opcode must be a pointer, a function pointer, an array, or a vector.");
-
-                if (instr.opCode is opLoadFunc)
+                    error(instr, "The target of a 'load.null' opcode must be a pointer, a function pointer, a reference, an array, or a vector.");
+                else if (instr.opCode is opLoadFunc)
                 {
                     if (!isType!FunctionPointerType(instr.targetRegister.type))
                         error(instr, "The target of a 'load.func' opcode must be a function pointer.");
@@ -131,15 +130,25 @@ public final class ArithmeticVerifier : CodeVerifier
             {
                 if (isArithmetic(instr.opCode) || instr.opCode is opNot)
                 {
-                    if (!isValidInArithmetic(instr.targetRegister.type))
-                        error(instr, "Target register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+                    if ((instr.opCode is opAriAdd || instr.opCode is opAriSub) && isType!PointerType(instr.targetRegister.type))
+                    {
+                        if (instr.sourceRegister1.type !is instr.targetRegister.type)
+                            error(instr, "The first source register must be of type ('%s')", instr.targetRegister.type);
 
-                    if ((instr.opCode.registers >= 1 && !isValidInArithmetic(instr.sourceRegister1.type)) ||
-                        (instr.opCode.registers >= 2 && !isValidInArithmetic(instr.sourceRegister2.type)))
-                        error(instr, "Source register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+                        if (instr.sourceRegister2.type !is NativeUIntType.instance)
+                            error(instr, "The second source register must be of type 'uint'.");
+                    }
+                    else
+                    {
+                        if (!isValidInArithmetic(instr.targetRegister.type))
+                            error(instr, "Target register must be a primitive.");
 
-                    if (!areSameType(instr.targetRegister, instr.sourceRegister1, instr.sourceRegister2))
-                        error(instr, "All registers must be the exact same type.");
+                        if (!isValidInArithmetic(instr.sourceRegister1.type) || (instr.opCode.registers >= 2 && !isValidInArithmetic(instr.sourceRegister2.type)))
+                            error(instr, "Source register must be a primitive.");
+
+                        if (!areSameType(instr.targetRegister, instr.sourceRegister1, instr.sourceRegister2))
+                            error(instr, "All registers must be the exact same type.");
+                    }
                 }
             }
         }
@@ -157,11 +166,10 @@ public final class BitwiseVerifier : CodeVerifier
                 if (isBitwise(instr.opCode))
                 {
                     if (!isValidInBitwise(instr.targetRegister.type))
-                        error(instr, "Target register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+                        error(instr, "Target register must be an integer.");
 
-                    if ((instr.opCode.registers >= 1 && !isValidInBitwise(instr.sourceRegister1.type)) ||
-                        (instr.opCode.registers >= 2 && !isValidInBitwise(instr.sourceRegister2.type)))
-                        error(instr, "Source register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+                    if (!isValidInBitwise(instr.sourceRegister1.type) || (instr.opCode.registers >= 2 && !isValidInBitwise(instr.sourceRegister2.type)))
+                        error(instr, "Source register must be an integer.");
 
                     if (!areSameType(instr.targetRegister, instr.sourceRegister1, instr.sourceRegister2))
                         error(instr, "All registers must be the exact same type.");
@@ -171,7 +179,7 @@ public final class BitwiseVerifier : CodeVerifier
     }
 }
 
-public final class ShiftVerifier : CodeVerifier
+public final class BitShiftVerifier : CodeVerifier
 {
     public override void verify(Function function_)
     {
@@ -179,25 +187,19 @@ public final class ShiftVerifier : CodeVerifier
         {
             foreach (instr; bb.y.instructions)
             {
-                if (isShift(instr.opCode))
+                if (isBitShift(instr.opCode))
                 {
                     if (!isValidInBitwise(instr.targetRegister.type))
-                        error(instr, "Target register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+                        error(instr, "Target register must be an integer.");
 
                     if (!isValidInBitwise(instr.sourceRegister1.type))
-                        error(instr, "The first source register must be a primitive, a pointer, or a vector of a primitive or a pointer.");
+                        error(instr, "The first source register must be an integer.");
 
                     if (!areSameType(instr.targetRegister, instr.sourceRegister1))
                         error(instr, "Target register and first source register must be the exact same type.");
 
-                    if (auto sourceVec = cast(VectorType)instr.sourceRegister1.type)
-                    {
-                        if (auto amountVec = cast(VectorType)instr.sourceRegister2.type)
-                            if (amountVec !is getVectorType(NativeUIntType.instance, sourceVec.elements))
-                                error(instr, "If it is a vector, the second source register's element count must match the first source register's.");
-                    }
-                    else if (instr.sourceRegister2.type !is NativeUIntType.instance)
-                        error(instr, "The second source register must be of type `uint` if the first is not a vector.");
+                    if (instr.sourceRegister2.type !is NativeUIntType.instance)
+                        error(instr, "The second source register must be of type 'uint'.");
                 }
             }
         }
@@ -220,14 +222,8 @@ public final class ComparisonVerifier : CodeVerifier
                     if (!areSameType(instr.sourceRegister1, instr.sourceRegister2))
                         error(instr, "Both source registers must be the exact same type.");
 
-                    if (auto vec = cast(VectorType)instr.sourceRegister1.type)
-                    {
-                        if (instr.targetRegister.type !is getVectorType(NativeUIntType.instance, vec.elements))
-                            error(instr, "Target register must be a vector of 'uint' with the same amount of elements as the " ~
-                                  "source registers when comparing vectors.");
-                    }
-                    else if (instr.targetRegister.type !is NativeUIntType.instance)
-                        error(instr, "Target register must be of type 'uint' when comparing non-vector types.");
+                    if (instr.targetRegister.type !is NativeUIntType.instance)
+                        error(instr, "Target register must be of type 'uint'.");
                 }
             }
         }
@@ -345,16 +341,18 @@ public final class ArrayVerifier : CodeVerifier
                         !isType!VectorType(instr.sourceRegister1.type))
                         error(instr, "The first source register must be an array or a vector.");
 
-                    if (instr.sourceRegister2.type !is NativeUIntType.instance)
+                    if (instr.opCode !is opArrayLen && instr.sourceRegister2.type !is NativeUIntType.instance)
                         error(instr, "The second source register must be of type 'uint'.");
-                }
 
-                if (instr.opCode is opArrayGet && instr.targetRegister.type !is getElementType(instr.sourceRegister1.type))
-                    error(instr, "The target register must be of the first source register's element type.");
-                else if (instr.opCode is opArraySet && instr.sourceRegister3.type !is getElementType(instr.sourceRegister1.type))
-                    error(instr, "The third source register must be of the first source register's element type.");
-                else if (instr.opCode is opArrayAddr && instr.targetRegister.type !is getPointerType(getElementType(instr.sourceRegister1.type)))
-                    error(instr, "The target register must be a pointer to the first source register's element type.");
+                    if (instr.opCode is opArrayGet && instr.targetRegister.type !is getElementType(instr.sourceRegister1.type))
+                        error(instr, "The target register must be of the first source register's element type.");
+                    else if (instr.opCode is opArraySet && instr.sourceRegister3.type !is getElementType(instr.sourceRegister1.type))
+                        error(instr, "The third source register must be of the first source register's element type.");
+                    else if (instr.opCode is opArrayAddr && instr.targetRegister.type !is getPointerType(getElementType(instr.sourceRegister1.type)))
+                        error(instr, "The target register must be a pointer to the first source register's element type.");
+                    else if (instr.opCode is opArrayLen && instr.targetRegister.type !is NativeUIntType.instance)
+                        error(instr, "The target register must be of type 'uint'.");
+                }
             }
         }
     }
