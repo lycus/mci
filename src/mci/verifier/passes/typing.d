@@ -418,6 +418,21 @@ public final class FieldTypeVerifier : CodeVerifier
     }
 }
 
+public final class JumpTypeVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.instructions)
+            {
+                if (instr.opCode is opJumpCond && instr.sourceRegister1.type !is NativeUIntType.instance)
+                    error(instr, "Source register must be of type 'uint'.");
+            }
+        }
+    }
+}
+
 public final class CallSiteTypeVerifier : CodeVerifier
 {
     public override void verify(Function function_)

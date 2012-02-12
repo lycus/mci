@@ -27,6 +27,7 @@ public final class VerificationManager
                                          new FFIVerifier(),
                                          new RawVerifier(),
                                          new JumpVerifier(),
+                                         new JumpTypeVerifier(),
                                          new ReturnVerifier(),
                                          new ReturnTypeVerifier(),
                                          new CallSiteOrderVerifier(),
