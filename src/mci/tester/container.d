@@ -261,10 +261,9 @@ unittest
 
 unittest
 {
-    auto list = new List!int();
+    auto list = new List!Object();
 
-    debug
-        assertThrown!AssertError(first(list));
+    assert(!first(list));
 }
 
 unittest

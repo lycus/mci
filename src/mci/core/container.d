@@ -513,7 +513,7 @@ body
     return true;
 }
 
-public T first(T)(Iterable!T iter)
+public T first(T)(Iterable!T iter, lazy T defaultValue = T.init)
 in
 {
     assert(iter);
@@ -524,7 +524,7 @@ body
     foreach (item; iter)
         return item;
 
-    assert(false);
+    return defaultValue;
 }
 
 public T last(T)(Iterable!T iter)
