@@ -30,6 +30,7 @@ public final class VerificationManager
                                          new JumpTypeVerifier(),
                                          new ReturnVerifier(),
                                          new ReturnTypeVerifier(),
+                                         new ExceptionContextVerifier(),
                                          new ExceptionTypeVerifier(),
                                          new CallSiteOrderVerifier(),
                                          new CallSiteCountVerifier(),

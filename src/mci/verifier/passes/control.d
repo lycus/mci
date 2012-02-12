@@ -2,6 +2,7 @@ module mci.verifier.passes.control;
 
 import mci.core.container,
        mci.core.tuple,
+       mci.core.analysis.cfg,
        mci.core.analysis.utilities,
        mci.core.code.functions,
        mci.core.code.instructions,
@@ -104,6 +105,57 @@ public final class RawVerifier : CodeVerifier
 
             if (bb.instructions.count != 1 || bb.instructions[0] !is inst)
                 error(inst, "Raw functions may only contain one 'raw' instruction, terminating the 'entry' block.");
+        }
+    }
+}
+
+public final class ExceptionContextVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.instructions)
+            {
+                if (instr.opCode is opEHCatch || instr.opCode is opEHRethrow)
+                {
+                    auto directBranches = new NoNullList!BasicBlock();
+
+                    foreach (block; function_.blocks)
+                        if (isReachableFrom(bb.y, block.y))
+                            directBranches.add(block.y);
+
+                    auto unwindBlocks = new HashSet!BasicBlock();
+
+                    foreach (block; function_.blocks)
+                    {
+                        if (block.y.unwindBlock)
+                        {
+                            unwindBlocks.add(block.y.unwindBlock);
+
+                            // We're not interested in unwind blocks, as those are allowed
+                            // to branch directly to this BB.
+                            directBranches.remove(block.y.unwindBlock);
+                        }
+                    }
+
+                    auto illegalBranches = directBranches.duplicate();
+
+                    // Remove all reachable blocks from illegalBranches such that the blocks
+                    // we end up with are the ones not reachable from any unwind block.
+                    foreach (db; directBranches)
+                        if (find(unwindBlocks, (BasicBlock ub) { return isReachableFrom(db, ub); }))
+                            illegalBranches.remove(db);
+
+                    if (auto illegal = first(illegalBranches))
+                        error(null, "Basic block '%s' branches to block '%s' (which uses '%s') but control does not come from any unwind block.",
+                              illegal.name, bb.y.name, instr.opCode.name);
+
+                    // Even if the BB contains other EH instructions, we've already done
+                    // the checks that we need to do, so just break.
+                    break;
+                }
+            }
         }
     }
 }
