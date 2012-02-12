@@ -522,3 +522,21 @@ public final class FunctionArgumentTypeVerifier : CodeVerifier
         }
     }
 }
+
+public final class ExceptionTypeVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.instructions)
+            {
+                if (instr.opCode is opEHThrow && !isType!ReferenceType(instr.sourceRegister1.type))
+                    error(instr, "The source register must be a reference.");
+
+                if (instr.opCode is opEHCatch && !isType!ReferenceType(instr.targetRegister.type))
+                    error(instr, "The target register must be a reference.");
+            }
+        }
+    }
+}
