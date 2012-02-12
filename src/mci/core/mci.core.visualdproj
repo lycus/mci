@@ -190,6 +190,7 @@
  </Config>
  <Folder name="mci.core">
   <Folder name="analysis">
+   <File path="analysis\cfg.d" />
    <File path="analysis\statistics.d" />
    <File path="analysis\utilities.d" />
    <File path="analysis\xref.d" />
