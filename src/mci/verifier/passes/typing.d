@@ -284,6 +284,32 @@ public final class MemoryVerifier : CodeVerifier
     }
 }
 
+public final class MemoryPinVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.instructions)
+            {
+                if (instr.opCode is opMemPin)
+                {
+                    if (instr.targetRegister.type !is NativeUIntType.instance)
+                        error(instr, "Target register must be of type 'uint'.");
+
+                    if (!isManaged(instr.sourceRegister1.type))
+                        error(instr, "Source register must be a reference, an array, or a vector.");
+                }
+                else if (instr.opCode is opMemUnpin)
+                {
+                    if (instr.sourceRegister1.type !is NativeUIntType.instance)
+                        error(instr, "Source register must be of type 'uint'.");
+                }
+            }
+        }
+    }
+}
+
 public final class MemoryAliasVerifier : CodeVerifier
 {
     public override void verify(Function function_)

@@ -225,6 +225,18 @@ body
         return (cast(PointerType)type).elementType;
 }
 
+public bool isManaged(Type type)
+in
+{
+    assert(type);
+}
+body
+{
+    return isType!ReferenceType(type) ||
+           isType!ArrayType(type) ||
+           isType!VectorType(type);
+}
+
 public bool isTypeSpecification(Type type)
 in
 {
@@ -232,10 +244,7 @@ in
 }
 body
 {
-    return isType!PointerType(type) ||
-           isType!ReferenceType(type) ||
-           isType!ArrayType(type) ||
-           isType!VectorType(type);
+    return isManaged(type) || isType!PointerType(type);
 }
 
 public bool isDirectCallSite(OpCode opCode)
