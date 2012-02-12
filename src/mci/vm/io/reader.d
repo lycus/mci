@@ -299,14 +299,12 @@ private final class VectorTypeReferenceDescriptor : TypeReferenceDescriptor
     invariant()
     {
         assert(_elementType);
-        assert(_elements);
     }
 
     public this(TypeReferenceDescriptor elementType, uint elements)
     in
     {
         assert(elementType);
-        assert(elements);
     }
     body
     {
@@ -325,11 +323,6 @@ private final class VectorTypeReferenceDescriptor : TypeReferenceDescriptor
     }
 
     @property public uint elements()
-    out (result)
-    {
-        assert(result);
-    }
-    body
     {
         return _elements;
     }
@@ -628,9 +621,6 @@ public final class ModuleReader : ModuleLoader
             case TypeReferenceType.vector:
                 auto element = readTypeReference();
                 auto elements = _reader.read!uint();
-
-                if (!elements)
-                    error("Vector element count cannot be zero.");
 
                 return new VectorTypeReferenceDescriptor(element, elements);
             case TypeReferenceType.function_:

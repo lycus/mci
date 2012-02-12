@@ -113,7 +113,6 @@ public VectorType getVectorType(Type elementType, uint elements)
 in
 {
     assert(elementType);
-    assert(elements);
 }
 out (result)
 {

@@ -316,14 +316,12 @@ public final class VectorType : Type
     invariant()
     {
         assert(_elementType);
-        assert(_elements);
     }
 
     package this(Type elementType, uint elements)
     in
     {
         assert(elementType);
-        assert(elements);
     }
     body
     {
@@ -342,11 +340,6 @@ public final class VectorType : Type
     }
 
     @property public uint elements()
-    out (result)
-    {
-        assert(result);
-    }
-    body
     {
         return _elements;
     }

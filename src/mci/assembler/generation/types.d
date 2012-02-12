@@ -87,10 +87,6 @@ body
     else if (auto vecType = cast(VectorTypeReferenceNode)node)
     {
         auto elements = to!uint(vecType.elements.value);
-
-        if (!elements)
-            throw new GenerationException("Vector types must not have zero elements.", node.location);
-
         return getVectorType(resolveType(vecType.elementType, module_, manager), elements);
     }
     else
