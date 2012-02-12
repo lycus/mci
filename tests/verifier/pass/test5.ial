@@ -1,0 +1,21 @@
+type S
+{
+}
+
+function void eh_test()
+{
+    register S& s1;
+    register S& s2;
+
+    block entry unwind uw
+    {
+        eh.throw s1;
+    }
+
+    block uw
+    {
+        s2 = eh.catch;
+
+        leave;
+    }
+}

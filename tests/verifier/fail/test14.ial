@@ -1,0 +1,26 @@
+type S
+{
+}
+
+function void eh_reach_test()
+{
+    register uint i;
+    register int32 j;
+
+    block entry
+    {
+        jump (foo);
+    }
+
+    block foo
+    {
+        i = cmp.eq j, j;
+
+        jump.cond i (bar, bar);
+    }
+
+    block bar
+    {
+        eh.rethrow;
+    }
+}

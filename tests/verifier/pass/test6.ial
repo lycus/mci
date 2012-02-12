@@ -1,0 +1,16 @@
+type S
+{
+}
+
+function void eh_reach_test()
+{
+    block entry
+    {
+        leave;
+    }
+
+    block foo
+    {
+        eh.rethrow;
+    }
+}
