@@ -418,6 +418,50 @@ public final class FieldTypeVerifier : CodeVerifier
     }
 }
 
+public final class ConversionVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.instructions)
+            {
+                if (instr.opCode is opConv)
+                {
+                    auto tgt = instr.targetRegister.type;
+                    auto src = instr.sourceRegister1.type;
+
+                    if (isType!CoreType(src) && isType!CoreType(tgt))
+                        continue;
+
+                    if (isType!PointerType(src) && isType!PointerType(tgt))
+                        continue;
+
+                    if (isType!PointerType(src) && (tgt is NativeIntType.instance || tgt is NativeUIntType.instance))
+                        continue;
+
+                    if ((src is NativeIntType.instance || src is NativeUIntType.instance) && isType!PointerType(tgt))
+                        continue;
+
+                    if (isType!ReferenceType(src) && isType!ReferenceType(tgt))
+                        continue;
+
+                    if (isType!FunctionPointerType(src) && isType!FunctionPointerType(tgt))
+                        continue;
+
+                    if (isType!FunctionPointerType(src) && isType!PointerType(tgt))
+                        continue;
+
+                    if (isType!PointerType(src) && isType!FunctionPointerType(tgt))
+                        continue;
+
+                    error(instr, "Invalid types in 'conv' operation.");
+                }
+            }
+        }
+    }
+}
+
 public final class JumpTypeVerifier : CodeVerifier
 {
     public override void verify(Function function_)

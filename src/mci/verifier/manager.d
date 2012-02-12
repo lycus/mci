@@ -41,6 +41,7 @@ public final class VerificationManager
                                          new BitwiseVerifier(),
                                          new BitShiftVerifier(),
                                          new ComparisonVerifier(),
+                                         new ConversionVerifier(),
                                          new MemoryVerifier(),
                                          new MemoryPinVerifier(),
                                          new MemoryAliasVerifier(),
