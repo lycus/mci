@@ -195,7 +195,8 @@ The target register must be of type ``int8[]``, ``int8*``, or a vector of
 ``int8`` with an element count matching that of the array operand.
 
 When the target register is a pointer, the data must be explicitly freed with
-mem.free_.
+mem.free_. If the given array is of zero length, a null pointer is assigned
+to the target register.
 
 load.ui8a
 ---------
@@ -213,7 +214,8 @@ The target register must be of type ``uint8[]``, ``uint8*``, or a vector of
 ``uint8`` with an element count matching that of the array operand.
 
 When the target register is a pointer, the data must be explicitly freed with
-mem.free_.
+mem.free_. If the given array is of zero length, a null pointer is assigned
+to the target register.
 
 load.i16a
 ---------
@@ -231,7 +233,8 @@ The target register must be of type ``int16[]``, ``int16*``, or a vector of
 ``int16`` with an element count matching that of the array operand.
 
 When the target register is a pointer, the data must be explicitly freed with
-mem.free_.
+mem.free_. If the given array is of zero length, a null pointer is assigned
+to the target register.
 
 load.ui16a
 ----------
@@ -249,7 +252,8 @@ The target register must be of type ``uint16[]``, ``uint16*``, or a vector of
 ``uint16`` with an element count matching that of the array operand.
 
 When the target register is a pointer, the data must be explicitly freed with
-mem.free_.
+mem.free_. If the given array is of zero length, a null pointer is assigned
+to the target register.
 
 load.i32a
 ---------
@@ -267,7 +271,8 @@ The target register must be of type ``int32[]``, ``int32*``, or a vector of
 ``int32`` with an element count matching that of the array operand.
 
 When the target register is a pointer, the data must be explicitly freed with
-mem.free_.
+mem.free_. If the given array is of zero length, a null pointer is assigned
+to the target register.
 
 load.ui32a
 ----------
@@ -285,7 +290,8 @@ The target register must be of type ``uint32[]``, ``uint32*``, or a vector of
 ``uint32`` with an element count matching that of the array operand.
 
 When the target register is a pointer, the data must be explicitly freed with
-mem.free_.
+mem.free_. If the given array is of zero length, a null pointer is assigned
+to the target register.
 
 load.i64a
 ---------
@@ -303,7 +309,8 @@ The target register must be of type ``int64[]``, ``int64*``, or a vector of
 ``int64`` with an element count matching that of the array operand.
 
 When the target register is a pointer, the data must be explicitly freed with
-mem.free_.
+mem.free_. If the given array is of zero length, a null pointer is assigned
+to the target register.
 
 load.ui64a
 ----------
@@ -321,7 +328,8 @@ The target register must be of type ``uint64[]``, ``uint64*``, or a vector of
 ``uint64`` with an element count matching that of the array operand.
 
 When the target register is a pointer, the data must be explicitly freed with
-mem.free_.
+mem.free_. If the given array is of zero length, a null pointer is assigned
+to the target register.
 
 load.f32a
 ---------
@@ -340,7 +348,8 @@ The target register must be of type ``float32[]``, ``float32*``, or a vector
 of ``float32`` with an element count matching that of the array operand.
 
 When the target register is a pointer, the data must be explicitly freed with
-mem.free_.
+mem.free_. If the given array is of zero length, a null pointer is assigned
+to the target register.
 
 load.f64a
 ---------
@@ -359,7 +368,8 @@ The target register must be of type ``float64[]``, ``float64*``, or a vector
 of ``float64`` with an element count matching that of the array operand.
 
 When the target register is a pointer, the data must be explicitly freed with
-mem.free_.
+mem.free_. If the given array is of zero length, a null pointer is assigned
+to the target register.
 
 load.func
 ---------
@@ -773,9 +783,9 @@ memory allocated is the size of the target register's element type times
 the element count. Otherwise, it represents the amount of array elements
 to be allocated. The source register must be of type ``uint``.
 
-If the requested amount of memory could not be allocated, a null pointer
-is assigned to the target register; otherwise, the pointer to the allocated
-memory is assigned.
+If the requested amount of memory could not be allocated or if the source
+register is equal to zero, a null pointer is assigned to the target register;
+otherwise, the pointer to the allocated memory is assigned.
 
 If the allocation was successful, all allocated memory is guaranteed to be
 completely zeroed out.
