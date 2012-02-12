@@ -122,7 +122,7 @@ public final class ExceptionContextVerifier : CodeVerifier
                     auto directBranches = new NoNullList!BasicBlock();
 
                     foreach (block; function_.blocks)
-                        if (isReachableFrom(bb.y, block.y))
+                        if (isDirectlyReachableFrom(bb.y, block.y))
                             directBranches.add(block.y);
 
                     auto unwindBlocks = new HashSet!BasicBlock();

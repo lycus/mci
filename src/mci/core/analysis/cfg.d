@@ -26,6 +26,21 @@ body
     return new List!BasicBlock();
 }
 
+public bool isDirectlyReachableFrom(BasicBlock toBlock, BasicBlock fromBlock)
+in
+{
+    assert(toBlock);
+    assert(fromBlock);
+}
+body
+{
+    foreach (br; getBranches(fromBlock))
+        if (br is toBlock)
+            return true;
+
+    return false;
+}
+
 public bool isReachableFrom(BasicBlock toBlock, BasicBlock fromBlock)
 in
 {
