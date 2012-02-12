@@ -44,6 +44,7 @@ public final class VerificationManager
                                          new MemoryPinVerifier(),
                                          new MemoryAliasVerifier(),
                                          new ArrayVerifier(),
+                                         new FieldTypeVerifier(),
                                          new FieldStorageVerifier()));
     }
 

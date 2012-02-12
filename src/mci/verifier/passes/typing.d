@@ -9,6 +9,7 @@ import std.conv,
        mci.core.code.opcodes,
        mci.core.typing.cache,
        mci.core.typing.core,
+       mci.core.typing.members,
        mci.core.typing.types,
        mci.verifier.base;
 
@@ -378,6 +379,39 @@ public final class ArrayVerifier : CodeVerifier
                         error(instr, "The target register must be a pointer to the first source register's element type.");
                     else if (instr.opCode is opArrayLen && instr.targetRegister.type !is NativeUIntType.instance)
                         error(instr, "The target register must be of type 'uint'.");
+                }
+            }
+        }
+    }
+}
+
+public final class FieldTypeVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.instructions)
+            {
+                auto field = instr.operand.peek!Field();
+
+                if (instr.opCode is opFieldGet || instr.opCode is opFieldSet ||
+                    instr.opCode is opFieldGGet || instr.opCode is opFieldGSet)
+                {
+                    if (instr.targetRegister.type !is field.type)
+                        error(instr, "Target register must be the type of the field reference.");
+                }
+                else if (instr.opCode is opFieldAddr || instr.opCode is opFieldGAddr)
+                    if (instr.targetRegister.type !is getPointerType(field.type))
+                        error(instr, "Target register must be a pointer to the field's type.");
+
+                if (instr.opCode is opFieldGet || instr.opCode is opFieldSet || instr.opCode is opFieldAddr)
+                {
+                    if (instr.sourceRegister1.type !is field.declaringType &&
+                        instr.sourceRegister1.type !is getPointerType(field.declaringType) &&
+                        instr.sourceRegister1.type !is getReferenceType(field.declaringType))
+                        error(instr, "The first source register must be the field's declaring type or a pointer or reference to the field's " ~
+                                     "declaring type.");
                 }
             }
         }
