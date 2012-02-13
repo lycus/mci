@@ -1420,7 +1420,6 @@ public class ArrayQueue(T) : Queue!T
 public class ArrayStack(T) : Stack!T
 {
     private List!T _list;
-    private size_t _size;
 
     public this()
     {
@@ -1440,9 +1439,8 @@ public class ArrayStack(T) : Stack!T
 
     public final int opApply(scope int delegate(ref T) dg)
     {
-        for (size_t i = 0; i < _size; i++)
+        foreach (item; _list)
         {
-            auto item = _list[i];
             auto status = dg(item);
 
             if (status != 0)
@@ -1454,9 +1452,8 @@ public class ArrayStack(T) : Stack!T
 
     public final int opApply(scope int delegate(ref size_t, ref T) dg)
     {
-        for (size_t i = 0; i < _size; i++)
+        foreach (i, item; _list)
         {
-            auto item = _list[i];
             auto status = dg(i, item);
 
             if (status != 0)
@@ -1472,23 +1469,14 @@ public class ArrayStack(T) : Stack!T
             return true;
 
         if (auto s = cast(ArrayStack!T)o)
-        {
-            if (_size != s._size)
-                return false;
-
-            for (size_t i = 0; i < _size; i++)
-                if (_list[i] != s._list[i])
-                    return false;
-
-            return true;
-        }
+            return _list == s._list;
 
         return false;
     }
 
     public final override hash_t toHash()
     {
-        return typeid(typeof(_list)).getHash(&_list) + typeid(typeof(_size)).getHash(&_size);
+        return typeid(typeof(_list)).getHash(&_list);
     }
 
     public final override int opCmp(Object o)
@@ -1497,24 +1485,19 @@ public class ArrayStack(T) : Stack!T
             return 0;
 
         if (auto s = cast(ArrayStack!T)o)
-        {
-            if (!typeid(typeof(_size)).equals(&_size, &s._size))
-                return typeid(typeof(_size)).compare(&_size, &s._size);
-
             return typeid(typeof(_list)).compare(&_list, &s._list);
-        }
 
         return 1;
     }
 
     @property public final size_t count()
     {
-        return _size;
+        return _list.count;
     }
 
     @property public final bool empty()
     {
-        return !_size;
+        return _list.empty;
     }
 
     public ArrayStack!T duplicate()
@@ -1522,7 +1505,6 @@ public class ArrayStack(T) : Stack!T
         auto s = new ArrayStack!T();
 
         s._list = _list.duplicate();
-        s._size = _size;
 
         return s;
     }
@@ -1537,32 +1519,26 @@ public class ArrayStack(T) : Stack!T
 
     public void push(T item)
     {
-        // Just grow the list.
-        if (_size == _list.count)
-            _list.add(T.init);
-
-        _list[_size++] = item;
+        _list.add(item);
     }
 
     public T pop()
     {
-        auto val = _list[--_size];
+        auto item = _list[_list.count - 1];
 
-        // This is important, or we'll keep the object from being collected.
-        _list[_size] = T.init;
+        _list.remove(item);
 
-        return val;
+        return item;
     }
 
     public T* peek()
     {
-        return &_list._array[_size - 1];
+        return &_list._array[_list.count - 1];
     }
 
     public void clear()
     {
         _list.clear();
-        _size = 0;
     }
 }
 
