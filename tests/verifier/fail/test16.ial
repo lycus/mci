@@ -1,0 +1,13 @@
+function void foo()
+{
+    register int32 x;
+    register int32 y;
+    register int32 z;
+
+    block entry
+    {
+        z = phi (x, y);
+
+        leave;
+    }
+}

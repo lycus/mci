@@ -48,21 +48,6 @@ public final class FieldStorageVerifier : CodeVerifier
     }
 }
 
-public final class PhiRegisterCountVerifier : CodeVerifier
-{
-    public override void verify(Function function_)
-    {
-        foreach (bb; function_.blocks)
-        {
-            foreach (instr; bb.y.stream)
-            {
-                if (instr.opCode is opPhi && !instr.operand.peek!(ReadOnlyIndexable!Register)().count)
-                    error(instr, "The 'phi' instruction requires one or more registers.");
-            }
-        }
-    }
-}
-
 public final class CallSiteCountVerifier : CodeVerifier
 {
     public override void verify(Function function_)
@@ -96,29 +81,6 @@ public final class CallSiteCountVerifier : CodeVerifier
     }
 }
 
-public final class PhiPredecessorVerifier : CodeVerifier
-{
-    public override void verify(Function function_)
-    {
-        foreach (bb; function_.blocks)
-        {
-            foreach (instr; bb.y.stream)
-            {
-                if (instr.opCode is opPhi)
-                {
-                    auto predecessors = getPredecessors(bb.y);
-                    auto registers = instr.operand.peek!(ReadOnlyIndexable!Register)();
-
-                    if (registers.count != predecessors.count)
-                        error(instr, "The 'phi' instruction must have as many registers in the selector as its basic block has predecessors.");
-
-                    // TODO: Verify each register.
-                }
-            }
-        }
-    }
-}
-
 public final class FunctionArgumentCountVerifier : CodeVerifier
 {
     public override void verify(Function function_)
@@ -145,15 +107,56 @@ public final class FunctionArgumentCountVerifier : CodeVerifier
     }
 }
 
+public final class PhiRegisterCountVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.stream)
+            {
+                if (instr.opCode is opPhi && !instr.operand.peek!(ReadOnlyIndexable!Register)().count)
+                    error(instr, "The 'phi' instruction requires one or more registers.");
+            }
+        }
+    }
+}
+
+public final class PhiPredecessorVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.stream)
+            {
+                if (instr.opCode is opPhi)
+                {
+                    auto predecessors = getPredecessors(bb.y);
+                    auto registers = instr.operand.peek!(ReadOnlyIndexable!Register)();
+
+                    if (registers.count != predecessors.count)
+                        error(instr, "The 'phi' instruction must have as many registers in the selector as its basic block has predecessors.");
+
+                    // TODO: Verify each register.
+                }
+            }
+        }
+    }
+}
+
 public final class SSAFormVerifier : CodeVerifier
 {
     public override void verify(Function function_)
     {
-        if (!(function_.attributes & FunctionAttributes.ssa))
-            return;
-
-        foreach (def; function_.definitions)
-            if (def.y.count > 1)
-                error(null, "Register '%s' assigned multiple times; invalid SSA form.", def.x.name);
+        if (function_.attributes & FunctionAttributes.ssa)
+        {
+            foreach (def; function_.definitions)
+                if (def.y.count > 1)
+                    error(null, "Register '%s' assigned multiple times; invalid SSA form.", def.x.name);
+        }
+        else
+            if (auto phi = getFirstInstruction(function_, opPhi))
+                error(phi, "The 'phi' instruction is not valid in non-SSA functions.");
     }
 }
