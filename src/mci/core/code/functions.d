@@ -160,10 +160,11 @@ public enum FunctionAttributes : ubyte
 {
     none = 0x00,
     intrinsic = 0x01,
-    pure_ = 0x02,
-    noOptimization = 0x04,
-    noInlining = 0x08,
-    noCallInlining = 0x10,
+    ssa = 0x02,
+    pure_ = 0x04,
+    noOptimization = 0x08,
+    noInlining = 0x10,
+    noCallInlining = 0x20,
 }
 
 public final class Function
