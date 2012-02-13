@@ -67,6 +67,8 @@ public interface Indexable(T) : ReadOnlyIndexable!T, Collection!T
     public T opIndexAssign(T item, size_t index);
 
     public Indexable!T opCatAssign(Iterable!T rhs);
+
+    public void insert(size_t index, T item);
 }
 
 public interface Lookup(K, V) : ReadOnlyCollection!(Tuple!(K, V))
@@ -585,7 +587,7 @@ public class List(T) : Indexable!T
             auto item = _array[i];
             auto status = dg(item);
 
-            if (status != 0)
+            if (status)
                 return status;
         }
 
@@ -599,7 +601,7 @@ public class List(T) : Indexable!T
             auto item = _array[i];
             auto status = dg(i, item);
 
-            if (status != 0)
+            if (status)
                 return status;
         }
 
@@ -609,7 +611,7 @@ public class List(T) : Indexable!T
     public final T* opBinaryRight(string op : "in")(T item)
     {
         for (size_t i = 0; i < _size; i++)
-            if (obj == _array[i])
+            if (_array[i] == _array[i])
                 return &_array[i];
 
         return null;
@@ -625,7 +627,7 @@ public class List(T) : Indexable!T
         onAdd(item);
 
         if (index >= _array.length)
-            _array.length = (_size = index + 1);
+            _array.length = _size = index + 1;
 
         return _array[index] = item;
     }
@@ -723,6 +725,27 @@ public class List(T) : Indexable!T
         }
 
         _array[idx] = item;
+    }
+
+    public final void insert(size_t index, T item)
+    {
+        if (index >= _array.length)
+        {
+            _array.length = _size = index + 1;
+            _array[index] = item;
+        }
+        else
+        {
+            // The index lies within the managed area, so shift all elements forward.
+            _array.length += 1;
+            _size++;
+
+            for (size_t i = 0; i < _size; i++)
+                if (i >= index)
+                    _array[i] = _array[i + 1];
+
+            _array[index] = item;
+        }
     }
 
     public final void remove(T item)
@@ -982,7 +1005,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
             {
                 auto status = dg(tup);
 
-                if (status != 0)
+                if (status)
                     return status;
             }
         }
@@ -993,7 +1016,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
                 auto tup = tuple(k, v);
                 auto status = dg(tup);
 
-                if (status != 0)
+                if (status)
                     return status;
             }
         }
@@ -1009,7 +1032,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
             {
                 auto status = dg(i, tup);
 
-                if (status != 0)
+                if (status)
                     return status;
             }
         }
@@ -1022,7 +1045,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
                 auto tup = tuple(k, v);
                 auto status = dg(i, tup);
 
-                if (status != 0)
+                if (status)
                     return status;
 
                 i++;
@@ -1292,7 +1315,7 @@ public class ArrayQueue(T) : Queue!T
             auto item = _list[i];
             auto status = dg(item);
 
-            if (status != 0)
+            if (status)
                 return status;
         }
 
@@ -1306,7 +1329,7 @@ public class ArrayQueue(T) : Queue!T
             auto item = _list[i];
             auto status = dg(i, item);
 
-            if (status != 0)
+            if (status)
                 return status;
         }
 
@@ -1443,7 +1466,7 @@ public class ArrayStack(T) : Stack!T
         {
             auto status = dg(item);
 
-            if (status != 0)
+            if (status)
                 return status;
         }
 
@@ -1456,7 +1479,7 @@ public class ArrayStack(T) : Stack!T
         {
             auto status = dg(i, item);
 
-            if (status != 0)
+            if (status)
                 return status;
         }
 
@@ -1572,7 +1595,7 @@ public final class HashSet(T) : Set!T
             auto item = tup.x;
             auto status = dg(item);
 
-            if (status != 0)
+            if (status)
                 return status;
         }
 
@@ -1586,7 +1609,7 @@ public final class HashSet(T) : Set!T
             auto item = tup.x;
             auto status = dg(i, item);
 
-            if (status != 0)
+            if (status)
                 return status;
         }
 
