@@ -221,6 +221,21 @@ public Map!(K, V) asMap(K, V)(Map!(K, V) items)
     return items;
 }
 
+public Queue!T asQueue(T)(Queue!T items)
+{
+    return items;
+}
+
+public Stack!T asStack(T)(Stack!T items)
+{
+    return items;
+}
+
+public Set!T asSet(T)(Set!T items)
+{
+    return items;
+}
+
 public void addRange(T, V)(Collection!T col, V values)
     if (isIterable!V)
 in
@@ -546,6 +561,7 @@ body
 public class List(T) : Indexable!T
 {
     private T[] _array;
+    private size_t _size;
 
     public this()
     {
@@ -564,8 +580,9 @@ public class List(T) : Indexable!T
 
     public final int opApply(scope int delegate(ref T) dg)
     {
-        foreach (item; _array)
+        for (size_t i = 0; i < _size; i++)
         {
+            auto item = _array[i];
             auto status = dg(item);
 
             if (status != 0)
@@ -577,8 +594,9 @@ public class List(T) : Indexable!T
 
     public final int opApply(scope int delegate(ref size_t, ref T) dg)
     {
-        foreach (i, item; _array)
+        for (size_t i = 0; i < _size; i++)
         {
+            auto item = _array[i];
             auto status = dg(i, item);
 
             if (status != 0)
@@ -590,9 +608,9 @@ public class List(T) : Indexable!T
 
     public final T* opBinaryRight(string op : "in")(T item)
     {
-        foreach (obj; _array)
-            if (obj == item)
-                return &obj;
+        for (size_t i = 0; i < _size; i++)
+            if (obj == _array[i])
+                return &_array[i];
 
         return null;
     }
@@ -607,7 +625,7 @@ public class List(T) : Indexable!T
         onAdd(item);
 
         if (index >= _array.length)
-            _array.length = index + 1;
+            _array.length = (_size = index + 1);
 
         return _array[index] = item;
     }
@@ -622,7 +640,7 @@ public class List(T) : Indexable!T
         auto list = new List!T();
 
         for (size_t i = x; i < y; i++)
-            list.add(this[i]);
+            list.add(_array[i]);
 
         return list;
     }
@@ -674,18 +692,20 @@ public class List(T) : Indexable!T
 
     @property public final size_t count()
     {
-        return _array.length;
+        return _size;
     }
 
     @property public final bool empty()
     {
-        return _array.empty;
+        return !_size;
     }
 
     public List!T duplicate()
     {
         auto l = new List!T();
+
         l._array = _array.dup;
+        l._size = _size;
 
         return l;
     }
@@ -694,7 +714,15 @@ public class List(T) : Indexable!T
     {
         onAdd(item);
 
-        _array ~= item;
+        auto idx = _size;
+
+        if (_size == _array.length)
+        {
+            _array.length += 1;
+            _size++;
+        }
+
+        _array[idx] = item;
     }
 
     public final void remove(T item)
@@ -704,7 +732,7 @@ public class List(T) : Indexable!T
         size_t index;
         bool eq;
 
-        for (size_t i = 0; i < _array.length; i++)
+        for (size_t i = 0; i < _size; i++)
         {
             // Here's an ugly hack for interfaces because, for whatever reason, one cannot
             // compare interface instances without casting them to a concrete type.
@@ -716,19 +744,24 @@ public class List(T) : Indexable!T
             if (eq)
             {
                 index = i;
+                _size--;
+
                 break;
             }
         }
 
         if (eq)
-            _array = _array[0 .. index] ~ _array[index + 1 .. $];
+            for (size_t i = 0; i < _size; i++)
+                if (i >= index)
+                    _array[i] = _array[i + 1];
     }
 
     public final void clear()
     {
         onClear();
 
-        _array.clear();
+        _array = null;
+        _size = 0;
     }
 
     protected void onAdd(T item)
@@ -847,7 +880,7 @@ public class NoNullList(T)
         auto list = new NoNullList!T();
 
         for (size_t i = x; i < y; i++)
-            list.add(this[i]);
+            list.add(_array[i]);
 
         return list;
     }
@@ -873,7 +906,9 @@ public class NoNullList(T)
     public override NoNullList!T duplicate()
     {
         auto l = new NoNullList!T();
+
         l._array = _array.dup;
+        l._size = _size;
 
         return l;
     }

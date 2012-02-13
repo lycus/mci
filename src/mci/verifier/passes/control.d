@@ -144,7 +144,7 @@ public final class ExceptionContextVerifier : CodeVerifier
                     // Remove all reachable blocks from illegalBranches such that the blocks
                     // we end up with are the ones not reachable from any unwind block.
                     foreach (db; directBranches)
-                        if (find(unwindBlocks, (BasicBlock ub) { return isReachableFrom(db, ub); }))
+                        if (contains(unwindBlocks, (BasicBlock ub) { return isReachableFrom(db, ub); }))
                             illegalBranches.remove(db);
 
                     if (auto illegal = first(illegalBranches))
