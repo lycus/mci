@@ -144,3 +144,16 @@ public final class FunctionArgumentCountVerifier : CodeVerifier
             error(instr, "Expected %s 'arg.pop' instructions.", required);
     }
 }
+
+public final class SSAFormVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        if (!(function_.attributes & FunctionAttributes.ssa))
+            return;
+
+        foreach (def; function_.definitions)
+            if (def.y.count > 1)
+                error(null, "Register '%s' assigned multiple times; invalid SSA form.", def.x.name);
+    }
+}

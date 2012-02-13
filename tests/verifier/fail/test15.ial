@@ -1,0 +1,12 @@
+function ssa void bad_ssa()
+{
+    register int32 x;
+
+    block entry
+    {
+        x = load.i32 (42);
+        x = load.i32 (24);
+
+        leave;
+    }
+}

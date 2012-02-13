@@ -52,7 +52,8 @@ public final class VerificationManager
                                          new MemoryAliasVerifier(),
                                          new ArrayVerifier(),
                                          new FieldTypeVerifier(),
-                                         new FieldStorageVerifier()));
+                                         new FieldStorageVerifier(),
+                                         new SSAFormVerifier()));
     }
 
     public void verify(Function function_)

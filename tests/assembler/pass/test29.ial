@@ -1,0 +1,6 @@
+function ssa void foo()
+{
+    block entry
+    {
+    }
+}

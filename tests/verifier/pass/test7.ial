@@ -1,0 +1,13 @@
+function ssa void foo()
+{
+    register int32 x;
+    register uint y;
+
+    block entry
+    {
+        x = load.i32 (42);
+        y = cmp.eq x, x;
+
+        leave;
+    }
+}
