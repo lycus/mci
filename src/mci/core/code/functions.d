@@ -177,6 +177,8 @@ public final class Function
     private Type _returnType;
     private NoNullDictionary!(string, BasicBlock) _blocks;
     private NoNullDictionary!(string, Register) _registers;
+    private NoNullDictionary!(Register, NoNullList!Instruction) _uses;
+    private NoNullDictionary!(Register, NoNullList!Instruction) _definitions;
     private bool _isClosed;
 
     invariant()
@@ -186,6 +188,8 @@ public final class Function
         assert(_parameters);
         assert(_blocks);
         assert(_registers);
+        assert(_uses);
+        assert(_definitions);
     }
 
     public this(Module module_, string name, Type returnType, CallingConvention callingConvention = CallingConvention.standard,
@@ -203,9 +207,11 @@ public final class Function
         _returnType = returnType;
         _callingConvention = callingConvention;
         _attributes = attributes;
+        _parameters = new typeof(_parameters)();
         _blocks = new typeof(_blocks)();
         _registers = new typeof(_registers)();
-        _parameters = new typeof(_parameters)();
+        _uses = new typeof(_uses)();
+        _definitions = new typeof(_definitions)();
 
         (cast(Dictionary!(string, Function))module_.functions)[name] = this;
     }
@@ -284,6 +290,26 @@ public final class Function
         return _registers;
     }
 
+    @property public Lookup!(Register, NoNullList!Instruction) uses()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _uses;
+    }
+
+    @property public Lookup!(Register, NoNullList!Instruction) definitions()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _definitions;
+    }
+
     public override string toString()
     {
         return _module.toString() ~ "/" ~ _name;
@@ -347,7 +373,12 @@ public final class Function
     }
     body
     {
-        return _registers[name] = new Register(this, name, type);
+        auto reg = _registers[name] = new Register(this, name, type);
+
+        _uses[reg] = new NoNullList!Instruction();
+        _definitions[reg] = new NoNullList!Instruction();
+
+        return reg;
     }
 }
 

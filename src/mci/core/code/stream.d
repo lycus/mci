@@ -129,9 +129,58 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
         return _instructions.duplicate();
     }
 
+    private void addUseDef(Instruction instruction)
+    in
+    {
+        assert(instruction);
+    }
+    body
+    {
+        // Exploit some implementation knowledge...
+        auto uses = cast(NoNullDictionary!(Register, NoNullList!Instruction))_block.function_.uses;
+        auto defs = cast(NoNullDictionary!(Register, NoNullList!Instruction))_block.function_.definitions;
+
+        if (instruction.targetRegister)
+            defs[instruction.targetRegister].add(instruction);
+
+        if (instruction.sourceRegister1)
+            uses[instruction.sourceRegister1].add(instruction);
+
+        if (instruction.sourceRegister2)
+            uses[instruction.sourceRegister2].add(instruction);
+
+        if (instruction.sourceRegister3)
+            uses[instruction.sourceRegister3].add(instruction);
+    }
+
+    private void removeUseDef(Instruction instruction)
+    in
+    {
+        assert(instruction);
+    }
+    body
+    {
+        auto uses = cast(NoNullDictionary!(Register, NoNullList!Instruction))_block.function_.uses;
+        auto defs = cast(NoNullDictionary!(Register, NoNullList!Instruction))_block.function_.definitions;
+
+        if (instruction.targetRegister)
+            defs[instruction.targetRegister].remove(instruction);
+
+        if (instruction.sourceRegister1)
+            uses[instruction.sourceRegister1].remove(instruction);
+
+        if (instruction.sourceRegister2)
+            uses[instruction.sourceRegister2].remove(instruction);
+
+        if (instruction.sourceRegister3)
+            uses[instruction.sourceRegister3].remove(instruction);
+    }
+
     public Instruction append(T ...)(T args)
     {
         auto insn = new Instruction(_block, args);
+
+        addUseDef(insn);
 
         _instructions.add(insn);
 
@@ -148,6 +197,8 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
     {
         auto insn = new Instruction(_block, args);
 
+        addUseDef(insn);
+
         _instructions.insert(findIndex(_instructions, next) - 1, insn);
 
         return insn;
@@ -163,6 +214,8 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
     {
         auto insn = new Instruction(_block, args);
 
+        addUseDef(insn);
+
         _instructions.insert(findIndex(_instructions, previous) + 1, insn);
 
         return insn;
@@ -176,7 +229,12 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
     }
     body
     {
-        return _instructions[findIndex(_instructions, old)] = new Instruction(_block, args);
+        auto insn = new Instruction(_block, args);
+
+        removeUseDef(old);
+        addUseDef(insn);
+
+        return _instructions[findIndex(_instructions, old)] = insn;
     }
 
     public void remove(Instruction instruction)
@@ -187,6 +245,16 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
     }
     body
     {
+        removeUseDef(instruction);
+
         _instructions.remove(instruction);
+    }
+
+    public void clear()
+    {
+        foreach (insn; _instructions)
+            removeUseDef(insn);
+
+        _instructions.clear();
     }
 }
