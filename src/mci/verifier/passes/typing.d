@@ -25,8 +25,7 @@ public final class ConstantLoadVerifier : CodeVerifier
                 string loadCheck(string name, string type)
                 {
                     return "if (instr.opCode is opLoad" ~ name ~ " && instr.targetRegister.type !is " ~ type ~ "Type.instance)" ~
-                           "    error(instr, \"The target of a '\" ~ opLoad" ~ name ~ ".name ~ \"' instruction must be of type '\" ~" ~
-                           "          " ~ type ~ "Type.instance.name ~ \"'.\");";
+                           "    error(instr, \"The target of a '%s' instruction must be of type '%s'.\", opLoad" ~ name ~ ", " ~ type ~ "Type.instance);";
                 }
 
                 mixin(loadCheck("I8", "Int8"));
@@ -48,8 +47,8 @@ public final class ConstantLoadVerifier : CodeVerifier
                     return "if (instr.opCode is opLoad" ~ name ~ "A)" ~
                            "{" ~
                            "    if (!isContainerOf(instr.targetRegister.type, " ~ type ~ "Type.instance))" ~
-                           "        error(instr, \"The target of a '\" ~ opLoad" ~ name ~ "A.name ~ \"' instruction must be a pointer \" ~" ~
-                           "              \"to, or a vector/array of, '\" ~ " ~ type ~ "Type.instance.name ~ \"'.\");" ~
+                           "        error(instr, \"The target of a '%s' instruction must be a pointer to, or a vector or array of, '%s'.\"," ~
+                           "              opLoad" ~ name ~ "A, " ~ type ~ "Type.instance);" ~
                            "" ~
                            "    if (auto vec = cast(VectorType)instr.targetRegister.type)" ~
                            "    {" ~
@@ -74,11 +73,11 @@ public final class ConstantLoadVerifier : CodeVerifier
                 mixin(loadArrayCheck("F64", "Float64", "double"));
 
                 if (instr.opCode is opLoadNull && !isNullable(instr.targetRegister.type))
-                    error(instr, "The target of a 'load.null' opcode must be a pointer, a function pointer, a reference, an array, or a vector.");
+                    error(instr, "The target of a 'load.null' instruction must be a pointer, a function pointer, a reference, an array, or a vector.");
                 else if (instr.opCode is opLoadFunc)
                 {
                     if (!isType!FunctionPointerType(instr.targetRegister.type))
-                        error(instr, "The target of a 'load.func' opcode must be a function pointer.");
+                        error(instr, "The target of a 'load.func' instruction must be a function pointer.");
 
                     auto func = *instr.operand.peek!Function();
                     auto target = cast(FunctionPointerType)instr.targetRegister.type;
@@ -135,7 +134,7 @@ public final class ArithmeticVerifier : CodeVerifier
                     if ((instr.opCode is opAriAdd || instr.opCode is opAriSub) && isType!PointerType(instr.targetRegister.type))
                     {
                         if (instr.sourceRegister1.type !is instr.targetRegister.type)
-                            error(instr, "The first source register must be of type ('%s')", instr.targetRegister.type);
+                            error(instr, "The first source register must be of type '%s'.", instr.targetRegister.type);
 
                         if (instr.sourceRegister2.type !is NativeUIntType.instance)
                             error(instr, "The second source register must be of type 'uint'.");
@@ -145,7 +144,8 @@ public final class ArithmeticVerifier : CodeVerifier
                         if (!isValidInArithmetic(instr.targetRegister.type))
                             error(instr, "Target register must be a primitive.");
 
-                        if (!isValidInArithmetic(instr.sourceRegister1.type) || (instr.opCode.registers >= 2 && !isValidInArithmetic(instr.sourceRegister2.type)))
+                        if (!isValidInArithmetic(instr.sourceRegister1.type) ||
+                            (instr.opCode.registers >= 2 && !isValidInArithmetic(instr.sourceRegister2.type)))
                             error(instr, "Source register must be a primitive.");
 
                         if (!areSameType(instr.targetRegister, instr.sourceRegister1, instr.sourceRegister2))
@@ -170,7 +170,8 @@ public final class BitwiseVerifier : CodeVerifier
                     if (!isValidInBitwise(instr.targetRegister.type))
                         error(instr, "Target register must be an integer.");
 
-                    if (!isValidInBitwise(instr.sourceRegister1.type) || (instr.opCode.registers >= 2 && !isValidInBitwise(instr.sourceRegister2.type)))
+                    if (!isValidInBitwise(instr.sourceRegister1.type) ||
+                        (instr.opCode.registers >= 2 && !isValidInBitwise(instr.sourceRegister2.type)))
                         error(instr, "Source register must be an integer.");
 
                     if (!areSameType(instr.targetRegister, instr.sourceRegister1, instr.sourceRegister2))
@@ -219,7 +220,7 @@ public final class ComparisonVerifier : CodeVerifier
                 if (isComparison(instr.opCode))
                 {
                     if (!isValidInComparison(instr.sourceRegister1.type) || !isValidInComparison(instr.sourceRegister2.type))
-                        error(instr, "Source register must be a primitive or a pointer");
+                        error(instr, "Source register must be a primitive or a pointer.");
 
                     if (!areSameType(instr.sourceRegister1, instr.sourceRegister2))
                         error(instr, "Both source registers must be the exact same type.");
@@ -468,13 +469,9 @@ public final class JumpTypeVerifier : CodeVerifier
     public override void verify(Function function_)
     {
         foreach (bb; function_.blocks)
-        {
             foreach (instr; bb.y.stream)
-            {
                 if (instr.opCode is opJumpCond && instr.sourceRegister1.type !is NativeUIntType.instance)
                     error(instr, "Source register must be of type 'uint'.");
-            }
-        }
     }
 }
 
@@ -498,7 +495,7 @@ public final class CallSiteTypeVerifier : CodeVerifier
                     auto pushOp = bb.y.stream[instrIndex - argCount + argIndex];
 
                     if (pushOp.sourceRegister1.type !is argType)
-                        error(pushOp, "The source register must be of type '%s'.", argType.name);
+                        error(pushOp, "The source register must be of type '%s'.", argType);
                 }
             }
         }
@@ -519,7 +516,7 @@ public final class FunctionArgumentTypeVerifier : CodeVerifier
             auto popOp = entry.stream[i];
 
             if (popOp.targetRegister.type !is param.type)
-                error(popOp, "The target register must be of type '%s'.", param.type.name);
+                error(popOp, "The target register must be of type '%s'.", param.type);
         }
     }
 }

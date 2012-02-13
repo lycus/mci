@@ -72,7 +72,7 @@ public final class CallSiteCountVerifier : CodeVerifier
                     continue;
 
                 if (pushCount != required)
-                    error(instr, "Expected %s 'arg.push' instructions.", required);
+                    error(instr, "Insufficient 'arg.push' instructions.");
 
                 pushCount = 0;
                 required = 0;
@@ -90,20 +90,18 @@ public final class FunctionArgumentCountVerifier : CodeVerifier
         if (!containsManagedCode(entry))
             return;
 
-        auto required = function_.parameters.count;
-
-        for (size_t i = 0; i < required; i++)
+        for (size_t i = 0; i < function_.parameters.count; i++)
         {
             auto instr = entry.stream[i];
 
             if (instr.opCode !is opArgPop)
-                error(instr, "Expected %s 'arg.pop' instructions.", required);
+                error(instr, "Insufficient 'arg.pop' instructions.");
         }
 
-        auto instr = entry.stream[required];
+        auto instr = entry.stream[function_.parameters.count];
 
         if (instr.opCode is opArgPop)
-            error(instr, "Expected %s 'arg.pop' instructions.", required);
+            error(instr, "Insufficient 'arg.pop' instructions.");
     }
 }
 
@@ -141,10 +139,10 @@ public final class PhiPredecessorVerifier : CodeVerifier
                         auto def = first(function_.definitions[reg]);
 
                         if (!def || !contains(predecessors, def.block))
-                            error(instr, "Register '%s' is not defined in any predecessors.", reg.name);
+                            error(instr, "Register '%s' is not defined in any predecessors.", reg);
 
                         if (!predSet.add(def.block))
-                            error(instr, "Register '%s' defined in multiple predecessor basic blocks.", reg.name);
+                            error(instr, "Register '%s' defined in multiple predecessor basic blocks.", reg);
                     }
                 }
             }
@@ -160,7 +158,7 @@ public final class SSAFormVerifier : CodeVerifier
         {
             foreach (def; function_.definitions)
                 if (def.y.count > 1)
-                    error(null, "Register '%s' assigned multiple times; invalid SSA form.", def.x.name);
+                    error(null, "Register '%s' assigned multiple times; invalid SSA form.", def.x);
         }
         else
             if (auto phi = getFirstInstruction(function_, opPhi))

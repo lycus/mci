@@ -84,7 +84,7 @@ public final class FFIVerifier : CodeVerifier
 
             auto bb = function_.blocks[entryBlockName];
 
-            if (bb.stream.count != 1 || bb.stream[0] !is inst)
+            if (bb.stream.count != 1 || first(bb.stream) !is inst)
                 error(inst, "FFI functions may only contain one 'ffi' instruction, terminating the 'entry' block.");
 
             if (!function_.callingConvention)
@@ -104,7 +104,7 @@ public final class RawVerifier : CodeVerifier
 
             auto bb = function_.blocks[entryBlockName];
 
-            if (bb.stream.count != 1 || bb.stream[0] !is inst)
+            if (bb.stream.count != 1 || first(bb.stream) !is inst)
                 error(inst, "Raw functions may only contain one 'raw' instruction, terminating the 'entry' block.");
         }
     }
@@ -150,7 +150,7 @@ public final class ExceptionContextVerifier : CodeVerifier
 
                     if (auto illegal = first(illegalBranches))
                         error(null, "Basic block '%s' branches to block '%s' (which uses '%s') but control does not come from any unwind block.",
-                              illegal.name, bb.y.name, instr.opCode.name);
+                              illegal, bb.y, instr.opCode);
 
                     // Even if the BB contains other EH instructions, we've already done
                     // the checks that we need to do, so just break.
@@ -170,6 +170,6 @@ public final class PhiRegisterVerifier : CodeVerifier
                 if (instr.opCode is opPhi)
                     foreach (reg; *instr.operand.peek!(ReadOnlyIndexable!Register)())
                         if (!contains(function_.registers, (Tuple!(string, Register) r) { return r.y is reg; }))
-                            error(instr, "Register '%s' is not within function '%s'.", reg.name, function_.name);
+                            error(instr, "Register '%s' is not within function '%s'.", reg, function_);
     }
 }
