@@ -5,6 +5,7 @@ import mci.core.container,
        mci.core.analysis.utilities,
        mci.core.code.functions,
        mci.core.code.instructions,
+       mci.core.code.stream,
        mci.core.code.opcodes,
        mci.core.typing.members,
        mci.core.typing.types,
@@ -25,7 +26,7 @@ public final class FieldStorageVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (auto field = instr.operand.peek!Field())
                 {
@@ -53,7 +54,7 @@ public final class PhiRegisterCountVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (instr.opCode is opPhi && !instr.operand.peek!(ReadOnlyIndexable!Register)().count)
                     error(instr, "The 'phi' instruction requires one or more registers.");
@@ -71,7 +72,7 @@ public final class CallSiteCountVerifier : CodeVerifier
             size_t pushCount;
             size_t required;
 
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (instr.opCode is opArgPush)
                 {
@@ -101,7 +102,7 @@ public final class PhiPredecessorVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (instr.opCode is opPhi)
                 {
@@ -131,13 +132,13 @@ public final class FunctionArgumentCountVerifier : CodeVerifier
 
         for (size_t i = 0; i < required; i++)
         {
-            auto instr = entry.instructions[i];
+            auto instr = entry.stream[i];
 
             if (instr.opCode !is opArgPop)
                 error(instr, "Expected %s 'arg.pop' instructions.", required);
         }
 
-        auto instr = entry.instructions[required];
+        auto instr = entry.stream[required];
 
         if (instr.opCode is opArgPop)
             error(instr, "Expected %s 'arg.pop' instructions.", required);

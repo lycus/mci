@@ -39,7 +39,7 @@ public abstract class ModuleVisitor
             {
                 visit(block.y);
 
-                foreach (instr; block.y.instructions)
+                foreach (instr; block.y.stream)
                     visit(instr);
             }
         }

@@ -103,7 +103,7 @@ public class BasicBlockEmitter
         mixin("public final BasicBlockEmitter emitTarget(OpCode opCode, " ~ OperandType ~ " operand, Register source1," ~
               "                                          Register source2, Register source3, Register target)" ~
               "{" ~
-              "    _block.instructions.add(new Instruction(opCode, InstructionOperand(operand), target, source1, source2, source3));" ~
+              "    _block.stream.append(opCode, InstructionOperand(operand), target, source1, source2, source3);" ~
               "    return this;" ~
               "}" ~
               "" ~
@@ -184,7 +184,7 @@ public class BasicBlockEmitter
     public final BasicBlockEmitter emitTarget(OpCode opCode, Register source1, Register source2, Register source3,
                                               Register target)
     {
-        _block.instructions.add(new Instruction(opCode, InstructionOperand(), source1, source2, source3, target));
+        _block.stream.append(opCode, InstructionOperand(), source1, source2, source3, target);
         return this;
     }
 

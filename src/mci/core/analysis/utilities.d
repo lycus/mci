@@ -32,7 +32,7 @@ in
 }
 body
 {
-    return find(block.instructions, (Instruction i) { return i.opCode is opCode; });
+    return find(block.stream, (Instruction i) { return i.opCode is opCode; });
 }
 
 public Instruction getFirstInstruction(BasicBlock block, OperandType operandType)
@@ -42,7 +42,7 @@ in
 }
 body
 {
-    return find(block.instructions, (Instruction i) { return i.opCode.operandType == operandType; });
+    return find(block.stream, (Instruction i) { return i.opCode.operandType == operandType; });
 }
 
 public Instruction getFirstInstruction(BasicBlock block, OpCodeType type)
@@ -52,7 +52,7 @@ in
 }
 body
 {
-    return find(block.instructions, (Instruction instr) { return instr.opCode.type == type; });
+    return find(block.stream, (Instruction instr) { return instr.opCode.type == type; });
 }
 
 public bool isNullable(Type type)

@@ -5,7 +5,7 @@ import mci.core.container,
        mci.core.analysis.cfg,
        mci.core.analysis.utilities,
        mci.core.code.functions,
-       mci.core.code.instructions,
+       mci.core.code.stream,
        mci.core.code.opcodes,
        mci.verifier.base;
 
@@ -20,7 +20,7 @@ public final class TerminatorVerifier : CodeVerifier
             if (!cfo)
                 error(null, "All basic blocks must have a terminator.");
 
-            if (cfo !is last(bb.y.instructions))
+            if (cfo !is last(bb.y.stream))
                 error(cfo, "A terminator instruction must be the last instruction in a basic block.");
         }
     }
@@ -83,7 +83,7 @@ public final class FFIVerifier : CodeVerifier
 
             auto bb = function_.blocks[entryBlockName];
 
-            if (bb.instructions.count != 1 || bb.instructions[0] !is inst)
+            if (bb.stream.count != 1 || bb.stream[0] !is inst)
                 error(inst, "FFI functions may only contain one 'ffi' instruction, terminating the 'entry' block.");
 
             if (!function_.callingConvention)
@@ -103,7 +103,7 @@ public final class RawVerifier : CodeVerifier
 
             auto bb = function_.blocks[entryBlockName];
 
-            if (bb.instructions.count != 1 || bb.instructions[0] !is inst)
+            if (bb.stream.count != 1 || bb.stream[0] !is inst)
                 error(inst, "Raw functions may only contain one 'raw' instruction, terminating the 'entry' block.");
         }
     }
@@ -115,7 +115,7 @@ public final class ExceptionContextVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (instr.opCode is opEHCatch || instr.opCode is opEHRethrow)
                 {

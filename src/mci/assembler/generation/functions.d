@@ -201,13 +201,11 @@ body
                 }
             }
 
-            auto instr = new Instruction(instrNode.opCode, operand, target, source1, source2, source3);
+            auto instr = bb.stream.append(instrNode.opCode, operand, target, source1, source2, source3);
 
             if (instrNode.metadata)
                 foreach (md; instrNode.metadata.metadata)
                     instr.metadata.add(new MetadataPair(md.key.name, md.value.name));
-
-            bb.instructions.add(instr);
         }
     }
 }

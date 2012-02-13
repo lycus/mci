@@ -16,7 +16,7 @@ out (result)
 }
 body
 {
-    auto term = last(block.instructions);
+    auto term = last(block.stream);
 
     if (auto bb = term.operand.peek!BasicBlock())
         return toReadOnlyIndexable(*bb);

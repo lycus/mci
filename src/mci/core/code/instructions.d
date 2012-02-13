@@ -105,6 +105,7 @@ public alias Algebraic!(byte,
 
 public final class Instruction
 {
+    private BasicBlock _block;
     private OpCode _opCode;
     private InstructionOperand _operand;
     private Register _targetRegister;
@@ -113,10 +114,18 @@ public final class Instruction
     private Register _sourceRegister3;
     private NoNullList!MetadataPair _metadata;
 
-    public this(OpCode opCode, InstructionOperand operand, Register targetRegister,
-                Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
+    invariant()
+    {
+        assert(_block);
+        assert(_opCode);
+        assert(_metadata);
+    }
+
+    package this(BasicBlock block, OpCode opCode, InstructionOperand operand, Register targetRegister,
+                 Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
     in
     {
+        assert(block);
         assert(opCode);
 
         if (opCode.hasTarget)
@@ -138,6 +147,7 @@ public final class Instruction
     }
     body
     {
+        _block = block;
         _opCode = opCode;
         _operand = operand;
         _targetRegister = targetRegister;
@@ -145,6 +155,16 @@ public final class Instruction
         _sourceRegister2 = sourceRegister2;
         _sourceRegister3 = sourceRegister3;
         _metadata = new typeof(_metadata)();
+    }
+
+    @property public BasicBlock block()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _block;
     }
 
     @property public OpCode opCode()

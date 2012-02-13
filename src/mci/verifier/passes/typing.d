@@ -6,6 +6,7 @@ import std.conv,
        mci.core.analysis.utilities,
        mci.core.code.functions,
        mci.core.code.instructions,
+       mci.core.code.stream,
        mci.core.code.opcodes,
        mci.core.typing.cache,
        mci.core.typing.core,
@@ -19,7 +20,7 @@ public final class ConstantLoadVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 string loadCheck(string name, string type)
                 {
@@ -127,7 +128,7 @@ public final class ArithmeticVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (isArithmetic(instr.opCode) || instr.opCode is opNot)
                 {
@@ -162,7 +163,7 @@ public final class BitwiseVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (isBitwise(instr.opCode))
                 {
@@ -186,7 +187,7 @@ public final class BitShiftVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (isBitShift(instr.opCode))
                 {
@@ -213,7 +214,7 @@ public final class ComparisonVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (isComparison(instr.opCode))
                 {
@@ -249,7 +250,7 @@ public final class MemoryVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (instr.opCode is opMemAlloc)
                 {
@@ -291,7 +292,7 @@ public final class MemoryPinVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (instr.opCode is opMemPin)
                 {
@@ -317,7 +318,7 @@ public final class MemoryAliasVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (instr.opCode is opMemGet)
                 {
@@ -360,7 +361,7 @@ public final class ArrayVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (isArray(instr.opCode))
                 {
@@ -391,7 +392,7 @@ public final class FieldTypeVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 auto field = instr.operand.peek!Field();
 
@@ -424,7 +425,7 @@ public final class ConversionVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (instr.opCode is opConv)
                 {
@@ -468,7 +469,7 @@ public final class JumpTypeVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (instr.opCode is opJumpCond && instr.sourceRegister1.type !is NativeUIntType.instance)
                     error(instr, "Source register must be of type 'uint'.");
@@ -483,7 +484,7 @@ public final class CallSiteTypeVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instrIndex, instr; bb.y.instructions)
+            foreach (instrIndex, instr; bb.y.stream)
             {
                 if (!isCallSite(instr.opCode))
                     continue;
@@ -494,7 +495,7 @@ public final class CallSiteTypeVerifier : CodeVerifier
 
                 foreach (argIndex, argType; argTypes)
                 {
-                    auto pushOp = bb.y.instructions[instrIndex - argCount + argIndex];
+                    auto pushOp = bb.y.stream[instrIndex - argCount + argIndex];
 
                     if (pushOp.sourceRegister1.type !is argType)
                         error(pushOp, "The source register must be of type '%s'.", argType.name);
@@ -515,7 +516,7 @@ public final class FunctionArgumentTypeVerifier : CodeVerifier
 
         foreach (i, param; function_.parameters)
         {
-            auto popOp = entry.instructions[i];
+            auto popOp = entry.stream[i];
 
             if (popOp.targetRegister.type !is param.type)
                 error(popOp, "The target register must be of type '%s'.", param.type.name);
@@ -528,7 +529,7 @@ public final class PhiTypeVerifier : CodeVerifier
     public override void verify(Function function_)
     {
         foreach (bb; function_.blocks)
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
                 if (instr.opCode is opPhi)
                     foreach (reg; *instr.operand.peek!(ReadOnlyIndexable!Register)())
                         if (reg.type !is instr.targetRegister.type)
@@ -542,7 +543,7 @@ public final class ExceptionTypeVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (instr.opCode is opEHThrow && !isType!ReferenceType(instr.sourceRegister1.type))
                     error(instr, "The source register must be a reference.");

@@ -3,7 +3,7 @@ module mci.core.code.functions;
 import mci.core.container,
        mci.core.code.instructions,
        mci.core.code.modules,
-       mci.core.tree.statements,
+       mci.core.code.stream,
        mci.core.typing.types;
 
 public final class BasicBlock
@@ -11,14 +11,14 @@ public final class BasicBlock
     private Function _function;
     private string _name;
     private BasicBlock _unwindBlock;
-    private NoNullList!Instruction _instructions;
+    private InstructionStream _stream;
     private bool _isClosed;
 
     invariant()
     {
         assert(_function);
         assert(_name);
-        assert(_instructions);
+        // We can't assert _stream here as this would create a circular dependency.
     }
 
     private this(Function function_, string name)
@@ -31,7 +31,7 @@ public final class BasicBlock
     {
         _function = function_;
         _name = name;
-        _instructions = new typeof(_instructions)();
+        _stream = new typeof(_stream)(this);
     }
 
     @property public Function function_()
@@ -74,14 +74,14 @@ public final class BasicBlock
         _unwindBlock = unwindBlock;
     }
 
-    @property public NoNullList!Instruction instructions()
+    @property public InstructionStream stream()
     out (result)
     {
         assert(result);
     }
     body
     {
-        return _instructions;
+        return _stream;
     }
 
     @property public bool isClosed()

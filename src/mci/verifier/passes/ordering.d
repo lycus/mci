@@ -11,13 +11,13 @@ public final class CallSiteOrderVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            foreach (i, instr; bb.y.instructions)
+            foreach (i, instr; bb.y.stream)
             {
                 if (instr.opCode !is opArgPush)
                     continue;
 
                 // There must be a consecutive instruction as arg.push is not terminating.
-                auto next = bb.y.instructions[i + 1];
+                auto next = bb.y.stream[i + 1];
 
                 if (next.opCode is opArgPush || isCallSite(next.opCode))
                     continue;
@@ -45,7 +45,7 @@ public final class FunctionArgumentOrderVerifier : CodeVerifier
 
         auto valid = true;
 
-        foreach (instr; entry.instructions)
+        foreach (instr; entry.stream)
         {
             if (instr.opCode is opArgPop && !valid)
                 error(instr, "The 'arg.pop' instruction is only valid at the beginning of the 'entry' basic block.");
@@ -69,7 +69,7 @@ public final class PhiOrderVerifier : CodeVerifier
         {
             auto valid = true;
 
-            foreach (instr; bb.y.instructions)
+            foreach (instr; bb.y.stream)
             {
                 if (instr.opCode is opPhi && !valid)
                     error(instr, "The 'phi' instruction is only valid at the beginning of a basic block.");

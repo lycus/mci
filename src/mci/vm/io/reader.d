@@ -14,6 +14,7 @@ import std.exception,
        mci.core.code.metadata,
        mci.core.code.modules,
        mci.core.code.opcodes,
+       mci.core.code.stream,
        mci.core.typing.cache,
        mci.core.typing.core,
        mci.core.typing.members,
@@ -459,7 +460,7 @@ public final class ModuleReader : ModuleLoader
                 auto instrCount = _reader.read!uint();
 
                 for (uint i = 0; i < instrCount; i++)
-                    block.y.instructions.add(readInstruction(func.y));
+                    readInstruction(block.y.stream, func.y);
             }
         }
 
@@ -778,9 +779,10 @@ public final class ModuleReader : ModuleLoader
         return bb;
     }
 
-    private Instruction readInstruction(Function function_)
+    private Instruction readInstruction(InstructionStream stream, Function function_)
     in
     {
+        assert(stream);
         assert(function_);
     }
     out (result)
@@ -920,7 +922,7 @@ public final class ModuleReader : ModuleLoader
                 break;
         }
 
-        auto instr = new Instruction(opCode, operand, target, source1, source2, source3);
+        auto instr = stream.append(opCode, operand, target, source1, source2, source3);
 
         auto mdCount = _reader.read!uint();
 

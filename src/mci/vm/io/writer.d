@@ -59,9 +59,9 @@ public final class ModuleWriter : ModuleSaver
         {
             foreach (block; func.y.blocks)
             {
-                _writer.write(cast(uint)block.y.instructions.count);
+                _writer.write(cast(uint)block.y.stream.count);
 
-                foreach (instr; block.y.instructions)
+                foreach (instr; block.y.stream)
                     writeInstruction(instr);
             }
         }
