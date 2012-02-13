@@ -751,9 +751,14 @@ public class List(T) : Indexable!T
         }
 
         if (eq)
+        {
             for (size_t i = 0; i < _size; i++)
                 if (i >= index)
                     _array[i] = _array[i + 1];
+
+            // Avoid keeping dead references around.
+            _array[_size] = T.init;
+        }
     }
 
     public final void clear()
