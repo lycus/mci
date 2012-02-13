@@ -102,6 +102,9 @@ public final class ModuleDisassembler
     {
         _writer.write("function ");
 
+        if (function_.attributes & FunctionAttributes.ssa)
+            _writer.write("ssa ");
+
         if (function_.attributes & FunctionAttributes.pure_)
             _writer.write("pure ");
 
@@ -155,7 +158,7 @@ public final class ModuleDisassembler
             _writer.writeln();
             _writer.writeln("    {");
 
-            foreach (instr; block.y.instructions)
+            foreach (instr; block.y.stream)
             {
                 if (!instr.metadata.empty)
                 {

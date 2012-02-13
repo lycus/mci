@@ -643,6 +643,12 @@ public final class Parser
 
         FunctionAttributes attributes;
 
+        if (peek().type == TokenType.ssa)
+        {
+            next();
+            attributes |= FunctionAttributes.ssa;
+        }
+
         if (peek().type == TokenType.pure_)
         {
             next();
