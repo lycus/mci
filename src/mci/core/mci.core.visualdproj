@@ -202,6 +202,7 @@
    <File path="code\metadata.d" />
    <File path="code\modules.d" />
    <File path="code\opcodes.d" />
+   <File path="code\stream.d" />
   </Folder>
   <Folder name="diagnostics">
    <File path="diagnostics\debugging.d" />
