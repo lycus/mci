@@ -6,7 +6,7 @@ import mci.core.common,
 
 // This file contains a dirty hack to get callbacks on Windows when threads start/stop.
 
-static if (operatingSystem == OperatingSystem.windows)
+static if (isWindows)
 {
     import core.sys.windows.windows;
 

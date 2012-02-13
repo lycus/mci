@@ -5,9 +5,9 @@ import core.thread,
        mci.core.config,
        mci.core.container;
 
-alias void delegate() ThreadEventCallback;
+public alias void delegate() ThreadEventCallback;
 
-static if (operatingSystem == OperatingSystem.windows)
+static if (isWindows)
 {
     import mci.vm.thread.tls;
 
