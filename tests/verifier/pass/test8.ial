@@ -1,0 +1,24 @@
+function ssa void foo()
+{
+    register int32 x;
+    register int32 y;
+    register int32 z;
+
+    block entry
+    {
+        x = load.i32 (42);
+        jump (phi_block);
+    }
+
+    block bar
+    {
+        y = load.i32 (24);
+        jump (phi_block);
+    }
+
+    block phi_block
+    {
+        z = phi (x, y);
+        leave;
+    }
+}

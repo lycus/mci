@@ -112,13 +112,9 @@ public final class PhiRegisterCountVerifier : CodeVerifier
     public override void verify(Function function_)
     {
         foreach (bb; function_.blocks)
-        {
             foreach (instr; bb.y.stream)
-            {
                 if (instr.opCode is opPhi && !instr.operand.peek!(ReadOnlyIndexable!Register)().count)
                     error(instr, "The 'phi' instruction requires one or more registers.");
-            }
-        }
     }
 }
 
@@ -133,12 +129,23 @@ public final class PhiPredecessorVerifier : CodeVerifier
                 if (instr.opCode is opPhi)
                 {
                     auto predecessors = getPredecessors(bb.y);
-                    auto registers = instr.operand.peek!(ReadOnlyIndexable!Register)();
+                    auto registers = *instr.operand.peek!(ReadOnlyIndexable!Register)();
 
                     if (registers.count != predecessors.count)
                         error(instr, "The 'phi' instruction must have as many registers in the selector as its basic block has predecessors.");
 
-                    // TODO: Verify each register.
+                    auto predSet = new HashSet!BasicBlock();
+
+                    foreach (reg; registers)
+                    {
+                        auto def = first(function_.definitions[reg]);
+
+                        if (!def || !contains(predecessors, def.block))
+                            error(instr, "Register '%s' is not defined in any predecessors.", reg.name);
+
+                        if (!predSet.add(def.block))
+                            error(instr, "Register '%s' defined in multiple predecessor basic blocks.", reg.name);
+                    }
                 }
             }
         }

@@ -1,0 +1,21 @@
+function ssa void bad_phi_regs()
+{
+    register int32 x;
+    register int32 y;
+
+    block entry
+    {
+        jump (phi_block);
+    }
+
+    block yrtne
+    {
+        jump (phi_block);
+    }
+
+    block phi_block
+    {
+        y = phi (x);
+        leave;
+    }
+}

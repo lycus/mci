@@ -22,7 +22,8 @@ public final class VerificationManager
         _verifiers = new typeof(_verifiers)();
 
         addRange(_verifiers,
-                 toIterable!CodeVerifier(new EntryVerifier(),
+                 toIterable!CodeVerifier(new SSAFormVerifier(),
+                                         new EntryVerifier(),
                                          new TerminatorVerifier(),
                                          new FFIVerifier(),
                                          new RawVerifier(),
@@ -32,7 +33,9 @@ public final class VerificationManager
                                          new ReturnTypeVerifier(),
                                          new PhiOrderVerifier(),
                                          new PhiRegisterCountVerifier(),
+                                         new PhiRegisterVerifier(),
                                          new PhiTypeVerifier(),
+                                         new PhiPredecessorVerifier(),
                                          new ExceptionContextVerifier(),
                                          new ExceptionTypeVerifier(),
                                          new CallSiteOrderVerifier(),
@@ -52,8 +55,7 @@ public final class VerificationManager
                                          new MemoryAliasVerifier(),
                                          new ArrayVerifier(),
                                          new FieldTypeVerifier(),
-                                         new FieldStorageVerifier(),
-                                         new SSAFormVerifier()));
+                                         new FieldStorageVerifier()));
     }
 
     public void verify(Function function_)

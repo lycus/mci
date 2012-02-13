@@ -5,6 +5,7 @@ import mci.core.container,
        mci.core.analysis.cfg,
        mci.core.analysis.utilities,
        mci.core.code.functions,
+       mci.core.code.instructions,
        mci.core.code.stream,
        mci.core.code.opcodes,
        mci.verifier.base;
@@ -157,5 +158,18 @@ public final class ExceptionContextVerifier : CodeVerifier
                 }
             }
         }
+    }
+}
+
+public final class PhiRegisterVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+            foreach (instr; bb.y.stream)
+                if (instr.opCode is opPhi)
+                    foreach (reg; *instr.operand.peek!(ReadOnlyIndexable!Register)())
+                        if (!contains(function_.registers, (Tuple!(string, Register) r) { return r.y is reg; }))
+                            error(instr, "Register '%s' is not within function '%s'.", reg.name, function_.name);
     }
 }
