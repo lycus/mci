@@ -88,13 +88,13 @@ public interface Lookup(K, V) : ReadOnlyCollection!(Tuple!(K, V))
             assert(key);
     }
 
-    public ReadOnlyCollection!K keys()
+    @property public ReadOnlyCollection!K keys()
     out (result)
     {
         assert(result);
     }
 
-    public ReadOnlyCollection!V values()
+    @property public ReadOnlyCollection!V values()
     out (result)
     {
         assert(result);
