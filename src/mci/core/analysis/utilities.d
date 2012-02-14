@@ -262,6 +262,38 @@ body
     return isValidInArithmetic(type) || isType!PointerType(type);
 }
 
+public bool isArrayContainerOf(Type type, Type elementType)
+in
+{
+    assert(type);
+    assert(elementType);
+}
+body
+{
+    if (auto arr = cast(ArrayType)type)
+        if (arr.elementType is elementType)
+            return true;
+
+    if (auto vec = cast(VectorType)type)
+        if (vec.elementType is elementType)
+            return true;
+
+    return false;
+}
+
+public bool isArrayContainerOfT(T)(Type type)
+in
+{
+    assert(type);
+}
+body
+{
+    if (isArrayOrVector(type))
+        return isType!T(getElementType(type));
+
+    return false;
+}
+
 public bool isContainerOf(Type type, Type elementType)
 in
 {
@@ -274,15 +306,21 @@ body
         if (ptr.elementType is elementType)
             return true;
 
-    if (auto arr = cast(ArrayType)type)
-        if (arr.elementType is elementType)
-            return true;
+    return isArrayContainerOf(type, elementType);
+}
 
-    if (auto vec = cast(VectorType)type)
-        if (vec.elementType is elementType)
-            return true;
+public bool isArrayContainerOfOrElement(Type type, Type elementType)
+in
+{
+    assert(type);
+    assert(elementType);
+}
+body
+{
+    if (type is elementType)
+        return true;
 
-    return false;
+    return isArrayContainerOf(type, elementType);
 }
 
 public Type getElementType(Type type)
@@ -300,6 +338,17 @@ body
         return (cast(PointerType)type).elementType;
 }
 
+public bool isArrayOrVector(Type type)
+in
+{
+    assert(type);
+}
+body
+{
+    return isType!ArrayType(type) ||
+           isType!VectorType(type);
+}
+
 public bool isManaged(Type type)
 in
 {
@@ -307,9 +356,7 @@ in
 }
 body
 {
-    return isType!ReferenceType(type) ||
-           isType!ArrayType(type) ||
-           isType!VectorType(type);
+    return isType!ReferenceType(type) || isArrayOrVector(type);
 }
 
 public bool isTypeSpecification(Type type)

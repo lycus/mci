@@ -366,8 +366,7 @@ public final class ArrayVerifier : CodeVerifier
             {
                 if (isArray(instr.opCode))
                 {
-                    if (!isType!ArrayType(instr.sourceRegister1.type) &&
-                        !isType!VectorType(instr.sourceRegister1.type))
+                    if (!isArrayOrVector(instr.sourceRegister1.type))
                         error(instr, "The first source register must be an array or a vector.");
 
                     if (instr.opCode !is opArrayLen && instr.sourceRegister2.type !is NativeUIntType.instance)
@@ -381,6 +380,136 @@ public final class ArrayVerifier : CodeVerifier
                         error(instr, "The target register must be a pointer to the first source register's element type.");
                     else if (instr.opCode is opArrayLen && instr.targetRegister.type !is NativeUIntType.instance)
                         error(instr, "The target register must be of type 'uint'.");
+                }
+            }
+        }
+    }
+}
+
+public final class ArrayArithmeticVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.stream)
+            {
+                if (isArrayArithmetic(instr.opCode) || instr.opCode is opArrayNot)
+                {
+                    if ((instr.opCode is opArrayAriAdd || instr.opCode is opArrayAriSub) &&
+                        isArrayContainerOfT!PointerType(instr.sourceRegister1.type))
+                    {
+                        if (!isArrayContainerOf(instr.sourceRegister2.type, getElementType(instr.sourceRegister1.type)))
+                            error(instr, "The second source register must be an array or vector with the same element type as the first source register.");
+
+                        if (!isArrayContainerOfOrElement(instr.sourceRegister3.type, NativeUIntType.instance))
+                            error(instr, "The third source register must be of type 'uint' or an array or vector of these.");
+                    }
+                    else
+                    {
+                        if (!isArrayOrVector(instr.sourceRegister1.type) || !isValidInArithmetic(getElementType(instr.sourceRegister1.type)))
+                            error(instr, "The first source register must be an array or vector of a primitive.");
+
+                        if (!isArrayContainerOf(instr.sourceRegister2.type, getElementType(instr.sourceRegister1.type)))
+                            error(instr, "The second source register must be an array or vector with the same element type as the first source register.");
+
+                        if (instr.opCode.registers >= 3 &&
+                            !isArrayContainerOfOrElement(instr.sourceRegister3.type, getElementType(instr.sourceRegister1.type)))
+                            error(instr, "The third source register must be of the first source register's element type or an array or vector of it.");
+                    }
+                }
+            }
+        }
+    }
+}
+
+public final class ArrayBitwiseVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.stream)
+            {
+                if (isArrayBitwise(instr.opCode))
+                {
+                    if (!isArrayOrVector(instr.sourceRegister1.type) || !isValidInBitwise(getElementType(instr.sourceRegister1.type)))
+                        error(instr, "The first source register must be an array or vector of integers.");
+
+                    if (!isArrayContainerOf(instr.sourceRegister2.type, getElementType(instr.sourceRegister1.type)))
+                        error(instr, "The second source register must be an array or vector with the same element type as the first source register.");
+
+                    if (instr.opCode.registers >= 3 &&
+                        !isArrayContainerOfOrElement(instr.sourceRegister3.type, getElementType(instr.sourceRegister1.type)))
+                        error(instr, "The third source register must be of the first source register's element type or an array or vector of it.");
+                }
+            }
+        }
+    }
+}
+
+public final class ArrayBitShiftVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.stream)
+            {
+                if (isArrayBitShift(instr.opCode))
+                {
+                    if (!isArrayOrVector(instr.sourceRegister1.type) || !isValidInBitwise(getElementType(instr.sourceRegister1.type)))
+                        error(instr, "The first source register must be an array or vector of integers.");
+
+                    if (!isArrayContainerOf(instr.sourceRegister2.type, getElementType(instr.sourceRegister1.type)))
+                        error(instr, "The second source register must be an array or vector with the same element type as the first source register.");
+
+                    if (!isArrayContainerOfOrElement(instr.sourceRegister3.type, NativeUIntType.instance))
+                        error(instr, "The third source register must be of type 'uint' or an array or vector of these.");
+                }
+            }
+        }
+    }
+}
+
+public final class ArrayComparisonVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.stream)
+            {
+                if (isArrayComparison(instr.opCode))
+                {
+                    if (!isArrayContainerOf(instr.sourceRegister1.type, NativeUIntType.instance))
+                        error(instr, "The first source register must be an array or vector of 'uint'.");
+
+                    if (!isArrayOrVector(instr.sourceRegister2.type) || !isValidInBitwise(getElementType(instr.sourceRegister2.type)))
+                        error(instr, "The second source register must be an array or vector of primitives or pointers.");
+
+                    if (!isArrayContainerOf(instr.sourceRegister3.type, getElementType(instr.sourceRegister2.type)))
+                        error(instr, "The third source register must be an array or vector with the same element type as the second source register.");
+                }
+            }
+        }
+    }
+}
+
+public final class ArrayConversionVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.stream)
+            {
+                if (instr.opCode is opArrayConv)
+                {
+                    auto tgt = instr.targetRegister.type;
+                    auto src = instr.sourceRegister1.type;
+
+                    error(instr, "Invalid types in 'conv' operation.");
                 }
             }
         }

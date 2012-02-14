@@ -56,6 +56,11 @@ public final class VerificationManager
                                          new MemoryPinVerifier(),
                                          new MemoryAliasVerifier(),
                                          new ArrayVerifier(),
+                                         new ArrayArithmeticVerifier(),
+                                         new ArrayBitwiseVerifier(),
+                                         new ArrayBitShiftVerifier(),
+                                         new ArrayComparisonVerifier(),
+                                         new ArrayConversionVerifier(),
                                          new FieldTypeVerifier(),
                                          new FieldStorageVerifier()));
     }
