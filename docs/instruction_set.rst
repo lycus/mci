@@ -1579,7 +1579,7 @@ The source registers must be of the exact same type, and can be one of
 ``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
 pointer type (in which case the pointers are compared for equality).
 
-The target register must be of type `uint`.
+The target register must be of type ``uint``.
 
 cmp.neq
 -------
@@ -1599,7 +1599,7 @@ The source registers must be of the exact same type, and can be one of
 ``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
 pointer type (in which case the pointers are compared for equality).
 
-The target register must be of type `uint`.
+The target register must be of type ``uint``.
 
 cmp.gt
 ------
@@ -1620,7 +1620,7 @@ The source registers must be of the exact same type, and can be one of
 ``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
 pointer type (in which case the pointers are compared).
 
-The target register must be of type `uint`.
+The target register must be of type ``uint``.
 
 cmp.lt
 ------
@@ -1641,7 +1641,7 @@ The source registers must be of the exact same type, and can be one of
 ``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
 pointer type (in which case the pointers are compared).
 
-The target register must be of type `uint`.
+The target register must be of type ``uint``.
 
 cmp.gteq
 --------
@@ -1662,7 +1662,7 @@ The source registers must be of the exact same type, and can be one of
 ``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
 pointer type (in which case the pointers are compared).
 
-The target register must be of type `uint`.
+The target register must be of type ``uint``.
 
 cmp.lteq
 --------
@@ -1683,7 +1683,7 @@ The source registers must be of the exact same type, and can be one of
 ``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
 pointer type (in which case the pointers are compared).
 
-The target register must be of type `uint`.
+The target register must be of type ``uint``.
 
 Function invocation instructions
 ++++++++++++++++++++++++++++++++
