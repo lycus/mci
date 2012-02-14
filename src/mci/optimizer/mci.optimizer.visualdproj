@@ -188,5 +188,8 @@
   <pauseAfterRunning>0</pauseAfterRunning>
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
- <Folder name="mci.optimizer" />
+ <Folder name="mci.optimizer">
+  <File path="base.d" />
+  <File path="manager.d" />
+ </Folder>
 </DProject>
