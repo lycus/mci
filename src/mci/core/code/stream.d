@@ -177,6 +177,11 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
     }
 
     public Instruction append(T ...)(T args)
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         auto insn = new Instruction(_block, args);
 
@@ -192,6 +197,10 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
     {
         assert(next);
         assert(next in _instructions);
+    }
+    out (result)
+    {
+        assert(result);
     }
     body
     {
@@ -210,6 +219,10 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
         assert(previous);
         assert(previous in _instructions);
     }
+    out (result)
+    {
+        assert(result);
+    }
     body
     {
         auto insn = new Instruction(_block, args);
@@ -227,6 +240,10 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
         assert(old);
         assert(old in _instructions);
     }
+    out (result)
+    {
+        assert(result);
+    }
     body
     {
         auto insn = new Instruction(_block, args);
@@ -241,7 +258,6 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
     in
     {
         assert(instruction);
-        assert(instruction in _instructions);
     }
     body
     {

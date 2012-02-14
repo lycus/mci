@@ -360,6 +360,16 @@ public final class Function
         return _blocks[name] = new BasicBlock(this, name);
     }
 
+    public void removeBasicBlock(BasicBlock block)
+    in
+    {
+        assert(block);
+    }
+    body
+    {
+        _blocks.remove(block.name);
+    }
+
     public Register createRegister(string name, Type type)
     in
     {
@@ -379,6 +389,16 @@ public final class Function
         _definitions[reg] = new NoNullList!Instruction();
 
         return reg;
+    }
+
+    public void removeRegister(Register register)
+    in
+    {
+        assert(register);
+    }
+    body
+    {
+        _registers.remove(register.name);
     }
 }
 
