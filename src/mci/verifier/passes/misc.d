@@ -1,6 +1,7 @@
 module mci.verifier.passes.misc;
 
 import mci.core.container,
+       mci.core.tuple,
        mci.core.analysis.cfg,
        mci.core.analysis.utilities,
        mci.core.code.functions,
@@ -17,6 +18,16 @@ public final class EntryVerifier : CodeVerifier
     {
         if (!function_.blocks.get(entryBlockName))
             error(null, "Functions must have an 'entry' basic block.");
+    }
+}
+
+public final class UnwindVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+            if (bb.y.unwindBlock && !contains(function_.blocks, (Tuple!(string, BasicBlock) t) { return t.y is bb.y; }))
+                error(null, "Unwind basic block '%s' is not within function '%s'.", bb, function_);
     }
 }
 

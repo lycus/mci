@@ -24,6 +24,7 @@ public final class VerificationManager
         addRange(_verifiers,
                  toIterable!CodeVerifier(new SSAFormVerifier(),
                                          new EntryVerifier(),
+                                         new UnwindVerifier(),
                                          new TerminatorVerifier(),
                                          new FFIVerifier(),
                                          new RawVerifier(),
