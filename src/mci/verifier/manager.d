@@ -25,6 +25,7 @@ public final class VerificationManager
                  toIterable!CodeVerifier(new SSAFormVerifier(),
                                          new EntryVerifier(),
                                          new UnwindVerifier(),
+                                         new RegisterVerifier(),
                                          new TerminatorVerifier(),
                                          new FFIVerifier(),
                                          new RawVerifier(),

@@ -31,6 +31,57 @@ public final class UnwindVerifier : CodeVerifier
     }
 }
 
+public final class RegisterVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (insn; bb.y.stream)
+            {
+                if (insn.targetRegister && !contains(function_.registers, (Tuple!(string, Register) t) { return t.y is insn.targetRegister; }))
+                    error(insn, "Target register '%s' is not within function '%s'.", insn.targetRegister, function_);
+
+                if (insn.sourceRegister1 && !contains(function_.registers, (Tuple!(string, Register) t) { return t.y is insn.sourceRegister1; }))
+                    error(insn, "Source register '%s' is not within function '%s'.", insn.sourceRegister1, function_);
+
+                if (insn.sourceRegister2 && !contains(function_.registers, (Tuple!(string, Register) t) { return t.y is insn.sourceRegister2; }))
+                    error(insn, "Source register '%s' is not within function '%s'.", insn.sourceRegister2, function_);
+
+                if (insn.sourceRegister3 && !contains(function_.registers, (Tuple!(string, Register) t) { return t.y is insn.sourceRegister3; }))
+                    error(insn, "Source register '%s' is not within function '%s'.", insn.sourceRegister3, function_);
+            }
+        }
+    }
+}
+
+public final class JumpVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            if (auto instr = getFirstInstruction(bb.y, OperandType.label))
+            {
+                auto target = *instr.operand.peek!BasicBlock();
+
+                if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) { return b.y is target; }))
+                    error(instr, "Target basic block '%s' is not within function '%s'.", target, function_);
+            }
+            else if (auto instr = getFirstInstruction(bb.y, OperandType.branch))
+            {
+                auto target = *instr.operand.peek!(Tuple!(BasicBlock, BasicBlock))();
+
+                if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) { return b.y is target.x; }))
+                    error(instr, "False branch target basic block '%s' is not within function '%s'.", target.x, function_);
+
+                if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) { return b.y is target.y; }))
+                    error(instr, "True branch target basic block '%s' is not within function '%s'.", target.y, function_);
+            }
+        }
+    }
+}
+
 public final class FieldStorageVerifier : CodeVerifier
 {
     public override void verify(Function function_)

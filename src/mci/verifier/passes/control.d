@@ -27,33 +27,6 @@ public final class TerminatorVerifier : CodeVerifier
     }
 }
 
-public final class JumpVerifier : CodeVerifier
-{
-    public override void verify(Function function_)
-    {
-        foreach (bb; function_.blocks)
-        {
-            if (auto instr = getFirstInstruction(bb.y, OperandType.label))
-            {
-                auto target = *instr.operand.peek!BasicBlock();
-
-                if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) { return b.y is target; }))
-                    error(instr, "Target basic block '%s' is not within function '%s'.", target, function_);
-            }
-            else if (auto instr = getFirstInstruction(bb.y, OperandType.branch))
-            {
-                auto target = *instr.operand.peek!(Tuple!(BasicBlock, BasicBlock))();
-
-                if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) { return b.y is target.x; }))
-                    error(instr, "False branch target basic block '%s' is not within function '%s'.", target.x, function_);
-
-                if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) { return b.y is target.y; }))
-                    error(instr, "True branch target basic block '%s' is not within function '%s'.", target.y, function_);
-            }
-        }
-    }
-}
-
 public final class ReturnVerifier : CodeVerifier
 {
     public override void verify(Function function_)
