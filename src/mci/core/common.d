@@ -51,7 +51,6 @@ public T rotate(string direction, T)(T value, T amount)
     if (isIntegral!T)
 in
 {
-    assert(amount > 0);
     assert(amount < T.sizeof * 8);
 }
 body
