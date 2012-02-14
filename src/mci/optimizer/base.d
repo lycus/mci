@@ -2,24 +2,24 @@ module mci.optimizer.base;
 
 import mci.core.code.functions;
 
-public abstract class OptimizerPass
+public interface OptimizerPass
 {
-    @property public abstract string name();
+    @property public string name();
 }
 
-public abstract class TreeOptimizer : OptimizerPass
-{
-}
-
-public abstract class CodeOptimizer : OptimizerPass
-{
-    public abstract void optimize(Function function_);
-}
-
-public abstract class IROptimizer : CodeOptimizer
+public interface TreeOptimizer : OptimizerPass
 {
 }
 
-public abstract class SSAOptimizer : CodeOptimizer
+public interface CodeOptimizer : OptimizerPass
+{
+    public void optimize(Function function_);
+}
+
+public interface IROptimizer : CodeOptimizer
+{
+}
+
+public interface SSAOptimizer : CodeOptimizer
 {
 }

@@ -8,7 +8,12 @@ import mci.core.container,
 
 public final class UnusedRegisterRemover : CodeOptimizer
 {
-    public override void optimize(Function function_)
+    @property public string name()
+    {
+        return "unused-reg";
+    }
+
+    public void optimize(Function function_)
     {
         auto regs = new NoNullList!Register(function_.registers.values);
 
@@ -37,7 +42,12 @@ public final class UnusedRegisterRemover : CodeOptimizer
 
 public final class UnusedBasicBlockRemover : CodeOptimizer
 {
-    public override void optimize(Function function_)
+    @property public string name()
+    {
+        return "unused-bb";
+    }
+
+    public void optimize(Function function_)
     {
         auto blocks = new NoNullList!BasicBlock(function_.blocks.values);
 
