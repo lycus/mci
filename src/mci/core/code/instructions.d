@@ -112,6 +112,8 @@ public final class Instruction
     private Register _sourceRegister1;
     private Register _sourceRegister2;
     private Register _sourceRegister3;
+    private List!Register _registers;
+    private List!Register _sourceRegisters;
     private NoNullList!MetadataPair _metadata;
 
     invariant()
@@ -154,6 +156,8 @@ public final class Instruction
         _sourceRegister1 = sourceRegister1;
         _sourceRegister2 = sourceRegister2;
         _sourceRegister3 = sourceRegister3;
+        _registers = new typeof(_registers)(toIterable(targetRegister, sourceRegister1, sourceRegister2, sourceRegister3));
+        _sourceRegisters = new typeof(_sourceRegisters)(toIterable(sourceRegister1, sourceRegister2, sourceRegister3));
         _metadata = new typeof(_metadata)();
     }
 
@@ -200,6 +204,26 @@ public final class Instruction
     @property public Register sourceRegister3()
     {
         return _sourceRegister3;
+    }
+
+    @property public ReadOnlyIndexable!Register registers()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _registers;
+    }
+
+    @property public ReadOnlyIndexable!Register sourceRegisters()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _sourceRegisters;
     }
 
     @property public NoNullList!MetadataPair metadata()
