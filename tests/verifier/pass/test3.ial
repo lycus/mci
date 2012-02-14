@@ -1,13 +1,14 @@
 function void vector_shift()
 {
     register int32[3] vec1;
+    register int32[3] vec2;
     register uint amt1;
     register uint[3] amt2;
 
     block entry
     {
-        array.shl vec1, amt1;
-        array.shl vec1, amt2;
+        array.shl vec1, vec2, amt1;
+        array.shl vec1, vec2, amt2;
 
         leave;
     }

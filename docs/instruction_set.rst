@@ -1059,18 +1059,18 @@ array.ari.add
 **Has target register**
     No
 **Source registers**
-    2
+    3
 **Operand type**
     None
 
-Performs arithmetic addition on elements of an array or vector.
+Performs arithmetic addition on elements of arrays or vectors.
 
-The first source register must be an array or vector of the types allowed in
-ari.add_.
+The first two source registers must be arrays or vectors of the types allowed
+in ari.add_, and must have the same element type.
 
 If the first source register is an array or vector of a pointer type, the
-second source register must either be of type ``uint`` or an array or vector
-of these. Otherwise, the second source register must be of the element type
+third source register must either be of type ``uint`` or an array or vector
+of these. Otherwise, the third source register must be of the element type
 of the first source register, or be an array or vector of the first source
 register's element type.
 
@@ -1080,18 +1080,18 @@ array.ari.sub
 **Has target register**
     No
 **Source registers**
-    2
+    3
 **Operand type**
     None
 
-Performs arithmetic subtraction on elements of an array or vector.
+Performs arithmetic subtraction on elements of arrays or vectors.
 
-The first source register must be an array or vector of the types allowed in
-ari.sub_.
+The first two source registers must be arrays or vectors of the types allowed
+in ari.sub_, and must have the same element type.
 
 If the first source register is an array or vector of a pointer type, the
-second source register must either be of type ``uint`` or an array or vector
-of these. Otherwise, the second source register must be of the element type
+third source register must either be of type ``uint`` or an array or vector
+of these. Otherwise, the third source register must be of the element type
 of the first source register, or be an array or vector of the first source
 register's element type.
 
@@ -1101,16 +1101,16 @@ array.ari.mul
 **Has target register**
     No
 **Source registers**
-    2
+    3
 **Operand type**
     None
 
-Performs arithmetic multiplication on elements of an array or vector.
+Performs arithmetic multiplication on elements of arrays or vectors.
 
-The first source register must be an array or vector of the types allowed in
-ari.mul_.
+The first two source registers must be arrays or vectors of the types allowed
+in ari.mul_, and must have the same element type.
 
-The second source register must be of the element type of the first source
+The third source register must be of the element type of the first source
 register, or be an array or vector of the first source register's element
 type.
 
@@ -1120,16 +1120,16 @@ array.ari.div
 **Has target register**
     No
 **Source registers**
-    2
+    3
 **Operand type**
     None
 
-Performs arithmetic division on elements of an array or vector.
+Performs arithmetic division on elements of arrays or vectors.
 
-The first source register must be an array or vector of the types allowed in
-ari.div_.
+The first two source registers must be arrays or vectors of the types allowed
+in ari.div_, and must have the same element type.
 
-The second source register must be of the element type of the first source
+The third source register must be of the element type of the first source
 register, or be an array or vector of the first source register's element
 type.
 
@@ -1139,17 +1139,17 @@ array.ari.rem
 **Has target register**
     No
 **Source registers**
-    2
+    3
 **Operand type**
     None
 
-Computes the remainder resulting from dividing elements of an array or vector
+Computes the remainder resulting from dividing elements of arrays or vectors
 with the given value(s).
 
-The first source register must be an array or vector of the types allowed in
-ari.rem_.
+The first two source registers must be arrays or vectors of the types allowed
+in ari.rem_, and must have the same element type.
 
-The second source register must be of the element type of the first source
+The third source register must be of the element type of the first source
 register, or be an array or vector of the first source register's element
 type.
 
@@ -1159,14 +1159,14 @@ array.ari.neg
 **Has target register**
     No
 **Source registers**
-    1
+    2
 **Operand type**
     None
 
 Negates all elements of an array or vector.
 
-The first source register must be an array or vector of the types allowed in
-ari.neg_.
+The two source registers must be arrays or vectors of the types allowed in
+ari.neg_, and must have the same element type.
 
 array.bit.and
 -------------
@@ -1174,16 +1174,16 @@ array.bit.and
 **Has target register**
     No
 **Source registers**
-    2
+    3
 **Operand type**
     None
 
-Performs bit-wise AND on elements of an array or vector.
+Performs bit-wise AND on elements of arrays or vectors.
 
-The first source register must be an array or vector of the types allowed in
-bit.and_.
+The first two source registers must be arrays or vectors of the types allowed
+in bit.and_, and must have the same element type.
 
-The second source register must be of the element type of the first source
+The third source register must be of the element type of the first source
 register, or be an array or vector of the first source register's element
 type.
 
@@ -1193,16 +1193,16 @@ array.bit.or
 **Has target register**
     No
 **Source registers**
-    2
+    3
 **Operand type**
     None
 
-Performs bit-wise OR on elements of an array or vector.
+Performs bit-wise OR on elements of arrays or vectors.
 
-The first source register must be an array or vector of the types allowed in
-bit.or_.
+The first two source registers must be arrays or vectors of the types allowed
+in bit.or_, and must have the same element type.
 
-The second source register must be of the element type of the first source
+The third source register must be of the element type of the first source
 register, or be an array or vector of the first source register's element
 type.
 
@@ -1212,16 +1212,16 @@ array.bit.xor
 **Has target register**
     No
 **Source registers**
-    2
+    3
 **Operand type**
     None
 
-Performs bit-wise XOR on elements of an array or vector.
+Performs bit-wise XOR on elements of arrays or vectors.
 
-The first source register must be an array or vector of the types allowed in
-bit.xor_.
+The first two source registers must be arrays or vectors of the types allowed
+in bit.xor_, and must have the same element type.
 
-The second source register must be of the element type of the first source
+The third source register must be of the element type of the first source
 register, or be an array or vector of the first source register's element
 type.
 
@@ -1231,32 +1231,17 @@ array.bit.neg
 **Has target register**
     No
 **Source registers**
-    1
+    2
 **Operand type**
     None
 
 Performs a bit-wise complement negation operation on all elements of an array
 or vector.
 
-The first source register must be an array or vector of the types allowed in
-bit.neg_.
+The two source registers must be arrays or vectors of the types allowed in
+bit.neg_, and must have the same element type.
 
 array.not
----------
-
-**Has target register**
-    No
-**Source registers**
-    1
-**Operand type**
-    None
-
-Performs a logical negation on all elements of an array or vector.
-
-The first source register must be an array or vector of the types allowed in
-not_.
-
-array.shl
 ---------
 
 **Has target register**
@@ -1266,10 +1251,25 @@ array.shl
 **Operand type**
     None
 
+Performs a logical negation on all elements of an array or vector.
+
+The first two source registers must be arrays or vectors of the types allowed
+in not_, and must have the same element type.
+
+array.shl
+---------
+
+**Has target register**
+    No
+**Source registers**
+    3
+**Operand type**
+    None
+
 Performs a left shift of the bits of elements in an array or vector.
 
-The first source register must be an array or vector of the types allowed in
-shl_.
+The first two source registers must be arrays or vectors of the types allowed
+in shl_, and must have the same element type.
 
 The second source register must be of type ``uint`` or an array or vector of
 these.
@@ -1280,16 +1280,16 @@ array.shr
 **Has target register**
     No
 **Source registers**
-    2
+    3
 **Operand type**
     None
 
 Performs a right shift of the bits of elements in an array or vector.
 
-The first source register must be an array or vector of the types allowed in
-shr_.
+The first two source registers must be arrays or vectors of the types allowed
+in shr_, and must have the same element type.
 
-The second source register must be of type ``uint`` or an array or vector of
+The third source register must be of type ``uint`` or an array or vector of
 these.
 
 array.rol
@@ -1298,16 +1298,16 @@ array.rol
 **Has target register**
     No
 **Source registers**
-    2
+    3
 **Operand type**
     None
 
 Performs a left rotation of bits of the elements in an array or vector.
 
-The first source register must be an array or vector of the types allowed in
-rol_.
+The first two source registers must be arrays or vectors of the types allowed
+in rol_, and must have the same element type.
 
-The second source register must be of type ``uint`` or an array or vector of
+The third source register must be of type ``uint`` or an array or vector of
 these.
 
 array.ror
@@ -1316,16 +1316,16 @@ array.ror
 **Has target register**
     No
 **Source registers**
-    2
+    3
 **Operand type**
     None
 
 Performs a right rotation of bits of the elements in an array or vector.
 
-The first source register must be an array or vector of the types allowed in
-ror_.
+The first two source registers must be arrays or vectors of the types allowed
+in ror_, and must have the same element type.
 
-The second source register must be of type ``uint`` or an array or vector of
+The third source register must be of type ``uint`` or an array or vector of
 these.
 
 array.conv
