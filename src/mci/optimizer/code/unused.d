@@ -43,6 +43,9 @@ public final class UnusedBasicBlockRemover : CodeOptimizer
 
         foreach (bb; function_.blocks)
         {
+            if (bb.y.unwindBlock)
+                blocks.remove(bb.y.unwindBlock);
+
             foreach (insn; bb.y.stream)
             {
                 if (auto lbl = insn.operand.peek!BasicBlock())
