@@ -783,9 +783,12 @@ memory allocated is the size of the target register's element type times
 the element count. Otherwise, it represents the amount of array elements
 to be allocated. The source register must be of type ``uint``.
 
-If the requested amount of memory could not be allocated or if the source
-register is equal to zero, a null pointer is assigned to the target register;
-otherwise, the pointer to the allocated memory is assigned.
+If the target register is a pointer and the source register holds a zero
+value, the target register is set to a null pointer.
+
+If the requested amount of memory could not be allocated, a null pointer is
+assigned to the target register; otherwise, the pointer to the allocated
+memory is assigned.
 
 If the allocation was successful, all allocated memory is guaranteed to be
 completely zeroed out.
