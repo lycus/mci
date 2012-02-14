@@ -157,6 +157,81 @@ body
            opCode is opArrayLen;
 }
 
+public bool isArrayArithmetic(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opArrayAriAdd ||
+           opCode is opArrayAriSub ||
+           opCode is opArrayAriMul ||
+           opCode is opArrayAriDiv ||
+           opCode is opArrayAriRem ||
+           opCode is opArrayAriNeg;
+}
+
+public bool isArrayBitwise(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opArrayBitAnd ||
+           opCode is opArrayBitOr ||
+           opCode is opArrayBitXOr ||
+           opCode is opArrayBitNeg;
+}
+
+public bool isArrayShift(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opArrayShL ||
+           opCode is opArrayShR;
+}
+
+public bool isArrayRotate(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opArrayRoL ||
+           opCode is opArrayRoR;
+}
+
+public bool isArrayBitShift(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return isArrayShift(opCode) || isArrayRotate(opCode);
+}
+
+public bool isArrayComparison(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opArrayCmpEq ||
+           opCode is opArrayCmpNEq ||
+           opCode is opArrayCmpGT ||
+           opCode is opArrayCmpLT ||
+           opCode is opArrayCmpGTEq ||
+           opCode is opArrayCmpLTEq;
+}
+
 public bool isValidInArithmetic(Type type)
 in
 {
