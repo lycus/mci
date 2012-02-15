@@ -139,14 +139,8 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
         if (instruction.targetRegister)
             (cast(NoNullList!Instruction)instruction.targetRegister.definitions).add(instruction);
 
-        if (instruction.sourceRegister1)
-            (cast(NoNullList!Instruction)instruction.sourceRegister1.uses).add(instruction);
-
-        if (instruction.sourceRegister2)
-            (cast(NoNullList!Instruction)instruction.sourceRegister2.uses).add(instruction);
-
-        if (instruction.sourceRegister3)
-            (cast(NoNullList!Instruction)instruction.sourceRegister3.uses).add(instruction);
+        foreach (reg; instruction.sourceRegisters)
+            (cast(NoNullList!Instruction)reg.uses).add(instruction);
     }
 
     private void removeUseDef(Instruction instruction)
@@ -159,14 +153,8 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
         if (instruction.targetRegister)
             (cast(NoNullList!Instruction)instruction.targetRegister.definitions).remove(instruction);
 
-        if (instruction.sourceRegister1)
-            (cast(NoNullList!Instruction)instruction.sourceRegister1.uses).remove(instruction);
-
-        if (instruction.sourceRegister2)
-            (cast(NoNullList!Instruction)instruction.sourceRegister2.uses).remove(instruction);
-
-        if (instruction.sourceRegister3)
-            (cast(NoNullList!Instruction)instruction.sourceRegister3.uses).remove(instruction);
+        foreach (reg; instruction.sourceRegisters)
+            (cast(NoNullList!Instruction)reg.uses).remove(instruction);
     }
 
     public Instruction append(T ...)(T args)

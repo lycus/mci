@@ -36,22 +36,10 @@ public final class RegisterVerifier : CodeVerifier
     public override void verify(Function function_)
     {
         foreach (bb; function_.blocks)
-        {
             foreach (insn; bb.y.stream)
-            {
-                if (insn.targetRegister && !contains(function_.registers, (Tuple!(string, Register) t) { return t.y is insn.targetRegister; }))
-                    error(insn, "Target register '%s' is not within function '%s'.", insn.targetRegister, function_);
-
-                if (insn.sourceRegister1 && !contains(function_.registers, (Tuple!(string, Register) t) { return t.y is insn.sourceRegister1; }))
-                    error(insn, "Source register '%s' is not within function '%s'.", insn.sourceRegister1, function_);
-
-                if (insn.sourceRegister2 && !contains(function_.registers, (Tuple!(string, Register) t) { return t.y is insn.sourceRegister2; }))
-                    error(insn, "Source register '%s' is not within function '%s'.", insn.sourceRegister2, function_);
-
-                if (insn.sourceRegister3 && !contains(function_.registers, (Tuple!(string, Register) t) { return t.y is insn.sourceRegister3; }))
-                    error(insn, "Source register '%s' is not within function '%s'.", insn.sourceRegister3, function_);
-            }
-        }
+                foreach (reg; insn.registers)
+                    if (!contains(function_.registers, (Tuple!(string, Register) t) { return t.y is reg; }))
+                        error(insn, "Register '%s' is not within function '%s'.", reg, function_);
     }
 }
 

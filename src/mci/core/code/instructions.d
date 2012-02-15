@@ -277,14 +277,16 @@ public final class Instruction
 
         str ~= _opCode.toString();
 
-        if (_sourceRegister1)
-            str ~= " " ~ _sourceRegister1.toString();
+        if (!sourceRegisters.empty)
+            str ~= " ";
 
-        if (_sourceRegister2)
-            str ~= ", " ~ _sourceRegister2.toString();
+        foreach (i, reg; sourceRegisters)
+        {
+            str ~= reg.toString();
 
-        if (_sourceRegister3)
-            str ~= ", " ~ _sourceRegister3.toString();
+            if (i != sourceRegisters.count - 1)
+                str ~= ", ";
+        }
 
         if (operand.hasValue)
         {

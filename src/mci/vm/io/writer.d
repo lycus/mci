@@ -173,17 +173,8 @@ public final class ModuleWriter : ModuleSaver
     {
         _writer.write(instruction.opCode.code);
 
-        if (instruction.targetRegister)
-            writeRegisterReference(instruction.targetRegister);
-
-        if (instruction.sourceRegister1)
-            writeRegisterReference(instruction.sourceRegister1);
-
-        if (instruction.sourceRegister2)
-            writeRegisterReference(instruction.sourceRegister2);
-
-        if (instruction.sourceRegister3)
-            writeRegisterReference(instruction.sourceRegister3);
+        foreach (reg; instruction.registers)
+            writeRegisterReference(reg);
 
         auto operand = instruction.operand;
 

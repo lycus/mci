@@ -18,22 +18,9 @@ public final class UnusedRegisterRemover : CodeOptimizer
         auto regs = new NoNullList!Register(function_.registers.values);
 
         foreach (bb; function_.blocks)
-        {
             foreach (insn; bb.y.stream)
-            {
-                if (insn.targetRegister)
-                    regs.remove(insn.targetRegister);
-
-                if (insn.sourceRegister1)
-                    regs.remove(insn.sourceRegister1);
-
-                if (insn.sourceRegister2)
-                    regs.remove(insn.sourceRegister2);
-
-                if (insn.sourceRegister3)
-                    regs.remove(insn.sourceRegister3);
-            }
-        }
+                foreach (reg; insn.registers)
+                    regs.remove(reg);
 
         foreach (reg; regs)
             function_.removeRegister(reg);
