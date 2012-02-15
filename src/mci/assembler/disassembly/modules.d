@@ -114,9 +114,6 @@ public final class ModuleDisassembler
         if (function_.attributes & FunctionAttributes.noInlining)
             _writer.write("noinline ");
 
-        if (function_.attributes & FunctionAttributes.noCallInlining)
-            _writer.write("nocallinline ");
-
         _writer.writef("%s %s (", function_.returnType ? function_.returnType.toString() : "void", function_.name);
 
         foreach (i, param; function_.parameters)

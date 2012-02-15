@@ -1,4 +1,4 @@
-function pure nooptimize noinline nocallinline void main()
+function ssa pure nooptimize noinline void main()
 {
     block entry
     {

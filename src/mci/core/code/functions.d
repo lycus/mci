@@ -164,7 +164,6 @@ public enum FunctionAttributes : ubyte
     pure_ = 0x04,
     noOptimization = 0x08,
     noInlining = 0x10,
-    noCallInlining = 0x20,
 }
 
 public final class Function

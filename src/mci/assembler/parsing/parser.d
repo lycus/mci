@@ -667,12 +667,6 @@ public final class Parser
             attributes |= FunctionAttributes.noInlining;
         }
 
-        if (peek().type == TokenType.noCallInlining)
-        {
-            next();
-            attributes |= FunctionAttributes.noCallInlining;
-        }
-
         TypeReferenceNode returnType;
 
         auto voidTok = next();
