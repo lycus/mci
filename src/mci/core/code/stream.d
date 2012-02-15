@@ -136,21 +136,17 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
     }
     body
     {
-        // Exploit some implementation knowledge...
-        auto uses = cast(NoNullDictionary!(Register, NoNullList!Instruction))_block.function_.uses;
-        auto defs = cast(NoNullDictionary!(Register, NoNullList!Instruction))_block.function_.definitions;
-
         if (instruction.targetRegister)
-            defs[instruction.targetRegister].add(instruction);
+            (cast(NoNullList!Instruction)instruction.targetRegister.definitions).add(instruction);
 
         if (instruction.sourceRegister1)
-            uses[instruction.sourceRegister1].add(instruction);
+            (cast(NoNullList!Instruction)instruction.sourceRegister1.uses).add(instruction);
 
         if (instruction.sourceRegister2)
-            uses[instruction.sourceRegister2].add(instruction);
+            (cast(NoNullList!Instruction)instruction.sourceRegister2.uses).add(instruction);
 
         if (instruction.sourceRegister3)
-            uses[instruction.sourceRegister3].add(instruction);
+            (cast(NoNullList!Instruction)instruction.sourceRegister3.uses).add(instruction);
     }
 
     private void removeUseDef(Instruction instruction)
@@ -160,20 +156,17 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
     }
     body
     {
-        auto uses = cast(NoNullDictionary!(Register, NoNullList!Instruction))_block.function_.uses;
-        auto defs = cast(NoNullDictionary!(Register, NoNullList!Instruction))_block.function_.definitions;
-
         if (instruction.targetRegister)
-            defs[instruction.targetRegister].remove(instruction);
+            (cast(NoNullList!Instruction)instruction.targetRegister.definitions).remove(instruction);
 
         if (instruction.sourceRegister1)
-            uses[instruction.sourceRegister1].remove(instruction);
+            (cast(NoNullList!Instruction)instruction.sourceRegister1.uses).remove(instruction);
 
         if (instruction.sourceRegister2)
-            uses[instruction.sourceRegister2].remove(instruction);
+            (cast(NoNullList!Instruction)instruction.sourceRegister2.uses).remove(instruction);
 
         if (instruction.sourceRegister3)
-            uses[instruction.sourceRegister3].remove(instruction);
+            (cast(NoNullList!Instruction)instruction.sourceRegister3.uses).remove(instruction);
     }
 
     public Instruction append(T ...)(T args)

@@ -15,12 +15,16 @@ public final class Register
     private Function _function;
     private Type _type;
     private string _name;
+    private Object _uses;
+    private Object _definitions;
 
     invariant()
     {
         assert(_function);
         assert(_type);
         assert(_name);
+        assert(_uses);
+        assert(_definitions);
     }
 
     package this(Function function_, string name, Type type)
@@ -35,6 +39,8 @@ public final class Register
         _function = function_;
         _name = name;
         _type = type;
+        _uses = new NoNullList!Instruction();
+        _definitions = new NoNullList!Instruction();
     }
 
     @property public Function function_()
@@ -65,6 +71,26 @@ public final class Register
     body
     {
         return _name;
+    }
+
+    @property public ReadOnlyIndexable!Instruction uses()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return cast(ReadOnlyIndexable!Instruction)_uses;
+    }
+
+    @property public ReadOnlyIndexable!Instruction definitions()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return cast(ReadOnlyIndexable!Instruction)_definitions;
     }
 
     public override string toString()

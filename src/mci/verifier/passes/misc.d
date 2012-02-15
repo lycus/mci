@@ -198,7 +198,7 @@ public final class PhiPredecessorVerifier : CodeVerifier
 
                     foreach (reg; registers)
                     {
-                        auto def = first(function_.definitions[reg]);
+                        auto def = first(reg.definitions);
 
                         if (!def || !contains(predecessors, def.block))
                             error(instr, "Register '%s' is not defined in any predecessors.", reg);
@@ -218,9 +218,9 @@ public final class SSAFormVerifier : CodeVerifier
     {
         if (function_.attributes & FunctionAttributes.ssa)
         {
-            foreach (def; function_.definitions)
-                if (def.y.count > 1)
-                    error(null, "Register '%s' assigned multiple times; invalid SSA form.", def.x);
+            foreach (reg; function_.registers)
+                if (reg.y.definitions.count > 1)
+                    error(null, "Register '%s' assigned multiple times; invalid SSA form.", reg.y);
         }
         else
             if (auto phi = getFirstInstruction(function_, opPhi))
