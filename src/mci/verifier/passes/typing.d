@@ -488,8 +488,8 @@ public final class ArrayComparisonVerifier : CodeVerifier
                     if (!isArrayOrVector(instr.sourceRegister2.type) || !isValidInBitwise(getElementType(instr.sourceRegister2.type)))
                         error(instr, "The second source register must be an array or vector of primitives or pointers.");
 
-                    if (!isArrayContainerOf(instr.sourceRegister3.type, getElementType(instr.sourceRegister2.type)))
-                        error(instr, "The third source register must be an array or vector with the same element type as the second source register.");
+                    if (!isArrayContainerOfOrElement(instr.sourceRegister3.type, getElementType(instr.sourceRegister2.type)))
+                        error(instr, "The third source register must be of the second source register's element type or an array or vector of it.");
                 }
             }
         }
