@@ -57,10 +57,10 @@ public final class RuntimeObject
 package union GCHeader
 {
     // Temporary padding until we make use of this union.
-    uint bits;
+    private size_t bits;
 }
 
-public bool isSystemAligned(ubyte* ptr)
+private bool isSystemAligned(ubyte* ptr)
 {
     return !(cast(size_t)ptr % computeSize(NativeUIntType.instance, is32Bit));
 }
