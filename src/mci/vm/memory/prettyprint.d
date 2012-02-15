@@ -129,7 +129,7 @@ private final class PrettyPrinter
             auto vec = cast(VectorType)type;
             auto arr = cast(ArrayType)type;
 
-            auto rto = *cast(RuntimeObject*)mem;
+            auto rto = *cast(RuntimeObject**)mem;
 
             if (!rto)
                 return append(format("0x%x", cast(size_t)0));

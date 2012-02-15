@@ -12,8 +12,8 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
 {
     private Object _lock;
     private Object _cbLock;
-    private NoNullList!(void delegate(RuntimeObject)) _allocCallbacks;
-    private NoNullList!(void delegate(RuntimeObject)) _freeCallbacks;
+    private NoNullList!(void delegate(RuntimeObject*)) _allocCallbacks;
+    private NoNullList!(void delegate(RuntimeObject*)) _freeCallbacks;
 
     public this()
     {
@@ -28,9 +28,9 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         return 0;
     }
 
-    public RuntimeObject allocate(RuntimeTypeInfo type, size_t extraSize = 0)
+    public RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0)
     {
-        auto length = __traits(classInstanceSize, RuntimeObject);
+        auto length = RuntimeObject.sizeof;
         auto mem = calloc(1, length + type.size + extraSize);
 
         if (!mem)
@@ -45,7 +45,7 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         return obj;
     }
 
-    public void free(RuntimeObject data)
+    public void free(RuntimeObject* data)
     {
         if (!data)
             return;
@@ -54,7 +54,7 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
             foreach (cb; _freeCallbacks)
                 cb(data);
 
-        .free(&data);
+        .free(data);
     }
 
     public void addRoot(ubyte* ptr)
@@ -73,7 +73,7 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
     {
     }
 
-    public size_t pin(RuntimeObject data)
+    public size_t pin(RuntimeObject* data)
     {
         return 0;
     }
@@ -108,13 +108,13 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
     {
     }
 
-    public void addAllocateCallback(void delegate(RuntimeObject) callback)
+    public void addAllocateCallback(void delegate(RuntimeObject*) callback)
     {
         synchronized (_cbLock)
             _allocCallbacks.add(callback);
     }
 
-    public void addFreeCallback(void delegate(RuntimeObject) callback)
+    public void addFreeCallback(void delegate(RuntimeObject*) callback)
     {
         synchronized (_cbLock)
             _freeCallbacks.add(callback);

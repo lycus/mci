@@ -17,19 +17,17 @@ public final class DGarbageCollector : GarbageCollector
         return 0;
     }
 
-    public RuntimeObject allocate(RuntimeTypeInfo type, size_t extraSize = 0)
+    public RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0)
     {
         try
         {
-            auto length = __traits(classInstanceSize, RuntimeObject);
+            auto length = RuntimeObject.sizeof;
             auto mem = GC.calloc(length + type.size + extraSize);
 
             if (!mem)
                 return null;
 
-            auto obj = emplace!RuntimeObject(mem[0 .. length], type);
-
-            return obj;
+            return emplace!RuntimeObject(mem[0 .. length], type);
         }
         catch (OutOfMemoryError)
         {
@@ -37,10 +35,10 @@ public final class DGarbageCollector : GarbageCollector
         }
     }
 
-    public void free(RuntimeObject data)
+    public void free(RuntimeObject* data)
     {
         if (data)
-            GC.free(&data);
+            GC.free(data);
     }
 
     public void addRoot(ubyte* ptr)
@@ -63,7 +61,7 @@ public final class DGarbageCollector : GarbageCollector
         GC.removeRange(ptr);
     }
 
-    public size_t pin(RuntimeObject data)
+    public size_t pin(RuntimeObject* data)
     {
         // This is not a compacting GC.
         return 0;

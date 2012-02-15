@@ -8,7 +8,7 @@ import std.bitmanip,
        mci.vm.memory.info,
        mci.vm.memory.layout;
 
-public final class RuntimeObject
+public struct RuntimeObject
 {
     private RuntimeTypeInfo _typeInfo;
     package GarbageCollectorHeader header;
@@ -46,10 +46,10 @@ public final class RuntimeObject
     }
     body
     {
-        return cast(ubyte*)this + __traits(classInstanceSize, RuntimeObject);
+        return cast(ubyte*)&this + RuntimeObject.sizeof;
     }
 
-    public static RuntimeObject fromData(ubyte* data)
+    public static RuntimeObject* fromData(ubyte* data)
     in
     {
         assert(data);
@@ -60,7 +60,7 @@ public final class RuntimeObject
     }
     body
     {
-        return cast(RuntimeObject)(data - __traits(classInstanceSize, RuntimeObject));
+        return cast(RuntimeObject*)(data - RuntimeObject.sizeof);
     }
 }
 
@@ -79,7 +79,7 @@ public interface GarbageCollector
 {
     @property public ulong collections();
 
-    public RuntimeObject allocate(RuntimeTypeInfo type, size_t extraSize = 0)
+    public RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0)
     in
     {
         assert(type);
@@ -90,7 +90,7 @@ public interface GarbageCollector
             assert(isSystemAligned(cast(ubyte*)result));
     }
 
-    public void free(RuntimeObject data)
+    public void free(RuntimeObject* data)
     in
     {
         if (data)
@@ -126,7 +126,7 @@ public interface GarbageCollector
         assert(isSystemAligned(ptr));
     }
 
-    public size_t pin(RuntimeObject data)
+    public size_t pin(RuntimeObject* data)
     in
     {
         assert(data);
@@ -170,13 +170,13 @@ public interface GenerationalGarbageCollector : GarbageCollector
 
 public interface InteractiveGarbageCollector : GarbageCollector
 {
-    public void addAllocateCallback(void delegate(RuntimeObject) callback)
+    public void addAllocateCallback(void delegate(RuntimeObject*) callback)
     in
     {
         assert(callback);
     }
 
-    public void addFreeCallback(void delegate(RuntimeObject) callback)
+    public void addFreeCallback(void delegate(RuntimeObject*) callback)
     in
     {
         assert(callback);
