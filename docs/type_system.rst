@@ -178,11 +178,18 @@ In addition to this rule, the object that the reference points to must be on
 a native word-size boundary as well. This is less important to users, as the
 ``mem.new`` instruction guarantees this.
 
+Structures instantiated on the GC heap are prefixed by a header (which is
+implementation-defined) containing type information, GC bits, and so on. This
+header also has a dedicated native word-sized field that can be accessed with
+``field.user.set`` and related instructions. This field is primarily intended
+for letting compilers assign language-specific type information to objects.
+
 Examples of references:
 
 * Reference to a struct called Foo: ``Foo&``
 
-Any reference-to-reference conversion is valid.
+Any reference-to-reference conversion is valid, including reference-to-array
+and reference-to-vector conversions.
 
 Array types
 -----------
@@ -203,8 +210,8 @@ Examples:
 * Array of pointers to ``float64``: ``float64*[]``
 * Array of arrays of ``int8``: ``int8[][]``
 
-Any array-to-array conversion is valid as long as the source array's element
-type is convertible to the target array's element type.
+Any array-to-array/vector conversion is valid as long as the source array's
+element type is convertible to the target array/vector's element type.
 
 Vector types
 ------------
@@ -230,9 +237,8 @@ Examples:
 * Vector of pointers to ``int32`` with 64 elements: ``int32[64]``
 * Vector of 3 vectors of ``int32`` with 8 elements: ``int32[8][3]``
 
-Any vector-to-vector conversion is valid as long as the two vectors have an
-equal element count and the source vector's element type is convertible to
-the target vector's element type.
+Any vector-to-vector/array conversion is valid as long as the source vector's
+element type is convertible to the target vector/array's element type.
 
 Function pointer types
 ----------------------
@@ -256,4 +262,5 @@ Examples:
 * Function returning ``void``, taking no parameters, with ``cdecl`` calling
   convention: ``void() cdecl``
 
-Function pointers are convertible to any pointer type.
+Function pointers are convertible to any pointer type (including other
+function pointer types).
