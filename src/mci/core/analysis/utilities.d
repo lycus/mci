@@ -127,9 +127,7 @@ body
            opCode is opCmpGT ||
            opCode is opCmpLT ||
            opCode is opCmpGTEq ||
-           opCode is opCmpLTEq ||
-           opCode is opCmpGTNEq ||
-           opCode is opCmpLTNEq;
+           opCode is opCmpLTEq;
 }
 
 public bool isArray(OpCode opCode)
@@ -217,9 +215,7 @@ body
            opCode is opArrayCmpGT ||
            opCode is opArrayCmpLT ||
            opCode is opArrayCmpGTEq ||
-           opCode is opArrayCmpLTEq ||
-           opCode is opArrayCmpGTNEq ||
-           opCode is opArrayCmpLTNEq;
+           opCode is opArrayCmpLTEq;
 }
 
 public bool isNullable(Type type)
