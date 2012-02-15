@@ -16,8 +16,8 @@ public final class TreeDisassembler
     {
         assert(_inputFile);
         assert(_stream);
-        assert(_stream.canWrite);
-        assert(!_stream.isClosed);
+        assert((cast()_stream).canWrite);
+        assert(!(cast()_stream).isClosed);
         assert(_writer);
     }
 
@@ -26,8 +26,8 @@ public final class TreeDisassembler
     {
         assert(inputFile);
         assert(stream);
-        assert(stream.canWrite);
-        assert(!stream.isClosed);
+        assert((cast()stream).canWrite);
+        assert(!(cast()stream).isClosed);
     }
     body
     {

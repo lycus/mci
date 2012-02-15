@@ -228,9 +228,9 @@ public final class MemoryTokenStream : TokenStream
     invariant()
     {
         assert(_stream);
-        assert(_stream.count >= 2);
-        assert(_stream[0].type == TokenType.begin);
-        assert(_stream[_stream.count - 1].type == TokenType.end);
+        assert((cast()_stream).count >= 2);
+        assert((cast()_stream)[0].type == TokenType.begin);
+        assert((cast()_stream)[(cast()_stream).count - 1].type == TokenType.end);
     }
 
     public this(NoNullList!Token stream)

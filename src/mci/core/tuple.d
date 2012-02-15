@@ -14,7 +14,7 @@ public struct Tuple(X)
         return _x;
     }
 
-    public equals_t opEquals(Tuple!X rhs) const
+    public equals_t opEquals(const Tuple!X rhs) const
     {
         return typeid(X).equals(&_x, &rhs._x);
     }
@@ -61,7 +61,7 @@ public struct Tuple(X, Y)
         return _y;
     }
 
-    public equals_t opEquals(Tuple!(X, Y) rhs) const
+    public equals_t opEquals(const Tuple!(X, Y) rhs) const
     {
         return typeid(X).equals(&_x, &rhs._x) && typeid(Y).equals(&_y, &rhs._y);
     }
@@ -116,7 +116,7 @@ public struct Tuple(X, Y, Z)
         return _z;
     }
 
-    public equals_t opEquals(Tuple!(X, Y, Z) rhs) const
+    public equals_t opEquals(const Tuple!(X, Y, Z) rhs) const
     {
         return typeid(X).equals(&_x, &rhs._x) && typeid(Y).equals(&_y, &rhs._y) && typeid(Z).equals(&_z, &rhs._z);
     }

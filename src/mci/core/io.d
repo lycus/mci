@@ -1,6 +1,7 @@
 module mci.core.io;
 
-import std.conv,
+import std.ascii,
+       std.conv,
        std.range,
        std.stdio,
        std.string,
@@ -226,16 +227,16 @@ public class BinaryReader
     invariant()
     {
         assert(_file);
-        assert(_file.canRead);
-        assert(!_file.isClosed);
+        assert((cast()_file).canRead);
+        assert(!(cast()_file).isClosed);
     }
 
     public this(Stream file, Endianness endianness = Endianness.littleEndian)
     in
     {
         assert(file);
-        assert(file.canRead);
-        assert(!file.isClosed);
+        assert((cast()file).canRead);
+        assert(!(cast()file).isClosed);
     }
     body
     {
@@ -284,16 +285,16 @@ public class BinaryWriter
     invariant()
     {
         assert(_file);
-        assert(_file.canWrite);
-        assert(!_file.isClosed);
+        assert((cast()_file).canWrite);
+        assert(!(cast()_file).isClosed);
     }
 
     public this(Stream file, Endianness endianness = Endianness.littleEndian)
     in
     {
         assert(file);
-        assert(file.canWrite);
-        assert(!file.isClosed);
+        assert((cast()file).canWrite);
+        assert(!(cast()file).isClosed);
     }
     body
     {
@@ -361,7 +362,7 @@ public class TextWriter : BinaryWriter
     public void writeln(T ...)(T args)
     {
         write(args);
-        write(newline);
+        write(std.ascii.newline);
     }
 
     public void writef(T ...)(T args)
