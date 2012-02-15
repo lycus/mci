@@ -2148,7 +2148,8 @@ The following conversions are valid:
 * ``T*`` -> ``U*`` for any ``T`` and any ``U``.
 * ``T*`` -> ``uint`` or ``int`` for any ``T``.
 * ``uint`` or ``int`` -> ``T*`` for any ``T``.
-* ``T&`` -> ``U&`` for any ``T`` and any ``U``.
+* ``T`` -> ``U`` for any managed types (reference, array, or vector) ``T``
+  and ``U``.
 * ``R1(T1, ...)`` -> ``R2(U1, ...)`` for any ``R1``, any ``R2``, and any
   amount and type of ``T`` \ :sub:`n` and ``U`` \ :sub:`m`.
 * ``R(T1, ...)`` -> ``U*`` for any ``R``, any amount and type of ``T``

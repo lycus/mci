@@ -55,20 +55,6 @@ body
     return find(block.stream, (Instruction instr) { return instr.opCode.type == type; });
 }
 
-public bool isNullable(Type type)
-in
-{
-    assert(type);
-}
-body
-{
-    return isType!PointerType(type) ||
-           isType!FunctionPointerType(type) ||
-           isType!ReferenceType(type) ||
-           isType!ArrayType(type) ||
-           isType!VectorType(type);
-}
-
 public bool isArithmetic(OpCode opCode)
 in
 {
@@ -234,6 +220,20 @@ body
            opCode is opArrayCmpLTEq ||
            opCode is opArrayCmpGTNEq ||
            opCode is opArrayCmpLTNEq;
+}
+
+public bool isNullable(Type type)
+in
+{
+    assert(type);
+}
+body
+{
+    return isType!PointerType(type) ||
+           isType!FunctionPointerType(type) ||
+           isType!ReferenceType(type) ||
+           isType!ArrayType(type) ||
+           isType!VectorType(type);
 }
 
 public bool isValidInArithmetic(Type type)

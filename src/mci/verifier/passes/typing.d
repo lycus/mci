@@ -574,7 +574,7 @@ public final class ConversionVerifier : CodeVerifier
                     if ((src is NativeIntType.instance || src is NativeUIntType.instance) && isType!PointerType(tgt))
                         continue;
 
-                    if (isType!ReferenceType(src) && isType!ReferenceType(tgt))
+                    if (isManaged(src) && isManaged(tgt))
                         continue;
 
                     if (isType!FunctionPointerType(src) && isType!FunctionPointerType(tgt))
