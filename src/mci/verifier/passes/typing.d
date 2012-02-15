@@ -509,7 +509,13 @@ public final class ArrayConversionVerifier : CodeVerifier
                     auto tgt = instr.targetRegister.type;
                     auto src = instr.sourceRegister1.type;
 
-                    error(instr, "Invalid types in 'conv' operation.");
+                    if (isType!VectorType(src) && isType!VectorType(tgt) && isConvertibleTo(getElementType(src), getElementType(tgt)))
+                        continue;
+
+                    if (isType!ArrayType(src) && isType!ArrayType(tgt) && isConvertibleTo(getElementType(src), getElementType(tgt)))
+                        continue;
+
+                    error(instr, "Invalid types in 'array.conv' operation.");
                 }
             }
         }
@@ -554,42 +560,10 @@ public final class ConversionVerifier : CodeVerifier
     public override void verify(Function function_)
     {
         foreach (bb; function_.blocks)
-        {
             foreach (instr; bb.y.stream)
-            {
                 if (instr.opCode is opConv)
-                {
-                    auto tgt = instr.targetRegister.type;
-                    auto src = instr.sourceRegister1.type;
-
-                    if (isType!CoreType(src) && isType!CoreType(tgt))
-                        continue;
-
-                    if (isType!PointerType(src) && isType!PointerType(tgt))
-                        continue;
-
-                    if (isType!PointerType(src) && (tgt is NativeIntType.instance || tgt is NativeUIntType.instance))
-                        continue;
-
-                    if ((src is NativeIntType.instance || src is NativeUIntType.instance) && isType!PointerType(tgt))
-                        continue;
-
-                    if (isManaged(src) && isManaged(tgt))
-                        continue;
-
-                    if (isType!FunctionPointerType(src) && isType!FunctionPointerType(tgt))
-                        continue;
-
-                    if (isType!FunctionPointerType(src) && isType!PointerType(tgt))
-                        continue;
-
-                    if (isType!PointerType(src) && isType!FunctionPointerType(tgt))
-                        continue;
-
-                    error(instr, "Invalid types in 'conv' operation.");
-                }
-            }
-        }
+                    if (!isConvertibleTo(instr.sourceRegister1.type, instr.targetRegister.type))
+                        error(instr, "Invalid types in 'conv' operation.");
     }
 }
 

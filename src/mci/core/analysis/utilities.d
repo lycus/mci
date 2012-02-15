@@ -373,6 +373,41 @@ body
     return isManaged(type) || isType!PointerType(type);
 }
 
+public bool isConvertibleTo(Type fromType, Type toType)
+in
+{
+    assert(fromType);
+    assert(toType);
+}
+body
+{
+    if (isType!CoreType(fromType) && isType!CoreType(toType))
+        return true;
+
+    if (isType!PointerType(fromType) && isType!PointerType(toType))
+        return true;
+
+    if (isType!PointerType(fromType) && (toType is NativeIntType.instance || toType is NativeUIntType.instance))
+        return true;
+
+    if ((fromType is NativeIntType.instance || fromType is NativeUIntType.instance) && isType!PointerType(toType))
+        return true;
+
+    if (isManaged(fromType) && isManaged(toType))
+        return true;
+
+    if (isType!FunctionPointerType(fromType) && isType!FunctionPointerType(toType))
+        return true;
+
+    if (isType!FunctionPointerType(fromType) && isType!PointerType(toType))
+        return true;
+
+    if (isType!PointerType(fromType) && isType!FunctionPointerType(toType))
+        return true;
+
+    return false;
+}
+
 public bool isDirectCallSite(OpCode opCode)
 in
 {
