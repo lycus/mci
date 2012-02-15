@@ -756,177 +756,6 @@ Allowed types are ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``,
 
 The second register must be of type ``uint``.
 
-Comparison instructions
-+++++++++++++++++++++++
-
-These instructions test relativity of their source registers.
-
-cmp.eq
-------
-
-**Has target register**
-    Yes
-**Source registers**
-    2
-**Operand type**
-    None
-
-Compares the two source registers for equality. If they are equal, the
-target register is set to 1; otherwise, 0.
-
-The source registers must be of the exact same type, and can be one of
-``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
-pointer type (in which case the pointers are compared for equality).
-
-The target register must be of type ``uint``.
-
-cmp.neq
--------
-
-**Has target register**
-    Yes
-**Source registers**
-    2
-**Operand type**
-    None
-
-Compares the two source registers for inequality. If they are unequal, the
-target register is set to 1; otherwise, 0.
-
-The source registers must be of the exact same type, and can be one of
-``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
-pointer type (in which case the pointers are compared for equality).
-
-The target register must be of type ``uint``.
-
-cmp.gt
-------
-
-**Has target register**
-    Yes
-**Source registers**
-    2
-**Operand type**
-    None
-
-Determines if the value in the first source register is greater than the
-value in the second source register. If this is true, the target register
-is set to 1; otherwise, 0.
-
-The source registers must be of the exact same type, and can be one of
-``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
-pointer type (in which case the pointers are compared).
-
-The target register must be of type ``uint``.
-
-cmp.lt
-------
-
-**Has target register**
-    Yes
-**Source registers**
-    2
-**Operand type**
-    None
-
-Determines if the value in the first source register is lesser than the
-value in the second source register. If this is true, the target register
-is set to 1; otherwise, 0.
-
-The source registers must be of the exact same type, and can be one of
-``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
-pointer type (in which case the pointers are compared).
-
-The target register must be of type ``uint``.
-
-cmp.gteq
---------
-
-**Has target register**
-    Yes
-**Source registers**
-    2
-**Operand type**
-    None
-
-Determines if the value in the first source register is greater than or
-equal to the value in the second source register. If this is true, the
-target register is set to 1; otherwise, 0.
-
-The source registers must be of the exact same type, and can be one of
-``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
-pointer type (in which case the pointers are compared).
-
-The target register must be of type ``uint``.
-
-cmp.lteq
---------
-
-**Has target register**
-    Yes
-**Source registers**
-    2
-**Operand type**
-    None
-
-Determines if the value in the first source register is lesser than or
-equal to the value in the second source register. If this is true, the
-target register is set to 1; otherwise, 0.
-
-The source registers must be of the exact same type, and can be one of
-``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
-pointer type (in which case the pointers are compared).
-
-The target register must be of type ``uint``.
-
-cmp.gtneq
----------
-
-**Has target register**
-    Yes
-**Source registers**
-    2
-**Operand type**
-    None
-
-Determines if the value in the first source register is greater than or
-not equal to the value in the second source register. If this is true, the
-target register is set to 1; otherwise, 0.
-
-The source registers must be of the exact same type, and can be one of
-``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
-pointer type (in which case the pointers are compared).
-
-The target register must be of type ``uint``.
-
-cmp.ltneq
----------
-
-**Has target register**
-    Yes
-**Source registers**
-    2
-**Operand type**
-    None
-
-Determines if the value in the first source register is lesser than or
-not equal to the value in the second source register. If this is true, the
-target register is set to 1; otherwise, 0.
-
-The source registers must be of the exact same type, and can be one of
-``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
-``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
-pointer type (in which case the pointers are compared).
-
-The target register must be of type ``uint``.
-
 Memory management instructions
 ++++++++++++++++++++++++++++++
 
@@ -1616,38 +1445,6 @@ The first source register must be an array or vector of ``uint``. The second
 and third source registers must be arrays or vectors having the same element
 type.
 
-array.cmp.gtneq
----------------
-
-**Has target register**
-    No
-**Source registers**
-    3
-**Operand type**
-    None
-
-Performs a cmp.gtneq_ on all elements of arrays or vectors.
-
-The first source register must be an array or vector of ``uint``. The second
-and third source registers must be arrays or vectors having the same element
-type.
-
-array.cmp.ltneq
----------------
-
-**Has target register**
-    No
-**Source registers**
-    3
-**Operand type**
-    None
-
-Performs a cmp.ltneq_ on all elements of arrays or vectors.
-
-The first source register must be an array or vector of ``uint``. The second
-and third source registers must be arrays or vectors having the same element
-type.
-
 Structure field instructions
 ++++++++++++++++++++++++++++
 
@@ -1758,6 +1555,135 @@ instruction does not need an instance of the structure to get the address
 to the given field.
 
 This instruction is only valid on static fields.
+
+Comparison instructions
++++++++++++++++++++++++
+
+These instructions test relativity of their source registers.
+
+cmp.eq
+------
+
+**Has target register**
+    Yes
+**Source registers**
+    2
+**Operand type**
+    None
+
+Compares the two source registers for equality. If they are equal, the
+target register is set to 1; otherwise, 0.
+
+The source registers must be of the exact same type, and can be one of
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
+pointer type (in which case the pointers are compared for equality).
+
+The target register must be of type ``uint``.
+
+cmp.neq
+-------
+
+**Has target register**
+    Yes
+**Source registers**
+    2
+**Operand type**
+    None
+
+Compares the two source registers for inequality. If they are unequal, the
+target register is set to 1; otherwise, 0.
+
+The source registers must be of the exact same type, and can be one of
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
+pointer type (in which case the pointers are compared for equality).
+
+The target register must be of type ``uint``.
+
+cmp.gt
+------
+
+**Has target register**
+    Yes
+**Source registers**
+    2
+**Operand type**
+    None
+
+Determines if the value in the first source register is greater than the
+value in the second source register. If this is true, the target register
+is set to 1; otherwise, 0.
+
+The source registers must be of the exact same type, and can be one of
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
+pointer type (in which case the pointers are compared).
+
+The target register must be of type ``uint``.
+
+cmp.lt
+------
+
+**Has target register**
+    Yes
+**Source registers**
+    2
+**Operand type**
+    None
+
+Determines if the value in the first source register is lesser than the
+value in the second source register. If this is true, the target register
+is set to 1; otherwise, 0.
+
+The source registers must be of the exact same type, and can be one of
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
+pointer type (in which case the pointers are compared).
+
+The target register must be of type ``uint``.
+
+cmp.gteq
+--------
+
+**Has target register**
+    Yes
+**Source registers**
+    2
+**Operand type**
+    None
+
+Determines if the value in the first source register is greater than or
+equal to the value in the second source register. If this is true, the
+target register is set to 1; otherwise, 0.
+
+The source registers must be of the exact same type, and can be one of
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
+pointer type (in which case the pointers are compared).
+
+The target register must be of type ``uint``.
+
+cmp.lteq
+--------
+
+**Has target register**
+    Yes
+**Source registers**
+    2
+**Operand type**
+    None
+
+Determines if the value in the first source register is lesser than or
+equal to the value in the second source register. If this is true, the
+target register is set to 1; otherwise, 0.
+
+The source registers must be of the exact same type, and can be one of
+``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
+``int64``, ``uint64``, ``int``, ``uint``, ``float32``, ``float64``, or any
+pointer type (in which case the pointers are compared).
+
+The target register must be of type ``uint``.
 
 Function invocation instructions
 ++++++++++++++++++++++++++++++++

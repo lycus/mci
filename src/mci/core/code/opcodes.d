@@ -252,14 +252,6 @@ public enum OperationCode : ubyte
     shR,
     roL,
     roR,
-    cmpEq,
-    cmpNEq,
-    cmpGT,
-    cmpLT,
-    cmpGTEq,
-    cmpLTEq,
-    cmpGTNEq,
-    cmpLTNEq,
     conv,
     memAlloc,
     memNew,
@@ -297,14 +289,18 @@ public enum OperationCode : ubyte
     arrayCmpLT,
     arrayCmpGTEq,
     arrayCmpLTEq,
-    arrayCmpGTNEq,
-    arrayCmpLTNEq,
     fieldGet,
     fieldSet,
     fieldAddr,
     fieldGGet,
     fieldGSet,
     fieldGAddr,
+    cmpEq,
+    cmpNEq,
+    cmpGT,
+    cmpLT,
+    cmpGTEq,
+    cmpLTEq,
     argPush,
     argPop,
     invoke,
@@ -368,14 +364,6 @@ public __gshared OpCode opShL;
 public __gshared OpCode opShR;
 public __gshared OpCode opRoL;
 public __gshared OpCode opRoR;
-public __gshared OpCode opCmpEq;
-public __gshared OpCode opCmpNEq;
-public __gshared OpCode opCmpGT;
-public __gshared OpCode opCmpLT;
-public __gshared OpCode opCmpGTEq;
-public __gshared OpCode opCmpLTEq;
-public __gshared OpCode opCmpGTNEq;
-public __gshared OpCode opCmpLTNEq;
 public __gshared OpCode opConv;
 public __gshared OpCode opMemAlloc;
 public __gshared OpCode opMemNew;
@@ -413,14 +401,18 @@ public __gshared OpCode opArrayCmpGT;
 public __gshared OpCode opArrayCmpLT;
 public __gshared OpCode opArrayCmpGTEq;
 public __gshared OpCode opArrayCmpLTEq;
-public __gshared OpCode opArrayCmpGTNEq;
-public __gshared OpCode opArrayCmpLTNEq;
 public __gshared OpCode opFieldGet;
 public __gshared OpCode opFieldSet;
 public __gshared OpCode opFieldAddr;
 public __gshared OpCode opFieldGGet;
 public __gshared OpCode opFieldGSet;
 public __gshared OpCode opFieldGAddr;
+public __gshared OpCode opCmpEq;
+public __gshared OpCode opCmpNEq;
+public __gshared OpCode opCmpGT;
+public __gshared OpCode opCmpLT;
+public __gshared OpCode opCmpGTEq;
+public __gshared OpCode opCmpLTEq;
 public __gshared OpCode opArgPush;
 public __gshared OpCode opArgPop;
 public __gshared OpCode opInvoke;
@@ -507,14 +499,6 @@ shared static this()
     opShR = create("shr", OperationCode.shR, OpCodeType.normal, OperandType.none, 2, true);
     opRoL = create("rol", OperationCode.roL, OpCodeType.normal, OperandType.none, 2, true);
     opRoR = create("ror", OperationCode.roR, OpCodeType.normal, OperandType.none, 2, true);
-    opCmpEq = create("cmp.eq", OperationCode.cmpEq, OpCodeType.normal, OperandType.none, 2, true);
-    opCmpNEq = create("cmp.neq", OperationCode.cmpNEq, OpCodeType.normal, OperandType.none, 2, true);
-    opCmpGT = create("cmp.gt", OperationCode.cmpGT, OpCodeType.normal, OperandType.none, 2, true);
-    opCmpLT = create("cmp.lt", OperationCode.cmpLT, OpCodeType.normal, OperandType.none, 2, true);
-    opCmpGTEq = create("cmp.gteq", OperationCode.cmpGTEq, OpCodeType.normal, OperandType.none, 2, true);
-    opCmpLTEq = create("cmp.lteq", OperationCode.cmpLTEq, OpCodeType.normal, OperandType.none, 2, true);
-    opCmpGTNEq = create("cmp.gtneq", OperationCode.cmpGTNEq, OpCodeType.normal, OperandType.none, 2, true);
-    opCmpLTNEq = create("cmp.ltneq", OperationCode.cmpLTNEq, OpCodeType.normal, OperandType.none, 2, true);
     opConv = create("conv", OperationCode.conv, OpCodeType.normal, OperandType.none, 1, true);
     opMemAlloc = create("mem.alloc", OperationCode.memAlloc, OpCodeType.normal, OperandType.none, 1, true);
     opMemNew = create("mem.new", OperationCode.memNew, OpCodeType.normal, OperandType.none, 0, true);
@@ -552,14 +536,18 @@ shared static this()
     opArrayCmpLT = create("array.cmp.lt", OperationCode.arrayCmpLT, OpCodeType.normal, OperandType.none, 3, false);
     opArrayCmpGTEq = create("array.cmp.gteq", OperationCode.arrayCmpGTEq, OpCodeType.normal, OperandType.none, 3, false);
     opArrayCmpLTEq = create("array.cmp.lteq", OperationCode.arrayCmpLTEq, OpCodeType.normal, OperandType.none, 3, false);
-    opArrayCmpGTNEq = create("array.cmp.gtneq", OperationCode.arrayCmpGTNEq, OpCodeType.normal, OperandType.none, 3, false);
-    opArrayCmpLTNEq = create("array.cmp.ltneq", OperationCode.arrayCmpLTNEq, OpCodeType.normal, OperandType.none, 3, false);
     opFieldGet = create("field.get", OperationCode.fieldGet, OpCodeType.normal, OperandType.field, 1, true);
     opFieldSet = create("field.set", OperationCode.fieldSet, OpCodeType.normal, OperandType.field, 2, false);
     opFieldAddr = create("field.addr", OperationCode.fieldAddr, OpCodeType.normal, OperandType.field, 1, true);
     opFieldGGet = create("field.gget", OperationCode.fieldGGet, OpCodeType.normal, OperandType.field, 0, true);
     opFieldGSet = create("field.gset", OperationCode.fieldGSet, OpCodeType.normal, OperandType.field, 1, false);
     opFieldGAddr = create("field.gaddr", OperationCode.fieldGAddr, OpCodeType.normal, OperandType.field, 0, true);
+    opCmpEq = create("cmp.eq", OperationCode.cmpEq, OpCodeType.normal, OperandType.none, 2, true);
+    opCmpNEq = create("cmp.neq", OperationCode.cmpNEq, OpCodeType.normal, OperandType.none, 2, true);
+    opCmpGT = create("cmp.gt", OperationCode.cmpGT, OpCodeType.normal, OperandType.none, 2, true);
+    opCmpLT = create("cmp.lt", OperationCode.cmpLT, OpCodeType.normal, OperandType.none, 2, true);
+    opCmpGTEq = create("cmp.gteq", OperationCode.cmpGTEq, OpCodeType.normal, OperandType.none, 2, true);
+    opCmpLTEq = create("cmp.lteq", OperationCode.cmpLTEq, OpCodeType.normal, OperandType.none, 2, true);
     opArgPush = create("arg.push", OperationCode.argPush, OpCodeType.normal, OperandType.none, 1, false);
     opArgPop = create("arg.pop", OperationCode.argPop, OpCodeType.normal, OperandType.none, 0, true);
     opCall = create("call", OperationCode.call, OpCodeType.normal, OperandType.function_, 0, true);
