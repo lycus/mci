@@ -292,9 +292,12 @@ public enum OperationCode : ubyte
     fieldGet,
     fieldSet,
     fieldAddr,
-    fieldGGet,
-    fieldGSet,
-    fieldGAddr,
+    fieldUserGet,
+    fieldUserSet,
+    fieldUserAddr,
+    fieldStaticGet,
+    fieldStaticSet,
+    fieldStaticAddr,
     cmpEq,
     cmpNEq,
     cmpGT,
@@ -404,9 +407,12 @@ public __gshared OpCode opArrayCmpLTEq;
 public __gshared OpCode opFieldGet;
 public __gshared OpCode opFieldSet;
 public __gshared OpCode opFieldAddr;
-public __gshared OpCode opFieldGGet;
-public __gshared OpCode opFieldGSet;
-public __gshared OpCode opFieldGAddr;
+public __gshared OpCode opFieldUserGet;
+public __gshared OpCode opFieldUserSet;
+public __gshared OpCode opFieldUserAddr;
+public __gshared OpCode opFieldStaticGet;
+public __gshared OpCode opFieldStaticSet;
+public __gshared OpCode opFieldStaticAddr;
 public __gshared OpCode opCmpEq;
 public __gshared OpCode opCmpNEq;
 public __gshared OpCode opCmpGT;
@@ -539,9 +545,12 @@ shared static this()
     opFieldGet = create("field.get", OperationCode.fieldGet, OpCodeType.normal, OperandType.field, 1, true);
     opFieldSet = create("field.set", OperationCode.fieldSet, OpCodeType.normal, OperandType.field, 2, false);
     opFieldAddr = create("field.addr", OperationCode.fieldAddr, OpCodeType.normal, OperandType.field, 1, true);
-    opFieldGGet = create("field.gget", OperationCode.fieldGGet, OpCodeType.normal, OperandType.field, 0, true);
-    opFieldGSet = create("field.gset", OperationCode.fieldGSet, OpCodeType.normal, OperandType.field, 1, false);
-    opFieldGAddr = create("field.gaddr", OperationCode.fieldGAddr, OpCodeType.normal, OperandType.field, 0, true);
+    opFieldUserGet = create("field.user.get", OperationCode.fieldUserGet, OpCodeType.normal, OperandType.none, 1, true);
+    opFieldUserSet = create("field.user.set", OperationCode.fieldUserSet, OpCodeType.normal, OperandType.none, 2, false);
+    opFieldUserAddr = create("field.user.addr", OperationCode.fieldUserAddr, OpCodeType.normal, OperandType.none, 1, true);
+    opFieldStaticGet = create("field.static.get", OperationCode.fieldStaticGet, OpCodeType.normal, OperandType.field, 0, true);
+    opFieldStaticSet = create("field.static.set", OperationCode.fieldStaticSet, OpCodeType.normal, OperandType.field, 1, false);
+    opFieldStaticAddr = create("field.static.addr", OperationCode.fieldStaticAddr, OpCodeType.normal, OperandType.field, 0, true);
     opCmpEq = create("cmp.eq", OperationCode.cmpEq, OpCodeType.normal, OperandType.none, 2, true);
     opCmpNEq = create("cmp.neq", OperationCode.cmpNEq, OpCodeType.normal, OperandType.none, 2, true);
     opCmpGT = create("cmp.gt", OperationCode.cmpGT, OpCodeType.normal, OperandType.none, 2, true);

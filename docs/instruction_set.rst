@@ -1508,8 +1508,54 @@ the operand.
 
 This instruction is only valid on instance fields.
 
-field.gget
-----------
+field.user.get
+--------------
+
+**Has target register**
+    Yes
+**Source registers**
+    1
+**Operand type**
+    None
+
+Fetches the value of the source registers' header user data field and assigns
+it to the target register. The source register must be a reference, an array,
+or a vector.
+
+The target register must be a reference, an array, or a vector.
+
+field.user.set
+--------------
+
+**Has target register**
+    No
+**Source registers**
+    2
+**Operand type**
+    None
+
+Sets the value of the first source register's header user data field to the
+value given in the second source register. Both source registers must be
+references, arrays, or vectors.
+
+field.user.addr
+---------------
+
+**Has target register**
+    Yes
+**Source registers**
+    1
+**Operand type**
+    None
+
+Fetches the address of the source register's header user data field and
+assigns it to the target register. The source register must be a reference,
+an array, or a vector.
+
+The target register must be a reference, an array, or a vector.
+
+field.static.get
+----------------
 
 **Has target register**
     Yes
@@ -1524,8 +1570,8 @@ of the given field.
 
 This instruction is only valid on static fields.
 
-field.gset
-----------
+field.static.set
+----------------
 
 **Has target register**
     No
@@ -1540,8 +1586,8 @@ the given field.
 
 This instruction is only valid on static fields.
 
-field.gaddr
------------
+field.static.addr
+-----------------
 
 **Has target register**
     Yes

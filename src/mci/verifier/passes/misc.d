@@ -86,8 +86,8 @@ public final class FieldStorageVerifier : CodeVerifier
                         if (field.storage != FieldStorage.instance)
                             error(instr, "Field reference must have instance storage.");
                     }
-                    else if (instr.opCode is opFieldGGet || instr.opCode is opFieldGSet ||
-                             instr.opCode is opFieldGAddr)
+                    else if (instr.opCode is opFieldStaticGet || instr.opCode is opFieldStaticSet ||
+                             instr.opCode is opFieldStaticAddr)
                     {
                         if (field.storage == FieldStorage.instance)
                             error(instr, "Field reference must have static storage.");

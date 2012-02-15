@@ -28,7 +28,9 @@ syn keyword ialInstruction              array.bit.or array.bit.xor array.bit.neg
 syn keyword ialInstruction              array.not array.shl array.shr array.rol array.ror
 syn keyword ialInstruction              array.conv
 syn keyword ialInstruction              array.cmp.eq array.cmp.neq array.cmp.gt array.cmp.lt array.cmp.gteq array.cmp.lteq
-syn keyword ialInstruction              field.get field.set field.addr field.gget field.gset field.gaddr
+syn keyword ialInstruction              field.get field.set field.addr
+syn keyword ialInstruction              field.user.get field.user.set field.user.addr
+syn keyword ialInstruction              field.static.get field.static.set field.static.addr
 syn keyword ialInstruction              cmp.eq cmp.neq cmp.gt cmp.lt cmp.gteq cmp.lteq
 syn keyword ialInstruction              arg.push arg.pop call call.tail call.indirect invoke invoke.tail invoke.indirect
 syn keyword ialInstruction              jump jump.cond leave return dead phi raw ffi

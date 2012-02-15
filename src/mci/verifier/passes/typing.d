@@ -532,15 +532,14 @@ public final class FieldTypeVerifier : CodeVerifier
             {
                 auto field = instr.operand.peek!Field();
 
-                if (instr.opCode is opFieldGet || instr.opCode is opFieldSet ||
-                    instr.opCode is opFieldGGet || instr.opCode is opFieldGSet)
+                if ((instr.opCode is opFieldGet || instr.opCode is opFieldSet ||
+                    instr.opCode is opFieldStaticGet || instr.opCode is opFieldStaticSet) &&
+                    instr.targetRegister.type !is field.type)
                 {
-                    if (instr.targetRegister.type !is field.type)
-                        error(instr, "Target register must be the type of the field reference.");
+                    error(instr, "Target register must be the type of the field reference.");
                 }
-                else if (instr.opCode is opFieldAddr || instr.opCode is opFieldGAddr)
-                    if (instr.targetRegister.type !is getPointerType(field.type))
-                        error(instr, "Target register must be a pointer to the field's type.");
+                else if ((instr.opCode is opFieldAddr || instr.opCode is opFieldStaticAddr) && instr.targetRegister.type !is getPointerType(field.type))
+                    error(instr, "Target register must be a pointer to the field's type.");
 
                 if (instr.opCode is opFieldGet || instr.opCode is opFieldSet || instr.opCode is opFieldAddr)
                 {

@@ -90,8 +90,8 @@ Examples::
 
     // A type with a thread-local field. The field has distinct values for
     // each running thread in the program. Thread-local fields are similar
-    // to static fields in that ``field.gset`` and related instructions must
-    // be used to access them.
+    // to static fields in that field.static.set and related instructions
+    // must be used to access them.
     type Foo3
     {
         field thread int32 bar;
