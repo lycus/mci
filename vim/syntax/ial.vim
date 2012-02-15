@@ -11,7 +11,7 @@ setlocal iskeyword+=.
 
 syn keyword ialType                     void int8 uint8 int16 uint16 int32 uint32 int64 uint64 int uint float32 float64
 syn keyword ialDeclaration              type field function register block
-syn keyword ialModifier                 instance static ssa pure nooptimize noinline nocallinline align unwind
+syn keyword ialModifier                 instance static ssa pure nooptimize noinline align unwind
 syn keyword ialConvention               cdecl stdcall
 syn keyword ialInstruction              nop comment
 syn keyword ialInstruction              load.i8 load.ui8 load.i16 load.ui16 load.i32 load.ui32 load.i64 load.ui64 load.f32 load.f64
