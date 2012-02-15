@@ -15,7 +15,7 @@ public final class Register
     private Function _function;
     private Type _type;
     private string _name;
-    private Object _uses;
+    private Object _uses; // Work around linker error.
     private Object _definitions;
 
     invariant()
@@ -138,8 +138,8 @@ public final class Instruction
     private Register _sourceRegister1;
     private Register _sourceRegister2;
     private Register _sourceRegister3;
-    private List!Register _registers;
-    private List!Register _sourceRegisters;
+    private NoNullList!Register _registers;
+    private NoNullList!Register _sourceRegisters;
     private NoNullList!MetadataPair _metadata;
 
     invariant()
@@ -182,8 +182,6 @@ public final class Instruction
         _sourceRegister1 = sourceRegister1;
         _sourceRegister2 = sourceRegister2;
         _sourceRegister3 = sourceRegister3;
-        _registers = new typeof(_registers)(toIterable(targetRegister, sourceRegister1, sourceRegister2, sourceRegister3));
-        _sourceRegisters = new typeof(_sourceRegisters)(toIterable(sourceRegister1, sourceRegister2, sourceRegister3));
         _metadata = new typeof(_metadata)();
     }
 
@@ -239,7 +237,11 @@ public final class Instruction
     }
     body
     {
-        return _registers;
+        if (_registers)
+            return _registers;
+
+        auto regs = toIterable(_targetRegister, _sourceRegister1, _sourceRegister2, _sourceRegister3);
+        return _registers = toNoNullList(filter(regs, (Register r) { return !!r; }));
     }
 
     @property public ReadOnlyIndexable!Register sourceRegisters()
@@ -249,7 +251,11 @@ public final class Instruction
     }
     body
     {
-        return _sourceRegisters;
+        if (_sourceRegisters)
+            return _sourceRegisters;
+
+        auto regs = toIterable(_sourceRegister1, _sourceRegister2, _sourceRegister3);
+        return _sourceRegisters = toNoNullList(filter(regs, (Register r) { return !!r; }));
     }
 
     @property public NoNullList!MetadataPair metadata()
