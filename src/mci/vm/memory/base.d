@@ -11,7 +11,8 @@ import std.bitmanip,
 public final class RuntimeObject
 {
     private RuntimeTypeInfo _typeInfo;
-    public GCHeader header;
+    package GarbageCollectorHeader header;
+    public size_t userData;
 
     invariant()
     {
@@ -39,6 +40,11 @@ public final class RuntimeObject
     }
 
     @property public ubyte* data()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return cast(ubyte*)this + __traits(classInstanceSize, RuntimeObject);
     }
@@ -48,13 +54,17 @@ public final class RuntimeObject
     {
         assert(data);
     }
+    out (result)
+    {
+        assert(result);
+    }
     body
     {
         return cast(RuntimeObject)(data - __traits(classInstanceSize, RuntimeObject));
     }
 }
 
-package union GCHeader
+package union GarbageCollectorHeader
 {
     // Temporary padding until we make use of this union.
     private size_t bits;
@@ -138,7 +148,7 @@ public interface GarbageCollector
     public void removePressure(size_t amount);
 }
 
-public interface GCGeneration
+public interface GarbageCollectorGeneration
 {
     @property public ubyte id();
 
@@ -151,7 +161,7 @@ public interface GCGeneration
 
 public interface GenerationalGarbageCollector : GarbageCollector
 {
-    @property public ReadOnlyIndexable!GCGeneration generations()
+    @property public ReadOnlyIndexable!GarbageCollectorGeneration generations()
     out (result)
     {
         assert(result);
