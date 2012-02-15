@@ -496,7 +496,7 @@ public final class ModuleReader : ModuleLoader
             return getVectorType(toType(vecType.elementType), vecType.elements);
         else if (auto fpType = cast(FunctionPointerTypeReferenceDescriptor)descriptor)
         {
-            auto params = new NoNullList!Type(map(fpType.parameterTypes, (TypeReferenceDescriptor desc) { return toType(desc); }));
+            auto params = new NoNullList!Type(map(fpType.parameterTypes, (TypeReferenceDescriptor desc) => toType(desc)));
             return getFunctionPointerType(fpType.callingConvention, fpType.returnType ? toType(fpType.returnType) : null, params);
         }
         else
@@ -792,7 +792,7 @@ public final class ModuleReader : ModuleLoader
     body
     {
         auto code = _reader.read!OperationCode();
-        auto opCode = find(allOpCodes, (OpCode op) { return op.code == code; });
+        auto opCode = find(allOpCodes, (OpCode op) => op.code == code);
 
         if (!opCode)
             error("Unknown opcode: %s", code);

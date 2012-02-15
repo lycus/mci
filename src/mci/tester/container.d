@@ -54,8 +54,8 @@ unittest
 
     list.add(2);
 
-    assert(contains(list, (int x) { return x == 2; }));
-    assert(!contains(list, (int x) { return x == 3; }));
+    assert(contains(list, (int x) => x == 2));
+    assert(!contains(list, (int x) => x == 3));
 }
 
 unittest
@@ -66,8 +66,8 @@ unittest
     list.add(2);
     list.add(3);
 
-    assert(all(list, (int x) { return x != 0; }));
-    assert(!all(list, (int x) { return x == 2; }));
+    assert(all(list, (int x) => x != 0));
+    assert(!all(list, (int x) => x == 2));
 }
 
 unittest
@@ -78,11 +78,11 @@ unittest
     list.add(2);
     list.add(3);
 
-    assert(find(list, (int x) { return x == 1; }) == 1);
-    assert(find(list, (int x) { return x == 2; }) == 2);
-    assert(find(list, (int x) { return x == 3; }) == 3);
-    assert(find(list, (int x) { return x == 4; }) == int.init);
-    assert(find(list, (int x) { return x == 5; }, 6) == 6);
+    assert(find(list, (int x) => x == 1) == 1);
+    assert(find(list, (int x) => x == 2) == 2);
+    assert(find(list, (int x) => x == 3) == 3);
+    assert(find(list, (int x) => x == 4) == int.init);
+    assert(find(list, (int x) => x == 5, 6) == 6);
 }
 
 unittest
@@ -105,8 +105,8 @@ unittest
     list.add(2);
     list.add(3);
 
-    assert(findIndex(list, (int x) { return x == 1; }) == 0);
-    assert(findIndex(list, (int x) { return x == 3; }) == 2);
+    assert(findIndex(list, (int x) => x == 1) == 0);
+    assert(findIndex(list, (int x) => x == 3) == 2);
 }
 
 unittest
@@ -114,7 +114,7 @@ unittest
     auto list = new List!int();
 
     debug
-        assertThrown!AssertError(findIndex(list, (int x) { return x == 42; }));
+        assertThrown!AssertError(findIndex(list, (int x) => x == 42));
 }
 
 unittest
@@ -125,7 +125,7 @@ unittest
     list.add(2);
     list.add(3);
 
-    auto list2 = new List!int((map(list, (int x) { return x * x; })));
+    auto list2 = new List!int((map(list, (int x) => x * x)));
 
     assert(list2[0] == 1);
     assert(list2[1] == 4);
@@ -140,7 +140,7 @@ unittest
     list.add(2);
     list.add(3);
 
-    assert(aggregate(list, (int x, int y) { return x + y; }) == 6);
+    assert(aggregate(list, (int x, int y) => x + y) == 6);
 }
 
 unittest
@@ -175,9 +175,9 @@ unittest
     list.add("baz");
     list.add(null);
 
-    auto list2 = filter(list, (string s) { return s != null; });
+    auto list2 = filter(list, (string s) => !!s);
 
-    assert(all(list2, (string s) { return s != null; }));
+    assert(all(list2, (string s) => !!s));
 }
 
 unittest
@@ -225,7 +225,7 @@ unittest
     list.add(4);
     list.add(5);
 
-    assert(count(list, (int i) { return i < 3; }) == 2);
+    assert(count(list, (int i) => i < 3) == 2);
 }
 
 unittest

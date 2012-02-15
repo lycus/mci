@@ -271,7 +271,7 @@ in
 }
 body
 {
-    return contains(iter, (T item) { return item == value; });
+    return contains(iter, (T x) => x == value);
 }
 
 public bool contains(T)(Iterable!T iter, scope bool delegate(T) criteria)
@@ -326,7 +326,7 @@ in
 }
 body
 {
-    return findIndex(iter, (T item) { return item == value; });
+    return findIndex(iter, (T i) => i == value);
 }
 
 public size_t findIndex(T)(Iterable!T iter, scope bool delegate(T) criteria)

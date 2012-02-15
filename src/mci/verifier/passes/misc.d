@@ -26,7 +26,7 @@ public final class UnwindVerifier : CodeVerifier
     public override void verify(Function function_)
     {
         foreach (bb; function_.blocks)
-            if (bb.y.unwindBlock && !contains(function_.blocks, (Tuple!(string, BasicBlock) t) { return t.y is bb.y; }))
+            if (bb.y.unwindBlock && !contains(function_.blocks, (Tuple!(string, BasicBlock) t) => t.y is bb.y))
                 error(null, "Unwind basic block '%s' is not within function '%s'.", bb, function_);
     }
 }
@@ -38,7 +38,7 @@ public final class RegisterVerifier : CodeVerifier
         foreach (bb; function_.blocks)
             foreach (insn; bb.y.stream)
                 foreach (reg; insn.registers)
-                    if (!contains(function_.registers, (Tuple!(string, Register) t) { return t.y is reg; }))
+                    if (!contains(function_.registers, (Tuple!(string, Register) t) => t.y is reg))
                         error(insn, "Register '%s' is not within function '%s'.", reg, function_);
     }
 }
@@ -53,17 +53,17 @@ public final class JumpVerifier : CodeVerifier
             {
                 auto target = *instr.operand.peek!BasicBlock();
 
-                if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) { return b.y is target; }))
+                if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) => b.y is target))
                     error(instr, "Target basic block '%s' is not within function '%s'.", target, function_);
             }
             else if (auto instr = getFirstInstruction(bb.y, OperandType.branch))
             {
                 auto target = *instr.operand.peek!(Tuple!(BasicBlock, BasicBlock))();
 
-                if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) { return b.y is target.x; }))
+                if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) => b.y is target.x))
                     error(instr, "False branch target basic block '%s' is not within function '%s'.", target.x, function_);
 
-                if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) { return b.y is target.y; }))
+                if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) => b.y is target.y))
                     error(instr, "True branch target basic block '%s' is not within function '%s'.", target.y, function_);
             }
         }

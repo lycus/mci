@@ -118,7 +118,7 @@ public final class ExceptionContextVerifier : CodeVerifier
                     // Remove all reachable blocks from illegalBranches such that the blocks
                     // we end up with are the ones not reachable from any unwind block.
                     foreach (db; directBranches)
-                        if (contains(unwindBlocks, (BasicBlock ub) { return isReachableFrom(db, ub); }))
+                        if (contains(unwindBlocks, (BasicBlock ub) => isReachableFrom(db, ub)))
                             illegalBranches.remove(db);
 
                     if (auto illegal = first(illegalBranches))
@@ -142,7 +142,7 @@ public final class PhiRegisterVerifier : CodeVerifier
             foreach (instr; bb.y.stream)
                 if (instr.opCode is opPhi)
                     foreach (reg; *instr.operand.peek!(ReadOnlyIndexable!Register)())
-                        if (!contains(function_.registers, (Tuple!(string, Register) r) { return r.y is reg; }))
+                        if (!contains(function_.registers, (Tuple!(string, Register) r) => r.y is reg))
                             error(instr, "Register '%s' is not within function '%s'.", reg, function_);
     }
 }

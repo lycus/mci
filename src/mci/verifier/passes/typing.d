@@ -111,7 +111,7 @@ in
 }
 body
 {
-    auto noNullTypes = map(filter(toIterable(registers), (Register r) { return !!r; }), (Register r) { return r.type; });
+    auto noNullTypes = map(filter(toIterable(registers), (Register r) => !!r), (Register r) => r.type);
 
     foreach (type; noNullTypes)
         foreach (type2; noNullTypes)

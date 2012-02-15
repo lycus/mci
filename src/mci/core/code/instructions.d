@@ -241,7 +241,7 @@ public final class Instruction
             return _registers;
 
         auto regs = toIterable(_targetRegister, _sourceRegister1, _sourceRegister2, _sourceRegister3);
-        return _registers = toNoNullList(filter(regs, (Register r) { return !!r; }));
+        return _registers = toNoNullList(filter(regs, (Register r) => !!r));
     }
 
     @property public ReadOnlyIndexable!Register sourceRegisters()
@@ -255,7 +255,7 @@ public final class Instruction
             return _sourceRegisters;
 
         auto regs = toIterable(_sourceRegister1, _sourceRegister2, _sourceRegister3);
-        return _sourceRegisters = toNoNullList(filter(regs, (Register r) { return !!r; }));
+        return _sourceRegisters = toNoNullList(filter(regs, (Register r) => !!r));
     }
 
     @property public NoNullList!MetadataPair metadata()
