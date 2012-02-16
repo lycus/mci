@@ -27,13 +27,14 @@ public final class VirtualMachineState
         return _objects;
     }
 
-    @property public Object opDispatch(string s)(Object value = null)
+    @property public Object opDispatch(string s)(Object value)
     {
-        // A little dirty hack until DMD supports opDispatch as a property properly.
-        mixin("if (value)" ~
-              "    return _objects[\"" ~ s ~ "\"];" ~
-              "else" ~
-              "    return _objects[\"" ~ s ~ "\"] = value;");
+        mixin("return _objects[\"" ~ s ~ "\"] = value;");
+    }
+
+    @property public Object opDispatch(string s)()
+    {
+        mixin("return _objects[\"" ~ s ~ "\"];");
     }
 }
 
