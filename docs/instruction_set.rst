@@ -1518,7 +1518,7 @@ field.user.get
 **Operand type**
     None
 
-Fetches the value of the source registers' header user data field and assigns
+Fetches the value of the source register's header user data field and assigns
 it to the target register. The source register must be a reference, an array,
 or a vector.
 

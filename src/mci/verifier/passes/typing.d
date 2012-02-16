@@ -554,6 +554,27 @@ public final class FieldTypeVerifier : CodeVerifier
     }
 }
 
+public final class UserFieldVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.stream)
+            {
+                if ((instr.opCode is opFieldUserGet || instr.opCode is opFieldUserSet || instr.opCode is opFieldUserAddr) &&
+                    !isManaged(instr.sourceRegister1.type))
+                    error(instr, "The first source register must be a reference, an array, or a vector.");
+
+                if (instr.opCode is opFieldUserSet && !isManaged(instr.sourceRegister2.type))
+                    error(instr, "The second source register must be a reference, an array, or a vector.");
+                else if ((instr.opCode is opFieldUserGet || instr.opCode is opFieldUserAddr) && !isManaged(instr.targetRegister.type))
+                    error(instr, "The target register must be a reference, an array, or a vector.");
+            }
+        }
+    }
+}
+
 public final class ConversionVerifier : CodeVerifier
 {
     public override void verify(Function function_)
