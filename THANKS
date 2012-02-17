@@ -5,6 +5,8 @@
 The MCI developers would like to extend a "thank you" to the following
 projects and their developers for inspiration, great ideas, and advice:
 
+    * DMD
+      - http://github.com/D-Programming-Language/dmd
     * GCC
       - http://gcc.gnu.org
     * Joeq
@@ -15,5 +17,7 @@ projects and their developers for inspiration, great ideas, and advice:
       - http://www.mono-project.com
     * Parrot
       - http://www.parrot.org
+    * SDC
+      - http://github.com/bhelyer/SDC
     * SL#
       - http://github.com/IgniteInteractiveStudio/SLSharp
