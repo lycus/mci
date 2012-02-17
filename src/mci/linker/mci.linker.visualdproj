@@ -188,5 +188,9 @@
   <pauseAfterRunning>0</pauseAfterRunning>
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
- <Folder name="mci.linker" />
+ <Folder name="mci.linker">
+  <File path="clash.d" />
+  <File path="exception.d" />
+  <File path="merge.d" />
+ </Folder>
 </DProject>

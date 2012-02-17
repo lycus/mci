@@ -102,9 +102,11 @@ def build(bld):
     stlib('assembler', 'mci.assembler')
     stlib('verifier', 'mci.verifier')
     stlib('optimizer', 'mci.optimizer')
+    stlib('linker', 'mci.linker')
     stlib('vm', 'mci.vm')
 
     deps = ['mci.vm',
+            'mci.linker',
             'mci.optimizer',
             'mci.verifier',
             'mci.assembler',
