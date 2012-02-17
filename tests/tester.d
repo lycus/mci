@@ -1,4 +1,5 @@
-import std.array,
+import std.algorithm,
+       std.array,
        std.file,
        std.path,
        std.process,
@@ -11,6 +12,7 @@ private int main(string[] args)
 {
     auto dir = args[1];
     string cli;
+    string[] cmds;
 
     version (Windows)
     {
@@ -29,13 +31,20 @@ private int main(string[] args)
         return 1;
     }
 
-    foreach (arg; args[2 .. $])
-        cli ~= " " ~ arg;
+    foreach (splitArgs; splitter(args[2 .. $], "!"))
+    {
+        auto cmd = cli;
 
-    return !(test(buildPath(dir, "pass"), cli, 0, true) && test(buildPath(dir, "fail"), cli, 1, false));
+        foreach (arg; splitArgs)
+            cmd ~= " " ~ arg;
+
+        cmds ~= cmd;
+    }
+
+    return !(test(buildPath(dir, "pass"), cmds, 0, true) && test(buildPath(dir, "fail"), cmds, 1, false));
 }
 
-private bool test(string directory, string cli, int expected, bool error)
+private bool test(string directory, string[] cmds, int expected, bool error)
 {
     writefln("-- Testing '%s' (Expecting '%d') --", directory, expected);
 
@@ -46,10 +55,13 @@ private bool test(string directory, string cli, int expected, bool error)
 
     foreach (file; dirEntries(".", "*.ial", SpanMode.shallow, false))
     {
-        if (invoke(file.name, cli, expected, error))
-            passes++;
-        else
-            failures++;
+        foreach (cmd; cmds)
+        {
+            if (invoke(file.name, cmd, expected, error))
+                passes++;
+            else
+                failures++;
+        }
     }
 
     writeln();
