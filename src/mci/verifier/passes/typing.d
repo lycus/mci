@@ -568,8 +568,11 @@ public final class UserFieldVerifier : CodeVerifier
 
                 if (instr.opCode is opFieldUserSet && !isManaged(instr.sourceRegister2.type))
                     error(instr, "The second source register must be a reference, an array, or a vector.");
-                else if ((instr.opCode is opFieldUserGet || instr.opCode is opFieldUserAddr) && !isManaged(instr.targetRegister.type))
+                else if (instr.opCode is opFieldUserGet && !isManaged(instr.targetRegister.type))
                     error(instr, "The target register must be a reference, an array, or a vector.");
+                else if (instr.opCode is opFieldUserAddr)
+                    if (!isType!PointerType(instr.targetRegister.type) || !isManaged(getElementType(instr.targetRegister.type)))
+                        error(instr, "The target register must be a pointer to either a reference, an array, or a vector.");
             }
         }
     }

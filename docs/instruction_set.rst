@@ -1552,7 +1552,8 @@ Fetches the address of the source register's header user data field and
 assigns it to the target register. The source register must be a reference,
 an array, or a vector.
 
-The target register must be a reference, an array, or a vector.
+The target register must be a pointer to either a reference, an array, or a
+vector.
 
 field.static.get
 ----------------
