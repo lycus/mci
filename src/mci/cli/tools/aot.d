@@ -8,7 +8,7 @@ public final class AOTTool : Tool
 {
     @property public string description()
     {
-        return "Compile assembled modules to a native executable/library.";
+        return "Compile assembled modules to native executables/libraries.";
     }
 
     @property public string[] options()
