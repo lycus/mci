@@ -1,0 +1,15 @@
+function void user_field_tests()
+{
+    register int32[] a;
+    register int8[]* b;
+
+    block entry
+    {
+        a = load.i32a (1, 2, 3, 4);
+        b = field.user.addr a;
+        field.user.set a, a;
+        a = field.user.get a;
+
+        leave;
+    }
+}
