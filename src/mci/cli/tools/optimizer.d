@@ -10,7 +10,8 @@ import std.exception,
        mci.optimizer.manager,
        mci.vm.intrinsics.declarations,
        mci.vm.io.exception,
-       mci.vm.io.reader;
+       mci.vm.io.reader,
+       mci.vm.io.writer;
 
 public final class OptimizerTool : Tool
 {
@@ -117,6 +118,8 @@ public final class OptimizerTool : Tool
 
                 foreach (func; mod.functions)
                     optimizer.optimize(func.y, unsafe);
+
+                (new ModuleWriter()).save(mod, file);
             }
             catch (ErrnoException ex)
             {
