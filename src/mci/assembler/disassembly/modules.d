@@ -145,7 +145,7 @@ public final class ModuleDisassembler
 
         _writer.writeln();
 
-        foreach (block; function_.blocks)
+        foreach (i, block; function_.blocks)
         {
             _writer.writef("    block %s", block.y.name);
 
@@ -172,11 +172,13 @@ public final class ModuleDisassembler
                     _writer.writeln("]");
                 }
 
-                _writer.writeln("        %s;", instr);
+                _writer.writefln("        %s;", instr);
             }
 
             _writer.writeln("    }");
-            _writer.writeln();
+
+            if (i != function_.blocks.count - 1)
+                _writer.writeln();
         }
 
         _writer.writeln("}");
