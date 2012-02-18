@@ -724,7 +724,7 @@ public final class ModuleReader : ModuleLoader
             readBasicBlock(func);
 
         for (uint i = 0; i < bbCount; i++)
-            readBasicBlockUnwindSpecification(func);
+            readBasicBlockUnwindSpecification(func).close();
 
         return func;
     }
