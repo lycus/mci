@@ -322,6 +322,7 @@ public enum OperationCode : ubyte
     ehThrow,
     ehRethrow,
     ehCatch,
+    fence,
 }
 
 public __gshared OpCode opNop;
@@ -437,6 +438,7 @@ public __gshared OpCode opPhi;
 public __gshared OpCode opEHThrow;
 public __gshared OpCode opEHRethrow;
 public __gshared OpCode opEHCatch;
+public __gshared OpCode opFence;
 
 public __gshared ReadOnlyIndexable!OpCode allOpCodes;
 
@@ -575,6 +577,7 @@ shared static this()
     opEHThrow = create("eh.throw", OperationCode.ehThrow, OpCodeType.controlFlow, OperandType.none, 1, false);
     opEHRethrow = create("eh.rethrow", OperationCode.ehRethrow, OpCodeType.controlFlow, OperandType.none, 0, false);
     opEHCatch = create("eh.catch", OperationCode.ehCatch, OpCodeType.normal, OperandType.none, 0, true);
+    opFence = create("fence", OperationCode.fence, OpCodeType.normal, OperandType.none, 0, false);
 
     allOpCodes = opCodes;
 }

@@ -2129,3 +2129,18 @@ The following conversions are valid:
   \ :sub:`n`, and any ``U``.
 * ``T*`` -> ``R(U1, ...)`` for any ``T``, any ``R``, and any amount and
   type of ``U``\ :sub:`n`.
+
+fence
+-----
+
+**Has target register**
+    No
+**Source registers**
+    0
+**Operand type**
+    None
+
+Inserts a full read/write memory barrier. This ensures that all loads and
+stores prior to this instruction will always be executed before loads and
+stores following this instruction. This is particularly useful in lock-free
+data structures and similar low-level constructs.

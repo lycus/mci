@@ -36,6 +36,7 @@ syn keyword ialInstruction              arg.push arg.pop call call.tail call.ind
 syn keyword ialInstruction              jump jump.cond leave return dead phi raw ffi
 syn keyword ialInstruction              eh.throw eh.rethrow eh.catch
 syn keyword ialInstruction              conv
+syn keyword ialInstruction              fence
 
 syn keyword ialTodo                     contained TODO FIXME HACK UNDONE XXX NOTE
 syn match   ialComment                  "//.*$" contains=ialTodo
