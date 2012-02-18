@@ -6,15 +6,7 @@ import core.stdc.stdlib,
        mci.core.config,
        mci.core.meta;
 
-static if (is32Bit)
-{
-    public alias int isize_t;
-}
-else
-{
-    public alias long isize_t;
-}
-
+public alias Select!(is32Bit, int, long) isize_t;
 public alias void function() function_t;
 
 public bool isType(U, T)(T obj)
