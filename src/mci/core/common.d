@@ -19,19 +19,6 @@ body
     return cast(U)obj !is null;
 }
 
-public T* copyToNative(T)(T[] arr)
-    if (isPrimitiveType!T)
-{
-    if (!arr)
-        return null;
-
-    auto size = T.sizeof * arr.length;
-    auto mem = cast(T*)malloc(size);
-    memcpy(mem, arr.ptr, size);
-
-    return mem;
-}
-
 public bool powerOfTwo(T)(T value)
     if (isIntegral!T)
 {
