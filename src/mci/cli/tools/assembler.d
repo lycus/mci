@@ -77,7 +77,7 @@ public final class AssemblerTool : Tool
             return 2;
         }
 
-        if (output.length <= moduleFileExtension.length)
+        if (output[0] == '.' && output.length <= moduleFileExtension.length + 1)
         {
             logf("Error: Output file '%s' has no name part.", output);
             return 2;
@@ -93,7 +93,7 @@ public final class AssemblerTool : Tool
 
         foreach (file; args)
         {
-            if (file.length <= inputFileExtension.length)
+            if (file[0] == '.' && file.length <= moduleFileExtension.length + 1)
             {
                 logf("Error: File '%s' has no name part.", file);
                 return 2;

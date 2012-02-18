@@ -38,7 +38,7 @@ public final class VerifierTool : Tool
 
         foreach (file; args)
         {
-            if (file.length <= moduleFileExtension.length)
+            if (file[0] == '.' && file.length <= moduleFileExtension.length + 1)
             {
                 logf("Error: Input module '%s' has no name part.", file);
                 return 2;

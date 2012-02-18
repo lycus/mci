@@ -49,7 +49,7 @@ public final class DisassemblerTool : Tool
             return 2;
         }
 
-        if (output.length <= inputFileExtension.length)
+        if (output[0] == '.' && output.length <= inputFileExtension.length + 1)
         {
             logf("Error: Output file '%s' has no name part.", output);
             return 2;
@@ -63,7 +63,7 @@ public final class DisassemblerTool : Tool
 
         auto file = args[0];
 
-        if (file.length <= moduleFileExtension.length)
+        if (file[0] == '.' && file.length <= moduleFileExtension.length + 1)
         {
             logf("Error: Input module '%s' has no name part.", file);
             return 2;
