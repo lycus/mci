@@ -8,8 +8,14 @@ import std.conv,
 
 public enum GarbageCollectorType : ubyte
 {
-    libc = 0,
-    dgc = 1,
+    libc,
+    dgc,
+}
+
+public enum LinkerRenameStrategy : ubyte
+{
+    error,
+    rename,
 }
 
 private bool silent;
@@ -78,8 +84,14 @@ body
         log("Available garbage collectors:");
         log();
 
-        logf("     %s\tD Garbage Collector\t\tUses the D runtime's garbage collector.", to!string(GarbageCollectorType.dgc));
-        logf("     %s\tLibC Garbage Collector\t\tUses calloc/free; performs no actual collection.", to!string(GarbageCollectorType.libc));
+        logf("     %s\tD Garbage Collector\t\tUses the D runtime's garbage collector (default).", GarbageCollectorType.dgc);
+        logf("     %s\tLibC Garbage Collector\t\tUses calloc/free; performs no actual collection.", GarbageCollectorType.libc);
+        log();
+
+        log("Available name clash resolution strategies:");
+        log();
+        logf("     %s\tError\t\t\t\tError out on name clashes (default).", LinkerRenameStrategy.error);
+        logf("     %s\tRename\t\t\t\tUse a simple rename strategy.", LinkerRenameStrategy.rename);
         log();
 
         log("System configuration:");

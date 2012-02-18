@@ -2,7 +2,8 @@ module mci.optimizer.manager;
 
 import mci.core.container,
        mci.core.code.functions,
-       mci.optimizer.base;
+       mci.optimizer.base,
+       mci.optimizer.code.unused;
 
 public final class OptimizationManager
 {
@@ -44,7 +45,21 @@ public final class OptimizationManager
             _codeOptimizers.add(cast(CodeOptimizer)pass);
     }
 
-    public void optimize(Function function_)
+    public void addFastPasses()
+    {
+        addPass(new UnusedRegisterRemover());
+        addPass(new UnusedBasicBlockRemover());
+    }
+
+    public void addModeratePasses()
+    {
+    }
+
+    public void addSlowPasses()
+    {
+    }
+
+    public void optimize(Function function_, bool allowUnsafe)
     in
     {
         assert(function_);
@@ -52,15 +67,32 @@ public final class OptimizationManager
     body
     {
         foreach (opt; _codeOptimizers)
+        {
+            if (opt.isUnsafe && !allowUnsafe)
+                continue;
+
             opt.optimize(function_);
+        }
 
         if (function_.attributes & FunctionAttributes.ssa)
         {
             foreach (opt; _ssaOptimizers)
+            {
+                if (opt.isUnsafe && !allowUnsafe)
+                    continue;
+
                 opt.optimize(function_);
+            }
         }
         else
+        {
             foreach (opt; _irOptimizers)
+            {
+                if (opt.isUnsafe && !allowUnsafe)
+                    continue;
+
                 opt.optimize(function_);
+            }
+        }
     }
 }

@@ -13,7 +13,7 @@ public final class LinkerTool : Tool
 
     @property public string[] options()
     {
-        return null;
+        return ["\t--strategy=<type>\t-s <type>\tSpecifies which name clash resolution strategy to use."];
     }
 
     public ubyte run(string[] args)
