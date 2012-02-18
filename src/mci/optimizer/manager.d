@@ -1,16 +1,60 @@
 module mci.optimizer.manager;
 
-import mci.core.container,
+import std.traits,
+       mci.core.container,
        mci.core.code.functions,
        mci.optimizer.base,
        mci.optimizer.code.unused;
 
+public __gshared ReadOnlyCollection!OptimizerDefinition allOptimizers;
+public __gshared ReadOnlyCollection!OptimizerDefinition fastOptimizers;
+public __gshared ReadOnlyCollection!OptimizerDefinition moderateOptimizers;
+public __gshared ReadOnlyCollection!OptimizerDefinition slowOptimizers;
+public __gshared ReadOnlyCollection!OptimizerDefinition unsafeOptimizers;
+
+shared static this()
+{
+    auto all = new NoNullList!OptimizerDefinition();
+    auto fast = new NoNullList!OptimizerDefinition();
+    auto moderate = new NoNullList!OptimizerDefinition();
+    auto slow = new NoNullList!OptimizerDefinition();
+    auto unsafe = new NoNullList!OptimizerDefinition();
+
+    void addOptimizer(OptimizerDefinition optimizer, NoNullList!OptimizerDefinition list)
+    in
+    {
+        assert(optimizer);
+        assert(list);
+        assert(list !is all);
+        assert(list !is unsafe);
+    }
+    body
+    {
+        list.add(optimizer);
+
+        if (optimizer.isUnsafe)
+            unsafe.add(optimizer);
+
+        all.add(optimizer);
+    }
+
+    addOptimizer(new UnusedBasicBlockRemover(), fast);
+    addOptimizer(new UnusedRegisterRemover(), fast);
+
+    allOptimizers = all;
+    fastOptimizers = fast;
+    moderateOptimizers = moderate;
+    slowOptimizers = slow;
+    unsafeOptimizers = unsafe;
+}
+
 public final class OptimizationManager
 {
-    private NoNullList!TreeOptimizer _treeOptimizers;
-    private NoNullList!CodeOptimizer _codeOptimizers;
-    private NoNullList!IROptimizer _irOptimizers;
-    private NoNullList!SSAOptimizer _ssaOptimizers;
+    private NoNullList!OptimizerPass _treeOptimizers;
+    private NoNullList!OptimizerPass _codeOptimizers;
+    private NoNullList!OptimizerPass _irOptimizers;
+    private NoNullList!OptimizerPass _ssaOptimizers;
+    private NoNullList!OptimizerDefinition _definitions;
 
     invariant()
     {
@@ -18,6 +62,7 @@ public final class OptimizationManager
         assert(_codeOptimizers);
         assert(_irOptimizers);
         assert(_ssaOptimizers);
+        assert(_definitions);
     }
 
     public this()
@@ -26,40 +71,48 @@ public final class OptimizationManager
         _codeOptimizers = new typeof(_codeOptimizers)();
         _irOptimizers = new typeof(_irOptimizers)();
         _ssaOptimizers = new typeof(_ssaOptimizers)();
+        _definitions = new typeof(_definitions)();
     }
 
-    public void addPass(OptimizerPass pass)
+    @property public ReadOnlyCollection!OptimizerDefinition definitions()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _definitions;
+    }
+
+    public void addPass(OptimizerDefinition pass)
     in
     {
         assert(pass);
     }
     body
     {
-        if (auto tree = cast(TreeOptimizer)pass)
-            _treeOptimizers.add(tree);
-        else if (auto ir = cast(IROptimizer)pass)
-            _irOptimizers.add(ir);
-        else if (auto ssa = cast(SSAOptimizer)pass)
-            _ssaOptimizers.add(ssa);
-        else
-            _codeOptimizers.add(cast(CodeOptimizer)pass);
+        auto instance = pass.create();
+
+        final switch (pass.type)
+        {
+            case PassType.tree:
+                _treeOptimizers.add(instance);
+                break;
+            case PassType.code:
+                _codeOptimizers.add(instance);
+                break;
+            case PassType.ir:
+                _irOptimizers.add(instance);
+                break;
+            case PassType.ssa:
+                _ssaOptimizers.add(instance);
+                break;
+        }
+
+        _definitions.add(pass);
     }
 
-    public void addFastPasses()
-    {
-        addPass(new UnusedBasicBlockRemover());
-        addPass(new UnusedRegisterRemover());
-    }
-
-    public void addModeratePasses()
-    {
-    }
-
-    public void addSlowPasses()
-    {
-    }
-
-    public void optimize(Function function_, bool allowUnsafe)
+    public void optimize(Function function_)
     in
     {
         assert(function_);
@@ -67,32 +120,15 @@ public final class OptimizationManager
     body
     {
         foreach (opt; _codeOptimizers)
-        {
-            if (opt.isUnsafe && !allowUnsafe)
-                continue;
-
             opt.optimize(function_);
-        }
 
         if (function_.attributes & FunctionAttributes.ssa)
         {
             foreach (opt; _ssaOptimizers)
-            {
-                if (opt.isUnsafe && !allowUnsafe)
-                    continue;
-
                 opt.optimize(function_);
-            }
         }
         else
-        {
             foreach (opt; _irOptimizers)
-            {
-                if (opt.isUnsafe && !allowUnsafe)
-                    continue;
-
                 opt.optimize(function_);
-            }
-        }
     }
 }

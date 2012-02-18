@@ -6,7 +6,9 @@ import std.exception,
        mci.cli.main,
        mci.cli.tool,
        mci.cli.tools.assembler,
+       mci.core.container,
        mci.core.code.modules,
+       mci.optimizer.base,
        mci.optimizer.manager,
        mci.vm.intrinsics.declarations,
        mci.vm.io.exception,
@@ -58,10 +60,6 @@ public final class OptimizerTool : Tool
             return 2;
         }
 
-        fast |= all;
-        moderate |= all;
-        slow |= all;
-
         if (args.length == 0)
         {
             log("Error: No input modules given.");
@@ -72,7 +70,7 @@ public final class OptimizerTool : Tool
 
         foreach (file; args)
         {
-            if (file.length <= moduleFileExtension.length)
+            if (file[0] == '.' && file.length <= moduleFileExtension.length + 1)
             {
                 logf("Error: Input module '%s' has no name part.", file);
                 return 2;
@@ -96,6 +94,19 @@ public final class OptimizerTool : Tool
             files ~= file;
         }
 
+        fast |= all;
+        moderate |= all;
+        slow |= all;
+
+        foreach (pass; passes)
+        {
+            if (!contains(allOptimizers, (OptimizerDefinition od) => od.name == pass))
+            {
+                logf("Error: Optimization pass '%s' not known.", pass);
+                return 2;
+            }
+        }
+
         foreach (file; args)
         {
             try
@@ -108,16 +119,27 @@ public final class OptimizerTool : Tool
                 auto optimizer = new OptimizationManager();
 
                 if (fast)
-                    optimizer.addFastPasses();
+                    foreach (pass; fastOptimizers)
+                        optimizer.addPass(pass);
 
                 if (moderate)
-                    optimizer.addModeratePasses();
+                    foreach (pass; moderateOptimizers)
+                        optimizer.addPass(pass);
 
                 if (slow)
-                    optimizer.addSlowPasses();
+                    foreach (pass; slowOptimizers)
+                        optimizer.addPass(pass);
+
+                if (unsafe)
+                    foreach (pass; unsafeOptimizers)
+                        optimizer.addPass(pass);
+
+                foreach (pass; passes)
+                    if (!contains(optimizer.definitions, (OptimizerDefinition od) => od.name == pass))
+                        optimizer.addPass(find(allOptimizers, (OptimizerDefinition od) => od.name == pass));
 
                 foreach (func; mod.functions)
-                    optimizer.optimize(func.y, unsafe);
+                    optimizer.optimize(func.y);
 
                 (new ModuleWriter()).save(mod, file);
             }

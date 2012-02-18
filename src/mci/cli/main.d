@@ -3,8 +3,9 @@ module mci.cli.main;
 import std.conv,
        std.stdio,
        std.getopt,
+       mci.cli.tool,
        mci.core.config,
-       mci.cli.tool;
+       mci.optimizer.manager;
 
 public enum GarbageCollectorType : ubyte
 {
@@ -86,6 +87,14 @@ body
 
         logf("     %s\tD Garbage Collector\t\tUses the D runtime's garbage collector (default).", GarbageCollectorType.dgc);
         logf("     %s\tLibC Garbage Collector\t\tUses calloc/free; performs no actual collection.", GarbageCollectorType.libc);
+        log();
+
+        log("Available optimization passes:");
+        log();
+
+        foreach (pass; allOptimizers)
+            logf("     %s\t\t\t\t\t%s", pass.name, pass.description);
+
         log();
 
         log("Available name clash resolution strategies:");
