@@ -47,8 +47,8 @@ public final class OptimizationManager
 
     public void addFastPasses()
     {
-        addPass(new UnusedRegisterRemover());
         addPass(new UnusedBasicBlockRemover());
+        addPass(new UnusedRegisterRemover());
     }
 
     public void addModeratePasses()
