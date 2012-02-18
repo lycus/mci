@@ -114,7 +114,7 @@ public final class ModuleDisassembler
         if (function_.attributes & FunctionAttributes.noInlining)
             _writer.write("noinline ");
 
-        _writer.writef("%s %s (", function_.returnType ? function_.returnType.toString() : "void", function_.name);
+        _writer.writef("%s %s(", function_.returnType ? function_.returnType.toString() : "void", function_.name);
 
         foreach (i, param; function_.parameters)
         {
@@ -143,7 +143,8 @@ public final class ModuleDisassembler
         foreach (reg; function_.registers)
             _writer.writefln("    register %s %s;", reg.y.type, reg.y.name);
 
-        _writer.writeln();
+        if (!function_.registers.empty)
+            _writer.writeln();
 
         foreach (i, block; function_.blocks)
         {
