@@ -21,15 +21,9 @@ html_theme = 'nature'
 html_static_path = ['_static']
 htmlhelp_basename = 'MCIdoc'
 
-latex_documents = [
-  ('index', 'MCI.tex', u'Managed Compiler Infrastructure',
-   u'The Lycus Foundation', 'manual'),
-]
+latex_documents = [('index', 'MCI.tex', u'Managed Compiler Infrastructure', u'The Lycus Foundation', 'manual')]
 
-man_pages = [
-    ('index', 'mci', u'Managed Compiler Infrastructure',
-     [u'The Lycus Foundation'], 1)
-]
+man_pages = [('index', 'mci', u'Managed Compiler Infrastructure', [u'The Lycus Foundation'], 1)]
 
 epub_title = u'Managed Compiler Infrastructure'
 epub_author = u'The Lycus Foundation'
