@@ -1,0 +1,12 @@
+function void foo()
+{
+    register float32 f;
+
+    block entry
+    {
+        f = load.f32 (54325643.4132);
+        f = load.f32 (423523.4324e54);
+        f = load.f32 (4.434e+4);
+        f = load.f32 (6.432e-4);
+    }
+}

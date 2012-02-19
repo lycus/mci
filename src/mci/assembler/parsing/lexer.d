@@ -463,6 +463,30 @@ public final class Lexer
         if (!hasTrailingDigit)
             error("base-10 digit", _source.location);
 
+        auto peek = _source.next();
+
+        if (peek == 'e' || peek == 'E')
+        {
+            str ~= _source.moveNext();
+
+            auto sign = _source.next();
+
+            if (sign == '-' || sign == '+')
+                str ~= _source.moveNext();
+
+            while (true)
+            {
+                auto digChr = _source.next();
+
+                if (!isDigit(digChr))
+                    break;
+
+                str ~= _source.moveNext();
+            }
+        }
+
+        import std.stdio; writeln(str);
+
         return new Token(TokenType.literal, str, makeSourceLocation(str, _source.location));
     }
 
