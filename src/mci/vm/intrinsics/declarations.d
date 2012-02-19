@@ -7,49 +7,131 @@ import mci.core.common,
        mci.core.typing.cache,
        mci.core.typing.core,
        mci.core.typing.types,
+       mci.vm.intrinsics.atomic,
        mci.vm.intrinsics.config;
 
 public __gshared Module intrinsicModule;
 public __gshared Lookup!(Function, function_t) intrinsicFunctions;
 
-public __gshared Function mciGetCompiler;
-public __gshared Function mciGetArchitecture;
-public __gshared Function mciGetOperatingSystem;
-public __gshared Function mciGetEndianness;
-public __gshared Function mciIs32Bit;
+public __gshared
+{
+    Function mciGetCompiler;
+    Function mciGetArchitecture;
+    Function mciGetOperatingSystem;
+    Function mciGetEndianness;
+    Function mciIs32Bit;
+
+    Function mciAtomicExchangeU;
+    Function mciAtomicAddU;
+    Function mciAtomicSubU;
+    Function mciAtomicMulU;
+    Function mciAtomicDivU;
+    Function mciAtomicRemU;
+    Function mciAtomicAndU;
+    Function mciAtomicOrU;
+    Function mciAtomicXOrU;
+    Function mciAtomicExchangeS;
+    Function mciAtomicAddS;
+    Function mciAtomicSubS;
+    Function mciAtomicMulS;
+    Function mciAtomicDivS;
+    Function mciAtomicRemS;
+    Function mciAtomicAndS;
+    Function mciAtomicOrS;
+    Function mciAtomicXOrS;
+}
 
 public enum string intrinsicModuleName = "mci";
 
-shared static this()
+template createFunction(alias function_)
 {
-    intrinsicModule = new typeof(intrinsicModule)(intrinsicModuleName);
-    auto functions = new NoNullDictionary!(Function, function_t)();
-
-    Function createFunction(string name, void* func, Type returnType, Type[] parameters = null)
-    in
+    Function createFunction(Type returnType, Type[] parameters ...)
+    out (result)
     {
-        assert(name);
-        assert(func);
+        assert(result);
     }
     body
     {
-        auto f = new Function(intrinsicModule, name, returnType, CallingConvention.cdecl, FunctionAttributes.intrinsic);
+        auto f = new Function(intrinsicModule, __traits(identifier, function_), returnType, CallingConvention.cdecl, FunctionAttributes.intrinsic);
 
         foreach (param; parameters)
             f.createParameter(param);
 
         f.close();
 
-        functions[f] = cast(function_t)func;
+        (cast(NoNullDictionary!(Function, function_t))intrinsicFunctions)[f] = cast(function_t)&function_;
 
         return f;
     }
+}
 
-    mciGetCompiler = createFunction("mci_get_compiler", &mci_get_compiler, UInt8Type.instance);
-    mciGetArchitecture = createFunction("mci_get_architecture", &mci_get_architecture, UInt8Type.instance);
-    mciGetOperatingSystem = createFunction("mci_get_operating_system", &mci_get_operating_system, UInt8Type.instance);
-    mciGetEndianness = createFunction("mci_get_endianness", &mci_get_endianness, UInt8Type.instance);
-    mciIs32Bit = createFunction("mci_is_32_bit", &mci_is_32_bit, UInt8Type.instance);
+shared static this()
+{
+    intrinsicModule = new typeof(intrinsicModule)(intrinsicModuleName);
+    intrinsicFunctions = new NoNullDictionary!(Function, function_t)();
 
-    intrinsicFunctions = functions;
+    mciGetCompiler = createFunction!mci_get_compiler(UInt8Type.instance);
+    mciGetArchitecture = createFunction!mci_get_architecture(UInt8Type.instance);
+    mciGetOperatingSystem = createFunction!mci_get_operating_system(UInt8Type.instance);
+    mciGetEndianness = createFunction!mci_get_endianness(UInt8Type.instance);
+    mciIs32Bit = createFunction!mci_is_32_bit(UInt8Type.instance);
+
+    mciAtomicExchangeU = createFunction!mci_atomic_exchange_u(UInt8Type.instance,
+                                                              getPointerType(NativeUIntType.instance),
+                                                              NativeUIntType.instance,
+                                                              NativeUIntType.instance);
+    mciAtomicAddU = createFunction!mci_atomic_add_u(NativeUIntType.instance,
+                                                    getPointerType(NativeUIntType.instance),
+                                                    NativeUIntType.instance);
+    mciAtomicSubU = createFunction!mci_atomic_sub_u(NativeUIntType.instance,
+                                                    getPointerType(NativeUIntType.instance),
+                                                    NativeUIntType.instance,
+                                                    getPointerType(NativeUIntType.instance),
+                                                    NativeUIntType.instance);
+    mciAtomicMulU = createFunction!mci_atomic_mul_u(NativeUIntType.instance,
+                                                    getPointerType(NativeUIntType.instance),
+                                                    NativeUIntType.instance);
+    mciAtomicDivU = createFunction!mci_atomic_div_u(NativeUIntType.instance,
+                                                    getPointerType(NativeUIntType.instance),
+                                                    NativeUIntType.instance);
+    mciAtomicRemU = createFunction!mci_atomic_rem_u(NativeUIntType.instance,
+                                                    getPointerType(NativeUIntType.instance),
+                                                    NativeUIntType.instance);
+    mciAtomicAndU = createFunction!mci_atomic_and_u(NativeUIntType.instance,
+                                                    getPointerType(NativeUIntType.instance),
+                                                    NativeUIntType.instance);
+    mciAtomicOrU = createFunction!mci_atomic_or_u(NativeUIntType.instance,
+                                                  getPointerType(NativeUIntType.instance),
+                                                  NativeUIntType.instance);
+    mciAtomicXOrU = createFunction!mci_atomic_xor_u(NativeUIntType.instance,
+                                                    getPointerType(NativeUIntType.instance),
+                                                    NativeUIntType.instance);
+    mciAtomicExchangeS = createFunction!mci_atomic_exchange_s(UInt8Type.instance,
+                                                              getPointerType(NativeIntType.instance),
+                                                              NativeIntType.instance,
+                                                              NativeIntType.instance);
+    mciAtomicAddS = createFunction!mci_atomic_add_s(NativeIntType.instance,
+                                                    getPointerType(NativeIntType.instance),
+                                                    NativeIntType.instance);
+    mciAtomicSubS = createFunction!mci_atomic_sub_s(NativeIntType.instance,
+                                                    getPointerType(NativeIntType.instance),
+                                                    NativeIntType.instance);
+    mciAtomicMulS = createFunction!mci_atomic_mul_s(NativeIntType.instance,
+                                                    getPointerType(NativeIntType.instance),
+                                                    NativeIntType.instance);
+    mciAtomicDivS = createFunction!mci_atomic_div_s(NativeIntType.instance,
+                                                    getPointerType(NativeIntType.instance),
+                                                    NativeIntType.instance);
+    mciAtomicRemS = createFunction!mci_atomic_rem_s(NativeIntType.instance,
+                                                    getPointerType(NativeIntType.instance),
+                                                    NativeIntType.instance);
+    mciAtomicAndS = createFunction!mci_atomic_and_s(NativeIntType.instance,
+                                                    getPointerType(NativeIntType.instance),
+                                                    NativeIntType.instance);
+    mciAtomicOrS = createFunction!mci_atomic_or_s(NativeIntType.instance,
+                                                  getPointerType(NativeIntType.instance),
+                                                  NativeIntType.instance);
+    mciAtomicXOrS = createFunction!mci_atomic_xor_s(NativeIntType.instance,
+                                                    getPointerType(NativeIntType.instance),
+                                                    NativeIntType.instance);
 }

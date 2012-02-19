@@ -190,6 +190,7 @@
  </Config>
  <Folder name="mci.vm">
   <Folder name="intrinsics">
+   <File path="intrinsics\atomic.d" />
    <File path="intrinsics\config.d" />
    <File path="intrinsics\context.d" />
    <File path="intrinsics\declarations.d" />
