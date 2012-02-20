@@ -214,8 +214,8 @@ mci_atomic_and_u
 **Signature**
     ``uint mci_atomic_and_u(uint*, uint)``
 
-Computes bit-wise AND between the value pointed to by the first argument and
-the value in the second argument and return the result.
+Aotmically computes bit-wise AND between the value pointed to by the first
+argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
@@ -225,8 +225,8 @@ mci_atomic_or_u
 **Signature**
     ``uint mci_atomic_or_u(uint*, uint)``
 
-Computes bit-wise OR between the value pointed to by the first argument and
-the value in the second argument and return the result.
+Aotmically computes bit-wise OR between the value pointed to by the first
+argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
@@ -236,8 +236,8 @@ mci_atomic_xor_u
 **Signature**
     ``uint mci_atomic_xor_u(uint*, uint)``
 
-Computes bit-wise XOR between the value pointed to by the first argument and
-the value in the second argument and return the result.
+Aotmically computes bit-wise XOR between the value pointed to by the first
+argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
@@ -314,8 +314,8 @@ mci_atomic_and_s
 **Signature**
     ``int mci_atomic_and_s(int*, int)``
 
-Computes bit-wise AND between the value pointed to by the first argument and
-the value in the second argument and return the result.
+Aotmically computes bit-wise AND between the value pointed to by the first
+argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
@@ -325,8 +325,8 @@ mci_atomic_or_s
 **Signature**
     ``int mci_atomic_or_s(int*, int)``
 
-Computes bit-wise OR between the value pointed to by the first argument and
-the value in the second argument and return the result.
+Aotmically computes bit-wise OR between the value pointed to by the first
+argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
@@ -336,8 +336,8 @@ mci_atomic_xor_s
 **Signature**
     ``int mci_atomic_xor_s(int*, int)``
 
-Computes bit-wise XOR between the value pointed to by the first argument and
-the value in the second argument and return the result.
+Aotmically computes bit-wise XOR between the value pointed to by the first
+argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
