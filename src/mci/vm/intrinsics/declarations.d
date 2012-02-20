@@ -97,7 +97,7 @@ shared static this()
     mciGetEndianness = createFunction!mci_get_endianness(UInt8Type.instance);
     mciIs32Bit = createFunction!mci_is_32_bit(NativeUIntType.instance);
 
-    mciAtomicExchangeU = createFunction!mci_atomic_exchange_u(UInt8Type.instance,
+    mciAtomicExchangeU = createFunction!mci_atomic_exchange_u(NativeUIntType.instance,
                                                               getPointerType(NativeUIntType.instance),
                                                               NativeUIntType.instance,
                                                               NativeUIntType.instance);
@@ -127,7 +127,7 @@ shared static this()
     mciAtomicXOrU = createFunction!mci_atomic_xor_u(NativeUIntType.instance,
                                                     getPointerType(NativeUIntType.instance),
                                                     NativeUIntType.instance);
-    mciAtomicExchangeS = createFunction!mci_atomic_exchange_s(UInt8Type.instance,
+    mciAtomicExchangeS = createFunction!mci_atomic_exchange_s(NativeUIntType.instance,
                                                               getPointerType(NativeIntType.instance),
                                                               NativeIntType.instance,
                                                               NativeIntType.instance);
