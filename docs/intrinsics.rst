@@ -118,7 +118,7 @@ mci_is_32_bit
 -------------
 
 **Signature**
-    ``uint8 mci_is_32_bit()``
+    ``uint mci_is_32_bit()``
 
 Gets a value indicating whether the MCI is compiled for 32-bit pointers.
 
