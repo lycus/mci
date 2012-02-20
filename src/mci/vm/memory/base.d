@@ -70,7 +70,7 @@ package union GarbageCollectorHeader
     private size_t bits;
 }
 
-private bool isSystemAligned(ubyte* ptr)
+public bool isSystemAligned(ubyte* ptr)
 {
     return !(cast(size_t)ptr % computeSize(NativeUIntType.instance, is32Bit));
 }
@@ -150,7 +150,7 @@ public interface GarbageCollector
 
 public interface GarbageCollectorGeneration
 {
-    @property public ubyte id();
+    @property public size_t id();
 
     @property public ulong collections();
 

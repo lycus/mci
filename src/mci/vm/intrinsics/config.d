@@ -30,7 +30,7 @@ extern (C)
         return emulationLayer;
     }
 
-    public ubyte mci_is_32_bit(VirtualMachineContext context)
+    public size_t mci_is_32_bit(VirtualMachineContext context)
     {
         return is32Bit;
     }

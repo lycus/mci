@@ -8,7 +8,8 @@ import mci.core.common,
        mci.core.typing.core,
        mci.core.typing.types,
        mci.vm.intrinsics.atomic,
-       mci.vm.intrinsics.config;
+       mci.vm.intrinsics.config,
+       mci.vm.intrinsics.memory;
 
 public __gshared Module intrinsicModule;
 public __gshared Lookup!(Function, function_t) intrinsicFunctions;
@@ -39,6 +40,23 @@ public __gshared
     Function mciAtomicAndS;
     Function mciAtomicOrS;
     Function mciAtomicXOrS;
+
+    Function mciIsAligned;
+    Function mciGCCollect;
+    Function mciGCMinimize;
+    Function mciGCGetCollections;
+    Function mciGCAddPressure;
+    Function mciGCRemovePressure;
+    Function mciGCIsGenerational;
+    Function mciGCGetGenerations;
+    Function mciGCGenerationCollect;
+    Function mciGCGenerationMinimize;
+    Function mciGCGenerationGetCollections;
+    Function mciGCIsInteractive;
+    Function mciGCAddAllocateCallback;
+    Function mciGCAddFreeCallback;
+
+    StructureType objectType;
 }
 
 public enum string intrinsicModuleName = "mci";
@@ -70,11 +88,14 @@ shared static this()
     intrinsicModule = new typeof(intrinsicModule)(intrinsicModuleName);
     intrinsicFunctions = new NoNullDictionary!(Function, function_t)();
 
+    objectType = new StructureType(intrinsicModule, "Object");
+    objectType.close();
+
     mciGetCompiler = createFunction!mci_get_compiler(UInt8Type.instance);
     mciGetArchitecture = createFunction!mci_get_architecture(UInt8Type.instance);
     mciGetOperatingSystem = createFunction!mci_get_operating_system(UInt8Type.instance);
     mciGetEndianness = createFunction!mci_get_endianness(UInt8Type.instance);
-    mciIs32Bit = createFunction!mci_is_32_bit(UInt8Type.instance);
+    mciIs32Bit = createFunction!mci_is_32_bit(NativeUIntType.instance);
 
     mciAtomicExchangeU = createFunction!mci_atomic_exchange_u(UInt8Type.instance,
                                                               getPointerType(NativeUIntType.instance),
@@ -134,4 +155,31 @@ shared static this()
     mciAtomicXOrS = createFunction!mci_atomic_xor_s(NativeIntType.instance,
                                                     getPointerType(NativeIntType.instance),
                                                     NativeIntType.instance);
+
+    mciIsAligned = createFunction!mci_is_aligned(NativeUIntType.instance,
+                                                 getPointerType(UInt8Type.instance));
+    mciGCCollect = createFunction!mci_gc_collect(null);
+    mciGCMinimize = createFunction!mci_gc_minimize(null);
+    mciGCGetCollections = createFunction!mci_gc_get_collections(UInt64Type.instance);
+    mciGCAddPressure = createFunction!mci_gc_add_pressure(null,
+                                                          NativeUIntType.instance);
+    mciGCRemovePressure = createFunction!mci_gc_remove_pressure(null,
+                                                                NativeUIntType.instance);
+    mciGCIsGenerational = createFunction!mci_gc_is_generational(NativeUIntType.instance);
+    mciGCGetGenerations = createFunction!mci_gc_get_generations(NativeUIntType.instance);
+    mciGCGenerationCollect = createFunction!mci_gc_generation_collect(null,
+                                                                      NativeUIntType.instance);
+    mciGCGenerationMinimize = createFunction!mci_gc_generation_minimize(null,
+                                                                        NativeUIntType.instance);
+    mciGCGenerationGetCollections = createFunction!mci_gc_generation_get_collections(UInt64Type.instance,
+                                                                                     NativeUIntType.instance);
+    mciGCIsInteractive = createFunction!mci_gc_is_interactive(NativeUIntType.instance);
+    mciGCAddAllocateCallback = createFunction!mci_gc_add_allocate_callback(null,
+                                                                           getFunctionPointerType(CallingConvention.cdecl,
+                                                                                                  null,
+                                                                                                  new NoNullList!Type(toIterable!Type(objectType))));
+    mciGCAddFreeCallback = createFunction!mci_gc_add_free_callback(null,
+                                                                   getFunctionPointerType(CallingConvention.cdecl,
+                                                                                          null,
+                                                                                          new NoNullList!Type(toIterable!Type(objectType))));
 }
