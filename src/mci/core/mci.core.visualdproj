@@ -193,7 +193,6 @@
    <File path="analysis\cfg.d" />
    <File path="analysis\statistics.d" />
    <File path="analysis\utilities.d" />
-   <File path="analysis\xref.d" />
   </Folder>
   <Folder name="code">
    <File path="code\emit.d" />
