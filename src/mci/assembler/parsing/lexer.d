@@ -485,8 +485,6 @@ public final class Lexer
             }
         }
 
-        import std.stdio; writeln(str);
-
         return new Token(TokenType.literal, str, makeSourceLocation(str, _source.location));
     }
 
