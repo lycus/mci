@@ -2,6 +2,7 @@ module mci.tester.main;
 
 import std.stdio,
        mci.tester.common,
+       mci.tester.constant,
        mci.tester.container,
        mci.tester.lexer,
        mci.tester.nullable,

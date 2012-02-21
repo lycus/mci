@@ -190,6 +190,7 @@
  </Config>
  <Folder name="mci.tester">
   <File path="common.d" />
+  <File path="constant.d" />
   <File path="container.d" />
   <File path="lexer.d" />
   <File path="main.d" />
