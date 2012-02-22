@@ -1,6 +1,7 @@
 module mci.core.analysis.constant;
 
-import std.traits;
+import std.traits,
+       mci.core.common;
 
 private union ConstantData
 {
@@ -95,6 +96,7 @@ public final class Constant
             op == "<<" || op == ">>")
     in
     {
+        assert(rhs);
         assert(rhs._type == _type);
 
         static if (op == "&" || op == "|" || op == "^" || op == "<<" || op == ">>")
@@ -198,6 +200,11 @@ public final class Constant
 
     // Until the compiler is fixed to allow overloading the unary not operator...
     public Constant not()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         final switch (_type)
         {
@@ -209,6 +216,30 @@ public final class Constant
                 return new Constant(cast(float)!_data.float32);
             case ConstantType.float64:
                 return new Constant(cast(double)!_data.float64);
+        }
+    }
+
+    public Constant rotate(string direction)(Constant amount)
+    in
+    {
+        assert(amount);
+        assert(amount._type == _type);
+        assert(_type != ConstantType.float32 && _type != ConstantType.float64);
+    }
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        switch (_type)
+        {
+            case ConstantType.int64:
+                return new Constant(.rotate!direction(_data.int64, amount._data.int64));
+            case ConstantType.uint64:
+                return new Constant(.rotate!direction(_data.uint64, amount._data.uint64));
+            default:
+                assert(false);
         }
     }
 
