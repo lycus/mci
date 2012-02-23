@@ -46,6 +46,7 @@ public final class VerificationManager
                                          new FunctionArgumentOrderVerifier(),
                                          new FunctionArgumentCountVerifier(),
                                          new FunctionArgumentTypeVerifier(),
+                                         new TailCallReturnVerifier(),
                                          new ConstantLoadVerifier(),
                                          new ArithmeticVerifier(),
                                          new BitwiseVerifier(),

@@ -79,3 +79,29 @@ public final class PhiOrderVerifier : CodeVerifier
         }
     }
 }
+
+public final class TailCallReturnVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (i, instr; bb.y.stream)
+            {
+                if (instr.opCode is opCallTail)
+                {
+                    auto next = bb.y.stream[i + 1];
+
+                    if (next.opCode !is opReturn)
+                        error(instr, "The 'call.tail' instruction must be followed by a 'return' instruction.");
+
+                    if (next.sourceRegister1 !is instr.targetRegister)
+                        error(instr, "The 'return' instruction after a 'call.tail' instruction must return the resulting value from the call.");
+                }
+                else if (instr.opCode is opInvokeTail)
+                    if (bb.y.stream[i + 1] !is opLeave)
+                        error(instr, "The 'invoke.tail' instruction must be followed by a 'leave' instruction.");
+            }
+        }
+    }
+}
