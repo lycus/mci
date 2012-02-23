@@ -1,0 +1,12 @@
+function ssa void main()
+{
+    register int32 x;
+    register int32 y;
+
+    block entry
+    {
+        y = cmp.eq x, x;
+        x = load.i32 (123);
+        leave;
+    }
+}

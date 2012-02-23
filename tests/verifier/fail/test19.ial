@@ -1,0 +1,10 @@
+function ssa void main()
+{
+    register int32 x;
+
+    block entry
+    {
+        x = cmp.eq x, x;
+        leave;
+    }
+}

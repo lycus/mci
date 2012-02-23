@@ -206,15 +206,29 @@ public final class SSAFormVerifier : CodeVerifier
     {
         if (function_.attributes & FunctionAttributes.ssa)
         {
-            foreach (bb; function_.blocks)
-                foreach (instr; bb.y.stream)
-                    foreach (reg; instr.sourceRegisters)
-                        if (reg.definitions.empty)
-                            error(instr, "Register '%s' used without any definition.", reg);
-
             foreach (reg; function_.registers)
                 if (reg.y.definitions.count > 1)
                     error(null, "Register '%s' assigned multiple times; invalid SSA form.", reg.y);
+
+            foreach (bb; function_.blocks)
+            {
+                foreach (instr; bb.y.stream)
+                {
+                    foreach (reg; instr.sourceRegisters)
+                    {
+                        if (reg.definitions.empty)
+                            error(instr, "Register '%s' used without any definition.", reg);
+
+                        auto def = first(reg.definitions);
+
+                        if (!isReachableFrom(instr.block, def.block) && instr.block !is def.block)
+                            error(instr, "Register '%s' has no incoming definitions.", reg);
+
+                        if (instr.block is def.block && findIndex(bb.y.stream, def) >= findIndex(bb.y.stream, instr))
+                            error(instr, "Register '%s' used before definition.", reg);
+                    }
+                }
+            }
         }
         else
             if (auto phi = getFirstInstruction(function_, opPhi))
