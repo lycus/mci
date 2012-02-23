@@ -5,6 +5,12 @@ public final class MetadataPair
     private string _key;
     private string _value;
 
+    invariant()
+    {
+        assert(_key);
+        assert(_value);
+    }
+
     public this(string key, string value)
     in
     {
