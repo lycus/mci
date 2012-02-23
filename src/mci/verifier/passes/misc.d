@@ -206,6 +206,12 @@ public final class SSAFormVerifier : CodeVerifier
     {
         if (function_.attributes & FunctionAttributes.ssa)
         {
+            foreach (bb; function_.blocks)
+                foreach (instr; bb.y.stream)
+                    foreach (reg; instr.sourceRegisters)
+                        if (reg.definitions.empty)
+                            error(instr, "Register '%s' used without any definition.", reg);
+
             foreach (reg; function_.registers)
                 if (reg.y.definitions.count > 1)
                     error(null, "Register '%s' assigned multiple times; invalid SSA form.", reg.y);
