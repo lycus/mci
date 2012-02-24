@@ -16,7 +16,7 @@ unittest
 
     auto ptr = getPointerType(st);
 
-    assert(ptr.name == "foo/bar*");
+    assert(ptr.name == "'foo'/'bar'*");
 }
 
 unittest
@@ -28,7 +28,7 @@ unittest
 
     auto ptr = getPointerType(st);
 
-    assert(ptr.name == "foo/foo_bar_baz*");
+    assert(ptr.name == "'foo'/'foo_bar_baz'*");
 }
 
 unittest
@@ -42,12 +42,13 @@ unittest
     st2.close();
 
     auto params = new NoNullList!Type();
+
     params.add(st2);
     params.add(st1);
 
     auto fpt = getFunctionPointerType(CallingConvention.standard, st1, params);
 
-    assert(fpt.name == "foo/bar(foo/baz, foo/bar)");
+    assert(fpt.name == "'foo'/'bar'('foo'/'baz', 'foo'/'bar')");
 }
 
 unittest
@@ -62,7 +63,7 @@ unittest
 
     auto fpt = getFunctionPointerType(CallingConvention.cdecl, st1, params);
 
-    assert(fpt.name == "foo/bar(foo/bar) cdecl");
+    assert(fpt.name == "'foo'/'bar'('foo'/'bar') cdecl");
 }
 
 unittest
@@ -74,7 +75,7 @@ unittest
 
     auto arr = getArrayType(st);
 
-    assert(arr.name == "foo/baz[]");
+    assert(arr.name == "'foo'/'baz'[]");
 }
 
 unittest
@@ -86,5 +87,5 @@ unittest
 
     auto vec = getVectorType(st, 3);
 
-    assert(vec.name == "foo/baz[3]");
+    assert(vec.name == "'foo'/'baz'[3]");
 }
