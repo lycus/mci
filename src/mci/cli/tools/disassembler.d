@@ -105,6 +105,6 @@ public final class DisassemblerTool : Tool
                 stream.close();
         }
 
-        return true;
+        return 0;
     }
 }
