@@ -6,7 +6,8 @@ import std.conv,
        mci.core.nullable,
        mci.core.code.modules,
        mci.core.code.functions,
-       mci.core.typing.members;
+       mci.core.typing.members,
+       mci.core.utilities;
 
 public abstract class Type
 {
@@ -97,7 +98,7 @@ public final class StructureType : Type
 
     public override string toString()
     {
-        return _module.toString() ~ "/" ~ _name;
+        return _module.toString() ~ "/" ~ escapeIdentifier(_name);
     }
 
     public Field createField(string name, Type type, FieldStorage storage = FieldStorage.instance)

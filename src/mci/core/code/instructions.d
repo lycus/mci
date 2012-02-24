@@ -8,7 +8,8 @@ import std.conv,
        mci.core.code.metadata,
        mci.core.code.opcodes,
        mci.core.typing.members,
-       mci.core.typing.types;
+       mci.core.typing.types,
+       mci.core.utilities;
 
 public final class Register
 {
@@ -95,7 +96,7 @@ public final class Register
 
     public override string toString()
     {
-        return _name;
+        return escapeIdentifier(_name);
     }
 }
 

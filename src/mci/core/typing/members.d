@@ -2,7 +2,8 @@ module mci.core.typing.members;
 
 import mci.core.container,
        mci.core.nullable,
-       mci.core.typing.types;
+       mci.core.typing.types,
+       mci.core.utilities;
 
 public enum FieldStorage : ubyte
 {
@@ -77,6 +78,6 @@ public final class Field
 
     public override string toString()
     {
-        return _declaringType.toString() ~ ":" ~ _name;
+        return _declaringType.toString() ~ ":" ~ escapeIdentifier(_name);
     }
 }

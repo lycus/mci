@@ -4,7 +4,8 @@ import mci.core.container,
        mci.core.code.instructions,
        mci.core.code.modules,
        mci.core.code.stream,
-       mci.core.typing.types;
+       mci.core.typing.types,
+       mci.core.utilities;
 
 public final class BasicBlock
 {
@@ -101,7 +102,7 @@ public final class BasicBlock
 
     public override string toString()
     {
-        return _name;
+        return escapeIdentifier(_name);
     }
 }
 
@@ -285,7 +286,7 @@ public final class Function
 
     public override string toString()
     {
-        return _module.toString() ~ "/" ~ _name;
+        return _module.toString() ~ "/" ~ escapeIdentifier(_name);
     }
 
     public Parameter createParameter(Type type)
@@ -422,6 +423,6 @@ public final class FFISignature
 
     public override string toString()
     {
-        return _library ~ ", " ~ _entryPoint;
+        return escapeIdentifier(_library) ~ ", " ~ escapeIdentifier(_entryPoint);
     }
 }

@@ -8,7 +8,8 @@ import mci.core.container,
        mci.core.code.modules,
        mci.core.code.opcodes,
        mci.core.typing.members,
-       mci.core.typing.types;
+       mci.core.typing.types,
+       mci.core.utilities;
 
 public final class ModuleDisassembler
 {
@@ -61,7 +62,7 @@ public final class ModuleDisassembler
     }
     body
     {
-        _writer.writef("type %s", type.name);
+        _writer.writef("type %s", escapeIdentifier(type.name));
 
         if (type.alignment)
             _writer.writef(" align %s", type.alignment);
@@ -86,7 +87,7 @@ public final class ModuleDisassembler
                     break;
             }
 
-            _writer.writefln(" %s %s;", field.y.type, field.y.name);
+            _writer.writefln(" %s %s;", field.y.type, escapeIdentifier(field.y.name));
         }
 
         _writer.writeln("}");
@@ -114,7 +115,7 @@ public final class ModuleDisassembler
         if (function_.attributes & FunctionAttributes.noInlining)
             _writer.write("noinline ");
 
-        _writer.writef("%s %s(", function_.returnType ? function_.returnType.toString() : "void", function_.name);
+        _writer.writef("%s %s(", function_.returnType ? function_.returnType.toString() : "void", escapeIdentifier(function_.name));
 
         foreach (i, param; function_.parameters)
         {
@@ -142,17 +143,17 @@ public final class ModuleDisassembler
         _writer.writeln("{");
 
         foreach (reg; function_.registers)
-            _writer.writefln("    register %s %s;", reg.y.type, reg.y.name);
+            _writer.writefln("    register %s %s;", reg.y.type, reg.y);
 
         if (!function_.registers.empty)
             _writer.writeln();
 
         foreach (i, block; function_.blocks)
         {
-            _writer.writef("    block %s", block.y.name);
+            _writer.writef("    block %s", block.y);
 
             if (block.y.unwindBlock)
-                _writer.writef(" unwind %s", block.y.unwindBlock.name);
+                _writer.writef(" unwind %s", block.y.unwindBlock);
 
             _writer.writeln();
             _writer.writeln("    {");

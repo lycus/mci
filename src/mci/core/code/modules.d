@@ -8,7 +8,8 @@ import std.array,
        mci.core.config,
        mci.core.container,
        mci.core.code.functions,
-       mci.core.typing.types;
+       mci.core.typing.types,
+       mci.core.utilities;
 
 public final class Module
 {
@@ -67,7 +68,7 @@ public final class Module
 
     public override string toString()
     {
-        return _name;
+        return escapeIdentifier(_name);
     }
 }
 
