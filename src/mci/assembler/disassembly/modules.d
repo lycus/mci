@@ -124,7 +124,7 @@ public final class ModuleDisassembler
                 _writer.write(", ");
         }
 
-        _writer.writeln(")");
+        _writer.write(")");
 
         final switch (function_.callingConvention)
         {
@@ -138,6 +138,7 @@ public final class ModuleDisassembler
                 break;
         }
 
+        _writer.writeln();
         _writer.writeln("{");
 
         foreach (reg; function_.registers)
