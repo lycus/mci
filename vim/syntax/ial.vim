@@ -63,8 +63,6 @@ hi def link ialString1                  String
 hi def link ialString2                  String
 hi def link ialSpecialChar1             SpecialChar
 hi def link ialSpecialChar2             SpecialChar
-hi def link ialCharacter                Character
-hi def link ialSpecialChar              SpecialChar
 hi def link ialNumber                   Number
 
 let b:current_syntax = "ial"
