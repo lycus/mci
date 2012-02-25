@@ -2,6 +2,7 @@ module mci.core.code.functions;
 
 import mci.core.container,
        mci.core.code.instructions,
+       mci.core.code.metadata,
        mci.core.code.modules,
        mci.core.code.stream,
        mci.core.typing.types,
@@ -14,11 +15,13 @@ public final class BasicBlock
     private BasicBlock _unwindBlock;
     private InstructionStream _stream;
     private bool _isClosed;
+    private NoNullList!MetadataPair _metadata;
 
     invariant()
     {
         assert(_function);
         assert(_name);
+        assert(_metadata);
         // We can't assert _stream here as this would create a circular dependency.
     }
 
@@ -32,6 +35,7 @@ public final class BasicBlock
     {
         _function = function_;
         _name = name;
+        _metadata = new typeof(_metadata)();
         _stream = new typeof(_stream)(this);
     }
 
@@ -90,6 +94,16 @@ public final class BasicBlock
         return _isClosed;
     }
 
+    @property public NoNullList!MetadataPair metadata()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _metadata;
+    }
+
     public void close()
     in
     {
@@ -112,11 +126,13 @@ public final class Parameter
 {
     private Function _function;
     private Type _type;
+    private NoNullList!MetadataPair _metadata;
 
     invariant()
     {
         assert(_function);
         assert(_type);
+        assert(_metadata);
     }
 
     private this(Function function_, Type type)
@@ -129,6 +145,7 @@ public final class Parameter
     {
         _function = function_;
         _type = type;
+        _metadata = new typeof(_metadata)();
     }
 
     @property public Function function_()
@@ -149,6 +166,16 @@ public final class Parameter
     body
     {
         return _type;
+    }
+
+    @property public NoNullList!MetadataPair metadata()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _metadata;
     }
 
     public override string toString()
@@ -178,6 +205,7 @@ public final class Function
     private NoNullDictionary!(string, BasicBlock) _blocks;
     private NoNullDictionary!(string, Register) _registers;
     private bool _isClosed;
+    private NoNullList!MetadataPair _metadata;
 
     invariant()
     {
@@ -186,6 +214,7 @@ public final class Function
         assert(_parameters);
         assert(_blocks);
         assert(_registers);
+        assert(_metadata);
     }
 
     public this(Module module_, string name, Type returnType, CallingConvention callingConvention = CallingConvention.standard,
@@ -206,6 +235,7 @@ public final class Function
         _parameters = new typeof(_parameters)();
         _blocks = new typeof(_blocks)();
         _registers = new typeof(_registers)();
+        _metadata = new typeof(_metadata)();
 
         (cast(Dictionary!(string, Function))module_.functions)[name] = this;
     }
@@ -282,6 +312,16 @@ public final class Function
     body
     {
         return _registers;
+    }
+
+    @property public NoNullList!MetadataPair metadata()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _metadata;
     }
 
     public override string toString()

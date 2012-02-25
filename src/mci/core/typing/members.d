@@ -2,8 +2,9 @@ module mci.core.typing.members;
 
 import mci.core.container,
        mci.core.nullable,
-       mci.core.typing.types,
-       mci.core.utilities;
+       mci.core.utilities,
+       mci.core.code.metadata,
+       mci.core.typing.types;
 
 public enum FieldStorage : ubyte
 {
@@ -18,12 +19,14 @@ public final class Field
     private string _name;
     private Type _type;
     private FieldStorage _storage;
+    private NoNullList!MetadataPair _metadata;
 
     invariant()
     {
         assert(_declaringType);
         assert(_name);
         assert(_type);
+        assert(_metadata);
     }
 
     package this(StructureType declaringType, string name, Type type, FieldStorage storage = FieldStorage.instance)
@@ -39,6 +42,7 @@ public final class Field
         _name = name;
         _type = type;
         _storage = storage;
+        _metadata = new typeof(_metadata)();
     }
 
     @property public StructureType declaringType()
@@ -74,6 +78,16 @@ public final class Field
     @property public FieldStorage storage()
     {
         return _storage;
+    }
+
+    @property public NoNullList!MetadataPair metadata()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _metadata;
     }
 
     public override string toString()

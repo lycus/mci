@@ -4,6 +4,7 @@ import std.conv,
        mci.core.common,
        mci.core.container,
        mci.core.nullable,
+       mci.core.code.metadata,
        mci.core.code.modules,
        mci.core.code.functions,
        mci.core.typing.members,
@@ -30,6 +31,7 @@ public final class StructureType : Type
     private uint _alignment;
     private NoNullDictionary!(string, Field) _fields;
     private bool _isClosed;
+    private NoNullList!MetadataPair _metadata;
 
     invariant()
     {
@@ -37,6 +39,7 @@ public final class StructureType : Type
         assert(_name);
         assert(!_alignment || powerOfTwo(_alignment));
         assert(_fields);
+        assert(_metadata);
     }
 
     public this(Module module_, string name, uint alignment = 0)
@@ -53,6 +56,7 @@ public final class StructureType : Type
         _name = name;
         _alignment = alignment;
         _fields = new typeof(_fields)();
+        _metadata = new typeof(_metadata)();
 
         (cast(Dictionary!(string, StructureType))module_.types)[name] = this;
     }
@@ -89,6 +93,16 @@ public final class StructureType : Type
     @property public bool isClosed()
     {
         return _isClosed;
+    }
+
+    @property public NoNullList!MetadataPair metadata()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _metadata;
     }
 
     @property public override string name()

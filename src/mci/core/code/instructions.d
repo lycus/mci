@@ -18,6 +18,7 @@ public final class Register
     private string _name;
     private Object _uses; // Work around linker error.
     private Object _definitions;
+    private Object _metadata;
 
     invariant()
     {
@@ -26,6 +27,7 @@ public final class Register
         assert(_name);
         assert(_uses);
         assert(_definitions);
+        assert(_metadata);
     }
 
     package this(Function function_, string name, Type type)
@@ -42,6 +44,7 @@ public final class Register
         _type = type;
         _uses = new NoNullList!Instruction();
         _definitions = new NoNullList!Instruction();
+        _metadata = new NoNullList!MetadataPair();
     }
 
     @property public Function function_()
@@ -92,6 +95,16 @@ public final class Register
     body
     {
         return cast(ReadOnlyIndexable!Instruction)_definitions;
+    }
+
+    @property public NoNullList!MetadataPair metadata()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return cast(NoNullList!MetadataPair)_metadata;
     }
 
     public override string toString()
