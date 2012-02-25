@@ -25,8 +25,8 @@ out (result)
 }
 body
 {
-    if (module_.types.get(node.name.name))
-        throw new GenerationException("Type " ~ module_.name ~ "/" ~ node.name.name ~ " already defined.", node.location);
+    if (auto type = module_.types.get(node.name.name))
+        throw new GenerationException("Type " ~ type.toString() ~ " already defined.", node.location);
 
     uint alignment;
 
@@ -137,7 +137,7 @@ body
     if (auto type = mod.types.get(node.name.name))
         return *type;
 
-    throw new GenerationException("Unknown type " ~ mod.name ~ "/" ~ node.name.name ~ ".", node.location);
+    throw new GenerationException("Unknown type " ~ mod.toString() ~ "/'" ~ node.name.name ~ "'.", node.location);
 }
 
 public FunctionPointerType resolveFunctionPointerType(FunctionPointerTypeReferenceNode node, Module module_,
@@ -181,6 +181,5 @@ body
     if (auto field = type.fields.get(node.name.name))
         return *field;
 
-    throw new GenerationException("Unknown field " ~ type.module_.name ~ "/" ~ type.name ~ ":" ~ node.name.name ~ ".",
-                                  node.location);
+    throw new GenerationException("Unknown field " ~ type.toString() ~ ":'" ~ node.name.name ~ "'.", node.location);
 }

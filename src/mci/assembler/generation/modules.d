@@ -20,5 +20,5 @@ body
     if (auto mod = manager.modules.get(node.name.name))
         return *mod;
 
-    throw new GenerationException("Unknown module " ~ node.name.name ~ ".", node.location);
+    throw new GenerationException("Unknown module '" ~ node.name.name ~ "'.", node.location);
 }

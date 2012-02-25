@@ -193,8 +193,7 @@ public final class TypeClosurePass : GeneratorPass
             foreach (field; type.y.fields)
             {
                 if (contains(fields, (Field f) => f.name == field.name.name))
-                    throw new GenerationException("Field " ~ type.z.module_.name ~ "/" ~ type.z.name ~ ":" ~
-                                                  field.name.name ~ " already defined.", field.location);
+                    throw new GenerationException("Field " ~ field.toString() ~ " already defined.", field.location);
 
                 fields.add(generateField(field, type.z, state.manager));
             }

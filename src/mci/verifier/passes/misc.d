@@ -27,7 +27,7 @@ public final class UnwindVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
             if (bb.y.unwindBlock && !contains(function_.blocks, (Tuple!(string, BasicBlock) t) => t.y is bb.y))
-                error(null, "Unwind basic block '%s' is not within function '%s'.", bb, function_);
+                error(null, "Unwind basic block %s is not within function %s.", bb, function_);
     }
 }
 
@@ -39,7 +39,7 @@ public final class RegisterVerifier : CodeVerifier
             foreach (insn; bb.y.stream)
                 foreach (reg; insn.registers)
                     if (!contains(function_.registers, (Tuple!(string, Register) t) => t.y is reg))
-                        error(insn, "Register '%s' is not within function '%s'.", reg, function_);
+                        error(insn, "Register %s is not within function %s.", reg, function_);
     }
 }
 
@@ -54,17 +54,17 @@ public final class JumpVerifier : CodeVerifier
                 auto target = *instr.operand.peek!BasicBlock();
 
                 if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) => b.y is target))
-                    error(instr, "Target basic block '%s' is not within function '%s'.", target, function_);
+                    error(instr, "Target basic block %s is not within function %s.", target, function_);
             }
             else if (auto instr = getFirstInstruction(bb.y, OperandType.branch))
             {
                 auto target = *instr.operand.peek!(Tuple!(BasicBlock, BasicBlock))();
 
                 if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) => b.y is target.x))
-                    error(instr, "False branch target basic block '%s' is not within function '%s'.", target.x, function_);
+                    error(instr, "False branch target basic block %s is not within function %s.", target.x, function_);
 
                 if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) => b.y is target.y))
-                    error(instr, "True branch target basic block '%s' is not within function '%s'.", target.y, function_);
+                    error(instr, "True branch target basic block %s is not within function %s.", target.y, function_);
             }
         }
     }
@@ -189,10 +189,10 @@ public final class PhiPredecessorVerifier : CodeVerifier
                         auto def = first(reg.definitions);
 
                         if (!def || !contains(predecessors, def.block))
-                            error(instr, "Register '%s' is not defined in any predecessors.", reg);
+                            error(instr, "Register %s is not defined in any predecessors.", reg);
 
                         if (!predSet.add(def.block))
-                            error(instr, "Register '%s' defined in multiple predecessor basic blocks.", reg);
+                            error(instr, "Register %s defined in multiple predecessor basic blocks.", reg);
                     }
                 }
             }
@@ -208,7 +208,7 @@ public final class SSAFormVerifier : CodeVerifier
         {
             foreach (reg; function_.registers)
                 if (reg.y.definitions.count > 1)
-                    error(null, "Register '%s' assigned multiple times; invalid SSA form.", reg.y);
+                    error(null, "Register %s assigned multiple times; invalid SSA form.", reg.y);
 
             foreach (bb; function_.blocks)
             {
@@ -217,15 +217,15 @@ public final class SSAFormVerifier : CodeVerifier
                     foreach (reg; instr.sourceRegisters)
                     {
                         if (reg.definitions.empty)
-                            error(instr, "Register '%s' used without any definition.", reg);
+                            error(instr, "Register %s used without any definition.", reg);
 
                         auto def = first(reg.definitions);
 
                         if (!isReachableFrom(instr.block, def.block) && instr.block !is def.block)
-                            error(instr, "Register '%s' has no incoming definitions.", reg);
+                            error(instr, "Register %s has no incoming definitions.", reg);
 
                         if (instr.block is def.block && findIndex(bb.y.stream, def) >= findIndex(bb.y.stream, instr))
-                            error(instr, "Register '%s' used before definition.", reg);
+                            error(instr, "Register %s used before definition.", reg);
                     }
                 }
             }

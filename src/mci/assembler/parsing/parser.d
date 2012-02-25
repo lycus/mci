@@ -75,7 +75,7 @@ public final class Parser
     body
     {
         if (_stream.next.type == TokenType.end)
-            errorGot("any token", _stream.current.location, "end of file");
+            errorGot("any token", _stream.current.location, "end of file", false);
 
         return _stream.next;
     }
@@ -109,7 +109,7 @@ public final class Parser
 
         // EOF not allowed.
         if (token.type == TokenType.end)
-            errorGot("any token", token.location, "end of file");
+            errorGot("any token", token.location, "end of file", false);
 
         return token;
     }
@@ -169,7 +169,7 @@ public final class Parser
         throw new ParserException("Expected " ~ expected ~ ".", location);
     }
 
-    private static void errorGot(T)(string expected, SourceLocation location, T got)
+    private static void errorGot(T)(string expected, SourceLocation location, T got, bool quote = true)
     in
     {
         assert(expected);
@@ -177,7 +177,12 @@ public final class Parser
     }
     body
     {
-        throw new ParserException("Expected " ~ expected ~ ", but got '" ~ to!string(got) ~ "'.", location);
+        auto s = to!string(got);
+
+        if (quote)
+            s = "'" ~ s ~ "'";
+
+        throw new ParserException("Expected " ~ expected ~ ", but got " ~ s ~ ".", location);
     }
 
     public CompilationUnit parse()
@@ -518,7 +523,7 @@ public final class Parser
                 storage = FieldStorage.thread;
                 break;
             default:
-                errorGot("'instance', 'static', or 'const'", storageTok.location, storageTok.value);
+                errorGot("'instance', 'static', or 'thread'", storageTok.location, storageTok.value);
                 break;
         }
 

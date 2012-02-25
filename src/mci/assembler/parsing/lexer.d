@@ -217,11 +217,11 @@ public final class Lexer
         string s;
 
         static if (is(T == dchar))
-            s = got == dchar.init ? "end of file" : to!string(got);
+            s = got == dchar.init ? "end of file" : "'" ~ to!string(got) ~ "'";
         else
             s = to!string(got);
 
-        throw new LexerException("Expected " ~ expected ~ ", but found '" ~ s ~ "'.", location);
+        throw new LexerException("Expected " ~ expected ~ ", but found " ~ s ~ ".", location);
     }
 
     private static void error(string expected, SourceLocation location)

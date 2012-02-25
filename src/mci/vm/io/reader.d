@@ -425,7 +425,7 @@ public final class ModuleReader : ModuleLoader
         auto magic = _reader.readArray!string(fileMagic.length);
 
         if (magic != fileMagic)
-            error("File magic %s doesn't match expected %s.", magic, fileMagic);
+            error("File magic '%s' doesn't match expected '%s'.", magic, fileMagic);
 
         auto ver = _reader.read!uint();
         auto mod = _manager.attach(new Module(baseName(_file.name, moduleFileExtension)));
@@ -483,7 +483,7 @@ public final class ModuleReader : ModuleLoader
             if (auto type = toModule(structType.moduleName).types.get(structType.name))
                 return *type;
 
-            error("Unknown type: %s/%s", structType.moduleName, structType.name);
+            error("Unknown type '%s'/'%s'.", structType.moduleName, structType.name);
             assert(false);
         }
         else if (auto ptrType = cast(PointerTypeReferenceDescriptor)descriptor)
@@ -517,7 +517,7 @@ public final class ModuleReader : ModuleLoader
         if (auto mod = _manager.load(this, name))
             return mod;
 
-        error("Could not locate module: %s", name);
+        error("Could not locate module '%s'.", name);
         assert(false);
     }
 
@@ -594,7 +594,7 @@ public final class ModuleReader : ModuleLoader
                     case CoreTypeIdentifier.float64:
                         return new CoreTypeReferenceDescriptor(Float64Type.instance);
                     default:
-                        error("Unknown core type identifier: %s", id);
+                        error("Unknown core type identifier '%s'.", id);
                 }
 
                 assert(false);
@@ -639,7 +639,7 @@ public final class ModuleReader : ModuleLoader
 
                 return fpType;
             default:
-                error("Unknown type reference type: %s", t);
+                error("Unknown type reference type '%s'.", t);
         }
 
         assert(false);
@@ -663,7 +663,7 @@ public final class ModuleReader : ModuleLoader
         if (auto field = type.fields.get(name))
             return *field;
 
-        error("Unknown field: %s/%s:%s", type.module_.name, type.name, name);
+        error("Unknown field '%s'/'%s':'%s'.", type.module_.name, type.name, name);
         assert(false);
     }
 
@@ -680,7 +680,7 @@ public final class ModuleReader : ModuleLoader
         if (auto func = mod.functions.get(name))
             return *func;
 
-        error("Unknown function: %s/%s", mod.name, name);
+        error("Unknown function '%s'/'%s'.", mod.name, name);
         assert(false);
     }
 
@@ -795,7 +795,7 @@ public final class ModuleReader : ModuleLoader
         auto opCode = find(allOpCodes, (OpCode op) => op.code == code);
 
         if (!opCode)
-            error("Unknown opcode: %s", code);
+            error("Unknown opcode '%s'.", code);
 
         Register target;
         Register source1;
@@ -948,7 +948,7 @@ public final class ModuleReader : ModuleLoader
         if (auto reg = function_.registers.get(name))
             return *reg;
 
-        error("Unknown register: %s", name);
+        error("Unknown register '%s'.", name);
         assert(false);
     }
 
@@ -968,7 +968,7 @@ public final class ModuleReader : ModuleLoader
         if (auto block = function_.blocks.get(name))
             return *block;
 
-        error("Unknown basic block: %s", name);
+        error("Unknown basic block '%s'.", name);
         assert(false);
     }
 

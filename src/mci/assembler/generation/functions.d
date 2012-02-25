@@ -27,8 +27,8 @@ out (result)
 }
 body
 {
-    if (module_.functions.get(node.name.name))
-        throw new GenerationException("Function " ~ module_.name ~ "/" ~ node.name.name ~ " already defined.", node.location);
+    if (auto func = module_.functions.get(node.name.name))
+        throw new GenerationException("Function " ~ func.toString() ~ " already defined.", node.location);
 
     auto returnType = node.returnType ? resolveType(node.returnType, module_, manager) : null;
     auto func = new Function(module_, node.name.name, returnType, node.callingConvention, node.attributes);
@@ -53,16 +53,16 @@ body
 {
     foreach (reg; node.registers)
     {
-        if (function_.registers.get(reg.name.name))
-            throw new GenerationException("Register " ~ reg.name.name ~ " already defined.", reg.location);
+        if (auto existingReg = function_.registers.get(reg.name.name))
+            throw new GenerationException("Register " ~ existingReg.toString() ~ " already defined.", reg.location);
 
         function_.createRegister(reg.name.name, resolveType(reg.type, module_, manager));
     }
 
     foreach (block; node.blocks)
     {
-        if (function_.blocks.get(block.name.name))
-            throw new GenerationException("Basic block " ~ block.name.name ~ " already defined.", block.location);
+        if (auto bb = function_.blocks.get(block.name.name))
+            throw new GenerationException("Basic block " ~ bb.toString() ~ " already defined.", block.location);
 
         function_.createBasicBlock(block.name.name);
     }
@@ -228,7 +228,7 @@ body
     if (auto func = mod.functions.get(node.name.name))
         return *func;
 
-    throw new GenerationException("Unknown function " ~ mod.name ~ "/" ~ node.name.name ~ ".", node.location);
+    throw new GenerationException("Unknown function " ~ mod.toString() ~ "/'" ~ node.name.name ~ "'.", node.location);
 }
 
 public Register resolveRegister(RegisterReferenceNode node, Function function_)
@@ -246,7 +246,7 @@ body
     if (auto reg = function_.registers.get(node.name.name))
         return *reg;
 
-    throw new GenerationException("Unknown register " ~ node.name.name ~ ".", node.location);
+    throw new GenerationException("Unknown register '" ~ node.name.name ~ "'.", node.location);
 }
 
 public BasicBlock resolveBasicBlock(BasicBlockReferenceNode node, Function function_)
@@ -264,5 +264,5 @@ body
     if (auto bb = function_.blocks.get(node.name.name))
         return *bb;
 
-    throw new GenerationException("Unknown basic block " ~ node.name.name ~ ".", node.location);
+    throw new GenerationException("Unknown basic block '" ~ node.name.name ~ "'.", node.location);
 }

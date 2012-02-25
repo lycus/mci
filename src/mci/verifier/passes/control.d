@@ -122,7 +122,7 @@ public final class ExceptionContextVerifier : CodeVerifier
                             illegalBranches.remove(db);
 
                     if (auto illegal = first(illegalBranches))
-                        error(null, "Basic block '%s' branches to block '%s' (which uses '%s') but control does not come from any unwind block.",
+                        error(null, "Basic block %s branches to block %s (which uses '%s') but control does not come from any unwind block.",
                               illegal, bb.y, instr.opCode);
 
                     // Even if the BB contains other EH instructions, we've already done
@@ -143,6 +143,6 @@ public final class PhiRegisterVerifier : CodeVerifier
                 if (instr.opCode is opPhi)
                     foreach (reg; *instr.operand.peek!(ReadOnlyIndexable!Register)())
                         if (!contains(function_.registers, (Tuple!(string, Register) r) => r.y is reg))
-                            error(instr, "Register '%s' is not within function '%s'.", reg, function_);
+                            error(instr, "Register %s is not within function %s.", reg, function_);
     }
 }

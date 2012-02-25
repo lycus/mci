@@ -25,7 +25,7 @@ public final class ConstantLoadVerifier : CodeVerifier
                 string loadCheck(string name, string type)
                 {
                     return "if (instr.opCode is opLoad" ~ name ~ " && instr.targetRegister.type !is " ~ type ~ "Type.instance)" ~
-                           "    error(instr, \"The target of a '%s' instruction must be of type '%s'.\", opLoad" ~ name ~ ", " ~ type ~ "Type.instance);";
+                           "    error(instr, \"The target of a '%s' instruction must be of type %s.\", opLoad" ~ name ~ ", " ~ type ~ "Type.instance);";
                 }
 
                 mixin(loadCheck("I8", "Int8"));
@@ -47,7 +47,7 @@ public final class ConstantLoadVerifier : CodeVerifier
                     return "if (instr.opCode is opLoad" ~ name ~ "A)" ~
                            "{" ~
                            "    if (!isContainerOf(instr.targetRegister.type, " ~ type ~ "Type.instance))" ~
-                           "        error(instr, \"The target of a '%s' instruction must be a pointer to, or a vector or array of, '%s'.\"," ~
+                           "        error(instr, \"The target of a '%s' instruction must be a pointer to, or a vector or array of, %s.\"," ~
                            "              opLoad" ~ name ~ "A, " ~ type ~ "Type.instance);" ~
                            "" ~
                            "    if (auto vec = cast(VectorType)instr.targetRegister.type)" ~
@@ -86,7 +86,7 @@ public final class ConstantLoadVerifier : CodeVerifier
                         error(instr, "The calling convention of the target function does not match that of the operand.");
 
                     if (func.returnType !is target.returnType)
-                        error(instr, "The return type of the target function signature ('%s') does not match that of the operand ('%s').",
+                        error(instr, "The return type of the target function signature (%s) does not match that of the operand (%s).",
                               target.returnType ? to!string(target.returnType) : "void",
                               func.returnType ? to!string(func.returnType) : "void");
 
@@ -96,8 +96,8 @@ public final class ConstantLoadVerifier : CodeVerifier
 
                     for (size_t i = 0; i < func.parameters.count; i++)
                         if (func.parameters[i].type !is target.parameterTypes[i])
-                            error(instr, "Parameter at index '%s' (type '%s') of the target function signature does not match " ~
-                                  "that of the operand ('%s').", i, target.parameterTypes[i], func.parameters[i].type);
+                            error(instr, "Parameter at index '%s' (type %s) of the target function signature does not match " ~
+                                  "that of the operand (%s).", i, target.parameterTypes[i], func.parameters[i].type);
                 }
             }
         }
@@ -134,10 +134,10 @@ public final class ArithmeticVerifier : CodeVerifier
                     if ((instr.opCode is opAriAdd || instr.opCode is opAriSub) && isType!PointerType(instr.targetRegister.type))
                     {
                         if (instr.sourceRegister1.type !is instr.targetRegister.type)
-                            error(instr, "The first source register must be of type '%s'.", instr.targetRegister.type);
+                            error(instr, "The first source register must be of type %s.", instr.targetRegister.type);
 
                         if (instr.sourceRegister2.type !is NativeUIntType.instance)
-                            error(instr, "The second source register must be of type 'uint'.");
+                            error(instr, "The second source register must be of type uint.");
                     }
                     else
                     {
@@ -202,7 +202,7 @@ public final class BitShiftVerifier : CodeVerifier
                         error(instr, "Target register and first source register must be the exact same type.");
 
                     if (instr.sourceRegister2.type !is NativeUIntType.instance)
-                        error(instr, "The second source register must be of type 'uint'.");
+                        error(instr, "The second source register must be of type uint.");
                 }
             }
         }
@@ -226,7 +226,7 @@ public final class ComparisonVerifier : CodeVerifier
                         error(instr, "Both source registers must be the exact same type.");
 
                     if (instr.targetRegister.type !is NativeUIntType.instance)
-                        error(instr, "Target register must be of type 'uint'.");
+                        error(instr, "Target register must be of type uint.");
                 }
             }
         }
@@ -240,7 +240,7 @@ public final class ReturnTypeVerifier : CodeVerifier
         foreach (bb; function_.blocks)
             if (auto instr = getFirstInstruction(bb.y, opReturn))
                 if (instr.sourceRegister1.type !is function_.returnType)
-                    error(instr, "The type of the source register ('%s') does not match the return type of the function ('%s').",
+                    error(instr, "The type of the source register (%s) does not match the return type of the function (%s).",
                           instr.sourceRegister1.type, function_.returnType ? to!string(function_.returnType) : "void");
     }
 }
@@ -256,7 +256,7 @@ public final class MemoryVerifier : CodeVerifier
                 if (instr.opCode is opMemAlloc)
                 {
                     if (instr.sourceRegister1.type !is NativeUIntType.instance)
-                        error(instr, "Source register must be of type 'uint'.");
+                        error(instr, "Source register must be of type uint.");
 
                     if (!isType!PointerType(instr.targetRegister.type) &&
                         !isType!ArrayType(instr.targetRegister.type))
@@ -277,7 +277,7 @@ public final class MemoryVerifier : CodeVerifier
                 else if (instr.opCode is opMemSAlloc || instr.opCode is opMemSNew)
                 {
                     if (instr.opCode is opMemSAlloc && instr.sourceRegister1.type !is NativeUIntType.instance)
-                        error(instr, "Source register must be of type 'uint'.");
+                        error(instr, "Source register must be of type uint.");
 
                     if (!isType!PointerType(instr.targetRegister.type))
                         error(instr, "Target register must be a pointer.");
@@ -298,7 +298,7 @@ public final class MemoryPinVerifier : CodeVerifier
                 if (instr.opCode is opMemPin)
                 {
                     if (instr.targetRegister.type !is NativeUIntType.instance)
-                        error(instr, "Target register must be of type 'uint'.");
+                        error(instr, "Target register must be of type uint.");
 
                     if (!isManaged(instr.sourceRegister1.type))
                         error(instr, "Source register must be a reference, an array, or a vector.");
@@ -306,7 +306,7 @@ public final class MemoryPinVerifier : CodeVerifier
                 else if (instr.opCode is opMemUnpin)
                 {
                     if (instr.sourceRegister1.type !is NativeUIntType.instance)
-                        error(instr, "Source register must be of type 'uint'.");
+                        error(instr, "Source register must be of type uint.");
                 }
             }
         }
@@ -370,7 +370,7 @@ public final class ArrayVerifier : CodeVerifier
                         error(instr, "The first source register must be an array or a vector.");
 
                     if (instr.opCode !is opArrayLen && instr.sourceRegister2.type !is NativeUIntType.instance)
-                        error(instr, "The second source register must be of type 'uint'.");
+                        error(instr, "The second source register must be of type uint.");
 
                     if (instr.opCode is opArrayGet && instr.targetRegister.type !is getElementType(instr.sourceRegister1.type))
                         error(instr, "The target register must be of the first source register's element type.");
@@ -379,7 +379,7 @@ public final class ArrayVerifier : CodeVerifier
                     else if (instr.opCode is opArrayAddr && instr.targetRegister.type !is getPointerType(getElementType(instr.sourceRegister1.type)))
                         error(instr, "The target register must be a pointer to the first source register's element type.");
                     else if (instr.opCode is opArrayLen && instr.targetRegister.type !is NativeUIntType.instance)
-                        error(instr, "The target register must be of type 'uint'.");
+                        error(instr, "The target register must be of type uint.");
                 }
             }
         }
@@ -403,7 +403,7 @@ public final class ArrayArithmeticVerifier : CodeVerifier
                             error(instr, "The second source register must be an array or vector with the same element type as the first source register.");
 
                         if (!isArrayContainerOfOrElement(instr.sourceRegister3.type, NativeUIntType.instance))
-                            error(instr, "The third source register must be of type 'uint' or an array or vector of these.");
+                            error(instr, "The third source register must be of type uint or an array or vector of these.");
                     }
                     else
                     {
@@ -465,7 +465,7 @@ public final class ArrayBitShiftVerifier : CodeVerifier
                         error(instr, "The second source register must be an array or vector with the same element type as the first source register.");
 
                     if (!isArrayContainerOfOrElement(instr.sourceRegister3.type, NativeUIntType.instance))
-                        error(instr, "The third source register must be of type 'uint' or an array or vector of these.");
+                        error(instr, "The third source register must be of type uint or an array or vector of these.");
                 }
             }
         }
@@ -483,7 +483,7 @@ public final class ArrayComparisonVerifier : CodeVerifier
                 if (isArrayComparison(instr.opCode))
                 {
                     if (!isArrayContainerOf(instr.sourceRegister1.type, NativeUIntType.instance))
-                        error(instr, "The first source register must be an array or vector of 'uint'.");
+                        error(instr, "The first source register must be an array or vector of uint.");
 
                     if (!isArrayOrVector(instr.sourceRegister2.type) || !isValidInBitwise(getElementType(instr.sourceRegister2.type)))
                         error(instr, "The second source register must be an array or vector of primitives or pointers.");
@@ -597,7 +597,7 @@ public final class JumpTypeVerifier : CodeVerifier
         foreach (bb; function_.blocks)
             foreach (instr; bb.y.stream)
                 if (instr.opCode is opJumpCond && instr.sourceRegister1.type !is NativeUIntType.instance)
-                    error(instr, "Source register must be of type 'uint'.");
+                    error(instr, "Source register must be of type uint.");
     }
 }
 
@@ -621,7 +621,7 @@ public final class CallSiteTypeVerifier : CodeVerifier
                     auto pushOp = bb.y.stream[instrIndex - argCount + argIndex];
 
                     if (pushOp.sourceRegister1.type !is argType)
-                        error(pushOp, "The source register must be of type '%s'.", argType);
+                        error(pushOp, "The source register must be of type %s.", argType);
                 }
             }
         }
@@ -642,7 +642,7 @@ public final class FunctionArgumentTypeVerifier : CodeVerifier
             auto popOp = entry.stream[i];
 
             if (popOp.targetRegister.type !is param.type)
-                error(popOp, "The target register must be of type '%s'.", param.type);
+                error(popOp, "The target register must be of type %s.", param.type);
         }
     }
 }
