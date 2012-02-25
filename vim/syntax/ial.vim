@@ -45,7 +45,7 @@ syn match   ialSpecialChar1             contained +\\["\\']+
 syn match   ialSpecialChar2             contained +\\['\\"]+
 syn region  ialString1                  start=+"+ end=+"+ contains=ialSpecialChar1
 syn region  ialString2                  start=+'+ end=+'+ contains=ialSpecialChar2
-syn match   ialNumber                   "\<\(0[x]\x\+\|\d\+\)\=\>"
+syn match   ialNumber                   "\<\(0[xX]\x\+\|\d\+\)\=\>"
 syn match   ialNumber                   "\(\<\d\+\.\d*\|\.\d\+\)\([eE][-+]\=\d\+\)\="
 syn match   ialNumber                   "\<\d\+[eE][-+]\=\d\+\>"
 syn match   ialNumber                   "\<\d\+\([eE][-+]\=\d\+\)\>"
