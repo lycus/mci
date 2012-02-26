@@ -17,14 +17,12 @@ public final class Module
     private string _name;
     private NoNullDictionary!(string, Function) _functions;
     private NoNullDictionary!(string, StructureType) _types;
-    private NoNullList!MetadataPair _metadata;
 
     invariant()
     {
         assert(_name);
         assert(_functions);
         assert(_types);
-        assert(_metadata);
     }
 
     public this(string name)
@@ -37,7 +35,6 @@ public final class Module
         _name = name;
         _functions = new typeof(_functions)();
         _types = new typeof(_types)();
-        _metadata = new typeof(_metadata)();
     }
 
     @property public string name()
@@ -68,16 +65,6 @@ public final class Module
     body
     {
         return _types;
-    }
-
-    @property public NoNullList!MetadataPair metadata()
-    out (result)
-    {
-        assert(result);
-    }
-    body
-    {
-        return _metadata;
     }
 
     public override string toString()

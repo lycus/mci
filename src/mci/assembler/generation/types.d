@@ -4,6 +4,7 @@ import std.conv,
        mci.core.common,
        mci.core.container,
        mci.core.nullable,
+       mci.core.code.metadata,
        mci.core.code.modules,
        mci.core.typing.core,
        mci.core.typing.cache,
@@ -40,7 +41,13 @@ body
         alignment = al;
     }
 
-    return new StructureType(module_, node.name.name, alignment);
+    auto type = new StructureType(module_, node.name.name, alignment);
+
+    if (node.metadata)
+        foreach (md; node.metadata.metadata)
+            type.metadata.add(new MetadataPair(md.key.name, md.value.name));
+
+    return type;
 }
 
 public Field generateField(FieldDeclarationNode node, StructureType type, ModuleManager manager)
@@ -57,8 +64,13 @@ out (result)
 body
 {
     auto fieldType = resolveType(node.type, type.module_, manager);
+    auto field = type.createField(node.name.name, fieldType, node.storage);
 
-    return type.createField(node.name.name, fieldType, node.storage);
+    if (node.metadata)
+        foreach (md; node.metadata.metadata)
+            field.metadata.add(new MetadataPair(md.key.name, md.value.name));
+
+    return field;
 }
 
 public Type resolveType(TypeReferenceNode node, Module module_, ModuleManager manager)

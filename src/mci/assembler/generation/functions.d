@@ -34,7 +34,13 @@ body
     auto func = new Function(module_, node.name.name, returnType, node.callingConvention, node.attributes);
 
     foreach (param; node.parameters)
-        func.createParameter(resolveType(param.type, module_, manager));
+    {
+        auto p = func.createParameter(resolveType(param.type, module_, manager));
+
+        if (param.metadata)
+            foreach (md; param.metadata.metadata)
+                p.metadata.add(new MetadataPair(md.key.name, md.value.name));
+    }
 
     func.close();
 
@@ -56,7 +62,11 @@ body
         if (auto existingReg = function_.registers.get(reg.name.name))
             throw new GenerationException("Register " ~ existingReg.toString() ~ " already defined.", reg.location);
 
-        function_.createRegister(reg.name.name, resolveType(reg.type, module_, manager));
+        auto register = function_.createRegister(reg.name.name, resolveType(reg.type, module_, manager));
+
+        if (reg.metadata)
+            foreach (md; reg.metadata.metadata)
+                register.metadata.add(new MetadataPair(md.key.name, md.value.name));
     }
 
     foreach (block; node.blocks)
@@ -75,6 +85,10 @@ body
             bb.unwindBlock = resolveBasicBlock(block.unwindBlock, function_);
 
         bb.close();
+
+        if (block.metadata)
+            foreach (md; block.metadata.metadata)
+                bb.metadata.add(new MetadataPair(md.key.name, md.value.name));
     }
 
     foreach (block; node.blocks)
@@ -208,6 +222,10 @@ body
                     instr.metadata.add(new MetadataPair(md.key.name, md.value.name));
         }
     }
+
+    if (node.metadata)
+        foreach (md; node.metadata.metadata)
+            function_.metadata.add(new MetadataPair(md.key.name, md.value.name));
 }
 
 public Function resolveFunction(FunctionReferenceNode node, Module module_, ModuleManager manager)

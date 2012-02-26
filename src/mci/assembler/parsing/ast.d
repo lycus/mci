@@ -592,6 +592,7 @@ public class TypeDeclarationNode : DeclarationNode
     private SimpleNameNode _name;
     private LiteralValueNode _alignment;
     private NoNullList!FieldDeclarationNode _fields;
+    private MetadataListNode _metadata;
 
     invariant()
     {
@@ -599,7 +600,8 @@ public class TypeDeclarationNode : DeclarationNode
         assert(_fields);
     }
 
-    public this(SourceLocation location, SimpleNameNode name, LiteralValueNode alignment, NoNullList!FieldDeclarationNode fields)
+    public this(SourceLocation location, SimpleNameNode name, LiteralValueNode alignment, NoNullList!FieldDeclarationNode fields,
+                MetadataListNode metadata)
     in
     {
         assert(location);
@@ -613,6 +615,7 @@ public class TypeDeclarationNode : DeclarationNode
         _name = name;
         _alignment = alignment;
         _fields = fields.duplicate();
+        _metadata = metadata;
     }
 
     @property public final SimpleNameNode name()
@@ -630,9 +633,14 @@ public class TypeDeclarationNode : DeclarationNode
         return _fields;
     }
 
+    @property public final MetadataListNode metadata()
+    {
+        return _metadata;
+    }
+
     @property public override ReadOnlyIndexable!Node children()
     {
-        return new List!Node(concat(toReadOnlyIndexable!Node(_name), toReadOnlyIndexable!Node(_alignment), castItems!Node(_fields)));
+        return new List!Node(concat(toReadOnlyIndexable!Node(_name, _alignment), castItems!Node(_fields), toReadOnlyIndexable!Node(_metadata)));
     }
 }
 
@@ -641,6 +649,7 @@ public class FieldDeclarationNode : Node
     private TypeReferenceNode _type;
     private SimpleNameNode _name;
     private FieldStorage _storage;
+    private MetadataListNode _metadata;
 
     invariant()
     {
@@ -648,8 +657,8 @@ public class FieldDeclarationNode : Node
         assert(_name);
     }
 
-    public this(SourceLocation location, TypeReferenceNode type, SimpleNameNode name,
-                FieldStorage storage)
+    public this(SourceLocation location, TypeReferenceNode type, SimpleNameNode name, FieldStorage storage,
+                MetadataListNode metadata)
     in
     {
         assert(location);
@@ -663,6 +672,7 @@ public class FieldDeclarationNode : Node
         _type = type;
         _name = name;
         _storage = storage;
+        _metadata = metadata;
     }
 
     @property public final TypeReferenceNode type()
@@ -680,9 +690,14 @@ public class FieldDeclarationNode : Node
         return _storage;
     }
 
+    @property public final MetadataListNode metadata()
+    {
+        return _metadata;
+    }
+
     @property public override ReadOnlyIndexable!Node children()
     {
-        return toReadOnlyIndexable!Node(_type, _name);
+        return toReadOnlyIndexable!Node(_type, _name, _metadata);
     }
 
     public override string toString()
@@ -694,13 +709,14 @@ public class FieldDeclarationNode : Node
 public class ParameterNode : Node
 {
     private TypeReferenceNode _type;
+    private MetadataListNode _metadata;
 
     invariant()
     {
         assert(_type);
     }
 
-    public this(SourceLocation location, TypeReferenceNode type)
+    public this(SourceLocation location, TypeReferenceNode type, MetadataListNode metadata)
     in
     {
         assert(location);
@@ -711,6 +727,7 @@ public class ParameterNode : Node
         super(location);
 
         _type = type;
+        _metadata = metadata;
     }
 
     @property public final TypeReferenceNode type()
@@ -718,9 +735,14 @@ public class ParameterNode : Node
         return _type;
     }
 
+    @property public final MetadataListNode metadata()
+    {
+        return _metadata;
+    }
+
     @property public override ReadOnlyIndexable!Node children()
     {
-        return toReadOnlyIndexable!Node(_type);
+        return toReadOnlyIndexable!Node(_type, _metadata);
     }
 }
 
@@ -733,6 +755,7 @@ public class FunctionDeclarationNode : DeclarationNode
     private TypeReferenceNode _returnType;
     private NoNullList!RegisterDeclarationNode _registers;
     private NoNullList!BasicBlockDeclarationNode _blocks;
+    private MetadataListNode _metadata;
 
     invariant()
     {
@@ -744,7 +767,8 @@ public class FunctionDeclarationNode : DeclarationNode
 
     public this(SourceLocation location, SimpleNameNode name, CallingConvention callingConvention,
                 FunctionAttributes attributes, NoNullList!ParameterNode parameters, TypeReferenceNode returnType,
-                NoNullList!RegisterDeclarationNode registers, NoNullList!BasicBlockDeclarationNode blocks)
+                NoNullList!RegisterDeclarationNode registers, NoNullList!BasicBlockDeclarationNode blocks,
+                MetadataListNode metadata)
     in
     {
         assert(location);
@@ -764,6 +788,7 @@ public class FunctionDeclarationNode : DeclarationNode
         _returnType = returnType;
         _registers = registers.duplicate();
         _blocks = blocks.duplicate();
+        _metadata = metadata;
     }
 
     @property public final SimpleNameNode name()
@@ -801,13 +826,18 @@ public class FunctionDeclarationNode : DeclarationNode
         return _blocks;
     }
 
+    @property public final MetadataListNode metadata()
+    {
+        return _metadata;
+    }
+
     @property public override ReadOnlyIndexable!Node children()
     {
         auto params = castItems!Node(_parameters);
         auto regs = castItems!Node(_registers);
         auto blocks = castItems!Node(_blocks);
 
-        return new List!Node(concat(toReadOnlyIndexable!Node(_name), toReadOnlyIndexable!Node(_returnType), params, regs, blocks));
+        return new List!Node(concat(toReadOnlyIndexable!Node(_name, _returnType), params, regs, blocks, toReadOnlyIndexable!Node(_metadata)));
     }
 
     public override string toString()
@@ -820,6 +850,7 @@ public class RegisterDeclarationNode : Node
 {
     private SimpleNameNode _name;
     private TypeReferenceNode _type;
+    private MetadataListNode _metadata;
 
     invariant()
     {
@@ -827,7 +858,7 @@ public class RegisterDeclarationNode : Node
         assert(_type);
     }
 
-    public this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type)
+    public this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type, MetadataListNode metadata)
     in
     {
         assert(location);
@@ -840,6 +871,7 @@ public class RegisterDeclarationNode : Node
 
         _name = name;
         _type = type;
+        _metadata = metadata;
     }
 
     @property public final SimpleNameNode name()
@@ -852,9 +884,14 @@ public class RegisterDeclarationNode : Node
         return _type;
     }
 
+    @property public final MetadataListNode metadata()
+    {
+        return _metadata;
+    }
+
     @property public override ReadOnlyIndexable!Node children()
     {
-        return toReadOnlyIndexable!Node(_type, _name);
+        return toReadOnlyIndexable!Node(_type, _name, _metadata);
     }
 }
 
@@ -863,6 +900,7 @@ public class BasicBlockDeclarationNode : Node
     private SimpleNameNode _name;
     private BasicBlockReferenceNode _unwindBlock;
     private NoNullList!InstructionNode _instructions;
+    private MetadataListNode _metadata;
 
     invariant()
     {
@@ -870,7 +908,8 @@ public class BasicBlockDeclarationNode : Node
         assert(_instructions);
     }
 
-    public this(SourceLocation location, SimpleNameNode name, BasicBlockReferenceNode unwindBlock, NoNullList!InstructionNode instructions)
+    public this(SourceLocation location, SimpleNameNode name, BasicBlockReferenceNode unwindBlock, NoNullList!InstructionNode instructions,
+                MetadataListNode metadata)
     in
     {
         assert(location);
@@ -884,6 +923,7 @@ public class BasicBlockDeclarationNode : Node
         _name = name;
         _unwindBlock = unwindBlock;
         _instructions = instructions.duplicate();
+        _metadata = metadata;
     }
 
     @property public final SimpleNameNode name()
@@ -901,9 +941,14 @@ public class BasicBlockDeclarationNode : Node
         return _instructions;
     }
 
+    @property public final MetadataListNode metadata()
+    {
+        return _metadata;
+    }
+
     @property public override ReadOnlyIndexable!Node children()
     {
-        return new List!Node(concat(toReadOnlyIndexable!Node(_name, _unwindBlock), castItems!Node(_instructions)));
+        return new List!Node(concat(toReadOnlyIndexable!Node(_name, _unwindBlock), castItems!Node(_instructions), toReadOnlyIndexable!Node(_metadata)));
     }
 }
 

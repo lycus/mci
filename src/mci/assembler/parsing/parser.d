@@ -226,6 +226,11 @@ public final class Parser
     }
     body
     {
+        MetadataListNode metadata;
+
+        if (peek().type == TokenType.openBracket)
+            metadata = parseMetadataList();
+
         consume("type");
 
         auto name = parseSimpleName();
@@ -254,7 +259,7 @@ public final class Parser
 
         consume("}");
 
-        return new TypeDeclarationNode(name.location, name, alignment, fields);
+        return new TypeDeclarationNode(name.location, name, alignment, fields, metadata);
     }
 
     private ModuleReferenceNode parseModuleReference()
@@ -505,6 +510,11 @@ public final class Parser
     }
     body
     {
+        MetadataListNode metadata;
+
+        if (peek().type == TokenType.openBracket)
+            metadata = parseMetadataList();
+
         consume("field");
 
         FieldStorage storage;
@@ -532,7 +542,7 @@ public final class Parser
 
         consume(";");
 
-        return new FieldDeclarationNode(_stream.previous.location, type, name, storage);
+        return new FieldDeclarationNode(_stream.previous.location, type, name, storage, metadata);
     }
 
     private LiteralValueNode parseLiteralValue(T)()
@@ -644,6 +654,11 @@ public final class Parser
     }
     body
     {
+        MetadataListNode metadata;
+
+        if (peek().type == TokenType.openBracket)
+            metadata = parseMetadataList();
+
         consume("function");
 
         FunctionAttributes attributes;
@@ -698,9 +713,14 @@ public final class Parser
 
         while (peek().type != TokenType.closeParen)
         {
+            MetadataListNode paramMetadata;
+
+            if (peek().type == TokenType.openBracket)
+                paramMetadata = parseMetadataList();
+
             auto paramType = parseTypeSpecification();
 
-            params.add(new ParameterNode(paramType.location, paramType));
+            params.add(new ParameterNode(paramType.location, paramType, paramMetadata));
 
             if (peek().type != TokenType.closeParen)
             {
@@ -757,7 +777,7 @@ public final class Parser
 
         next();
 
-        return new FunctionDeclarationNode(name.location, name, cc, attributes, params, returnType, registers, blocks);
+        return new FunctionDeclarationNode(name.location, name, cc, attributes, params, returnType, registers, blocks, metadata);
     }
 
     private RegisterDeclarationNode parseRegisterDeclaration()
@@ -767,6 +787,11 @@ public final class Parser
     }
     body
     {
+        MetadataListNode metadata;
+
+        if (peek().type == TokenType.openBracket)
+            metadata = parseMetadataList();
+
         consume("register");
 
         auto type = parseTypeSpecification();
@@ -774,7 +799,7 @@ public final class Parser
 
         consume(";");
 
-        return new RegisterDeclarationNode(name.location, name, type);
+        return new RegisterDeclarationNode(name.location, name, type, metadata);
     }
 
     private BasicBlockDeclarationNode parseBasicBlockDeclaration()
@@ -784,6 +809,11 @@ public final class Parser
     }
     body
     {
+        MetadataListNode metadata;
+
+        if (peek().type == TokenType.openBracket)
+            metadata = parseMetadataList();
+
         consume("block");
 
         auto name = parseSimpleName();
@@ -807,7 +837,7 @@ public final class Parser
 
         next();
 
-        return new BasicBlockDeclarationNode(name.location, name, unwind, instructions);
+        return new BasicBlockDeclarationNode(name.location, name, unwind, instructions, metadata);
     }
 
     private InstructionNode parseInstruction()
