@@ -39,7 +39,7 @@ public final class FunctionArgumentOrderVerifier : CodeVerifier
             if (bb.y is entry)
                 continue;
 
-            if (auto pop = getFirstInstruction(entry, opArgPop))
+            if (auto pop = getFirstInstruction(bb.y, opArgPop))
                 error(pop, "The 'arg.pop' instruction is only valid at the beginning of the 'entry' basic block.");
         }
 
@@ -47,8 +47,11 @@ public final class FunctionArgumentOrderVerifier : CodeVerifier
 
         foreach (instr; entry.stream)
         {
-            if (instr.opCode is opArgPop && !valid)
-                error(instr, "The 'arg.pop' instruction is only valid at the beginning of the 'entry' basic block.");
+            if (instr.opCode is opArgPop)
+            {
+                if (!valid)
+                    error(instr, "The 'arg.pop' instruction is only valid at the beginning of the 'entry' basic block.");
+            }
             else
                 valid = false;
         }
