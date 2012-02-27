@@ -81,6 +81,14 @@ public final class ModuleWriter : ModuleSaver
 
         foreach (field; type.fields)
             writeField(field.y);
+
+        _writer.write(cast(uint)type.metadata.count);
+
+        foreach (md; type.metadata)
+        {
+            _writer.writeString(md.key);
+            _writer.writeString(md.value);
+        }
     }
 
     private void writeField(Field field)
@@ -93,6 +101,14 @@ public final class ModuleWriter : ModuleSaver
         _writer.writeString(field.name);
         _writer.write(field.storage);
         writeTypeReference(field.type);
+
+        _writer.write(cast(uint)field.metadata.count);
+
+        foreach (md; field.metadata)
+        {
+            _writer.writeString(md.key);
+            _writer.writeString(md.value);
+        }
     }
 
     private void writeFunction(Function function_)
@@ -113,7 +129,17 @@ public final class ModuleWriter : ModuleSaver
         _writer.write(cast(uint)function_.parameters.count);
 
         foreach (param; function_.parameters)
+        {
             writeTypeReference(param.type);
+
+            _writer.write(cast(uint)param.metadata.count);
+
+            foreach (md; param.metadata)
+            {
+                _writer.writeString(md.key);
+                _writer.writeString(md.value);
+            }
+        }
 
         _writer.write(cast(uint)function_.registers.count);
 
@@ -127,6 +153,14 @@ public final class ModuleWriter : ModuleSaver
 
         foreach (block; function_.blocks)
             writeBasicBlockUnwindSpecification(block.y);
+
+        _writer.write(cast(uint)function_.metadata.count);
+
+        foreach (md; function_.metadata)
+        {
+            _writer.writeString(md.key);
+            _writer.writeString(md.value);
+        }
     }
 
     private void writeRegister(Register register)
@@ -138,6 +172,14 @@ public final class ModuleWriter : ModuleSaver
     {
         _writer.writeString(register.name);
         writeTypeReference(register.type);
+
+        _writer.write(cast(uint)register.metadata.count);
+
+        foreach (md; register.metadata)
+        {
+            _writer.writeString(md.key);
+            _writer.writeString(md.value);
+        }
     }
 
     private void writeBasicBlock(BasicBlock block)
@@ -148,6 +190,14 @@ public final class ModuleWriter : ModuleSaver
     body
     {
         _writer.writeString(block.name);
+
+        _writer.write(cast(uint)block.metadata.count);
+
+        foreach (md; block.metadata)
+        {
+            _writer.writeString(md.key);
+            _writer.writeString(md.value);
+        }
     }
 
     private void writeBasicBlockUnwindSpecification(BasicBlock block)

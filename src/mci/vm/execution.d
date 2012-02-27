@@ -62,6 +62,8 @@ public final class RuntimeValue
     }
     body
     {
+        _gc = gc;
+        _type = type;
         // GC roots must be at least one machine word long.
         _data = cast(ubyte*)calloc(1, max(computeSize(NativeUIntType.instance, is32Bit), computeSize(type, is32Bit)));
         gc.addRoot(_data);
