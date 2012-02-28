@@ -133,8 +133,8 @@ def build(bld):
     program('tester', 'mci.tester', deps, unittest, None)
 
     if bld.env.VIM:
-        bld.install_files(os.path.join(bld.env.VIM, 'syntax'), os.path.join('vim', 'syntax', 'ial.vim'))
-        bld.install_files(os.path.join(bld.env.VIM, 'ftdetect'), os.path.join('vim', 'ftdetect', 'ial.vim'))
+        bld.install_files(os.path.join(bld.env.VIM, 'syntax'), os.path.join('syntax', 'vim', 'syntax', 'ial.vim'))
+        bld.install_files(os.path.join(bld.env.VIM, 'ftdetect'), os.path.join('syntax', 'vim', 'ftdetect', 'ial.vim'))
 
 def _run_shell(dir, ctx, args):
     cwd = os.getcwd()
