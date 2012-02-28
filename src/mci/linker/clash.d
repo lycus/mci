@@ -5,7 +5,7 @@ import std.string,
        mci.core.typing.types,
        mci.linker.exception;
 
-public enum ClashType : ubyte
+public enum NameType : ubyte
 {
     type,
     function_,
@@ -13,7 +13,7 @@ public enum ClashType : ubyte
 
 public interface NameClashResolver
 {
-    public string resolveNameClash(Module module_, ClashType type, string name, string fullName1, string fullName2)
+    public string resolveNameClash(Module module_, NameType type, string name, string fullName1, string fullName2)
     in
     {
         assert(module_);
@@ -29,38 +29,38 @@ public interface NameClashResolver
 
 public final class ErrorResolver : NameClashResolver
 {
-    public string resolveNameClash(Module module_, ClashType type, string name, string fullName1, string fullName2)
+    public string resolveNameClash(Module module_, NameType type, string name, string fullName1, string fullName2)
     {
         string typeStr;
 
         final switch (type)
         {
-            case ClashType.type:
+            case NameType.type:
                 typeStr = "type";
                 break;
-            case ClashType.function_:
+            case NameType.function_:
                 typeStr = "function";
                 break;
         }
 
-        throw new LinkerException(format("Clash between %s names '%s' and '%s'.", typeStr, fullName1, fullName2));
+        throw new LinkerException(format("Clash between %s names %s and %s.", typeStr, fullName1, fullName2));
     }
 }
 
 public final class RenameResolver : NameClashResolver
 {
-    public string resolveNameClash(Module module_, ClashType type, string name, string fullName1, string fullName2)
+    public string resolveNameClash(Module module_, NameType type, string name, string fullName1, string fullName2)
     {
         auto resolvedName = format("%s_%s", module_.name, name);
 
         final switch (type)
         {
-            case ClashType.type:
+            case NameType.type:
                 while (module_.types.get(resolvedName))
                     resolvedName ~= "_T";
 
                 break;
-            case ClashType.function_:
+            case NameType.function_:
                 while (module_.functions.get(resolvedName))
                     resolvedName ~= "_F";
 
