@@ -237,7 +237,7 @@ public final class Function
         _registers = new typeof(_registers)();
         _metadata = new typeof(_metadata)();
 
-        (cast(Dictionary!(string, Function))module_.functions)[name] = this;
+        (cast(NoNullDictionary!(string, Function))module_.functions)[name] = this;
     }
 
     @property public Module module_()

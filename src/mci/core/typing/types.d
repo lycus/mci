@@ -58,7 +58,7 @@ public final class StructureType : Type
         _fields = new typeof(_fields)();
         _metadata = new typeof(_metadata)();
 
-        (cast(Dictionary!(string, StructureType))module_.types)[name] = this;
+        (cast(NoNullDictionary!(string, StructureType))module_.types)[name] = this;
     }
 
     @property public uint alignment()
