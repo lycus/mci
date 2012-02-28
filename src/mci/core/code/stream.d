@@ -2,7 +2,8 @@ module mci.core.code.stream;
 
 import mci.core.container,
        mci.core.code.functions,
-       mci.core.code.instructions;
+       mci.core.code.instructions,
+       mci.core.code.opcodes;
 
 public final class InstructionStream : ReadOnlyIndexable!Instruction
 {
@@ -157,14 +158,15 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
             (cast(NoNullList!Instruction)reg.uses).remove(instruction);
     }
 
-    public Instruction append(T ...)(T args)
+    public Instruction append(OpCode opCode, InstructionOperand operand, Register targetRegister, Register sourceRegister1,
+                              Register sourceRegister2, Register sourceRegister3)
     out (result)
     {
         assert(result);
     }
     body
     {
-        auto insn = new Instruction(_block, args);
+        auto insn = new Instruction(_block, opCode, operand, targetRegister, sourceRegister1, sourceRegister2, sourceRegister3);
 
         addUseDef(insn);
 
@@ -173,7 +175,8 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
         return insn;
     }
 
-    public Instruction insertBefore(T ...)(Instruction next, T args)
+    public Instruction insertBefore(Instruction next, OpCode opCode, InstructionOperand operand, Register targetRegister,
+                                    Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
     in
     {
         assert(next);
@@ -185,7 +188,7 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
     }
     body
     {
-        auto insn = new Instruction(_block, args);
+        auto insn = new Instruction(_block, opCode, operand, targetRegister, sourceRegister1, sourceRegister2, sourceRegister3);
 
         addUseDef(insn);
 
@@ -194,7 +197,8 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
         return insn;
     }
 
-    public Instruction insertAfter(T ...)(Instruction previous, T args)
+    public Instruction insertAfter(Instruction previous, OpCode opCode, InstructionOperand operand, Register targetRegister,
+                                   Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
     in
     {
         assert(previous);
@@ -206,7 +210,7 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
     }
     body
     {
-        auto insn = new Instruction(_block, args);
+        auto insn = new Instruction(_block, opCode, operand, targetRegister, sourceRegister1, sourceRegister2, sourceRegister3);
 
         addUseDef(insn);
 
@@ -215,7 +219,8 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
         return insn;
     }
 
-    public Instruction replace(T ...)(Instruction old, T args)
+    public Instruction replace(Instruction old, OpCode opCode, InstructionOperand operand, Register targetRegister,
+                               Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
     in
     {
         assert(old);
@@ -227,7 +232,7 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
     }
     body
     {
-        auto insn = new Instruction(_block, args);
+        auto insn = new Instruction(_block, opCode, operand, targetRegister, sourceRegister1, sourceRegister2, sourceRegister3);
 
         removeUseDef(old);
         addUseDef(insn);
