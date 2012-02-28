@@ -221,27 +221,42 @@ public final class MemoryStream : Stream
 
 public class BinaryReader
 {
-    private Stream _file;
+    private Stream _stream;
     private Endianness _endianness;
 
     invariant()
     {
-        assert(_file);
-        assert((cast()_file).canRead);
-        assert(!(cast()_file).isClosed);
+        assert(_stream);
+        assert((cast()_stream).canRead);
+        assert(!(cast()_stream).isClosed);
     }
 
-    public this(Stream file, Endianness endianness = Endianness.littleEndian)
+    public this(Stream stream, Endianness endianness = Endianness.littleEndian)
     in
     {
-        assert(file);
-        assert((cast()file).canRead);
-        assert(!(cast()file).isClosed);
+        assert(stream);
+        assert((cast()stream).canRead);
+        assert(!(cast()stream).isClosed);
     }
     body
     {
-        _file = file;
+        _stream = stream;
         _endianness = endianness;
+    }
+
+    @property public Stream stream()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _stream;
+    }
+
+    @property public Endianness endianness()
+    {
+        return _endianness;
     }
 
     public final T read(T)()
@@ -252,12 +267,12 @@ public class BinaryReader
         if (endianness != _endianness)
         {
             for (size_t i = T.sizeof; i > 0; i--)
-                (cast(ubyte*)&value)[i] = _file.read();
+                (cast(ubyte*)&value)[i] = _stream.read();
         }
         else
         {
             for (size_t i = 0; i < T.sizeof; i++)
-                (cast(ubyte*)&value)[i] = _file.read();
+                (cast(ubyte*)&value)[i] = _stream.read();
         }
 
         return value;
@@ -279,27 +294,42 @@ public class BinaryReader
 
 public class BinaryWriter
 {
-    private Stream _file;
+    private Stream _stream;
     private Endianness _endianness;
 
     invariant()
     {
-        assert(_file);
-        assert((cast()_file).canWrite);
-        assert(!(cast()_file).isClosed);
+        assert(_stream);
+        assert((cast()_stream).canWrite);
+        assert(!(cast()_stream).isClosed);
     }
 
-    public this(Stream file, Endianness endianness = Endianness.littleEndian)
+    public this(Stream stream, Endianness endianness = Endianness.littleEndian)
     in
     {
-        assert(file);
-        assert((cast()file).canWrite);
-        assert(!(cast()file).isClosed);
+        assert(stream);
+        assert((cast()stream).canWrite);
+        assert(!(cast()stream).isClosed);
     }
     body
     {
-        _file = file;
+        _stream = stream;
         _endianness = endianness;
+    }
+
+    @property public Stream stream()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _stream;
+    }
+
+    @property public Endianness endianness()
+    {
+        return _endianness;
     }
 
     public final void write(T)(T value)
@@ -308,12 +338,12 @@ public class BinaryWriter
         if (endianness != _endianness)
         {
             for (size_t i = T.sizeof; i > 0; i--)
-                _file.write((cast(ubyte*)&value)[i]);
+                _stream.write((cast(ubyte*)&value)[i]);
         }
         else
         {
             for (size_t i = 0; i < T.sizeof; i++)
-                _file.write((cast(ubyte*)&value)[i]);
+                _stream.write((cast(ubyte*)&value)[i]);
         }
     }
 
@@ -329,16 +359,16 @@ public class TextWriter : BinaryWriter
 {
     private ulong _indent;
 
-    public this(Stream file, Endianness endianness = Endianness.littleEndian)
+    public this(Stream stream, Endianness endianness = Endianness.littleEndian)
     in
     {
-        assert(file);
-        assert(file.canRead);
-        assert(!file.isClosed);
+        assert(stream);
+        assert(stream.canRead);
+        assert(!stream.isClosed);
     }
     body
     {
-        super(file, endianness);
+        super(stream, endianness);
     }
 
     public void indent()
