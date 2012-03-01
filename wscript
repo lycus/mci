@@ -11,12 +11,14 @@ OUT = 'build'
 
 def options(opt):
     opt.recurse('libffi-d')
+    opt.recurse('libgc-d')
 
     opt.add_option('--vim', action = 'store', default = None, help = 'include Vim syntax files (prefix)')
     opt.add_option('--valgrind', action = 'store', default = 'false', help = 'use Valgrind for unit tests')
 
 def configure(conf):
     conf.recurse('libffi-d')
+    conf.recurse('libgc-d')
 
     conf.env.VIM = conf.options.vim
 
@@ -81,11 +83,12 @@ def configure(conf):
 
 def build(bld):
     bld.recurse('libffi-d')
+    bld.recurse('libgc-d')
 
     def search_paths(path):
         return [os.path.join(path, '*.d'), os.path.join(path, '**', '*.d')]
 
-    includes = ['src', 'libffi-d']
+    includes = ['src', 'libffi-d', 'libgc-d']
     src = os.path.join('src', 'mci')
 
     def stlib(path, target, dflags = [], install = '${PREFIX}/lib'):
@@ -117,6 +120,7 @@ def build(bld):
             'mci.assembler',
             'mci.core',
             'ffi-d',
+            'gc-d',
             'FFI',
             'GC']
 
