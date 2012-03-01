@@ -14,6 +14,7 @@ def options(opt):
 
     opt.add_option('--vim', action = 'store', default = None, help = 'include Vim syntax files (prefix)')
     opt.add_option('--valgrind', action = 'store', default = 'false', help = 'use Valgrind for unit tests')
+    opt.add_option('--boehm', action = 'store', default = 'false', help = 'enable the Boehm GC')
 
 def configure(conf):
     conf.recurse('libffi-d')
@@ -24,6 +25,11 @@ def configure(conf):
         conf.fatal('--valgrind must be either true or false.')
 
     conf.env.VALGRIND = conf.options.valgrind
+
+    if conf.options.boehm != 'true' and conf.options.boehm != 'false':
+        conf.fatal('--boehm must be either true or false.')
+
+    conf.env.BOEHM = conf.options.boehm
 
     def add_option(option):
         conf.env.append_value('DFLAGS', option)
@@ -73,6 +79,9 @@ def configure(conf):
 
     conf.env.LIB_FFI = ['ffi']
 
+    if conf.options.boehm == 'true':
+        conf.env.LIB_GC = ['gc']
+
     if not Utils.unversioned_sys_platform().lower().endswith('bsd'):
         conf.env.LIB_DL = ['dl']
 
@@ -117,6 +126,9 @@ def build(bld):
             'mci.core',
             'ffi-d',
             'FFI']
+
+    if bld.env.BOEHM == 'true':
+        deps += ['GC']
 
     if not Utils.unversioned_sys_platform().lower().endswith('bsd'):
         deps += ['DL']
