@@ -1,7 +1,6 @@
 module mci.vm.memory.libc;
 
-import core.atomic,
-       core.stdc.stdlib,
+import core.stdc.stdlib,
        std.conv,
        mci.core.container,
        mci.core.typing.types,
