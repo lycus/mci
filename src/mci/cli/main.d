@@ -11,6 +11,7 @@ public enum GarbageCollectorType : ubyte
 {
     libc,
     dgc,
+    boehm,
 }
 
 public enum LinkerRenameStrategy : ubyte
@@ -85,8 +86,9 @@ body
         log("Available garbage collectors:");
         log();
 
-        logf("     %s\tD Garbage Collector\t\tUses the D runtime's garbage collector (default).", GarbageCollectorType.dgc);
         logf("     %s\tLibC Garbage Collector\t\tUses calloc/free; performs no actual collection.", GarbageCollectorType.libc);
+        logf("     %s\tD Garbage Collector\t\tUses the D runtime's garbage collector (default).", GarbageCollectorType.dgc);
+        logf("     %s\tBoehm Garbage Collector\t\tUses the Boehm-Demers-Weiser garbage collector.", GarbageCollectorType.boehm);
         log();
 
         log("Available optimization passes:");
