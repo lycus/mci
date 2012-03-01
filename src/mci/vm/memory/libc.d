@@ -3,7 +3,6 @@ module mci.vm.memory.libc;
 import core.stdc.stdlib,
        std.conv,
        mci.core.container,
-       mci.core.typing.types,
        mci.vm.memory.base,
        mci.vm.memory.info;
 

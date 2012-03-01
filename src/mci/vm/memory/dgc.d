@@ -5,7 +5,6 @@ import core.exception,
        core.thread,
        std.conv,
        mci.core.container,
-       mci.core.typing.types,
        mci.vm.memory.base,
        mci.vm.memory.info;
 
