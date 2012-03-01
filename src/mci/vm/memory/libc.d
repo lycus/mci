@@ -9,14 +9,12 @@ import core.stdc.stdlib,
 
 public final class LibCGarbageCollector : InteractiveGarbageCollector
 {
-    private Object _lock;
     private Object _cbLock;
     private NoNullList!(void delegate(RuntimeObject*)) _allocCallbacks;
     private NoNullList!(void delegate(RuntimeObject*)) _freeCallbacks;
 
     public this()
     {
-        _lock = new typeof(_lock)();
         _cbLock = new typeof(_cbLock)();
         _allocCallbacks = new typeof(_allocCallbacks)();
         _freeCallbacks = new typeof(_freeCallbacks)();
@@ -29,13 +27,12 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
 
     public RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0)
     {
-        auto length = RuntimeObject.sizeof;
-        auto mem = calloc(1, length + type.size + extraSize);
+        auto mem = calloc(1, RuntimeObject.sizeof + type.size + extraSize);
 
         if (!mem)
             return null;
 
-        auto obj = emplace!RuntimeObject(mem[0 .. length], type);
+        auto obj = emplace!RuntimeObject(mem[0 .. RuntimeObject.sizeof], type);
 
         synchronized (_cbLock)
             foreach (cb; _allocCallbacks)

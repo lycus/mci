@@ -21,13 +21,12 @@ public final class DGarbageCollector : GarbageCollector
     {
         try
         {
-            auto length = RuntimeObject.sizeof;
-            auto mem = GC.calloc(length + type.size + extraSize);
+            auto mem = GC.calloc(RuntimeObject.sizeof + type.size + extraSize);
 
             if (!mem)
                 return null;
 
-            return emplace!RuntimeObject(mem[0 .. length], type);
+            return emplace!RuntimeObject(mem[0 .. RuntimeObject.sizeof], type);
         }
         catch (OutOfMemoryError)
         {
