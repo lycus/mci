@@ -1,3 +1,6 @@
 [submodule "libffi-d"]
 	path = libffi-d
 	url = git://github.com/lycus/libffi-d.git
+[submodule "libgc-d"]
+	path = libgc-d
+	url = git://github.com/lycus/libgc-d.git
