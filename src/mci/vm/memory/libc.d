@@ -65,7 +65,7 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
     {
     }
 
-    public void removeRange(ubyte* ptr)
+    public void removeRange(ubyte* ptr, size_t words)
     {
     }
 

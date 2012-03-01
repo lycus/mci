@@ -55,7 +55,7 @@ public final class DGarbageCollector : GarbageCollector
         GC.addRange(ptr, words * size_t.sizeof);
     }
 
-    public void removeRange(ubyte* ptr)
+    public void removeRange(ubyte* ptr, size_t words)
     {
         GC.removeRange(ptr);
     }

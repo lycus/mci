@@ -119,11 +119,12 @@ public interface GarbageCollector
         assert(words);
     }
 
-    public void removeRange(ubyte* ptr)
+    public void removeRange(ubyte* ptr, size_t words)
     in
     {
         assert(ptr);
         assert(isSystemAligned(ptr));
+        assert(words);
     }
 
     public size_t pin(RuntimeObject* data)
