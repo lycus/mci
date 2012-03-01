@@ -4,14 +4,26 @@ import std.conv,
        std.stdio,
        std.getopt,
        mci.cli.tool,
+       mci.core.common,
        mci.core.config,
        mci.optimizer.manager;
 
-public enum GarbageCollectorType : ubyte
+static if (operatingSystem != OperatingSystem.windows)
 {
-    libc,
-    dgc,
-    boehm,
+    public enum GarbageCollectorType : ubyte
+    {
+        libc,
+        dgc,
+        boehm,
+    }
+}
+else
+{
+    public enum GarbageCollectorType : ubyte
+    {
+        libc,
+        dgc,
+    }
 }
 
 public enum LinkerRenameStrategy : ubyte
@@ -88,7 +100,10 @@ body
 
         logf("     %s\tLibC Garbage Collector\t\tUses calloc/free; performs no actual collection.", GarbageCollectorType.libc);
         logf("     %s\tD Garbage Collector\t\tUses the D runtime's garbage collector (default).", GarbageCollectorType.dgc);
-        logf("     %s\tBoehm Garbage Collector\t\tUses the Boehm-Demers-Weiser garbage collector.", GarbageCollectorType.boehm);
+
+        static if (operatingSystem != OperatingSystem.windows)
+            logf("     %s\tBoehm Garbage Collector\t\tUses the Boehm-Demers-Weiser garbage collector.", GarbageCollectorType.boehm);
+
         log();
 
         log("Available optimization passes:");
