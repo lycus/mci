@@ -77,7 +77,7 @@ static if (operatingSystem != OperatingSystem.windows)
 
         public void minimize()
         {
-            // There's no support for minimization without stopping the world in libgc.
+            GC_collect_a_little();
         }
 
         public void attach()
