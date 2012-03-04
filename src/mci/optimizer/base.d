@@ -9,7 +9,6 @@ public abstract class OptimizerPass
 
 public enum PassType : ubyte
 {
-    tree,
     code,
     ir,
     ssa,

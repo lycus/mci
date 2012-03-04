@@ -50,7 +50,6 @@ shared static this()
 
 public final class OptimizationManager
 {
-    private NoNullList!OptimizerPass _treeOptimizers;
     private NoNullList!OptimizerPass _codeOptimizers;
     private NoNullList!OptimizerPass _irOptimizers;
     private NoNullList!OptimizerPass _ssaOptimizers;
@@ -58,7 +57,6 @@ public final class OptimizationManager
 
     invariant()
     {
-        assert(_treeOptimizers);
         assert(_codeOptimizers);
         assert(_irOptimizers);
         assert(_ssaOptimizers);
@@ -67,7 +65,6 @@ public final class OptimizationManager
 
     public this()
     {
-        _treeOptimizers = new typeof(_treeOptimizers)();
         _codeOptimizers = new typeof(_codeOptimizers)();
         _irOptimizers = new typeof(_irOptimizers)();
         _ssaOptimizers = new typeof(_ssaOptimizers)();
@@ -95,9 +92,6 @@ public final class OptimizationManager
 
         final switch (pass.type)
         {
-            case PassType.tree:
-                _treeOptimizers.add(instance);
-                break;
             case PassType.code:
                 _codeOptimizers.add(instance);
                 break;
