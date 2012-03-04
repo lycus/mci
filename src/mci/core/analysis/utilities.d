@@ -404,6 +404,44 @@ body
     return false;
 }
 
+public bool isFloatingPointConstantLoad(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opLoadF32 ||
+           opCode is opLoadF64;
+}
+
+public bool isIntegralConstantLoad(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opLoadI8 ||
+           opCode is opLoadUI8 ||
+           opCode is opLoadI16 ||
+           opCode is opLoadUI16 ||
+           opCode is opLoadI32 ||
+           opCode is opLoadUI32 ||
+           opCode is opLoadI64 ||
+           opCode is opLoadUI64;
+}
+
+public bool isConstantLoad(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return isIntegralConstantLoad(opCode) || isFloatingPointConstantLoad(opCode);
+}
+
 public bool isDirectCallSite(OpCode opCode)
 in
 {
