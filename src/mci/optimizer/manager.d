@@ -124,5 +124,8 @@ public final class OptimizationManager
         else
             foreach (opt; _irOptimizers)
                 opt.optimize(function_);
+
+        foreach (opt; _codeOptimizers)
+            opt.optimize(function_);
     }
 }
