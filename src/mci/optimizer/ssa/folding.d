@@ -156,7 +156,6 @@ public final class ConstantFolder : OptimizerDefinition
         {
             public override void optimize(Function function_)
             {
-                import std.stdio;
                 auto constantInsns = true;
 
                 while (constantInsns)
@@ -168,15 +167,11 @@ public final class ConstantFolder : OptimizerDefinition
 
                     auto constantOps = new NoNullList!Instruction();
 
-                            writeln("---");
                     foreach (bb; function_.blocks)
-                        foreach (instr; bb.y.stream) {
-                            writeln(instr);
-
+                        foreach (instr; bb.y.stream)
                             if (isFoldable(instr.opCode) && !instr.sourceRegisters.empty &&
                                 all(instr.sourceRegisters, (Register r) => first(r.definitions) && isConstantLoad(first(r.definitions).opCode)))
-                                constantOps.add(instr); }
-                            writeln("---");
+                                constantOps.add(instr);
 
                     foreach (instr; constantOps)
                     {
