@@ -4,7 +4,8 @@ import std.traits,
        mci.core.container,
        mci.core.code.functions,
        mci.optimizer.base,
-       mci.optimizer.code.unused;
+       mci.optimizer.code.unused,
+       mci.optimizer.ssa.folding;
 
 public __gshared ReadOnlyCollection!OptimizerDefinition allOptimizers;
 public __gshared ReadOnlyCollection!OptimizerDefinition fastOptimizers;
@@ -40,6 +41,7 @@ shared static this()
 
     addOptimizer(new UnusedBasicBlockRemover(), fast);
     addOptimizer(new UnusedRegisterRemover(), fast);
+    addOptimizer(new ConstantFolder(), fast);
 
     allOptimizers = all;
     fastOptimizers = fast;
