@@ -719,11 +719,9 @@ public class List(T) : Indexable!T
         auto idx = _size;
 
         if (_size == _array.length)
-        {
             _array.length += 1;
-            _size++;
-        }
 
+        _size++;
         _array[idx] = item;
     }
 
