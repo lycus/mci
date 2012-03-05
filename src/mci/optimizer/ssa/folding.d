@@ -173,7 +173,9 @@ public final class ConstantFolder : OptimizerDefinition
                                 all(instr.sourceRegisters, (Register r) => first(r.definitions) && isConstantLoad(first(r.definitions).opCode)))
                                 constantOps.add(instr);
 
-                    foreach (instr; constantOps)
+                    auto insns = constantOps.duplicate();
+
+                    foreach (instr; insns)
                     {
                         Constant result;
                         auto r1 = operandToConstant(first(instr.sourceRegister1.definitions).operand);
@@ -194,17 +196,17 @@ public final class ConstantFolder : OptimizerDefinition
                             result = r1 * r2;
                         else if (instr.opCode is opAriDiv)
                         {
-                            // Division by zero is undefined behavior, so we treat it as a no-op here.
+                            // We can't handle division by zero in any sane fashion, so we simply stop folding.
                             if (isType!IntegerType(instr.targetRegister.type) && r2.castTo!ulong() == 0)
-                                result = r1;
+                                constantOps.remove(instr);
                             else
                                 result = r1 / r2;
                         }
                         else if (instr.opCode is opAriRem)
                         {
-                            // Division by zero is undefined behavior, so we treat it as a no-op here.
+                            // We can't handle division by zero in any sane fashion, so we simply stop folding.
                             if (isType!IntegerType(instr.targetRegister.type) && r2.castTo!ulong() == 0)
-                                result = r1;
+                                constantOps.remove(instr);
                             else
                                 result = r1 % r2;
                         }
@@ -221,9 +223,10 @@ public final class ConstantFolder : OptimizerDefinition
                         else if (instr.opCode is opNot)
                             result = r1.not();
 
-                        instr.block.stream.replace(instr, typeToConstantLoadOpCode(cast(CoreType)instr.targetRegister.type),
-                                                   constantToOperand(result, cast(CoreType)instr.targetRegister.type),
-                                                   instr.targetRegister, null, null, null);
+                        if (result)
+                            instr.block.stream.replace(instr, typeToConstantLoadOpCode(cast(CoreType)instr.targetRegister.type),
+                                                       constantToOperand(result, cast(CoreType)instr.targetRegister.type),
+                                                       instr.targetRegister, null, null, null);
                     }
 
                     // Kill constant loads that are no longer used. This includes those
