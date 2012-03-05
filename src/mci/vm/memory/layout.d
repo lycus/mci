@@ -7,7 +7,7 @@ import mci.core.common,
        mci.core.typing.members,
        mci.core.typing.types;
 
-public uint computeSize(Type type, bool is32Bit)
+public size_t computeSize(Type type, bool is32Bit)
 in
 {
     assert(type);
@@ -36,7 +36,7 @@ body
 
     auto structType = cast(StructureType)type;
 
-    uint size;
+    size_t size;
 
     foreach (field; structType.fields)
     {
@@ -54,7 +54,7 @@ body
     return size;
 }
 
-public uint computeOffset(Field field, bool is32Bit)
+public size_t computeOffset(Field field, bool is32Bit)
 in
 {
     assert(field);
@@ -63,7 +63,7 @@ in
 body
 {
     auto alignment = field.declaringType.alignment;
-    uint offset;
+    size_t offset;
 
     foreach (fld; field.declaringType.fields)
     {
@@ -84,7 +84,7 @@ body
     return offset;
 }
 
-public uint computeAlignment(Type type, bool is32Bit)
+public size_t computeAlignment(Type type, bool is32Bit)
 {
     if (auto struc = cast(StructureType)type)
     {
