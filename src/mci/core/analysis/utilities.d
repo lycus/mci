@@ -477,6 +477,25 @@ body
            isIndirectCallSite(opCode);
 }
 
+public bool hasSideEffect(OpCode opCode)
+in
+{
+    assert(opCode);
+}
+body
+{
+    return opCode is opMemAlloc ||
+           opCode is opMemNew ||
+           opCode is opMemSAlloc ||
+           opCode is opMemSNew ||
+           opCode is opMemPin ||
+           opCode is opArgPop ||
+           opCode is opCall ||
+           opCode is opCallTail ||
+           opCode is opCallIndirect ||
+           opCode is opPhi;
+}
+
 public bool containsManagedCode(BasicBlock block)
 {
     return !getFirstInstruction(block, opFFI) && !getFirstInstruction(block, opRaw);
