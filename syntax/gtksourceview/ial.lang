@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ This file is part of the MCI
+-->
+
+<language id="ial" _name="MCI Intermediate Assembly Language" version="2.0" _section="Sources">
+  <metadata>
+    <property name="mimetypes">text/x-ial</property>
+    <property name="globs">*.ial</property>
+  </metadata>
+
+  <styles>
+    <style id="type" _name="Type" map-to="def:type"/>
+    <style id="declaration" _name="Declaration" map-to="def:type"/>
+    <style id="modifier" _name="Modifier" map-to="def:statement"/>
+    <style id="convention" _name="Calling Convention" map-to="def:type"/>
+    <style id="instruction" _name="Instruction" map-to="def:function"/>
+    <style id="todo" _name="Todo" map-to="def:keyword"/>
+    <style id="string" _name="String" map-to="def:string"/>
+    <style id="number" _name="Number" map-to="def:number"/>
+
+    <style id="comment" _name="Comment" map-to="def:comment"/>
+    <style id="keyword" _name="Keyword" map-to="def:keyword"/>
+    <style id="escape" _name="Escaped Character" map-to="def:special-char"/>
+    <style id="function" _name="Function" map-to="def:function"/>
+  </styles>
+
+  <definitions>
+    <context id="ial">
+      <include>
+        <context id="types" style-ref="type">
+          <keyword>void</keyword>
+          <keyword>int8</keyword>
+          <keyword>uint8</keyword>
+          <keyword>int16</keyword>
+          <keyword>uint16</keyword>
+          <keyword>int32</keyword>
+          <keyword>uint32</keyword>
+          <keyword>int64</keyword>
+          <keyword>uint64</keyword>
+          <keyword>int</keyword>
+          <keyword>uint</keyword>
+          <keyword>float32</keyword>
+          <keyword>float64</keyword>
+        </context>
+
+        <context id="declarations" style-ref="declaration">
+          <keyword>type</keyword>
+          <keyword>field</keyword>
+          <keyword>function</keyword>
+          <keyword>register</keyword>
+          <keyword>block</keyword>
+        </context>
+
+        <context id="modifiers" style-ref="modifier">
+          <keyword>instance</keyword>
+          <keyword>static</keyword>
+          <keyword>ssa</keyword>
+          <keyword>pure</keyword>
+          <keyword>nooptimize</keyword>
+          <keyword>noinline</keyword>
+          <keyword>nocallinline</keyword>
+          <keyword>align</keyword>
+          <keyword>unwind</keyword>
+        </context>
+
+        <context id="conventions" style-ref="convention">
+          <keyword>cdecl</keyword>
+          <keyword>stdcall</keyword>
+        </context>
+
+        <context id="instructions" style-ref="instruction">
+          <keyword>nop</keyword>
+          <keyword>comment</keyword>
+
+          <keyword>load\.i8</keyword>
+          <keyword>load\.ui8</keyword>
+          <keyword>load\.i16</keyword>
+          <keyword>load\.ui16</keyword>
+          <keyword>load\.i32</keyword>
+          <keyword>load\.ui32</keyword>
+          <keyword>load\.i64</keyword>
+          <keyword>load\.ui64</keyword>
+          <keyword>load\.f32</keyword>
+          <keyword>load\.f64</keyword>
+
+          <keyword>load\.i8a</keyword>
+          <keyword>load\.ui8a</keyword>
+          <keyword>load\.i16a</keyword>
+          <keyword>load\.ui16a</keyword>
+          <keyword>load\.i32a</keyword>
+          <keyword>load\.ui32a</keyword>
+          <keyword>load\.i64a</keyword>
+          <keyword>load\.ui64a</keyword>
+          <keyword>load\.f32a</keyword>
+          <keyword>load\.f64a</keyword>
+          
+          <keyword>load\.func</keyword>
+          <keyword>load\.null</keyword>
+          <keyword>load\.size</keyword>
+          <keyword>load\.align</keyword>
+          <keyword>load\.offset</keyword>
+
+          <keyword>ari\.add</keyword>
+          <keyword>ari\.sub</keyword>
+          <keyword>ari\.mul</keyword>
+          <keyword>ari\.div</keyword>
+          <keyword>ari\.rem</keyword>
+          <keyword>ari\.neg</keyword>
+
+          <keyword>bit\.and</keyword>
+          <keyword>bit\.or</keyword>
+          <keyword>bit\.xor</keyword>
+          <keyword>bit\.neg</keyword>
+
+          <keyword>not</keyword>
+          <keyword>shl</keyword>
+          <keyword>shr</keyword>
+          <keyword>rol</keyword>
+          <keyword>ror</keyword>
+
+          <keyword>mem\.alloc</keyword>
+          <keyword>mem\.new</keyword>
+          <keyword>mem\.free</keyword>
+          <keyword>mem\.salloc</keyword>
+          <keyword>mem\.snew</keyword>
+          <keyword>mem\.pin</keyword>
+          <keyword>mem\.unpin</keyword>
+
+          <keyword>mem\.get</keyword>
+          <keyword>mem\.set</keyword>
+          <keyword>mem\.addr</keyword>
+
+          <keyword>array\.get</keyword>
+          <keyword>array\.set</keyword>
+          <keyword>array\.addr</keyword>
+          <keyword>array\.len</keyword>
+
+          <keyword>array\.ari\.add</keyword>
+          <keyword>array\.ari\.sub</keyword>
+          <keyword>array\.ari\.mul</keyword>
+          <keyword>array\.ari\.div</keyword>
+          <keyword>array\.ari\.rem</keyword>
+          <keyword>array\.ari\.neg</keyword>
+
+          <keyword>array\.bit\.or</keyword>
+          <keyword>array\.bit\.xor</keyword>
+          <keyword>array\.bit\.neg</keyword>
+
+          <keyword>array\.not</keyword>
+          <keyword>array\.shl</keyword>
+          <keyword>array\.shr</keyword>
+          <keyword>array\.rol</keyword>
+          <keyword>array\.ror</keyword>
+
+          <keyword>array\.conv</keyword>
+
+          <keyword>array\.cmp\.eq</keyword>
+          <keyword>array\.cmp\.neq</keyword>
+          <keyword>array\.cmp\.gt</keyword>
+          <keyword>array\.cmp\.lt</keyword>
+          <keyword>array\.cmp\.gteq</keyword>
+          <keyword>array\.cmp\.lteq</keyword>
+
+          <keyword>field\.get</keyword>
+          <keyword>field\.set</keyword>
+          <keyword>field\.addr</keyword>
+          <keyword>field\.gget</keyword>
+          <keyword>field\.gset</keyword>
+          <keyword>field\.gaddr</keyword>
+
+          <keyword>cmp\.eq</keyword>
+          <keyword>cmp\.neq</keyword>
+          <keyword>cmp\.gt</keyword>
+          <keyword>cmp\.lt</keyword>
+          <keyword>cmp\.gteq</keyword>
+          <keyword>cmp\.lteq</keyword>
+
+          <keyword>arg\.push</keyword>
+          <keyword>arg\.pop</keyword>
+          <keyword>call\.tail</keyword>
+          <keyword>call\.indirect</keyword>
+          <keyword>call</keyword>
+          <keyword>invoke\.tail</keyword>
+          <keyword>invoke\.indirect</keyword>
+          <keyword>invoke</keyword>
+
+          <keyword>jump</keyword>
+          <keyword>jump\.cond</keyword>
+          <keyword>leave</keyword>
+          <keyword>return</keyword>
+          <keyword>dead</keyword>
+          <keyword>phi</keyword>
+          <keyword>raw</keyword>
+          <keyword>ffi</keyword>
+
+          <keyword>eh\.throw</keyword>
+          <keyword>eh\.rethrow</keyword>
+          <keyword>eh\.catch</keyword>
+
+          <keyword>conv</keyword>
+        </context>
+
+        <context id="comment" style-ref="comment">
+          <start>\/\/</start>
+          <end>$</end>
+          <include>
+            <context id="todos" style-ref="todo">
+              <keyword>contained</keyword>
+              <keyword>TODO</keyword>
+              <keyword>FIXME</keyword>
+              <keyword>HACK</keyword>
+              <keyword>UNDONE</keyword>
+              <keyword>XXX</keyword>
+              <keyword>NOTE</keyword>
+            </context>
+          </include>
+        </context>
+
+        <context id="string1" style-ref="string">
+          <start>"</start>
+          <end>"</end>
+        </context>
+
+        <context id="string2" style-ref="string">
+          <start>'</start>
+          <end>'</end>
+        </context>
+
+        <context id="numbers" style-ref="number">
+            <keyword>0x[0-9a-fA-F]+|[0-9]+</keyword>
+            <keyword>(\d+\.\d*|\.\d+)([eE][-+]?\d+)?</keyword>
+        </context>
+      </include>
+    </context>
+  </definitions>
+</language>
