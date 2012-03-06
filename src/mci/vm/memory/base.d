@@ -196,22 +196,19 @@ public interface AtomicGarbageCollector : GarbageCollector
 {
     @property public BarrierFlags barriers();
 
-    public void* readBarrier(RuntimeObject* rto, Field field)
+    public void readBarrier(RuntimeObject* rto, ubyte* field, ubyte* destination)
     in
     {
         assert(rto);
         assert(field);
-    }
-    out (result)
-    {
-        assert(result);
+        assert(destination);
     }
 
-    public void writeBarrier(RuntimeObject* rto, Field field, void* value)
+    public void writeBarrier(RuntimeObject* rto, ubyte* field, ubyte* source)
     in
     {
         assert(rto);
         assert(field);
-        assert(value);
+        assert(source);
     }
 }
