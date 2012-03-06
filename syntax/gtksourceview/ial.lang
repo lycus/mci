@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- This file is part of the MCI
+ Language:      IAL (Intermediate Assembly Language)
+ Maintainer:    The Lycus Foundation <http://lycus.org>
+ File Names:    *.ial
 -->
 
-<language id="ial" _name="MCI Intermediate Assembly Language" version="2.0" _section="Sources">
+<language id="ial" _name="Intermediate Assembly Language" version="2.0" _section="Sources">
   <metadata>
     <property name="mimetypes">text/x-ial</property>
     <property name="globs">*.ial</property>
@@ -59,7 +61,6 @@
           <keyword>pure</keyword>
           <keyword>nooptimize</keyword>
           <keyword>noinline</keyword>
-          <keyword>nocallinline</keyword>
           <keyword>align</keyword>
           <keyword>unwind</keyword>
         </context>
