@@ -14,6 +14,7 @@ def options(opt):
     opt.recurse('libgc-d')
 
     opt.add_option('--vim', action = 'store', default = None, help = 'include Vim syntax files (prefix)')
+    opt.add_option('--gtksourceview', action = 'store', default = None, help = 'include GtkSourceView syntax files (prefix)')
     opt.add_option('--valgrind', action = 'store', default = 'false', help = 'use Valgrind for unit tests')
 
 def configure(conf):
@@ -21,6 +22,7 @@ def configure(conf):
     conf.recurse('libgc-d')
 
     conf.env.VIM = conf.options.vim
+    conf.env.GTKSOURCEVIEW = conf.options.gtksourceview
 
     if conf.options.valgrind != 'true' and conf.options.valgrind != 'false':
         conf.fatal('--valgrind must be either true or false.')
@@ -139,6 +141,9 @@ def build(bld):
     if bld.env.VIM:
         bld.install_files(os.path.join(bld.env.VIM, 'syntax'), os.path.join('syntax', 'vim', 'syntax', 'ial.vim'))
         bld.install_files(os.path.join(bld.env.VIM, 'ftdetect'), os.path.join('syntax', 'vim', 'ftdetect', 'ial.vim'))
+
+    if bld.env.GTKSOURCEVIEW:
+        bld.install_files(bld.env.GTKSOURCEVIEW, os.path.join('syntax', 'gtksourceview', 'ial.lang'))
 
 def _run_shell(dir, ctx, args):
     cwd = os.getcwd()
