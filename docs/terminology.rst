@@ -121,8 +121,8 @@ RTO
 +++
 
 An abbreviation for RuntimeObject. Refers to the runtime format and
-layout of values in the MCI_, which generally consists of a type
-pointer and a GC_ generation pointer.
+layout of values in the MCI_, which generally consists of a type pointer,
+GC bits, and the user data field.
 
 SSA
 +++
