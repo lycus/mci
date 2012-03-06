@@ -79,8 +79,6 @@ def configure(conf):
     if not Utils.unversioned_sys_platform().lower().endswith('bsd'):
         conf.env.LIB_DL = ['dl']
 
-    conf.check_dlibrary()
-
 def build(bld):
     bld.recurse('libffi-d')
     bld.recurse('libgc-d')
