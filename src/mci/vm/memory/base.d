@@ -4,6 +4,7 @@ import std.bitmanip,
        mci.core.config,
        mci.core.container,
        mci.core.typing.core,
+       mci.core.typing.members,
        mci.core.typing.types,
        mci.vm.memory.info,
        mci.vm.memory.layout;
@@ -181,5 +182,36 @@ public interface InteractiveGarbageCollector : GarbageCollector
     in
     {
         assert(callback);
+    }
+}
+
+public enum BarrierFlags : ubyte
+{
+    none = 0x0,
+    read = 0x1,
+    write = 0x2,
+}
+
+public interface AtomicGarbageCollector : GarbageCollector
+{
+    @property public BarrierFlags barriers();
+
+    public void* readBarrier(RuntimeObject* rto, Field field)
+    in
+    {
+        assert(rto);
+        assert(field);
+    }
+    out (result)
+    {
+        assert(result);
+    }
+
+    public void writeBarrier(RuntimeObject* rto, Field field, void* value)
+    in
+    {
+        assert(rto);
+        assert(field);
+        assert(value);
     }
 }

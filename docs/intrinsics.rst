@@ -494,3 +494,28 @@ actually freed.
 
 Calling this function if the GC is not interactive results in undefined
 behavior.
+
+mci_gc_is_atomic
+----------------
+
+**Signature**
+    ``uint mci_gc_is_atomic()``
+
+Gets a value indicating whether the GC is atomic (i.e. requires read or write
+barriers). Returns 1 if the GC is atomic; otherwise, returns 0.
+
+mci_gc_get_barriers
+-------------------
+
+**Signature**
+    ``uint8 mci_gc_get_barriers()``
+
+Returns flags indicating which barriers the current GC requires.
+
+Possible flags:
+
+===== ============================
+0x0   No barriers are required.
+0x1   Read barriers are required.
+0x2   Write barriers are required.
+===== ============================

@@ -76,4 +76,14 @@ extern (C)
     {
         (cast(InteractiveGarbageCollector)context.gc).addFreeCallback((RuntimeObject* rto) => callback(rto));
     }
+
+    public size_t mci_gc_is_atomic(VirtualMachineContext context)
+    {
+        return !!cast(AtomicGarbageCollector)context.gc;
+    }
+
+    public ubyte mci_gc_get_barriers(VirtualMachineContext context)
+    {
+        return (cast(AtomicGarbageCollector)context.gc).barriers;
+    }
 }

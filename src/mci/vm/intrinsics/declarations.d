@@ -55,6 +55,8 @@ public __gshared
     Function mciGCIsInteractive;
     Function mciGCAddAllocateCallback;
     Function mciGCAddFreeCallback;
+    Function mciGCIsAtomic;
+    Function mciGCGetBarriers;
 
     StructureType objectType;
 }
@@ -182,4 +184,6 @@ shared static this()
                                                                    getFunctionPointerType(CallingConvention.cdecl,
                                                                                           null,
                                                                                           new NoNullList!Type(toIterable!Type(objectType))));
+    mciGCIsAtomic = createFunction!mci_gc_is_atomic(NativeUIntType.instance);
+    mciGCGetBarriers = createFunction!mci_gc_get_barriers(UInt8Type.instance);
 }
