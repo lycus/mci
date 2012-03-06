@@ -372,8 +372,8 @@ mci_gc_minimize
 **Signature**
     ``void mci_gc_minimize()``
 
-Instructs the GC to perform as much cleanup work as it can without stopping
-the world.
+Instructs the GC to do minimal GC work. This function is appropriate for
+tight loops, and is relatively cheap.
 
 mci_gc_get_collections
 ----------------------
