@@ -18,25 +18,6 @@ version (unittest)
     private class C : B
     {
     }
-
-    private class D
-    {
-    }
-}
-
-unittest
-{
-    auto b = new B();
-
-    assert(isType!A(b));
-}
-
-unittest
-{
-    auto c = new C();
-
-    assert(isType!A(c));
-    assert(isType!B(c));
 }
 
 unittest
@@ -48,6 +29,21 @@ unittest
 
 unittest
 {
+    A b = new B();
+
+    assert(isType!B(b));
+}
+
+unittest
+{
+    A c = new C();
+
+    assert(isType!B(c));
+    assert(isType!C(c));
+}
+
+unittest
+{
     auto a = new A();
 
     assert(isType!A(a));
@@ -55,16 +51,33 @@ unittest
 
 unittest
 {
-    auto d = new D();
+    auto b = new B();
+    bool isB;
 
-    assert(!isType!A(d));
+    match(b, (B b) => isB = true);
+
+    assert(isB);
+}
+
+unittest
+{
+    A c = new C();
+    bool isB;
+    bool isC;
+
+    match(c,
+          (B b) => isB = true,
+          (C c) => isC = false);
+
+    assert(isB);
+    assert(!isC);
 }
 
 unittest
 {
     Variant v = 1;
 
-    assertThrown!AssertError(match(v, (ubyte f) => {}));
+    assertThrown!AssertError(match(v, (ubyte b) => {}));
 }
 
 unittest

@@ -11,14 +11,52 @@ import core.stdc.stdlib,
 public alias Select!(is32Bit, int, long) isize_t;
 public alias void function() function_t;
 
-public bool isType(U, T)(T obj)
+public U tryCast(U, T)(T obj)
+    if ((is(T == class) || is(T == interface)) &&
+        (is(U == class) || is(U == interface)) &&
+        is(U : T))
 in
 {
     assert(obj);
 }
 body
 {
-    return cast(U)obj !is null;
+    return cast(U)obj;
+}
+
+public alias tryCast isType;
+
+public void match(T, F ...)(T obj, scope F cases)
+    if (is(T == class) || is(T == interface))
+in
+{
+    static assert(F.length, "At least one function/delegate argument is required.");
+
+    foreach (f; F)
+    {
+        alias ParameterTypeTuple!f FArgs;
+        alias FArgs[0] U;
+
+        static assert(isFunctionPointer!f || isDelegate!f, "All trailing arguments must be functions or delegates.");
+        static assert(FArgs.length == 1, "All trailing functions/delegates must take on parameter only.");
+        static assert((is(U == class) || is(U == interface)) && is(U : T));
+    }
+}
+body
+{
+    foreach (i, f; TypeTuple!F)
+    {
+        alias ParameterTypeTuple!f FArgs;
+        alias FArgs[0] U;
+
+        if (auto res = tryCast!U(obj))
+        {
+            cases[i](res);
+            return;
+        }
+    }
+
+    assert(false);
 }
 
 public bool powerOfTwo(T)(T value)
@@ -57,24 +95,24 @@ body
         static assert(false, "Direction must be \"left\" or \"right\".");
 }
 
-public void match(T ...)(Variant variant, scope T branches)
+public void match(F ...)(Variant variant, scope F cases)
 in
 {
-    static assert(T.length);
+    static assert(F.length, "At least one function/delegate argument is required.");
 
-    foreach (t; T)
+    foreach (f; F)
     {
-        static assert(isFunctionPointer!t || isDelegate!t);
-        static assert((ParameterTypeTuple!t).length == 1);
+        static assert(isFunctionPointer!f || isDelegate!f, "All trailing arguments must be functions or delegates.");
+        static assert((ParameterTypeTuple!f).length == 1, "All trailing functions/delegates must take on parameter only.");
     }
 }
 body
 {
-    foreach (i, t; TypeTuple!T)
+    foreach (i, f; TypeTuple!F)
     {
-        if (auto ptr = variant.peek!(ParameterTypeTuple!t)())
+        if (auto ptr = variant.peek!(ParameterTypeTuple!f)())
         {
-            branches[i](*ptr);
+            cases[i](*ptr);
             return;
         }
     }

@@ -239,7 +239,7 @@ in
 }
 body
 {
-    return isType!CoreType(type);
+    return !!isType!CoreType(type);
 }
 
 public bool isValidInBitwise(Type type)
@@ -249,7 +249,7 @@ in
 }
 body
 {
-    return isType!IntegerType(type);
+    return !!isType!IntegerType(type);
 }
 
 public bool isValidInComparison(Type type)
@@ -259,7 +259,7 @@ in
 }
 body
 {
-    return isValidInArithmetic(type) || isType!PointerType(type);
+    return isValidInArithmetic(type) || !!isType!PointerType(type);
 }
 
 public bool isArrayContainerOf(Type type, Type elementType)
@@ -289,7 +289,7 @@ in
 body
 {
     if (isArrayOrVector(type))
-        return isType!T(getElementType(type));
+        return !!isType!T(getElementType(type));
 
     return false;
 }
