@@ -68,6 +68,8 @@ public final class UnusedBasicBlockRemover : OptimizerDefinition
             {
                 auto blocks = new NoNullList!BasicBlock(function_.blocks.values);
 
+                blocks.remove(function_.blocks[entryBlockName]);
+
                 foreach (bb; function_.blocks)
                 {
                     if (bb.y.unwindBlock)
