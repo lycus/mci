@@ -26,37 +26,39 @@ body
 
 public alias tryCast isType;
 
-public void match(T, F ...)(T obj, scope F cases)
+template match(T, F ...)
     if (is(T == class) || is(T == interface))
-in
 {
-    static assert(F.length, "At least one function/delegate argument is required.");
+    alias CommonType!(staticMap!(ReturnType, F)) R;
 
-    foreach (f; F)
+    public R match(T obj, scope F cases)
+    in
     {
-        alias ParameterTypeTuple!f FArgs;
-        alias FArgs[0] U;
+        static assert(F.length, "At least one function/delegate argument is required.");
 
-        static assert(isFunctionPointer!f || isDelegate!f, "All trailing arguments must be functions or delegates.");
-        static assert(FArgs.length == 1, "All trailing functions/delegates must take on parameter only.");
-        static assert((is(U == class) || is(U == interface)) && is(U : T));
-    }
-}
-body
-{
-    foreach (i, f; TypeTuple!F)
-    {
-        alias ParameterTypeTuple!f FArgs;
-        alias FArgs[0] U;
-
-        if (auto res = tryCast!U(obj))
+        foreach (f; F)
         {
-            cases[i](res);
-            return;
+            alias ParameterTypeTuple!f FArgs;
+            alias FArgs[0] U;
+
+            static assert(isFunctionPointer!f || isDelegate!f, "All trailing arguments must be functions or delegates.");
+            static assert(FArgs.length == 1, "All trailing functions/delegates must take one parameter only.");
+            static assert((is(U == class) || is(U == interface)) && is(U : T));
         }
     }
+    body
+    {
+        foreach (i, f; TypeTuple!F)
+        {
+            alias ParameterTypeTuple!f FArgs;
+            alias FArgs[0] U;
 
-    assert(false);
+            if (auto res = tryCast!U(obj))
+                return cases[i](res);
+        }
+
+        assert(false);
+    }
 }
 
 public bool powerOfTwo(T)(T value)
@@ -103,7 +105,7 @@ in
     foreach (f; F)
     {
         static assert(isFunctionPointer!f || isDelegate!f, "All trailing arguments must be functions or delegates.");
-        static assert((ParameterTypeTuple!f).length == 1, "All trailing functions/delegates must take on parameter only.");
+        static assert((ParameterTypeTuple!f).length == 1, "All trailing functions/delegates must take one parameter only.");
     }
 }
 body
