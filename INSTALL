@@ -29,6 +29,10 @@ The MCI Waf script also supports some additional options:
       - Where to install Vim syntax files for IAL files. If you wish
         to enable this, you should probably set this value to "~/.vim"
         or similar.
+    * --gtksourceview (= <none>)
+      - Where to install GtkSourceView syntax files for IAL files. If
+        you wish to enable this, you should probably set this value to
+        "~/.local/share/gtksourceview-3.0/language-specs" or similar.
     * --valgrind (= "false")
       - Whether to run the unit test suite with Valgrind. Note that
         this is disabled on OS X regardless of this setting.
@@ -88,8 +92,8 @@ You need to make sure that either the Cygwin or MinGW version of the
 library can be found via your library search paths. These can be set
 in the global Visual D options.
 
-Finally, select your desired solution configuration (Debug, Release,
-or Test) and build the solution.
+Finally, select your desired solution configuration (Debug or Release)
+and build the solution.
 
 Note that the MCI cannot currently be compiled for 64-bit on Windows
 with DMD, due to limitations in Optlink (among other things). It is
