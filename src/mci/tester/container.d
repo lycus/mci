@@ -113,8 +113,7 @@ unittest
 {
     auto list = new List!int();
 
-    debug
-        assertThrown!AssertError(findIndex(list, (int x) => x == 42));
+    assertThrown!AssertError(findIndex(list, (int x) => x == 42));
 }
 
 unittest
