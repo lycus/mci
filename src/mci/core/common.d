@@ -88,7 +88,6 @@ public enum Compiler : ubyte
     dmd = 1,
     gdc = 2,
     ldc = 3,
-    sdc = 4,
 }
 
 public enum Architecture : ubyte

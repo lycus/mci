@@ -21,11 +21,6 @@ else version (LDC)
     public enum Compiler compiler = Compiler.ldc;
     public enum string compilerName = "LDC";
 }
-else version (SDC)
-{
-    public enum Compiler compiler = Compiler.sdc;
-    public enum string compilerName = "SDC";
-}
 else version (D_NET)
 {
     // We cannot run on D.NET because some things like signals
