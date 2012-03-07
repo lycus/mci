@@ -514,8 +514,12 @@ Returns flags indicating which barriers the current GC requires.
 
 Possible flags:
 
-===== ============================
-0x0   No barriers are required.
-0x1   Read barriers are required.
-0x2   Write barriers are required.
-===== ============================
+===== ===============================================
+0x00  No barriers are required.
+0x01  Read barriers are required for fields.
+0x02  Write barriers are required for fields.
+0x04  Read barriers are required for array loads.
+0x08  Write barriers are required for array stores.
+0x10  Read barriers are required for indirect stores.
+0x20  Write barriers are required for indirect loads.
+===== ===============================================

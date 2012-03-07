@@ -187,28 +187,46 @@ public interface InteractiveGarbageCollector : GarbageCollector
 
 public enum BarrierFlags : ubyte
 {
-    none = 0x0,
-    read = 0x1,
-    write = 0x2,
+    none = 0x00,
+    fieldGet = 0x01,
+    fieldSet = 0x02,
+    arrayGet = 0x04,
+    arraySet = 0x08,
+    memGet = 0x10,
+    memSet = 0x20,
 }
 
 public interface AtomicGarbageCollector : GarbageCollector
 {
     @property public BarrierFlags barriers();
 
-    public void readBarrier(RuntimeObject* rto, ubyte* field, ubyte* destination)
+    public RuntimeObject* getFieldBarrier(RuntimeObject* rto, Field field, ubyte* ptr)
     in
     {
         assert(rto);
         assert(field);
-        assert(destination);
+        assert(ptr);
     }
 
-    public void writeBarrier(RuntimeObject* rto, ubyte* field, ubyte* source)
+    public void setFieldBarrier(RuntimeObject* rto, Field field, ubyte* ptr, RuntimeObject* value)
     in
     {
         assert(rto);
         assert(field);
-        assert(source);
+        assert(ptr);
+    }
+
+    public RuntimeObject* getArrayBarrier(RuntimeObject* rto, size_t index, ubyte* ptr)
+    in
+    {
+        assert(rto);
+        assert(ptr);
+    }
+
+    public void setArrayBarrier(RuntimeObject* rto, size_t index, ubyte* ptr, RuntimeObject* value)
+    in
+    {
+        assert(rto);
+        assert(ptr);
     }
 }
