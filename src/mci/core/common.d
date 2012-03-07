@@ -3,6 +3,8 @@ module mci.core.common;
 import core.stdc.stdlib,
        core.stdc.string,
        std.traits,
+       std.typetuple,
+       std.variant,
        mci.core.config,
        mci.core.meta;
 
@@ -53,6 +55,31 @@ body
         return cast(T)(x >> y | x << z);
     else
         static assert(false, "Direction must be \"left\" or \"right\".");
+}
+
+public void match(T ...)(Variant variant, scope T branches)
+in
+{
+    static assert(T.length);
+
+    foreach (t; T)
+    {
+        static assert(isFunctionPointer!t || isDelegate!t);
+        static assert((ParameterTypeTuple!t).length == 1);
+    }
+}
+body
+{
+    foreach (i, t; TypeTuple!T)
+    {
+        if (auto ptr = variant.peek!(ParameterTypeTuple!t)())
+        {
+            branches[i](*ptr);
+            return;
+        }
+    }
+
+    assert(false);
 }
 
 public enum Compiler : ubyte

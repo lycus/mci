@@ -1,6 +1,9 @@
 module mci.tester.common;
 
-import mci.core.common;
+import core.exception,
+       std.exception,
+       std.variant,
+       mci.core.common;
 
 version (unittest)
 {
@@ -55,4 +58,35 @@ unittest
     auto d = new D();
 
     assert(!isType!A(d));
+}
+
+unittest
+{
+    Variant v = 1;
+
+    assertThrown!AssertError(match(v, (ubyte f) => {}));
+}
+
+unittest
+{
+    Variant v1 = 1;
+    Variant v2;
+
+    match(v1,
+          (string s) => v2 = "foo",
+          (int i) => v2 = i);
+
+    assert(v2.get!int() == 1);
+}
+
+unittest
+{
+    Variant v1 = "foo";
+    Variant v2;
+
+    match(v1,
+          (string s) => v2 = s,
+          (int i) => v2 = i);
+
+    assert(v2.get!string() == "foo");
 }
