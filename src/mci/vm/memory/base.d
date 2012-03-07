@@ -1,7 +1,6 @@
 module mci.vm.memory.base;
 
-import std.bitmanip,
-       mci.core.config,
+import mci.core.config,
        mci.core.container,
        mci.core.typing.core,
        mci.core.typing.members,
@@ -192,15 +191,15 @@ public enum BarrierFlags : ubyte
     fieldSet = 0x02,
     arrayGet = 0x04,
     arraySet = 0x08,
-    memGet = 0x10,
-    memSet = 0x20,
+    memoryGet = 0x10,
+    memorySet = 0x20,
 }
 
 public interface AtomicGarbageCollector : GarbageCollector
 {
     @property public BarrierFlags barriers();
 
-    public RuntimeObject* getFieldBarrier(RuntimeObject* rto, Field field, ubyte* ptr)
+    public RuntimeObject* fieldGetBarrier(RuntimeObject* rto, Field field, ubyte* ptr)
     in
     {
         assert(rto);
@@ -208,7 +207,7 @@ public interface AtomicGarbageCollector : GarbageCollector
         assert(ptr);
     }
 
-    public void setFieldBarrier(RuntimeObject* rto, Field field, ubyte* ptr, RuntimeObject* value)
+    public void fieldSetBarrier(RuntimeObject* rto, Field field, ubyte* ptr, RuntimeObject* value)
     in
     {
         assert(rto);
@@ -216,17 +215,29 @@ public interface AtomicGarbageCollector : GarbageCollector
         assert(ptr);
     }
 
-    public RuntimeObject* getArrayBarrier(RuntimeObject* rto, size_t index, ubyte* ptr)
+    public RuntimeObject* arrayGetBarrier(RuntimeObject* rto, size_t index, ubyte* ptr)
     in
     {
         assert(rto);
         assert(ptr);
     }
 
-    public void setArrayBarrier(RuntimeObject* rto, size_t index, ubyte* ptr, RuntimeObject* value)
+    public void arraySetBarrier(RuntimeObject* rto, size_t index, ubyte* ptr, RuntimeObject* value)
     in
     {
         assert(rto);
         assert(ptr);
+    }
+
+    public RuntimeObject* memoryGetBarrier(RuntimeObject** rto)
+    in
+    {
+        assert(rto);
+    }
+
+    public void memorySetBarrier(RuntimeObject** rto, RuntimeObject* value)
+    in
+    {
+        assert(rto);
     }
 }
