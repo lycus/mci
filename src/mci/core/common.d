@@ -62,16 +62,33 @@ body
         }
     }
 
+    static if (!is(typeof(return) == void))
+        typeof(return) res;
+
     foreach (i, f; TFuncs)
     {
         alias ParameterTypeTuple!f FArgs;
 
         // If we haven't hit any cases so far and we have cases that take no parameters, call the first one.
         static if (!FArgs.length)
-            return cases[i]();
+        {
+            static if (!is(typeof(return) == void))
+                res = cases[i]();
+            else
+                cases[i]();
+
+            goto exit; // Work around a DMD closure bug.
+        }
     }
 
     assert(false);
+
+    exit:
+
+    static if (!is(typeof(return) == void))
+        return res;
+    else
+        return;
 }
 
 public CommonType!(staticMap!(ReturnType, F)) match(V, F ...)(V variant, scope F cases)
@@ -99,16 +116,33 @@ body
                 return cases[i](*ptr);
     }
 
+    static if (!is(typeof(return) == void))
+        typeof(return) res;
+
     foreach (i, f; TFuncs)
     {
         alias ParameterTypeTuple!f FArgs;
 
         // If we haven't hit any cases so far and we have cases that take no parameters, call the first one.
         static if (!FArgs.length)
-            return cases[i]();
+        {
+            static if (!is(typeof(return) == void))
+                res = cases[i]();
+            else
+                cases[i]();
+
+            goto exit; // Work around a DMD closure bug.
+        }
     }
 
     assert(false);
+
+    exit:
+
+    static if (!is(typeof(return) == void))
+        return res;
+    else
+        return;
 }
 
 public bool powerOfTwo(T)(T value)
