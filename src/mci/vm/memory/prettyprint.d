@@ -136,10 +136,10 @@ private final class PrettyPrinter
                      (UInt32Type t) => append(format("%s", *cast(uint*)mem)),
                      (Int64Type t) => append(format("%s", *cast(long*)mem)),
                      (UInt64Type t) => append(format("%s", *cast(ulong*)mem)),
-                     (NativeIntType t) => append(format("%s", *cast(float*)mem)),
-                     (NativeUIntType t) => append(format("%s", *cast(double*)mem)),
-                     (Float32Type t) => append(format("%s", *cast(isize_t*)mem)),
-                     (Float64Type t) => append(format("%s", *cast(size_t*)mem)),
+                     (NativeIntType t) => append(format("%s", *cast(isize_t*)mem)),
+                     (NativeUIntType t) => append(format("%s", *cast(size_t*)mem)),
+                     (Float32Type t) => append(format("%s", *cast(float*)mem)),
+                     (Float64Type t) => append(format("%s", *cast(double*)mem)),
                      (StructureType t)
                      {
                          beginBlock();
