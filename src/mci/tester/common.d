@@ -24,29 +24,29 @@ unittest
 {
     auto a = new A();
 
-    assert(!isType!B(a));
+    assert(!tryCast!B(a));
 }
 
 unittest
 {
     A b = new B();
 
-    assert(isType!B(b));
+    assert(tryCast!B(b));
 }
 
 unittest
 {
     A c = new C();
 
-    assert(isType!B(c));
-    assert(isType!C(c));
+    assert(tryCast!B(c));
+    assert(tryCast!C(c));
 }
 
 unittest
 {
     auto a = new A();
 
-    assert(isType!A(a));
+    assert(tryCast!A(a));
 }
 
 unittest
@@ -57,6 +57,13 @@ unittest
     match(b, (B b) => isB = true);
 
     assert(isB);
+}
+
+unittest
+{
+    auto b = new B();
+
+    match(b, () => {});
 }
 
 unittest
@@ -102,4 +109,11 @@ unittest
           (int i) => v2 = i);
 
     assert(v2.get!string() == "foo");
+}
+
+unittest
+{
+    Variant v1 = 1;
+
+    match(v1, () => {});
 }

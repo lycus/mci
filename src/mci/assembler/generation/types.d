@@ -86,48 +86,25 @@ out (result)
 }
 body
 {
-    if (auto structType = cast(StructureTypeReferenceNode)node)
-        return resolveStructureType(structType, module_, manager);
-    else if (auto fpType = cast(FunctionPointerTypeReferenceNode)node)
-        return resolveFunctionPointerType(fpType, module_, manager);
-    else if (auto ptrType = cast(PointerTypeReferenceNode)node)
-        return getPointerType(resolveType(ptrType.elementType, module_, manager));
-    else if (auto refType = cast(ReferenceTypeReferenceNode)node)
-        return getReferenceType(cast(StructureType)resolveType(refType.elementType, module_, manager));
-    else if (auto arrType = cast(ArrayTypeReferenceNode)node)
-        return getArrayType(resolveType(arrType.elementType, module_, manager));
-    else if (auto vecType = cast(VectorTypeReferenceNode)node)
-    {
-        auto elements = to!uint(vecType.elements.value);
-        return getVectorType(resolveType(vecType.elementType, module_, manager), elements);
-    }
-    else
-    {
-        if (isType!Int8TypeReferenceNode(node))
-            return Int8Type.instance;
-        else if (isType!UInt8TypeReferenceNode(node))
-            return UInt8Type.instance;
-        else if (isType!Int16TypeReferenceNode(node))
-            return Int16Type.instance;
-        else if (isType!UInt16TypeReferenceNode(node))
-            return UInt16Type.instance;
-        else if (isType!Int32TypeReferenceNode(node))
-            return Int32Type.instance;
-        else if (isType!UInt32TypeReferenceNode(node))
-            return UInt32Type.instance;
-        else if (isType!Int64TypeReferenceNode(node))
-            return Int64Type.instance;
-        else if (isType!UInt64TypeReferenceNode(node))
-            return UInt64Type.instance;
-        else if (isType!NativeIntTypeReferenceNode(node))
-            return NativeIntType.instance;
-        else if (isType!NativeUIntTypeReferenceNode(node))
-            return NativeUIntType.instance;
-        else if (isType!Float32TypeReferenceNode(node))
-            return Float32Type.instance;
-        else
-            return Float64Type.instance;
-    }
+    return match(node,
+                 (StructureTypeReferenceNode n) => resolveStructureType(n, module_, manager),
+                 (FunctionPointerTypeReferenceNode n) => resolveFunctionPointerType(n, module_, manager),
+                 (PointerTypeReferenceNode n) => getPointerType(resolveType(n.elementType, module_, manager)),
+                 (ReferenceTypeReferenceNode n) => getReferenceType(cast(StructureType)resolveType(n.elementType, module_, manager)),
+                 (ArrayTypeReferenceNode n) => getArrayType(resolveType(n.elementType, module_, manager)),
+                 (VectorTypeReferenceNode n) => getVectorType(resolveType(n.elementType, module_, manager), to!uint(n.elements.value)),
+                 (Int8TypeReferenceNode n) => Int8Type.instance,
+                 (UInt8TypeReferenceNode n) => UInt8Type.instance,
+                 (Int16TypeReferenceNode n) => Int16Type.instance,
+                 (UInt16TypeReferenceNode n) => UInt16Type.instance,
+                 (Int32TypeReferenceNode n) => Int32Type.instance,
+                 (UInt32TypeReferenceNode n) => UInt32Type.instance,
+                 (Int64TypeReferenceNode n) => Int64Type.instance,
+                 (UInt64TypeReferenceNode n) => UInt64Type.instance,
+                 (NativeIntTypeReferenceNode n) => NativeIntType.instance,
+                 (NativeUIntTypeReferenceNode n) => NativeUIntType.instance,
+                 (Float32TypeReferenceNode n) => Float32Type.instance,
+                 (Float64TypeReferenceNode n) => Float64Type.instance);
 }
 
 public StructureType resolveStructureType(StructureTypeReferenceNode node, Module module_, ModuleManager manager)

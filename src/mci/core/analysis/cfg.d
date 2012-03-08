@@ -1,6 +1,7 @@
 module mci.core.analysis.cfg;
 
 import std.variant,
+       mci.core.common,
        mci.core.container,
        mci.core.tuple,
        mci.core.code.functions;
@@ -18,12 +19,10 @@ body
 {
     auto term = last(block.stream);
 
-    if (auto bb = term.operand.peek!BasicBlock())
-        return toReadOnlyIndexable(*bb);
-    else if (auto tup = term.operand.peek!(Tuple!(BasicBlock, BasicBlock))())
-        return toReadOnlyIndexable(tup.x, tup.y);
-
-    return new List!BasicBlock();
+    return match(term.operand,
+                 (BasicBlock bb) => toReadOnlyIndexable(bb),
+                 (Tuple!(BasicBlock, BasicBlock) branch) => toReadOnlyIndexable(branch.x, branch.y),
+                 () => new List!BasicBlock());
 }
 
 public ReadOnlyIndexable!BasicBlock getPredecessors(BasicBlock block)

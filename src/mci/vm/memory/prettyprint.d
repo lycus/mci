@@ -86,45 +86,16 @@ private final class PrettyPrinter
         if (instanceName)
             append(instanceName ~ ": ");
 
-        if (isType!Int8Type(type))
-            return append(format("%s", *cast(byte*)mem));
-        else if (isType!UInt8Type(type))
-            return append(format("%s", *cast(ubyte*)mem));
-        else if (isType!Int16Type(type))
-            return append(format("%s", *cast(short*)mem));
-        else if (isType!UInt16Type(type))
-            return append(format("%s", *cast(ushort*)mem));
-        else if (isType!Int32Type(type))
-            return append(format("%s", *cast(int*)mem));
-        else if (isType!UInt32Type(type))
-            return append(format("%s", *cast(uint*)mem));
-        else if (isType!Int64Type(type))
-            return append(format("%s", *cast(long*)mem));
-        else if (isType!UInt64Type(type))
-            return append(format("%s", *cast(ulong*)mem));
-        else if (isType!Float32Type(type))
-            return append(format("%s", *cast(float*)mem));
-        else if (isType!Float64Type(type))
-            return append(format("%s", *cast(double*)mem));
-        else if (isType!NativeIntType(type))
-            return append(format("%s", *cast(isize_t*)mem));
-        else if (isType!NativeUIntType(type))
-            return append(format("%s", *cast(size_t*)mem));
-        else if (auto struc = cast(StructureType)type)
+        string arrayOrVector(Type type)
+        in
         {
-            beginBlock();
-
-            foreach (field; struc.fields)
-            {
-                newLine();
-
-                auto offset = computeOffset(field.y, is32Bit);
-                process(field.y.type, mem + offset, is32Bit, field.x);
-            }
-
-            return endBlock();
+            assert(tryCast!ArrayType(type) || tryCast!VectorType(type));
         }
-        else if (isType!VectorType(type) || isType!ArrayType(type))
+        out (result)
+        {
+            assert(result);
+        }
+        body
         {
             auto vec = cast(VectorType)type;
             auto arr = cast(ArrayType)type;
@@ -155,8 +126,37 @@ private final class PrettyPrinter
 
             return endBlock();
         }
-        else // Pointers, references, and function pointers.
-            return append(format("0x%x", *cast(size_t*)mem));
+
+        return match(type,
+                     (Int8Type t) => append(format("%s", *cast(byte*)mem)),
+                     (UInt8Type t) => append(format("%s", *cast(ubyte*)mem)),
+                     (Int16Type t) => append(format("%s", *cast(short*)mem)),
+                     (UInt16Type t) => append(format("%s", *cast(ushort*)mem)),
+                     (Int32Type t) => append(format("%s", *cast(int*)mem)),
+                     (UInt32Type t) => append(format("%s", *cast(uint*)mem)),
+                     (Int64Type t) => append(format("%s", *cast(long*)mem)),
+                     (UInt64Type t) => append(format("%s", *cast(ulong*)mem)),
+                     (NativeIntType t) => append(format("%s", *cast(float*)mem)),
+                     (NativeUIntType t) => append(format("%s", *cast(double*)mem)),
+                     (Float32Type t) => append(format("%s", *cast(isize_t*)mem)),
+                     (Float64Type t) => append(format("%s", *cast(size_t*)mem)),
+                     (StructureType t)
+                     {
+                         beginBlock();
+
+                         foreach (field; t.fields)
+                         {
+                             newLine();
+
+                             auto offset = computeOffset(field.y, is32Bit);
+                             process(field.y.type, mem + offset, is32Bit, field.x);
+                         }
+
+                         return endBlock();
+                     },
+                     (VectorType t) => arrayOrVector(t),
+                     (ArrayType t) => arrayOrVector(t),
+                     () => append(format("0x%x", *cast(size_t*)mem)));
     }
 }
 

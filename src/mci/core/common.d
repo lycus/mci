@@ -24,41 +24,91 @@ body
     return cast(U)obj;
 }
 
-public alias tryCast isType;
-
-template match(T, F ...)
+public CommonType!(staticMap!(ReturnType, F)) match(T, F ...)(T obj, scope F cases)
     if (is(T == class) || is(T == interface))
+in
 {
-    alias CommonType!(staticMap!(ReturnType, F)) R;
+    static assert(F.length, "At least one function/delegate argument is required.");
 
-    public R match(T obj, scope F cases)
-    in
+    foreach (f; F)
     {
-        static assert(F.length, "At least one function/delegate argument is required.");
+        alias ParameterTypeTuple!f FArgs;
 
-        foreach (f; F)
+        static assert(isFunctionPointer!f || isDelegate!f, "All trailing arguments must be functions or delegates.");
+        static assert(FArgs.length <= 1, "All trailing functions/delegates must take zero or one parameter.");
+
+        static if (FArgs.length)
         {
-            alias ParameterTypeTuple!f FArgs;
             alias FArgs[0] U;
 
-            static assert(isFunctionPointer!f || isDelegate!f, "All trailing arguments must be functions or delegates.");
-            static assert(FArgs.length == 1, "All trailing functions/delegates must take one parameter only.");
             static assert((is(U == class) || is(U == interface)) && is(U : T));
         }
     }
-    body
+}
+body
+{
+    alias TypeTuple!F TFuncs;
+
+    foreach (i, f; TFuncs)
     {
-        foreach (i, f; TypeTuple!F)
+        alias ParameterTypeTuple!f FArgs;
+
+        static if (FArgs.length)
         {
-            alias ParameterTypeTuple!f FArgs;
             alias FArgs[0] U;
 
             if (auto res = tryCast!U(obj))
                 return cases[i](res);
         }
-
-        assert(false);
     }
+
+    foreach (i, f; TFuncs)
+    {
+        alias ParameterTypeTuple!f FArgs;
+
+        // If we haven't hit any cases so far and we have cases that take no parameters, call the first one.
+        static if (!FArgs.length)
+            return cases[i]();
+    }
+
+    assert(false);
+}
+
+public CommonType!(staticMap!(ReturnType, F)) match(V, F ...)(V variant, scope F cases)
+    if (is(V == struct) && __traits(identifier, V) == "VariantN") // Best we can do; ideally we'd make sure it's a VariantN of sorts...
+in
+{
+    static assert(F.length, "At least one function/delegate argument is required.");
+
+    foreach (f; F)
+    {
+        static assert(isFunctionPointer!f || isDelegate!f, "All trailing arguments must be functions or delegates.");
+        static assert((ParameterTypeTuple!f).length <= 1, "All trailing functions/delegates must take zero or one parameter.");
+    }
+}
+body
+{
+    alias TypeTuple!F TFuncs;
+
+    foreach (i, f; TFuncs)
+    {
+        alias ParameterTypeTuple!f FArgs;
+
+        static if (FArgs.length)
+            if (auto ptr = variant.peek!FArgs())
+                return cases[i](*ptr);
+    }
+
+    foreach (i, f; TFuncs)
+    {
+        alias ParameterTypeTuple!f FArgs;
+
+        // If we haven't hit any cases so far and we have cases that take no parameters, call the first one.
+        static if (!FArgs.length)
+            return cases[i]();
+    }
+
+    assert(false);
 }
 
 public bool powerOfTwo(T)(T value)
@@ -95,31 +145,6 @@ body
         return cast(T)(x >> y | x << z);
     else
         static assert(false, "Direction must be \"left\" or \"right\".");
-}
-
-public void match(F ...)(Variant variant, scope F cases)
-in
-{
-    static assert(F.length, "At least one function/delegate argument is required.");
-
-    foreach (f; F)
-    {
-        static assert(isFunctionPointer!f || isDelegate!f, "All trailing arguments must be functions or delegates.");
-        static assert((ParameterTypeTuple!f).length == 1, "All trailing functions/delegates must take one parameter only.");
-    }
-}
-body
-{
-    foreach (i, f; TypeTuple!F)
-    {
-        if (auto ptr = variant.peek!(ParameterTypeTuple!f)())
-        {
-            cases[i](*ptr);
-            return;
-        }
-    }
-
-    assert(false);
 }
 
 public enum Compiler : ubyte

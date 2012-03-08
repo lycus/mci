@@ -14,24 +14,24 @@ in
 }
 body
 {
-    if (isType!Int8Type(type) || isType!UInt8Type(type))
+    if (tryCast!Int8Type(type) || tryCast!UInt8Type(type))
         return 1;
 
-    if (isType!Int16Type(type) || isType!UInt16Type(type))
+    if (tryCast!Int16Type(type) || tryCast!UInt16Type(type))
         return 2;
 
-    if (isType!Int32Type(type) || isType!UInt32Type(type) || isType!Float32Type(type))
+    if (tryCast!Int32Type(type) || tryCast!UInt32Type(type) || tryCast!Float32Type(type))
         return 4;
 
-    if (isType!Int64Type(type) || isType!UInt64Type(type) || isType!Float64Type(type))
+    if (tryCast!Int64Type(type) || tryCast!UInt64Type(type) || tryCast!Float64Type(type))
         return 8;
 
-    if (isType!NativeIntType(type) || isType!NativeUIntType(type))
+    if (tryCast!NativeIntType(type) || tryCast!NativeUIntType(type))
         return is32Bit ? 4 : 8;
 
-    if (isType!PointerType(type) || isType!ReferenceType(type) ||
-        isType!ArrayType(type) || isType!VectorType(type) ||
-        isType!FunctionPointerType(type))
+    if (tryCast!PointerType(type) || tryCast!ReferenceType(type) ||
+        tryCast!ArrayType(type) || tryCast!VectorType(type) ||
+        tryCast!FunctionPointerType(type))
         return is32Bit ? 4 : 8;
 
     auto structType = cast(StructureType)type;

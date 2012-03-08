@@ -1,6 +1,7 @@
 module mci.optimizer.code.unused;
 
-import mci.core.container,
+import mci.core.common,
+       mci.core.container,
        mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.instructions,
@@ -77,13 +78,10 @@ public final class UnusedBasicBlockRemover : OptimizerDefinition
 
                     foreach (insn; bb.y.stream)
                     {
-                        if (auto lbl = insn.operand.peek!BasicBlock())
-                            blocks.remove(*lbl);
-                        else if (auto branch = insn.operand.peek!(Tuple!(BasicBlock, BasicBlock))())
-                        {
-                            blocks.remove(branch.x);
-                            blocks.remove(branch.y);
-                        }
+                        match(insn.operand,
+                              (BasicBlock bb) => blocks.remove(bb),
+                              (Tuple!(BasicBlock, BasicBlock) branch) => removeRange(blocks, [branch.x, branch.y]),
+                              () {});
                     }
                 }
 

@@ -358,31 +358,19 @@ public final class ModuleWriter : ModuleSaver
         else
         {
             _writer.write(TypeReferenceType.core);
-
-            if (isType!Int8Type(type))
-                _writer.write(CoreTypeIdentifier.int8);
-            else if (isType!UInt8Type(type))
-                _writer.write(CoreTypeIdentifier.uint8);
-            else if (isType!Int16Type(type))
-                _writer.write(CoreTypeIdentifier.int16);
-            else if (isType!UInt16Type(type))
-                _writer.write(CoreTypeIdentifier.uint16);
-            else if (isType!Int32Type(type))
-                _writer.write(CoreTypeIdentifier.int32);
-            else if (isType!UInt32Type(type))
-                _writer.write(CoreTypeIdentifier.uint32);
-            else if (isType!Int64Type(type))
-                _writer.write(CoreTypeIdentifier.int64);
-            else if (isType!UInt64Type(type))
-                _writer.write(CoreTypeIdentifier.uint64);
-            else if (isType!NativeIntType(type))
-                _writer.write(CoreTypeIdentifier.int_);
-            else if (isType!NativeUIntType(type))
-                _writer.write(CoreTypeIdentifier.uint_);
-            else if (isType!Float32Type(type))
-                _writer.write(CoreTypeIdentifier.float32);
-            else
-                _writer.write(CoreTypeIdentifier.float64);
+            _writer.write(match(type,
+                                (Int8Type t) => CoreTypeIdentifier.int8,
+                                (UInt8Type t) => CoreTypeIdentifier.uint8,
+                                (Int16Type t) => CoreTypeIdentifier.int16,
+                                (UInt16Type t) => CoreTypeIdentifier.uint16,
+                                (Int32Type t) => CoreTypeIdentifier.int32,
+                                (UInt32Type t) => CoreTypeIdentifier.uint32,
+                                (Int64Type t) => CoreTypeIdentifier.int64,
+                                (UInt64Type t) => CoreTypeIdentifier.uint64,
+                                (NativeIntType t) => CoreTypeIdentifier.int_,
+                                (NativeUIntType t) => CoreTypeIdentifier.uint_,
+                                (Float32Type t) => CoreTypeIdentifier.float32,
+                                (Float64Type t) => CoreTypeIdentifier.float64));
         }
     }
 

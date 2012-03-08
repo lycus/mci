@@ -21,26 +21,17 @@ out (result)
 }
 body
 {
-    if (isType!Int8Type(type))
-        return opLoadI8;
-    else if (isType!UInt8Type(type))
-        return opLoadUI8;
-    else if (isType!Int16Type(type))
-        return opLoadI16;
-    else if (isType!UInt16Type(type))
-        return opLoadUI16;
-    else if (isType!Int32Type(type))
-        return opLoadI32;
-    else if (isType!UInt32Type(type))
-        return opLoadUI32;
-    else if (isType!Int64Type(type))
-        return opLoadI64;
-    else if (isType!UInt64Type(type))
-        return opLoadUI64;
-    else if (isType!Float32Type(type))
-        return opLoadF32;
-    else
-        return opLoadF64;
+    return match(type,
+                 (Int8Type t) => opLoadI8,
+                 (UInt8Type t) => opLoadUI8,
+                 (Int16Type t) => opLoadI16,
+                 (UInt16Type t) => opLoadUI16,
+                 (Int32Type t) => opLoadI32,
+                 (UInt32Type t) => opLoadUI32,
+                 (Int64Type t) => opLoadI64,
+                 (UInt64Type t) => opLoadUI64,
+                 (Float32Type t) => opLoadF32,
+                 (Float64Type t) => opLoadF64);
 }
 
 private Constant operandToConstant(InstructionOperand operand)
@@ -54,26 +45,17 @@ out (result)
 }
 body
 {
-    if (auto val = operand.peek!byte())
-        return new Constant(cast(long)*val);
-    else if (auto val = operand.peek!ubyte())
-        return new Constant(cast(ulong)*val);
-    else if (auto val = operand.peek!short())
-        return new Constant(cast(long)*val);
-    else if (auto val = operand.peek!ushort())
-        return new Constant(cast(ulong)*val);
-    else if (auto val = operand.peek!int())
-        return new Constant(cast(long)*val);
-    else if (auto val = operand.peek!uint())
-        return new Constant(cast(ulong)*val);
-    else if (auto val = operand.peek!long())
-        return new Constant(cast(long)*val);
-    else if (auto val = operand.peek!ulong())
-        return new Constant(cast(ulong)*val);
-    else if (auto val = operand.peek!float())
-        return new Constant(*val);
-    else
-        return new Constant(*operand.peek!double());
+    return match(operand,
+                 (byte v) => new Constant(cast(long)v),
+                 (ubyte v) => new Constant(cast(ulong)v),
+                 (short v) => new Constant(cast(long)v),
+                 (ushort v) => new Constant(cast(ulong)v),
+                 (int v) => new Constant(cast(long)v),
+                 (uint v) => new Constant(cast(ulong)v),
+                 (long v) => new Constant(v),
+                 (ulong v) => new Constant(v),
+                 (float v) => new Constant(v),
+                 (double v) => new Constant(v));
 }
 
 private InstructionOperand constantToOperand(Constant constant, CoreType type)
@@ -89,26 +71,17 @@ body
 {
     InstructionOperand operand;
 
-    if (isType!Int8Type(type))
-        operand = constant.castTo!byte();
-    else if (isType!UInt8Type(type))
-        operand = constant.castTo!ubyte();
-    else if (isType!Int16Type(type))
-        operand = constant.castTo!short();
-    else if (isType!UInt16Type(type))
-        operand = constant.castTo!ushort();
-    else if (isType!Int32Type(type))
-        operand = constant.castTo!int();
-    else if (isType!UInt32Type(type))
-        operand = constant.castTo!uint();
-    else if (isType!Int64Type(type))
-        operand = constant.castTo!long();
-    else if (isType!UInt64Type(type))
-        operand = constant.castTo!ulong();
-    else if (isType!Float32Type(type))
-        operand = constant.castTo!float();
-    else
-        operand = constant.castTo!double();
+    match(type,
+          (Int8Type t) => operand = constant.castTo!byte(),
+          (UInt8Type t) => operand = constant.castTo!ubyte(),
+          (Int16Type t) => operand = constant.castTo!short(),
+          (UInt16Type t) => operand = constant.castTo!ushort(),
+          (Int32Type t) => operand = constant.castTo!int(),
+          (UInt32Type t) => operand = constant.castTo!uint(),
+          (Int64Type t) => operand = constant.castTo!long(),
+          (UInt64Type t) => operand = constant.castTo!ulong(),
+          (Float32Type t) => operand = constant.castTo!float(),
+          (Float64Type t) => operand = constant.castTo!double());
 
     return operand;
 }
@@ -197,7 +170,7 @@ public final class ConstantFolder : OptimizerDefinition
                         else if (instr.opCode is opAriDiv)
                         {
                             // We can't handle division by zero in any sane fashion, so we simply stop folding.
-                            if (isType!IntegerType(instr.targetRegister.type) && r2.castTo!ulong() == 0)
+                            if (tryCast!IntegerType(instr.targetRegister.type) && r2.castTo!ulong() == 0)
                                 constantOps.remove(instr);
                             else
                                 result = r1 / r2;
@@ -205,7 +178,7 @@ public final class ConstantFolder : OptimizerDefinition
                         else if (instr.opCode is opAriRem)
                         {
                             // We can't handle division by zero in any sane fashion, so we simply stop folding.
-                            if (isType!IntegerType(instr.targetRegister.type) && r2.castTo!ulong() == 0)
+                            if (tryCast!IntegerType(instr.targetRegister.type) && r2.castTo!ulong() == 0)
                                 constantOps.remove(instr);
                             else
                                 result = r1 % r2;

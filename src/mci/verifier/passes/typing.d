@@ -76,7 +76,7 @@ public final class ConstantLoadVerifier : CodeVerifier
                     error(instr, "The target of a 'load.null' instruction must be a pointer, a function pointer, a reference, an array, or a vector.");
                 else if (instr.opCode is opLoadFunc)
                 {
-                    if (!isType!FunctionPointerType(instr.targetRegister.type))
+                    if (!tryCast!FunctionPointerType(instr.targetRegister.type))
                         error(instr, "The target of a 'load.func' instruction must be a function pointer.");
 
                     auto func = *instr.operand.peek!Function();
@@ -131,7 +131,7 @@ public final class ArithmeticVerifier : CodeVerifier
             {
                 if (isArithmetic(instr.opCode) || instr.opCode is opNot)
                 {
-                    if ((instr.opCode is opAriAdd || instr.opCode is opAriSub) && isType!PointerType(instr.targetRegister.type))
+                    if ((instr.opCode is opAriAdd || instr.opCode is opAriSub) && tryCast!PointerType(instr.targetRegister.type))
                     {
                         if (instr.sourceRegister1.type !is instr.targetRegister.type)
                             error(instr, "The first source register must be of type %s.", instr.targetRegister.type);
@@ -258,15 +258,15 @@ public final class MemoryVerifier : CodeVerifier
                     if (instr.sourceRegister1.type !is NativeUIntType.instance)
                         error(instr, "Source register must be of type uint.");
 
-                    if (!isType!PointerType(instr.targetRegister.type) &&
-                        !isType!ArrayType(instr.targetRegister.type))
+                    if (!tryCast!PointerType(instr.targetRegister.type) &&
+                        !tryCast!ArrayType(instr.targetRegister.type))
                         error(instr, "Target register must be a pointer or an array.");
                 }
                 else if (instr.opCode is opMemNew)
                 {
-                    if (!isType!PointerType(instr.targetRegister.type) &&
-                        !isType!ReferenceType(instr.targetRegister.type) &&
-                        !isType!VectorType(instr.targetRegister.type))
+                    if (!tryCast!PointerType(instr.targetRegister.type) &&
+                        !tryCast!ReferenceType(instr.targetRegister.type) &&
+                        !tryCast!VectorType(instr.targetRegister.type))
                         error(instr, "Target register must be a pointer, a reference, or an array.");
                 }
                 else if (instr.opCode is opMemFree)
@@ -279,7 +279,7 @@ public final class MemoryVerifier : CodeVerifier
                     if (instr.opCode is opMemSAlloc && instr.sourceRegister1.type !is NativeUIntType.instance)
                         error(instr, "Source register must be of type uint.");
 
-                    if (!isType!PointerType(instr.targetRegister.type))
+                    if (!tryCast!PointerType(instr.targetRegister.type))
                         error(instr, "Target register must be a pointer.");
                 }
             }
@@ -509,10 +509,10 @@ public final class ArrayConversionVerifier : CodeVerifier
                     auto tgt = instr.targetRegister.type;
                     auto src = instr.sourceRegister1.type;
 
-                    if (isType!VectorType(src) && isType!VectorType(tgt) && isConvertibleTo(getElementType(src), getElementType(tgt)))
+                    if (tryCast!VectorType(src) && tryCast!VectorType(tgt) && isConvertibleTo(getElementType(src), getElementType(tgt)))
                         continue;
 
-                    if (isType!ArrayType(src) && isType!ArrayType(tgt) && isConvertibleTo(getElementType(src), getElementType(tgt)))
+                    if (tryCast!ArrayType(src) && tryCast!ArrayType(tgt) && isConvertibleTo(getElementType(src), getElementType(tgt)))
                         continue;
 
                     error(instr, "Invalid types in 'array.conv' operation.");
@@ -574,7 +574,7 @@ public final class UserFieldVerifier : CodeVerifier
                 else if (instr.opCode is opFieldUserGet && !isManaged(instr.targetRegister.type))
                     error(instr, "The target register must be a reference, an array, or a vector.");
                 else if (instr.opCode is opFieldUserAddr)
-                    if (!isType!PointerType(instr.targetRegister.type) || !isManaged(getElementType(instr.targetRegister.type)))
+                    if (!tryCast!PointerType(instr.targetRegister.type) || !isManaged(getElementType(instr.targetRegister.type)))
                         error(instr, "The target register must be a pointer to either a reference, an array, or a vector.");
             }
         }
@@ -671,10 +671,10 @@ public final class ExceptionTypeVerifier : CodeVerifier
         {
             foreach (instr; bb.y.stream)
             {
-                if (instr.opCode is opEHThrow && !isType!ReferenceType(instr.sourceRegister1.type))
+                if (instr.opCode is opEHThrow && !tryCast!ReferenceType(instr.sourceRegister1.type))
                     error(instr, "The source register must be a reference.");
 
-                if (instr.opCode is opEHCatch && !isType!ReferenceType(instr.targetRegister.type))
+                if (instr.opCode is opEHCatch && !tryCast!ReferenceType(instr.targetRegister.type))
                     error(instr, "The target register must be a reference.");
             }
         }
