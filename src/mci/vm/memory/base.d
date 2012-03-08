@@ -199,7 +199,7 @@ public interface AtomicGarbageCollector : GarbageCollector
 {
     @property public BarrierFlags barriers();
 
-    public RuntimeObject* fieldGetBarrier(RuntimeObject* rto, Field field, ubyte* ptr)
+    public RuntimeObject* fieldGetBarrier(RuntimeObject* rto, Field field, RuntimeObject* ptr)
     in
     {
         assert(rto);
@@ -207,7 +207,7 @@ public interface AtomicGarbageCollector : GarbageCollector
         assert(ptr);
     }
 
-    public void fieldSetBarrier(RuntimeObject* rto, Field field, ubyte* ptr, RuntimeObject* value)
+    public void fieldSetBarrier(RuntimeObject* rto, Field field, RuntimeObject* ptr, RuntimeObject* value)
     in
     {
         assert(rto);
@@ -215,14 +215,14 @@ public interface AtomicGarbageCollector : GarbageCollector
         assert(ptr);
     }
 
-    public RuntimeObject* arrayGetBarrier(RuntimeObject* rto, size_t index, ubyte* ptr)
+    public RuntimeObject* arrayGetBarrier(RuntimeObject* rto, size_t index, RuntimeObject* ptr)
     in
     {
         assert(rto);
         assert(ptr);
     }
 
-    public void arraySetBarrier(RuntimeObject* rto, size_t index, ubyte* ptr, RuntimeObject* value)
+    public void arraySetBarrier(RuntimeObject* rto, size_t index, RuntimeObject* ptr, RuntimeObject* value)
     in
     {
         assert(rto);
