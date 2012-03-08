@@ -87,8 +87,6 @@ body
 
     static if (!is(typeof(return) == void))
         return res;
-    else
-        return;
 }
 
 public CommonType!(staticMap!(ReturnType, F)) match(V, F ...)(V variant, scope F cases)
@@ -141,8 +139,6 @@ body
 
     static if (!is(typeof(return) == void))
         return res;
-    else
-        return;
 }
 
 public bool powerOfTwo(T)(T value)
