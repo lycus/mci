@@ -188,5 +188,10 @@
   <pauseAfterRunning>0</pauseAfterRunning>
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
- <Folder name="mci.debugger" />
+ <Folder name="mci.debugger">
+  <File path="client.d" />
+  <File path="protocol.d" />
+  <File path="server.d" />
+  <File path="utilities.d" />
+ </Folder>
 </DProject>
