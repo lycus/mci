@@ -37,7 +37,7 @@ The MCI Waf script also supports some additional options:
       - Whether to run the unit test suite with Valgrind. Note that
         this is disabled on OS X regardless of this setting.
 
-You will need to have both libffi and libdl installed for the build
+You will need to have libffi, libgc and libdl installed for the build
 to succeed. Your libffi installation must support the closure API.
 
 For example, to build for a 32-bit CPU, do:
