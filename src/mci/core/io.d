@@ -210,6 +210,9 @@ public final class MemoryStream : Stream
 
     public void write(ubyte value)
     {
+        if (_position >= _data.length)
+            _data.length = _position + 1;
+
         _data[_position++] = value;
     }
 
