@@ -53,11 +53,11 @@ private bool test(string directory, string[] cmds, int expected, bool error)
     ulong passes;
     ulong failures;
 
-    foreach (file; dirEntries(".", "*.ial", SpanMode.shallow, false))
+    foreach (file; sort(array(map!(x => x.name)(dirEntries(".", "*.ial", SpanMode.shallow, false)))))
     {
         foreach (cmd; cmds)
         {
-            if (invoke(file.name, cmd, expected, error))
+            if (invoke(file, cmd, expected, error))
                 passes++;
             else
                 failures++;
