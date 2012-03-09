@@ -203,6 +203,16 @@ public final class MemoryStream : Stream
         return _isClosed;
     }
 
+    @property public ubyte[] data()
+    in
+    {
+        assert(!_isClosed);
+    }
+    body
+    {
+        return _data;
+    }
+
     public ubyte read()
     {
         return _data[_position++];
