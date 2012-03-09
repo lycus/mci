@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import os, shutil, subprocess
-from waflib import Build, Options, Utils
+import os, subprocess
+from waflib import Build, Utils
 
 APPNAME = 'MCI'
 VERSION = '1.0'
