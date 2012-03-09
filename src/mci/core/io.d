@@ -76,7 +76,7 @@ public final class FileStream : Stream
     }
     body
     {
-        _file = File(fileName, accessAndModeToString(access, mode) ~ 'b');
+        _file = File(fileName, accessAndModeToString(access, mode));
         _access = access;
     }
 
