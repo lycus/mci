@@ -117,6 +117,10 @@ public final class FileStream : Stream
     }
 
     @property public string name()
+    in
+    {
+        assert(_file.isOpen);
+    }
     out (result)
     {
         assert(result);
@@ -124,6 +128,16 @@ public final class FileStream : Stream
     body
     {
         return _file.name;
+    }
+
+    @property public File handle()
+    in
+    {
+        assert(_file.isOpen);
+    }
+    body
+    {
+        return _file;
     }
 
     public ubyte read()
