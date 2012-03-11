@@ -1,18 +1,26 @@
 import std.algorithm,
        std.array,
+       std.conv,
        std.file,
        std.path,
        std.process,
-       std.stdio;
+       std.stdio,
+       std.string;
 
-private string windowsPath = buildPath("..", "src", "mci", "cli", "Test", "mci.exe");
-private string posixPath = buildPath("..", "build", "mci");
+private enum string windowsPath = buildPath("..", "src", "mci", "cli", "Test", "mci.exe");
+private enum string posixPath = buildPath("..", "build", "mci");
+
+private struct TestPass
+{
+    public string command;
+    public int expected;
+    public bool error;
+}
 
 private int main(string[] args)
 {
     auto dir = args[1];
     string cli;
-    string[] cmds;
 
     version (Windows)
     {
@@ -31,67 +39,81 @@ private int main(string[] args)
         return 1;
     }
 
-    foreach (splitArgs; splitter(args[2 .. $], "!"))
+    TestPass[] passes;
+
+    foreach (file; sort(array(map!(x => x.name)(dirEntries(dir, "*.test", SpanMode.shallow, false)))))
     {
-        auto cmd = cli;
+        TestPass pass;
 
-        foreach (arg; splitArgs)
-            cmd ~= " " ~ arg;
+        foreach (line; splitLines(readText(file)))
+        {
+            if (startsWith(line, "C: "))
+                pass.command = line[3 .. $];
+            else if (startsWith(line, "R: "))
+                pass.expected = to!int(line[3 .. $]);
+            else if (startsWith(line, "E: "))
+                pass.error = to!bool(line[3 .. $]);
+        }
 
-        cmds ~= cmd;
+        passes ~= pass;
     }
 
-    return !(test(buildPath(dir, "pass"), cmds, 0, true) && test(buildPath(dir, "fail"), cmds, 1, false));
+    foreach (pass; passes)
+        if (!test(dir, cli, pass))
+            return 1;
+
+    return 0;
 }
 
-private bool test(string directory, string[] cmds, int expected, bool error)
+private bool test(string directory, string cli, TestPass pass)
 {
-    writefln("-- Testing '%s' (Expecting '%d') --", directory, expected);
+    writefln("---------- Testing '%s' (Expecting '%s') ----------", directory, pass.expected);
+    writeln();
 
     chdir(directory);
 
     ulong passes;
     ulong failures;
 
-    foreach (file; sort(array(map!(x => x.name)(dirEntries(".", "*.ial", SpanMode.shallow, false)))))
+    foreach (file; sort(array(filter!(x => count(x, '.') == 1)(map!(x => x.name[2 .. $])(dirEntries(".", "*.ial", SpanMode.shallow, false))))))
     {
-        foreach (cmd; cmds)
-        {
-            if (invoke(file, cmd, expected, error))
-                passes++;
-            else
-                failures++;
-        }
+        if (invoke(file, cli, pass))
+            passes++;
+        else
+            failures++;
     }
 
     writeln();
-    writefln("== Passes: %s - Failures: %s ==", passes, failures);
+    writefln("========== Passes: %s - Failures: %s ==========", passes, failures);
+    writeln();
 
     chdir(buildPath("..", ".."));
 
     return !failures;
 }
 
-private bool invoke(string file, string cli, int expected, bool error)
+private bool invoke(string file, string cli, TestPass pass)
 {
-    auto command = replace(replace(cli, "<file>", file), "<name>", file[0 .. $ - 4]);
-    auto result = system(command ~ " -s");
+    auto cmd = replace(replace(pass.command, "<file>", file), "<name>", file[0 .. $ - 4]);
+    auto full = cli ~ " " ~ cmd;
+    auto base = baseName(cli) ~ " " ~ cmd;
+    auto result = system(full ~ " -s");
 
-    if (result != expected)
+    if (result != pass.expected)
     {
-        writefln("%s\t\tFailed ('%d')", file[2 .. $], result);
+        writefln("%s\t\tFailed ('%s')", base, result);
 
-        if (error)
+        if (pass.error)
         {
             writefln("Error was:");
-            system(command);
+            system(full);
         }
 
         return false;
     }
     else
     {
-        writefln("%s\t\tPassed ('%d')", file[2 .. $], result);
+        writefln("%s\t\tPassed ('%s')", base, result);
         return true;
     }
 }

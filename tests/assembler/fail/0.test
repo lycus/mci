@@ -1,0 +1,3 @@
+C: asm <file> -o <name>.mci -d <name>.ast
+R: 1
+E: false

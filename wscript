@@ -173,8 +173,14 @@ def test(ctx):
         cmd += ' ./mci.tester'
         _run_shell(OUT, ctx, cmd)
 
-    _run_shell('tests', ctx, 'rdmd tester.d "assembler" "asm <file> -o <name>.mci -d <name>.ast"')
-    _run_shell('tests', ctx, 'rdmd tester.d "verifier" "asm <file> -o <name>.mci -d <name>.ast -v"')
+    def run_test(parent, sub):
+        _run_shell('tests', ctx, 'rdmd tester.d {0}'.format(os.path.join(parent, sub)))
+
+    run_test('assembler', 'pass')
+    run_test('assembler', 'fail')
+    run_test('disassembler', 'pass')
+    run_test('verifier', 'pass')
+    run_test('verifier', 'fail')
 
 class TestContext(Build.BuildContext):
     cmd = 'test'

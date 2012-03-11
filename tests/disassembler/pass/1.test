@@ -1,0 +1,3 @@
+C: disasm <name>.mci -o <name>.dis.ial
+R: 0
+E: true
