@@ -12,7 +12,7 @@ public struct RuntimeObject
 {
     private RuntimeTypeInfo _typeInfo;
     package GarbageCollectorHeader header;
-    public size_t userData;
+    public RuntimeObject* userData;
 
     invariant()
     {
