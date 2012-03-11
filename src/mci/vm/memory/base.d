@@ -203,7 +203,6 @@ public interface AtomicGarbageCollector : GarbageCollector
     in
     {
         assert(rto);
-        assert(field);
         assert(source);
         assert(destination);
     }
@@ -212,7 +211,6 @@ public interface AtomicGarbageCollector : GarbageCollector
     in
     {
         assert(rto);
-        assert(field);
         assert(destination);
         assert(source);
     }
