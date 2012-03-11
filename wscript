@@ -158,8 +158,8 @@ def _run_shell(dir, ctx, args):
 
     os.chdir(cwd)
 
-def test(ctx):
-    '''runs the unit test suite and infrastructure tests'''
+def unittest(ctx):
+    '''runs the unit test suite'''
 
     if 'darwin' in Utils.unversioned_sys_platform():
         _run_shell(OUT, ctx, './mci.tester')
@@ -172,6 +172,13 @@ def test(ctx):
         cmd += ' --undef-value-errors=no --error-exitcode=1'
         cmd += ' ./mci.tester'
         _run_shell(OUT, ctx, cmd)
+
+class UnitTestContext(Build.BuildContext):
+    cmd = 'unittest'
+    fun = 'unittest'
+
+def test(ctx):
+    '''runs the infrastructure tests'''
 
     def run_test(parent, sub):
         _run_shell('tests', ctx, 'rdmd tester.d {0}'.format(os.path.join(parent, sub)))
