@@ -199,45 +199,51 @@ public interface AtomicGarbageCollector : GarbageCollector
 {
     @property public BarrierFlags barriers();
 
-    public RuntimeObject* fieldGetBarrier(RuntimeObject* rto, Field field, RuntimeObject* ptr)
+    public void fieldGetBarrier(RuntimeObject* rto, Field field, RuntimeObject** source, RuntimeObject** destination)
     in
     {
         assert(rto);
         assert(field);
-        assert(ptr);
+        assert(source);
+        assert(destination);
     }
 
-    public void fieldSetBarrier(RuntimeObject* rto, Field field, RuntimeObject* ptr, RuntimeObject* value)
+    public void fieldSetBarrier(RuntimeObject* rto, Field field, RuntimeObject** destination, RuntimeObject** source)
     in
     {
         assert(rto);
         assert(field);
-        assert(ptr);
+        assert(destination);
+        assert(source);
     }
 
-    public RuntimeObject* arrayGetBarrier(RuntimeObject* rto, size_t index, RuntimeObject* ptr)
+    public void arrayGetBarrier(RuntimeObject* rto, size_t index, RuntimeObject** source, RuntimeObject** destination)
     in
     {
         assert(rto);
-        assert(ptr);
+        assert(source);
+        assert(destination);
     }
 
-    public void arraySetBarrier(RuntimeObject* rto, size_t index, RuntimeObject* ptr, RuntimeObject* value)
+    public void arraySetBarrier(RuntimeObject* rto, size_t index, RuntimeObject** destination, RuntimeObject** source)
     in
     {
         assert(rto);
-        assert(ptr);
+        assert(destination);
+        assert(source);
     }
 
-    public RuntimeObject* memoryGetBarrier(RuntimeObject** rto)
+    public void memoryGetBarrier(RuntimeObject** source, RuntimeObject** destination)
     in
     {
-        assert(rto);
+        assert(source);
+        assert(destination);
     }
 
-    public void memorySetBarrier(RuntimeObject** rto, RuntimeObject* value)
+    public void memorySetBarrier(RuntimeObject** destination, RuntimeObject** source)
     in
     {
-        assert(rto);
+        assert(destination);
+        assert(source);
     }
 }
