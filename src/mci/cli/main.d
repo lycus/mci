@@ -90,10 +90,7 @@ body
             if (i < allTools.count)
                 log();
         }
-    }
 
-    if (help)
-    {
         log("Available garbage collectors:");
         log();
 
