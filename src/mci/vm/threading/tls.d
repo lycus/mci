@@ -1,4 +1,4 @@
-module mci.vm.thread.tls;
+module mci.vm.threading.tls;
 
 import mci.core.common,
        mci.core.config,

@@ -1,4 +1,4 @@
-module mci.vm.thread.thread;
+module mci.vm.threading.cleanup;
 
 import core.thread,
        mci.core.common,
@@ -9,7 +9,7 @@ public alias void delegate() ThreadEventCallback;
 
 static if (isWindows)
 {
-    import mci.vm.thread.tls;
+    import mci.vm.threading.tls;
 
     private __gshared NoNullDictionary!(Thread, ThreadEventCallback) callbacks;
 

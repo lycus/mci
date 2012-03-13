@@ -213,8 +213,8 @@
    <File path="memory\prettyprint.d" />
   </Folder>
   <Folder name="thread">
-   <File path="thread\thread.d" />
-   <File path="thread\tls.d" />
+   <File path="threading\rename.d" />
+   <File path="threading\tls.d" />
   </Folder>
   <File path="execution.d" />
  </Folder>
