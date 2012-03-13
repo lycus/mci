@@ -2,6 +2,7 @@ module mci.vm.execution;
 
 import core.stdc.stdlib,
        std.algorithm,
+       std.socket,
        mci.core.config,
        mci.core.container,
        mci.core.code.functions,
@@ -27,6 +28,14 @@ public interface ExecutionEngine
     {
         assert(function_.returnType ? !!result : !result);
     }
+
+    public void startDebugger(Address address)
+    in
+    {
+        assert(address);
+    }
+
+    public void stopDebugger();
 
     @property public GarbageCollector gc()
     out (result)
