@@ -1,6 +1,7 @@
 module mci.vm.intrinsics.context;
 
 import mci.core.container,
+       mci.vm.execution,
        mci.vm.memory.base;
 
 public final class VirtualMachineState
@@ -40,34 +41,34 @@ public final class VirtualMachineState
 
 public final class VirtualMachineContext
 {
-    private GarbageCollector _gc;
+    private ExecutionEngine _engine;
     private VirtualMachineState _state;
 
     invariant()
     {
-        assert(_gc);
+        assert(_engine);
         assert(_state);
     }
 
-    public this(GarbageCollector gc)
+    public this(ExecutionEngine engine)
     in
     {
-        assert(gc);
+        assert(engine);
     }
     body
     {
-        _gc = gc;
+        _engine = engine;
         _state = new typeof(_state)();
     }
 
-    @property public GarbageCollector gc()
+    @property public ExecutionEngine engine()
     out (result)
     {
         assert(result);
     }
     body
     {
-        return _gc;
+        return _engine;
     }
 
     @property public VirtualMachineState state()
