@@ -481,6 +481,7 @@ public class ServerFramePacket : Packet
 
 public class ServerBreakPacket : Packet
 {
+    public ulong thread;
     public string moduleName;
     public string functionName;
     public string basicBlockName;
@@ -493,6 +494,7 @@ public class ServerBreakPacket : Packet
 
     public void write(BinaryWriter writer)
     {
+        writer.write(thread);
         writer.write(cast(uint)moduleName.length);
         writer.writeArray(moduleName);
         writer.write(cast(uint)functionName.length);
@@ -504,6 +506,7 @@ public class ServerBreakPacket : Packet
 
     public void read(BinaryReader reader)
     {
+        thread = reader.read!ulong();
         moduleName = reader.readArray!string(reader.read!uint());
         functionName = reader.readArray!string(reader.read!uint());
         basicBlockName = reader.readArray!string(reader.read!uint());
@@ -513,6 +516,7 @@ public class ServerBreakPacket : Packet
 
 public class ServerCatchPacket : Packet
 {
+    public ulong thread;
     public string moduleName;
     public string functionName;
     public string basicBlockName;
@@ -526,6 +530,7 @@ public class ServerCatchPacket : Packet
 
     public void write(BinaryWriter writer)
     {
+        writer.write(thread);
         writer.write(cast(uint)moduleName.length);
         writer.writeArray(moduleName);
         writer.write(cast(uint)functionName.length);
@@ -538,6 +543,7 @@ public class ServerCatchPacket : Packet
 
     public void read(BinaryReader reader)
     {
+        thread = reader.read!ulong();
         moduleName = reader.readArray!string(reader.read!uint());
         functionName = reader.readArray!string(reader.read!uint());
         basicBlockName = reader.readArray!string(reader.read!uint());
@@ -548,6 +554,7 @@ public class ServerCatchPacket : Packet
 
 public class ServerUnhandledPacket : Packet
 {
+    public ulong thread;
     public string moduleName;
     public string functionName;
     public string basicBlockName;
@@ -561,6 +568,7 @@ public class ServerUnhandledPacket : Packet
 
     public void write(BinaryWriter writer)
     {
+        writer.write(thread);
         writer.write(cast(uint)moduleName.length);
         writer.writeArray(moduleName);
         writer.write(cast(uint)functionName.length);
@@ -573,6 +581,7 @@ public class ServerUnhandledPacket : Packet
 
     public void read(BinaryReader reader)
     {
+        thread = reader.read!ulong();
         moduleName = reader.readArray!string(reader.read!uint());
         functionName = reader.readArray!string(reader.read!uint());
         basicBlockName = reader.readArray!string(reader.read!uint());
