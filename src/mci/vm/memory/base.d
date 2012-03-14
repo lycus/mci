@@ -184,6 +184,15 @@ public interface InteractiveGarbageCollector : GarbageCollector
     }
 }
 
+public interface MovingGarbageCollector : GarbageCollector
+{
+    @property public bool canMove();
+
+    public void enableMoving();
+
+    public void disableMoving();
+}
+
 public enum BarrierFlags : ubyte
 {
     none = 0x00,
