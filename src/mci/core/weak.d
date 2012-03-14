@@ -4,6 +4,7 @@ import core.atomic,
        core.memory;
 
 private alias void delegate(Object) DEvent;
+
 private extern (C) void rt_attachDisposeEvent(Object h, DEvent e);
 private extern (C) void rt_detachDisposeEvent(Object h, DEvent e);
 
@@ -13,9 +14,15 @@ public final class Weak(T : Object)
     // that was never intended to do compaction/copying in the first place. However,
     // if compaction is ever added to D's GC, this class will break horribly. If
     // D ever gets such a GC, we should push strongly for built-in weak references.
+
     private size_t _object;
     private size_t _ptr;
     private hash_t _hash;
+
+    invariant()
+    {
+        assert(_ptr);
+    }
 
     public this(T object)
     in
@@ -34,7 +41,16 @@ public final class Weak(T : Object)
         _ptr = ptr;
         _hash = typeid(T).getHash(&object);
 
+        // This call does more than it may seem at first. Since the second parameter
+        // is a delegate, that means it has a context. In this particular case, the
+        // this reference becomes the context. Now, since the delegate is attached to
+        // the underlying object we're referring to, that means that as long as that
+        // object is alive, so are we. In other words, we will always outlive it. We
+        // can make a number of assumptions based on this (see further down).
         rt_attachDisposeEvent(object, &unhook);
+
+        // This ensures that the GC does not see the reference to the object that we
+        // have embedded inside the this reference.
         GC.setAttr(cast(void*)this, GC.BlkAttr.NO_SCAN);
     }
 
@@ -54,6 +70,9 @@ public final class Weak(T : Object)
 
     private void unhook(Object object)
     {
+        // Even though we're in a single-threaded world during finalization, this call
+        // is safe. It only locks on the object's monitor, which is, of course, unreachable
+        // to anyone else since the object has been marked as garbage.
         rt_detachDisposeEvent(object, &unhook);
 
         // This assignment is important. If we don't null _object when it is collected,
