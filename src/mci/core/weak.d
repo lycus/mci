@@ -14,14 +14,25 @@ public final class Weak(T : Object)
     // if compaction is ever added to D's GC, this class will break horribly. If
     // D ever gets such a GC, we should push strongly for built-in weak references.
     private size_t _object;
-
-    @disable this();
+    private size_t _ptr;
+    private hash_t _hash;
 
     public this(T object)
+    in
     {
+        assert(object);
+    }
+    body
+    {
+        auto ptr = cast(size_t)cast(void*)object;
+
         // We use atomics because not all architectures may guarantee atomic store
         // and load of these values.
-        atomicStore(*cast(shared)&_object, cast(size_t)cast(void*)object);
+        atomicStore(*cast(shared)&_object, ptr);
+
+        // Only assigned once, so no atomics.
+        _ptr = ptr;
+        _hash = typeid(T).getHash(&object);
 
         rt_attachDisposeEvent(object, &unhook);
         GC.setAttr(cast(void*)this, GC.BlkAttr.NO_SCAN);
@@ -57,12 +68,7 @@ public final class Weak(T : Object)
             return true;
 
         if (auto weak = cast(Weak!T)o)
-        {
-            auto lhs = object;
-            auto rhs = weak.object;
-
-            return typeid(T).equals(&lhs, &rhs);
-        }
+            return _ptr == weak._ptr;
 
         return false;
     }
@@ -70,13 +76,7 @@ public final class Weak(T : Object)
     public override int opCmp(Object o)
     {
         if (auto weak = cast(Weak!T)o)
-        {
-            auto lhs = object;
-            auto rhs = weak.object;
-
-            if (!typeid(T).equals(&lhs, &rhs))
-                return typeid(T).compare(&lhs, &rhs);
-        }
+            return _ptr > weak._ptr;
 
         return 1;
     }
@@ -85,13 +85,23 @@ public final class Weak(T : Object)
     {
         auto obj = object;
 
-        return typeid(T).getHash(&obj);
+        return obj ? typeid(T).getHash(&obj) : _hash;
     }
 
     public override string toString()
     {
         auto obj = object;
 
-        return obj.toString();
+        return obj ? obj.toString() : toString();
     }
+}
+
+public Weak!T weak(T)(T object)
+in
+{
+    assert(object);
+}
+body
+{
+    return new Weak!T(object);
 }
