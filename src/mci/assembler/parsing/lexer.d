@@ -40,7 +40,7 @@ public final class Source
         validate(source);
 
         _source = source;
-        _location = new typeof(_location)(1, 0);
+        _location = typeof(_location)(1, 0);
     }
 
     @property public dchar current()
