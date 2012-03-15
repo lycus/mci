@@ -204,6 +204,7 @@
    <File path="parsing\ast.d" />
    <File path="parsing\exception.d" />
    <File path="parsing\lexer.d" />
+   <File path="parsing\location.d" />
    <File path="parsing\parser.d" />
    <File path="parsing\tokens.d" />
   </Folder>
