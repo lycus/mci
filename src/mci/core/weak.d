@@ -1,12 +1,13 @@
 module mci.core.weak;
 
 import core.atomic,
-       core.memory;
+       core.memory,
+       mci.core.container;
 
-private alias void delegate(Object) DEvent;
+public alias void delegate(Object) FinalizeCallback;
 
-private extern (C) void rt_attachDisposeEvent(Object h, DEvent e);
-private extern (C) void rt_detachDisposeEvent(Object h, DEvent e);
+private extern (C) void rt_attachDisposeEvent(Object h, FinalizeCallback e);
+private extern (C) void rt_detachDisposeEvent(Object h, FinalizeCallback e);
 
 public final class Weak(T : Object)
 {
@@ -24,7 +25,7 @@ public final class Weak(T : Object)
         assert(_ptr);
     }
 
-    public this(T object)
+    public this(T object, NoNullList!FinalizeCallback callbacks = null)
     in
     {
         assert(object);
@@ -41,13 +42,32 @@ public final class Weak(T : Object)
         _ptr = ptr;
         _hash = typeid(T).getHash(&object);
 
+        FinalizeCallback dg;
+
+        dg = (Object o)
+        {
+            // Even though we're in a single-threaded world during finalization, this call
+            // is safe. It only locks on the object's monitor, which is, of course, unreachable
+            // to anyone else since the object has been marked as garbage.
+            rt_detachDisposeEvent(object, dg);
+
+            // This assignment is important. If we don't null _object when it is collected,
+            // the check in object could return false positives where the GC has reused the
+            // memory for a new object.
+            atomicStore(*cast(shared)&_object, cast(size_t)0);
+
+            if (callbacks)
+                foreach (cb; callbacks)
+                    cb(o);
+        };
+
         // This call does more than it may seem at first. Since the second parameter
         // is a delegate, that means it has a context. In this particular case, the
         // this reference becomes the context. Now, since the delegate is attached to
         // the underlying object we're referring to, that means that as long as that
         // object is alive, so are we. In other words, we will always outlive it. We
         // can make a number of assumptions based on this (see further down).
-        rt_attachDisposeEvent(object, &unhook);
+        rt_attachDisposeEvent(object, dg);
 
         // This ensures that the GC does not see the reference to the object that we
         // have embedded inside the this reference.
@@ -66,19 +86,6 @@ public final class Weak(T : Object)
             return obj;
 
         return null;
-    }
-
-    private void unhook(Object object)
-    {
-        // Even though we're in a single-threaded world during finalization, this call
-        // is safe. It only locks on the object's monitor, which is, of course, unreachable
-        // to anyone else since the object has been marked as garbage.
-        rt_detachDisposeEvent(object, &unhook);
-
-        // This assignment is important. If we don't null _object when it is collected,
-        // the check in object could return false positives where the GC has reused the
-        // memory for a new object.
-        atomicStore(*cast(shared)&_object, cast(size_t)0);
     }
 
     public override equals_t opEquals(Object o)
