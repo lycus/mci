@@ -523,3 +523,66 @@ Possible flags:
 0x10  Read barriers are required for indirect stores.
 0x20  Write barriers are required for indirect loads.
 ===== ===============================================
+
+Math and IEEE 754 operations
+++++++++++++++++++++++++++++
+
+mci_nan_payload_f32
+-------------------
+
+**Signature**
+    ``float32 mci_nan_payload_f32(uint32)``
+
+Produces a NaN (not a number) value with a given user payload. This abuses an
+obscure feature of IEEE 754 that allows 22 bits of a NaN value to be set to a
+user-specified value. This does of course mean that only 22 bits of the given
+payload will be inserted in the NaN value.
+
+mci_nan_payload_f64
+-------------------
+
+**Signature**
+    ``float64 mci_nan_payload_f64(uint64)``
+
+Produces a NaN (not a number) value with a given user payload. This abuses an
+obscure feature of IEEE 754 that allows 51 bits of a NaN value to be set to a
+user-specified value. This does of course mean that only 51 bits of the given
+payload will be inserted in the NaN value.
+
+mci_is_nan_f32
+--------------
+
+**Signature**
+    ``uint mci_is_nan_f32(float32)``
+
+Returns 1 if the given value is NaN (not a number); otherwise, returns 0. This
+function is payload-aware, so NaNs with payloads will correctly be regarded
+NaN.
+
+mci_is_nan_f64
+--------------
+
+**Signature**
+    ``uint mci_is_nan_f64(float64)``
+
+Returns 1 if the given value is NaN (not a number); otherwise, returns 0. This
+function is payload-aware, so NaNs with payloads will correctly be regarded
+NaN.
+
+mci_is_inf_f32
+--------------
+
+**Signature**
+    ``uint mci_is_inf_f32(float32)``
+
+Returns 1 if the given value is positive or negative infinity; otherwise,
+returns 0.
+
+mci_is_inf_f64
+--------------
+
+**Signature**
+    ``uint mci_is_inf_f64(float64)``
+
+Returns 1 if the given value is positive or negative infinity; otherwise,
+returns 0.

@@ -9,6 +9,7 @@ import mci.core.common,
        mci.core.typing.types,
        mci.vm.intrinsics.atomic,
        mci.vm.intrinsics.config,
+       mci.vm.intrinsics.math,
        mci.vm.intrinsics.memory;
 
 public __gshared Module intrinsicModule;
@@ -57,6 +58,13 @@ public __gshared
     Function mciGCAddFreeCallback;
     Function mciGCIsAtomic;
     Function mciGCGetBarriers;
+
+    Function mciNANPayloadF32;
+    Function mciNANPayloadF64;
+    Function mciIsNANF32;
+    Function mciIsNANF64;
+    Function mciIsInfF32;
+    Function mciIsInfF64;
 
     StructureType objectType;
 }
@@ -186,4 +194,17 @@ shared static this()
                                                                                           new NoNullList!Type(toIterable!Type(objectType))));
     mciGCIsAtomic = createFunction!mci_gc_is_atomic(NativeUIntType.instance);
     mciGCGetBarriers = createFunction!mci_gc_get_barriers(UInt8Type.instance);
+
+    mciNANPayloadF32 = createFunction!mci_nan_payload_f32(Float32Type.instance,
+                                                          UInt32Type.instance);
+    mciNANPayloadF64 = createFunction!mci_nan_payload_f64(Float64Type.instance,
+                                                          UInt64Type.instance);
+    mciIsNANF32 = createFunction!mci_is_nan_f32(Float32Type.instance,
+                                                NativeUIntType.instance);
+    mciIsNANF64 = createFunction!mci_is_nan_f64(Float64Type.instance,
+                                                NativeUIntType.instance);
+    mciIsInfF32 = createFunction!mci_is_inf_f32(Float32Type.instance,
+                                                NativeUIntType.instance);
+    mciIsInfF64 = createFunction!mci_is_inf_f64(Float64Type.instance,
+                                                NativeUIntType.instance);
 }

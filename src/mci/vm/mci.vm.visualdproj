@@ -194,6 +194,7 @@
    <File path="intrinsics\config.d" />
    <File path="intrinsics\context.d" />
    <File path="intrinsics\declarations.d" />
+   <File path="intrinsics\math.d" />
    <File path="intrinsics\memory.d" />
   </Folder>
   <Folder name="io">
