@@ -20,6 +20,7 @@ public abstract class TreeNode
 
     public TreeNode reduce()
     {
+        // No reduction possible by default.
         return null;
     }
 }

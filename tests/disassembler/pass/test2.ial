@@ -1,0 +1,4 @@
+type 'function'
+{
+    field instance void() 'type';
+}
