@@ -1,17 +1,17 @@
 module mci.tester.tokens;
 
 import mci.core.container,
-       mci.core.diagnostics.debugging,
+       mci.assembler.parsing.location,
        mci.assembler.parsing.tokens;
 
 unittest
 {
     auto list = new NoNullList!Token();
 
-    list.add(new Token(TokenType.begin, null, new SourceLocation(1, 1)));
-    list.add(new Token(TokenType.void_, "void", new SourceLocation(1, 1)));
-    list.add(new Token(TokenType.constant, "const", new SourceLocation(1, 1)));
-    list.add(new Token(TokenType.end, null, new SourceLocation(1, 1)));
+    list.add(new Token(TokenType.begin, null, SourceLocation(1, 1)));
+    list.add(new Token(TokenType.void_, "void", SourceLocation(1, 1)));
+    list.add(new Token(TokenType.constant, "const", SourceLocation(1, 1)));
+    list.add(new Token(TokenType.end, null, SourceLocation(1, 1)));
 
     auto stream = new MemoryTokenStream(list);
 

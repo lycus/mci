@@ -7,9 +7,9 @@ import std.ascii,
        mci.core.io,
        mci.core.common,
        mci.core.container,
-       mci.core.diagnostics.debugging,
        mci.assembler.exception,
        mci.assembler.parsing.exception,
+       mci.assembler.parsing.location,
        mci.assembler.parsing.tokens;
 
 public final class Source
@@ -18,11 +18,6 @@ public final class Source
     private size_t _position;
     private dchar _current;
     private SourceLocation _location;
-
-    invariant()
-    {
-        assert(_location);
-    }
 
     public this(string source)
     {
@@ -54,11 +49,6 @@ public final class Source
     }
 
     @property public SourceLocation location()
-    out (result)
-    {
-        assert(result);
-    }
-    body
     {
         return _location;
     }
@@ -80,7 +70,7 @@ public final class Source
         else
             column++;
 
-        _location = new typeof(_location)(line, column);
+        _location = typeof(_location)(line, column);
 
         return _current = decode(_source, _position);
     }
@@ -120,7 +110,7 @@ public final class Source
     {
         _position = 0;
         _current = dchar.init;
-        _location = new typeof(_location)(1, 1);
+        _location = typeof(_location)(1, 1);
     }
 }
 
@@ -210,7 +200,6 @@ public final class Lexer
     in
     {
         assert(expected);
-        assert(location);
     }
     body
     {
@@ -228,7 +217,6 @@ public final class Lexer
     in
     {
         assert(expected);
-        assert(location);
     }
     body
     {
@@ -528,11 +516,10 @@ private SourceLocation makeSourceLocation(string value, SourceLocation location)
 in
 {
     assert(value);
-    assert(location);
 }
 body
 {
-    return new SourceLocation(location.line, location.column - cast(uint)value.length);
+    return SourceLocation(location.line, location.column - cast(uint)value.length);
 }
 
 private bool isIdentifierChar(dchar chr)

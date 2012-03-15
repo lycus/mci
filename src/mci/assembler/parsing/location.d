@@ -1,8 +1,8 @@
-module mci.core.diagnostics.debugging;
+module mci.assembler.parsing.location;
 
 import std.conv;
 
-public final class SourceLocation
+public struct SourceLocation
 {
     private uint _line;
     private uint _column;
@@ -38,7 +38,7 @@ public final class SourceLocation
         return _column;
     }
 
-    public override string toString()
+    public string toString()
     {
         return "(line " ~ to!string(_line) ~ (_column == 0 ? "" : ", column " ~ to!string(_column)) ~ ")";
     }

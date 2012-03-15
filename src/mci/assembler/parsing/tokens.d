@@ -3,7 +3,7 @@ module mci.assembler.parsing.tokens;
 import mci.core.container,
        mci.core.nullable,
        mci.core.code.opcodes,
-       mci.core.diagnostics.debugging;
+       mci.assembler.parsing.location;
 
 public enum TokenType : ubyte
 {
@@ -141,14 +141,12 @@ public final class Token
     invariant()
     {
         assert(_type != TokenType.begin && _type != TokenType.end ? !!_value : !_value);
-        assert(_location);
     }
 
     public this(TokenType type, string value, SourceLocation location)
     in
     {
         assert(type != TokenType.begin && type != TokenType.end ? !!value : !value);
-        assert(location);
     }
     body
     {
@@ -173,11 +171,6 @@ public final class Token
     }
 
     @property public SourceLocation location()
-    out (result)
-    {
-        assert(result);
-    }
-    body
     {
         return _location;
     }

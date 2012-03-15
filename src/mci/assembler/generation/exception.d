@@ -1,23 +1,17 @@
 module mci.assembler.generation.exception;
 
-import mci.core.diagnostics.debugging,
-       mci.assembler.exception;
+import mci.assembler.exception,
+       mci.assembler.parsing.location;
 
 public class GenerationException : AssemblerException
 {
     private SourceLocation _location;
-
-    invariant()
-    {
-        assert(_location);
-    }
 
     public this(string msg, SourceLocation location, string file = __FILE__,
                 size_t line = __LINE__)
     in
     {
         assert(msg);
-        assert(location);
         assert(file);
         assert(line);
     }
@@ -34,7 +28,6 @@ public class GenerationException : AssemblerException
     {
         assert(msg);
         assert(next);
-        assert(location);
         assert(file);
         assert(line);
     }
@@ -46,11 +39,6 @@ public class GenerationException : AssemblerException
     }
 
     @property public SourceLocation location()
-    out (result)
-    {
-        assert(result);
-    }
-    body
     {
         return _location;
     }

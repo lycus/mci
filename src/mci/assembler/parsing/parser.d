@@ -6,12 +6,12 @@ import std.conv,
        mci.core.nullable,
        mci.core.code.functions,
        mci.core.code.opcodes,
-       mci.core.diagnostics.debugging,
        mci.core.typing.members,
        mci.core.typing.types,
        mci.assembler.exception,
        mci.assembler.parsing.ast,
        mci.assembler.parsing.exception,
+       mci.assembler.parsing.location,
        mci.assembler.parsing.tokens;
 
 public final class CompilationUnit
@@ -151,7 +151,6 @@ public final class Parser
     in
     {
         assert(error);
-        assert(location);
     }
     body
     {
@@ -162,7 +161,6 @@ public final class Parser
     in
     {
         assert(expected);
-        assert(location);
     }
     body
     {
@@ -173,7 +171,6 @@ public final class Parser
     in
     {
         assert(expected);
-        assert(location);
     }
     body
     {

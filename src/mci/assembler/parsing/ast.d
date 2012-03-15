@@ -7,25 +7,15 @@ import std.conv,
        mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.opcodes,
-       mci.core.diagnostics.debugging,
        mci.core.typing.members,
-       mci.core.typing.types;
+       mci.core.typing.types,
+       mci.assembler.parsing.location;
 
 public abstract class Node
 {
     private SourceLocation _location;
 
-    invariant()
-    {
-        assert(_location);
-    }
-
     protected this(SourceLocation location)
-    in
-    {
-        assert(location);
-    }
-    body
     {
         _location = location;
     }
@@ -62,7 +52,6 @@ public class MetadataNode : Node
     {
         assert(key);
         assert(value);
-        assert(location);
     }
     body
     {
@@ -95,7 +84,6 @@ public class MetadataListNode : Node
     public this(SourceLocation location, NoNullList!MetadataNode metadata)
     in
     {
-        assert(location);
         assert(metadata);
     }
     body
@@ -119,11 +107,6 @@ public class MetadataListNode : Node
 public abstract class DeclarationNode : Node
 {
     protected this(SourceLocation location)
-    in
-    {
-        assert(location);
-    }
-    body
     {
         super(location);
     }
@@ -141,7 +124,6 @@ public class SimpleNameNode : Node
     public this(SourceLocation location, string name)
     in
     {
-        assert(location);
         assert(name);
     }
     body
@@ -174,7 +156,6 @@ public class ModuleReferenceNode : Node
     public this(SourceLocation location, SimpleNameNode name)
     in
     {
-        assert(location);
         assert(name);
     }
     body
@@ -197,12 +178,7 @@ public class ModuleReferenceNode : Node
 
 public abstract class TypeReferenceNode : Node
 {
-    public this(SourceLocation location)
-    in
-    {
-        assert(location);
-    }
-    body
+    protected this(SourceLocation location)
     {
         super(location);
     }
@@ -221,7 +197,6 @@ public class StructureTypeReferenceNode : TypeReferenceNode
     public this(SourceLocation location, ModuleReferenceNode moduleName, SimpleNameNode name)
     in
     {
-        assert(location);
         assert(name);
     }
     body
@@ -260,7 +235,6 @@ public class PointerTypeReferenceNode : TypeReferenceNode
     public this(SourceLocation location, TypeReferenceNode elementType)
     in
     {
-        assert(location);
         assert(elementType);
     }
     body
@@ -293,7 +267,6 @@ public class ReferenceTypeReferenceNode : TypeReferenceNode
     public this(SourceLocation location, StructureTypeReferenceNode elementType)
     in
     {
-        assert(location);
         assert(elementType);
     }
     body
@@ -326,7 +299,6 @@ public class ArrayTypeReferenceNode : TypeReferenceNode
     public this(SourceLocation location, TypeReferenceNode elementType)
     in
     {
-        assert(location);
         assert(elementType);
     }
     body
@@ -361,7 +333,6 @@ public class VectorTypeReferenceNode : TypeReferenceNode
     public this(SourceLocation location, TypeReferenceNode elementType, LiteralValueNode elements)
     in
     {
-        assert(location);
         assert(elementType);
         assert(elements);
     }
@@ -404,7 +375,6 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
                 NoNullList!TypeReferenceNode parameterTypes)
     in
     {
-        assert(location);
         assert(parameterTypes);
     }
     body
@@ -444,12 +414,7 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
 
 public abstract class CoreTypeReferenceNode : TypeReferenceNode
 {
-    public this(SourceLocation location)
-    in
-    {
-        assert(location);
-    }
-    body
+    protected this(SourceLocation location)
     {
         super(location);
     }
@@ -469,11 +434,6 @@ private mixin template DefineCoreTypeNode(string type, string name)
           "    }" ~
           "" ~
           "    public this(SourceLocation location)" ~
-          "    in" ~
-          "    {" ~
-          "        assert(location);" ~
-          "    }" ~
-          "    body" ~
           "    {" ~
           "        super(location);" ~
           "" ~
@@ -519,7 +479,6 @@ public class FieldReferenceNode : Node
     public this(SourceLocation location, StructureTypeReferenceNode typeName, SimpleNameNode name)
     in
     {
-        assert(location);
         assert(typeName);
         assert(name);
     }
@@ -560,7 +519,6 @@ public class FunctionReferenceNode : Node
     public this(SourceLocation location, ModuleReferenceNode moduleName, SimpleNameNode name)
     in
     {
-        assert(location);
         assert(name);
     }
     body
@@ -604,7 +562,6 @@ public class TypeDeclarationNode : DeclarationNode
                 MetadataListNode metadata)
     in
     {
-        assert(location);
         assert(name);
         assert(fields);
     }
@@ -661,7 +618,6 @@ public class FieldDeclarationNode : Node
                 MetadataListNode metadata)
     in
     {
-        assert(location);
         assert(type);
         assert(name);
     }
@@ -719,7 +675,6 @@ public class ParameterNode : Node
     public this(SourceLocation location, TypeReferenceNode type, MetadataListNode metadata)
     in
     {
-        assert(location);
         assert(type);
     }
     body
@@ -771,7 +726,6 @@ public class FunctionDeclarationNode : DeclarationNode
                 MetadataListNode metadata)
     in
     {
-        assert(location);
         assert(name);
         assert(parameters);
         assert(registers);
@@ -861,7 +815,6 @@ public class RegisterDeclarationNode : Node
     public this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type, MetadataListNode metadata)
     in
     {
-        assert(location);
         assert(name);
         assert(type);
     }
@@ -912,7 +865,6 @@ public class BasicBlockDeclarationNode : Node
                 MetadataListNode metadata)
     in
     {
-        assert(location);
         assert(name);
         assert(instructions);
     }
@@ -964,7 +916,6 @@ public class RegisterReferenceNode : Node
     public this(SourceLocation location, SimpleNameNode name)
     in
     {
-        assert(location);
         assert(name);
     }
     body
@@ -997,7 +948,6 @@ public class BasicBlockReferenceNode : Node
     public this(SourceLocation location, SimpleNameNode name)
     in
     {
-        assert(location);
         assert(name);
     }
     body
@@ -1032,7 +982,6 @@ public class BranchSelectorNode : Node
     public this(SourceLocation location, BasicBlockReferenceNode trueBlock, BasicBlockReferenceNode falseBlock)
     in
     {
-        assert(location);
         assert(trueBlock);
         assert(falseBlock);
     }
@@ -1072,7 +1021,6 @@ public class RegisterSelectorNode : Node
     public this(SourceLocation location, NoNullList!RegisterReferenceNode registers)
     in
     {
-        assert(location);
         assert(registers);
     }
     body
@@ -1105,7 +1053,6 @@ public class LiteralValueNode : Node
     public this(SourceLocation location, string value)
     in
     {
-        assert(location);
         assert(value);
     }
     body
@@ -1138,7 +1085,6 @@ public class ArrayLiteralNode : Node
     public this(SourceLocation location, NoNullList!LiteralValueNode values)
     in
     {
-        assert(location);
         assert(values);
     }
     body
@@ -1173,7 +1119,6 @@ public class FFISignatureNode : Node
     public this(SourceLocation location, SimpleNameNode library, SimpleNameNode entryPoint)
     in
     {
-        assert(location);
         assert(library);
         assert(entryPoint);
     }
@@ -1233,7 +1178,6 @@ public class InstructionOperandNode : Node
     public this(SourceLocation location, InstructionOperand operand)
     in
     {
-        assert(location);
         assert(operand.hasValue);
     }
     body
@@ -1274,7 +1218,6 @@ public class InstructionNode : Node
                 InstructionOperandNode operand, MetadataListNode metadata)
     in
     {
-        assert(location);
         assert(opCode);
     }
     body

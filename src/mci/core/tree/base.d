@@ -2,7 +2,6 @@ module mci.core.tree.base;
 
 import mci.core.container,
        mci.core.code.instructions,
-       mci.core.diagnostics.debugging,
        mci.core.typing.types;
 
 public abstract class TreeNode
