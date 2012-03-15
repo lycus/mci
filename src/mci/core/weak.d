@@ -46,15 +46,11 @@ public final class Weak(T : Object)
 
         dg = (Object o)
         {
-            // Even though we're in a single-threaded world during finalization, this call
-            // is safe. It only locks on the object's monitor, which is, of course, unreachable
-            // to anyone else since the object has been marked as garbage.
-            rt_detachDisposeEvent(object, dg);
-
             // This assignment is important. If we don't null _object when it is collected,
             // the check in object could return false positives where the GC has reused the
             // memory for a new object.
-            atomicStore(*cast(shared)&_object, cast(size_t)0);
+            if (this) // This can apparently happen during runtime shutdown.
+                atomicStore(*cast(shared)&_object, cast(size_t)0);
 
             if (callbacks)
                 foreach (cb; callbacks)
@@ -65,8 +61,9 @@ public final class Weak(T : Object)
         // is a delegate, that means it has a context. In this particular case, the
         // this reference becomes the context. Now, since the delegate is attached to
         // the underlying object we're referring to, that means that as long as that
-        // object is alive, so are we. In other words, we will always outlive it. We
-        // can make a number of assumptions based on this (see further down).
+        // object is alive, so are we. In other words, we will always outlive it. Note
+        // that this invariant doesn't actually hold during runtime shutdown (see the
+        // note in the delegate above).
         rt_attachDisposeEvent(object, dg);
 
         // This ensures that the GC does not see the reference to the object that we
