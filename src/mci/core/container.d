@@ -1090,7 +1090,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
         return value;
     }
 
-    public override equals_t opEquals(Object o)
+    public final override equals_t opEquals(Object o)
     {
         if (this is o)
             return true;
@@ -1172,7 +1172,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
         return key in _aa;
     }
 
-    public Tuple!(K, V)* opBinaryRight(string op : "in")(Tuple!(K, V) item)
+    public final Tuple!(K, V)* opBinaryRight(string op : "in")(Tuple!(K, V) item)
     {
         static if (order)
         {
@@ -1300,6 +1300,7 @@ public class NoNullDictionary(K, V, bool order = true)
     public override NoNullDictionary!(K, V, order) duplicate()
     {
         auto d = new NoNullDictionary!(K, V, order)();
+
         d._aa = _aa.dup;
 
         static if (order)
@@ -1442,7 +1443,7 @@ public class ArrayQueue(T) : Queue!T
         return _list[_head .. _size].toArray();
     }
 
-    public void enqueue(T item)
+    public final void enqueue(T item)
     {
         if (_size == _list.count)
         {
@@ -1456,7 +1457,7 @@ public class ArrayQueue(T) : Queue!T
         _size++;
     }
 
-    public T dequeue()
+    public final T dequeue()
     {
         auto item = _list[_head];
 
@@ -1467,7 +1468,7 @@ public class ArrayQueue(T) : Queue!T
         return item;
     }
 
-    public T* peek()
+    public final T* peek()
     {
         if (!_size)
             return null;
@@ -1479,6 +1480,11 @@ public class ArrayQueue(T) : Queue!T
 public class ArrayStack(T) : Stack!T
 {
     private List!T _list;
+
+    invariant()
+    {
+        assert(_list);
+    }
 
     public this()
     {
@@ -1492,6 +1498,8 @@ public class ArrayStack(T) : Stack!T
     }
     body
     {
+        this();
+
         foreach (item; iter)
             push(item);
     }
@@ -1573,7 +1581,7 @@ public class ArrayStack(T) : Stack!T
         return _list.toArray();
     }
 
-    public T* opBinaryRight(string op : "in")(T item)
+    public final T* opBinaryRight(string op : "in")(T item)
     {
         if (auto ptr = item in _list)
             return ptr;
@@ -1581,12 +1589,12 @@ public class ArrayStack(T) : Stack!T
         return null;
     }
 
-    public void push(T item)
+    public final void push(T item)
     {
         _list.add(item);
     }
 
-    public T pop()
+    public final T pop()
     {
         auto item = _list[_list.count - 1];
 
@@ -1595,12 +1603,12 @@ public class ArrayStack(T) : Stack!T
         return item;
     }
 
-    public T* peek()
+    public final T* peek()
     {
         return &_list._array[_list.count - 1];
     }
 
-    public void clear()
+    public final void clear()
     {
         _list.clear();
     }
@@ -1612,6 +1620,11 @@ public final class HashSet(T) : Set!T
         private NoNullDictionary!(T, T, false) _dict;
     else
         private Dictionary!(T, T, false) _dict;
+
+    invariant()
+    {
+        assert(_dict);
+    }
 
     public this()
     {
@@ -1625,6 +1638,8 @@ public final class HashSet(T) : Set!T
     }
     body
     {
+        this();
+
         foreach (item; iter)
             add(item);
     }
@@ -1708,12 +1723,12 @@ public final class HashSet(T) : Set!T
         return _dict.keys.toArray();
     }
 
-    public T* opBinaryRight(string op : "in")(T item)
+    public final T* opBinaryRight(string op : "in")(T item)
     {
         return item in _dict;
     }
 
-    public bool add(T item)
+    public final bool add(T item)
     {
         if (item in _dict)
             return false;
@@ -1722,12 +1737,12 @@ public final class HashSet(T) : Set!T
         return true;
     }
 
-    public void remove(T item)
+    public final void remove(T item)
     {
         _dict.remove(item);
     }
 
-    public void clear()
+    public final void clear()
     {
         _dict.clear();
     }
