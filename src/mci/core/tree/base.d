@@ -70,7 +70,7 @@ public final class ChildNodeContainer(T : TreeNode) : NoNullList!T
 
     public override ChildNodeContainer!T opSlice(size_t x, size_t y)
     {
-        auto list = new ChildNodeContainer!T();
+        auto list = new ChildNodeContainer!T(_node);
 
         for (auto i = x; i < y; i++)
             list.add(this[i]);
@@ -98,7 +98,7 @@ public final class ChildNodeContainer(T : TreeNode) : NoNullList!T
 
     public override ChildNodeContainer!T duplicate()
     {
-        auto l = new ChildNodeContainer!T();
+        auto l = new ChildNodeContainer!T(_node);
 
         foreach (item; this)
             l.add(item);
