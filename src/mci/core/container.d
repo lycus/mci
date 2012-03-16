@@ -30,6 +30,8 @@ public interface Countable(T) : Iterable!T
     @property public bool empty();
 
     public Countable!T duplicate();
+
+    public T[] toArray();
 }
 
 public interface ReadOnlyCollection(T) : Countable!T
@@ -641,7 +643,7 @@ public class List(T) : Indexable!T
     {
         auto list = new List!T();
 
-        for (size_t i = x; i < y; i++)
+        for (auto i = x; i < y; i++)
             list.add(_array[i]);
 
         return list;
@@ -712,6 +714,11 @@ public class List(T) : Indexable!T
         return l;
     }
 
+    public final T[] toArray()
+    {
+        return _array.dup;
+    }
+
     public final void add(T item)
     {
         onAdd(item);
@@ -727,6 +734,8 @@ public class List(T) : Indexable!T
 
     public final void insert(size_t index, T item)
     {
+        onAdd(item);
+
         if (index >= _array.length)
         {
             _array.length = _size = index + 1;
@@ -905,7 +914,7 @@ public class NoNullList(T)
     {
         auto list = new NoNullList!T();
 
-        for (size_t i = x; i < y; i++)
+        for (auto i = x; i < y; i++)
             list.add(_array[i]);
 
         return list;
@@ -1126,12 +1135,36 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
     public Dictionary!(K, V, order) duplicate()
     {
         auto d = new Dictionary!(K, V, order)();
+
         d._aa = _aa.dup;
 
         static if (order)
             d._list = _list.duplicate();
 
         return d;
+    }
+
+    public final Tuple!(K, V)[] toArray()
+    {
+        auto arr = new Tuple!(K, V)[_aa.length];
+
+        static if (order)
+        {
+            foreach (i, tup; _list)
+                arr[i] = tup;
+        }
+        else
+        {
+            size_t i = 0;
+
+            foreach (k, v; _aa)
+            {
+                arr[i] = tuple(k, v);
+                i++;
+            }
+        }
+
+        return arr;
     }
 
     public final V* get(K key)
@@ -1308,7 +1341,7 @@ public class ArrayQueue(T) : Queue!T
 
     public final int opApply(scope int delegate(ref T) dg)
     {
-        for (size_t i = _head; i < _size; i++)
+        for (auto i = _head; i < _size; i++)
         {
             auto item = _list[i];
             auto status = dg(item);
@@ -1322,7 +1355,7 @@ public class ArrayQueue(T) : Queue!T
 
     public final int opApply(scope int delegate(ref size_t, ref T) dg)
     {
-        for (size_t i = _head; i < _size; i++)
+        for (auto i = _head; i < _size; i++)
         {
             auto item = _list[i];
             auto status = dg(i, item);
@@ -1344,7 +1377,7 @@ public class ArrayQueue(T) : Queue!T
             if (_size != q._size || _head != q._head || _tail != q._tail)
                 return false;
 
-            for (size_t i = _head; i < _size; i++)
+            for (auto i = _head; i < _size; i++)
                 if (_list[i] != q._list[i])
                     return false;
 
@@ -1402,6 +1435,11 @@ public class ArrayQueue(T) : Queue!T
         q._head = _head;
 
         return q;
+    }
+
+    public final T[] toArray()
+    {
+        return _list[_head .. _size].toArray();
     }
 
     public void enqueue(T item)
@@ -1528,6 +1566,11 @@ public class ArrayStack(T) : Stack!T
         s._list = _list.duplicate();
 
         return s;
+    }
+
+    public final T[] toArray()
+    {
+        return _list.toArray();
     }
 
     public T* opBinaryRight(string op : "in")(T item)
@@ -1658,6 +1701,11 @@ public final class HashSet(T) : Set!T
         set._dict = _dict.duplicate();
 
         return set;
+    }
+
+    public final T[] toArray()
+    {
+        return _dict.keys.toArray();
     }
 
     public T* opBinaryRight(string op : "in")(T item)

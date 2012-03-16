@@ -130,6 +130,11 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
         return _instructions.duplicate();
     }
 
+    public final Instruction[] toArray()
+    {
+        return _instructions.toArray();
+    }
+
     private void addUseDef(Instruction instruction)
     in
     {
