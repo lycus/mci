@@ -4,8 +4,11 @@ set height 0
 set pagination 0
 set disassembly-flavor intel
 
-handle SIGUSR1 nostop
-handle SIGUSR2 nostop
+handle SIGUSR1 nostop noprint
+handle SIGUSR2 nostop noprint
+handle SIGPWR nostop noprint
+handle SIGXCPU nostop noprint
+
 handle SIGTERM nostop print pass
 handle SIGPIPE nostop
 
