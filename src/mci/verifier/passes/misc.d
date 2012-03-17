@@ -214,6 +214,9 @@ public final class SSAFormVerifier : CodeVerifier
             {
                 foreach (instr; bb.y.stream)
                 {
+                    if (instr.opCode is opCopy)
+                        error(instr, "The 'copy' opcode is not valid in SSA form.");
+
                     foreach (reg; instr.sourceRegisters)
                     {
                         if (reg.definitions.empty)

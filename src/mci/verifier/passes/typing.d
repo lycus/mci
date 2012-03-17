@@ -104,6 +104,17 @@ public final class ConstantLoadVerifier : CodeVerifier
     }
 }
 
+public final class CopyVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+            foreach (instr; bb.y.stream)
+                if (instr.opCode is opCopy && instr.sourceRegister1.type !is instr.targetRegister.type)
+                    error(instr, "The source register be of type %s.", instr.targetRegister.type);
+    }
+}
+
 private bool areSameType(Register[] registers ...)
 in
 {

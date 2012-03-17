@@ -2100,6 +2100,21 @@ Miscellaneous instructions
 
 Instructions that don't quite fit anywhere else.
 
+copy
+----
+
+**Has target register**
+    Yes
+**Source registers**
+    1
+**Operand type**
+    None
+
+This instruction copies the value in the source register into the target
+register.
+
+This instruction is not valid in SSA form.
+
 conv
 ----
 

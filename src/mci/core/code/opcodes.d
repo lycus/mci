@@ -237,6 +237,7 @@ public enum OperationCode : ubyte
     loadSize,
     loadAlign,
     loadOffset,
+    copy,
     ariAdd,
     ariSub,
     ariMul,
@@ -353,6 +354,7 @@ public __gshared OpCode opLoadNull;
 public __gshared OpCode opLoadSize;
 public __gshared OpCode opLoadAlign;
 public __gshared OpCode opLoadOffset;
+public __gshared OpCode opCopy;
 public __gshared OpCode opAriAdd;
 public __gshared OpCode opAriSub;
 public __gshared OpCode opAriMul;
@@ -492,6 +494,7 @@ shared static this()
     opLoadSize = create("load.size", OperationCode.loadSize, OpCodeType.normal, OperandType.type, 0, true);
     opLoadAlign = create("load.align", OperationCode.loadAlign, OpCodeType.normal, OperandType.type, 0, true);
     opLoadOffset = create("load.offset", OperationCode.loadOffset, OpCodeType.normal, OperandType.field, 0, true);
+    opCopy = create("copy", OperationCode.copy, OpCodeType.normal, OperandType.none, 1, true);
     opAriAdd = create("ari.add", OperationCode.ariAdd, OpCodeType.normal, OperandType.none, 2, true);
     opAriSub = create("ari.sub", OperationCode.ariSub, OpCodeType.normal, OperandType.none, 2, true);
     opAriMul = create("ari.mul", OperationCode.ariMul, OpCodeType.normal, OperandType.none, 2, true);
