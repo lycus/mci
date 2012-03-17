@@ -25,9 +25,6 @@ static if (operatingSystem != OperatingSystem.windows)
             if (!mem)
                 return null;
 
-            // Zero memory, since libgc doesn't do it for us.
-            memset(mem, 0, size);
-
             return emplace!RuntimeObject(mem[0 .. RuntimeObject.sizeof], type);
         }
 
