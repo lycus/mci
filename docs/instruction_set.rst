@@ -892,10 +892,10 @@ which is pinned will never be collected until it is unpinned. Therefore,
 memory leaks can happen if care is not taken to correctly mem.unpin_ the
 memory.
 
-Passing a null pointer to this instruction results in undefined behavior.
-The resulting value of this instruction is an opaque handle which only has
-meaning to the specific GC implementation. The handle is intended for use
-with mem.unpin_ later.
+Passing a null or already-pinned reference to this instruction results in
+undefined behavior. The resulting value of this instruction is an opaque
+handle which only has meaning to the specific GC implementation. The handle
+is intended for use with mem.unpin_ later.
 
 The source register must be a reference, an array, or a vector.
 
@@ -913,7 +913,7 @@ mem.unpin
 
 Unpins memory previously pinned with mem.pin_. The source register must be
 a handle returned by mem.pin_. Any invalid handle value will result in
-undefined behavior.
+undefined behavior (this includes handles already unpinned).
 
 Care should be taken to only unpin the memory once it is certain that the
 memory is no longer referenced outside managed code.
