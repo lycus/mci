@@ -145,7 +145,7 @@ atomic_exchange_u
 -----------------
 
 **Signature**
-    ``uint atomic_exchange_u(uint*. uint, uint)``
+    ``uint atomic_exchange_u(uint*, uint, uint)``
 
 Stores the value in the third argument to the location pointed to by the
 first argument if the value pointed to by the first argument is equal to
