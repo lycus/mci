@@ -17,6 +17,7 @@ syn keyword ialInstruction              nop comment
 syn keyword ialInstruction              load.i8 load.ui8 load.i16 load.ui16 load.i32 load.ui32 load.i64 load.ui64 load.f32 load.f64
 syn keyword ialInstruction              load.i8a load.ui8a load.i16a load.ui16a load.i32a load.ui32a load.i64a load.ui64a load.f32a load.f64a
 syn keyword ialInstruction              load.func load.null load.size load.align load.offset
+syn keyword ialInstruction              copy
 syn keyword ialInstruction              ari.add ari.sub ari.mul ari.div ari.rem ari.neg
 syn keyword ialInstruction              bit.and bit.or bit.xor bit.neg
 syn keyword ialInstruction              not shl shr rol ror

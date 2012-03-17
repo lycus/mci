@@ -95,12 +95,14 @@
           <keyword>load\.ui64a</keyword>
           <keyword>load\.f32a</keyword>
           <keyword>load\.f64a</keyword>
-          
+
           <keyword>load\.func</keyword>
           <keyword>load\.null</keyword>
           <keyword>load\.size</keyword>
           <keyword>load\.align</keyword>
           <keyword>load\.offset</keyword>
+
+          <keyword>copy</keyword>
 
           <keyword>ari\.add</keyword>
           <keyword>ari\.sub</keyword>
