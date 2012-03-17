@@ -5,32 +5,32 @@ import mci.core.config,
 
 extern (C)
 {
-    public ubyte mci_get_compiler(VirtualMachineContext context)
+    public ubyte get_compiler(VirtualMachineContext context)
     {
         return compiler;
     }
 
-    public ubyte mci_get_architecture(VirtualMachineContext context)
+    public ubyte get_architecture(VirtualMachineContext context)
     {
         return architecture;
     }
 
-    public ubyte mci_get_operating_system(VirtualMachineContext context)
+    public ubyte get_operating_system(VirtualMachineContext context)
     {
         return operatingSystem;
     }
 
-    public ubyte mci_get_endianness(VirtualMachineContext context)
+    public ubyte get_endianness(VirtualMachineContext context)
     {
         return endianness;
     }
 
-    public ubyte mci_get_emulation_layer(VirtualMachineContext context)
+    public ubyte get_emulation_layer(VirtualMachineContext context)
     {
         return emulationLayer;
     }
 
-    public size_t mci_is_32_bit(VirtualMachineContext context)
+    public size_t is_32_bit(VirtualMachineContext context)
     {
         return is32Bit;
     }

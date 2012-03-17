@@ -28,11 +28,11 @@ Configuration information
 These intrinsics retrieve information about the environment the MCI was
 compiled in.
 
-mci_get_compiler
-----------------
+get_compiler
+------------
 
 **Signature**
-    ``uint8 mci_get_compiler()``
+    ``uint8 get_compiler()``
 
 Gets a value indicating which compiler was used to build the MCI.
 
@@ -48,11 +48,11 @@ Value Description
 4     Stupid D Compiler (SDC).
 ===== ========================
 
-mci_get_architecture
---------------------
+get_architecture
+----------------
 
 **Signature**
-    ``uint8 mci_get_architecture()``
+    ``uint8 get_architecture()``
 
 Gets a value indicating which architecture the MCI was compiled for.
 
@@ -68,11 +68,11 @@ Value Description
 4     MIPS (32-bit or 64-bit).
 ===== ===========================
 
-mci_get_operating_system
-------------------------
+get_operating_system
+--------------------
 
 **Signature**
-    ``uint8 mci_get_operating_system()``
+    ``uint8 get_operating_system()``
 
 Gets a value indicating which operating system the MCI was compiled on.
 
@@ -92,11 +92,11 @@ Value Description
 8     GNU Hurd.
 ===== ====================================
 
-mci_get_endianness
-------------------
+get_endianness
+--------------
 
 **Signature**
-    ``uint8 mci_get_endianness()``
+    ``uint8 get_endianness()``
 
 Gets a value indicating which endianness the MCI was compiled for.
 
@@ -109,11 +109,11 @@ Value Description
 1     Big endian.
 ===== ==============
 
-mci_get_emulation_layer
------------------------
+get_emulation_layer
+-------------------
 
 **Signature**
-    ``uint8 mci_get_emulation_layer()``
+    ``uint8 get_emulation_layer()``
 
 Gets a value indicating which emulation layer the MCI is compiled under.
 
@@ -127,11 +127,11 @@ Value Description
 2     MinGW.
 ===== ===================
 
-mci_is_32_bit
--------------
+is_32_bit
+---------
 
 **Signature**
-    ``uint mci_is_32_bit()``
+    ``uint is_32_bit()``
 
 Gets a value indicating whether the MCI is compiled for 32-bit pointers.
 
@@ -141,11 +141,11 @@ it's compiled for 32-bit pointers.
 Atomic operations
 +++++++++++++++++
 
-mci_atomic_exchange_u
----------------------
+atomic_exchange_u
+-----------------
 
 **Signature**
-    ``uint mci_atomic_exchange_u(uint*. uint, uint)``
+    ``uint atomic_exchange_u(uint*. uint, uint)``
 
 Stores the value in the third argument to the location pointed to by the
 first argument if the value pointed to by the first argument is equal to
@@ -153,99 +153,99 @@ the second argument. All of this happens atomically.
 
 Returns 1 if the store happened; otherwise, returns 0.
 
-mci_atomic_add_u
-----------------
+atomic_add_u
+------------
 
 **Signature**
-    ``uint mci_atomic_add_u(uint*, uint)``
+    ``uint atomic_add_u(uint*, uint)``
 
 Atomically adds the value in the second argument to the value pointed to by
 the first argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
-mci_atomic_sub_u
-----------------
+atomic_sub_u
+------------
 
 **Signature**
-    ``uint mci_atomic_sub_u(uint*, uint)``
+    ``uint atomic_sub_u(uint*, uint)``
 
 Atomically subtracts the value in the second argument from the value pointed
 to by the first argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
-mci_atomic_mul_u
-----------------
+atomic_mul_u
+------------
 
 **Signature**
-    ``uint mci_atomic_mul_u(uint*, uint)``
+    ``uint atomic_mul_u(uint*, uint)``
 
 Atomically multiplies the value pointed to by the first argument with the
 value in the second argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
-mci_atomic_div_u
-----------------
+atomic_div_u
+------------
 
 **Signature**
-    ``uint mci_atomic_div_u(uint*, uint)``
+    ``uint atomic_div_u(uint*, uint)``
 
 Atomically divides the value pointed to by the first argument with the value
 in the second argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
-mci_atomic_rem_u
-----------------
+atomic_rem_u
+------------
 
 **Signature**
-    ``uint mci_atomic_rem_u(uint*, uint)``
+    ``uint atomic_rem_u(uint*, uint)``
 
 Atomically computes the remainder from dividing the value pointed to by the
 first argument by the value in the second argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
-mci_atomic_and_u
-----------------
+atomic_and_u
+------------
 
 **Signature**
-    ``uint mci_atomic_and_u(uint*, uint)``
+    ``uint atomic_and_u(uint*, uint)``
 
 Aotmically computes bit-wise AND between the value pointed to by the first
 argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
-mci_atomic_or_u
----------------
+atomic_or_u
+-----------
 
 **Signature**
-    ``uint mci_atomic_or_u(uint*, uint)``
+    ``uint atomic_or_u(uint*, uint)``
 
 Aotmically computes bit-wise OR between the value pointed to by the first
 argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
-mci_atomic_xor_u
-----------------
+atomic_xor_u
+------------
 
 **Signature**
-    ``uint mci_atomic_xor_u(uint*, uint)``
+    ``uint atomic_xor_u(uint*, uint)``
 
 Aotmically computes bit-wise XOR between the value pointed to by the first
 argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
-mci_atomic_exchange_s
----------------------
+atomic_exchange_s
+-----------------
 
 **Signature**
-    ``uint mci_atomic_exchange_s(int*. int, int)``
+    ``uint atomic_exchange_s(int*. int, int)``
 
 Stores the value in the third argument to the location pointed to by the
 first argument if the value pointed to by the first argument is equal to
@@ -253,88 +253,88 @@ the second argument. All of this happens atomically.
 
 Returns 1 if the store happened; otherwise, returns 0.
 
-mci_atomic_add_s
-----------------
+atomic_add_s
+------------
 
 **Signature**
-    ``int mci_atomic_add_s(int*, int)``
+    ``int atomic_add_s(int*, int)``
 
 Atomically adds the value in the second argument to the value pointed to by
 the first argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
-mci_atomic_sub_s
-----------------
+atomic_sub_s
+------------
 
 **Signature**
-    ``int mci_atomic_sub_s(int*, int)``
+    ``int atomic_sub_s(int*, int)``
 
 Atomically subtracts the value in the second argument from the value pointed
 to by the first argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
-mci_atomic_mul_s
-----------------
+atomic_mul_s
+------------
 
 **Signature**
-    ``int mci_atomic_mul_s(int*, int)``
+    ``int atomic_mul_s(int*, int)``
 
 Atomically multiplies the value pointed to by the first argument with the
 value in the second argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
-mci_atomic_div_s
-----------------
+atomic_div_s
+------------
 
 **Signature**
-    ``int mci_atomic_div_s(int*, int)``
+    ``int atomic_div_s(int*, int)``
 
 Atomically divides the value pointed to by the first argument with the value
 in the second argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
-mci_atomic_rem_s
-----------------
+atomic_rem_s
+------------
 
 **Signature**
-    ``int mci_atomic_rem_s(int*, int)``
+    ``int atomic_rem_s(int*, int)``
 
 Atomically computes the remainder from dividing the value pointed to by the
 first argument by the value in the second argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
-mci_atomic_and_s
-----------------
+atomic_and_s
+------------
 
 **Signature**
-    ``int mci_atomic_and_s(int*, int)``
+    ``int atomic_and_s(int*, int)``
 
 Aotmically computes bit-wise AND between the value pointed to by the first
 argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
-mci_atomic_or_s
----------------
+atomic_or_s
+-----------
 
 **Signature**
-    ``int mci_atomic_or_s(int*, int)``
+    ``int atomic_or_s(int*, int)``
 
 Aotmically computes bit-wise OR between the value pointed to by the first
 argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
-mci_atomic_xor_s
-----------------
+atomic_xor_s
+------------
 
 **Signature**
-    ``int mci_atomic_xor_s(int*, int)``
+    ``int atomic_xor_s(int*, int)``
 
 Aotmically computes bit-wise XOR between the value pointed to by the first
 argument and the value in the second argument and return the result.
@@ -344,11 +344,11 @@ The result is also assigned to the location pointed to by the first argument.
 Memory management
 +++++++++++++++++
 
-mci_is_aligned
---------------
+is_aligned
+----------
 
 **Signature**
-    ``uint mci_is_aligned(uint8*)``
+    ``uint is_aligned(uint8*)``
 
 Determines whether the given pointer is properly aligned for the system
 the program is currently running on. Returns 1 if the pointer is properly
@@ -357,63 +357,63 @@ aligned; otherwise, returns 0.
 Here, "properly aligned" usually means being a multiple of 4 or 8 depending
 on the pointer length of the platform (32 and 64 bits, respectively).
 
-mci_gc_collect
---------------
+gc_collect
+----------
 
 **Signature**
-    ``void mci_gc_collect()``
+    ``void gc_collect()``
 
 Instructs the GC to perform a full collection. This may cause a stop of the
 world.
 
-mci_gc_minimize
----------------
+gc_minimize
+-----------
 
 **Signature**
-    ``void mci_gc_minimize()``
+    ``void gc_minimize()``
 
 Instructs the GC to do minimal GC work. This function is appropriate for
 tight loops, and is relatively cheap.
 
-mci_gc_get_collections
-----------------------
+gc_get_collections
+------------------
 
 **Signature**
-    ``uint64 mci_gc_get_collections()``
+    ``uint64 gc_get_collections()``
 
 Gets a value indicating the amount of collections the GC has performed.
 
-mci_gc_add_pressure
--------------------
+gc_add_pressure
+---------------
 
 **Signature**
-    ``void mci_gc_add_pressure(uint)``
+    ``void gc_add_pressure(uint)``
 
 Informs the GC that a significant amount of unmanaged memory (given by the
 argument) is about to be allocated.
 
-mci_gc_remove_pressure
-----------------------
+gc_remove_pressure
+------------------
 
 **Signature**
-    ``void mci_gc_remove_pressure(uint)``
+    ``void gc_remove_pressure(uint)``
 
 Informs the GC that a significant amount of unmanaged memory (given by the
 argument) is about to be freed.
 
-mci_gc_is_generational
-----------------------
+gc_is_generational
+------------------
 
 **Signature**
-    ``uint mci_gc_is_generational()``
+    ``uint gc_is_generational()``
 
 Gets a value indicating whether the GC is generational.
 
-mci_get_generations
--------------------
+gc_get_generations
+------------------
 
 **Signature**
-    ``uint mci_get_generations()``
+    ``uint gc_get_generations()``
 
 Gets the amount of generations managed by the GC. This is guaranteed to be a
 constant number.
@@ -421,11 +421,11 @@ constant number.
 Calling this function if the GC is not generational results in undefined
 behavior.
 
-mci_gc_generation_collect
--------------------------
+gc_generation_collect
+---------------------
 
 **Signature**
-    ``void mci_gc_generation_collect(uint)``
+    ``void gc_generation_collect(uint)``
 
 Instructs the GC generation given by the ID in the argument to perform a full
 collection. This may cause a stop of the world.
@@ -433,11 +433,11 @@ collection. This may cause a stop of the world.
 Calling this function if the GC is not generational results in undefined
 behavior.
 
-mci_gc_generation_minimize
---------------------------
+gc_generation_minimize
+----------------------
 
 **Signature**
-    ``void mci_gc_generation_minimize(uint)``
+    ``void gc_generation_minimize(uint)``
 
 Instructs the GC generation given by the ID in the argument to perform as much
 cleanup work as it can without stopping the world.
@@ -445,11 +445,11 @@ cleanup work as it can without stopping the world.
 Calling this function if the GC is not generational results in undefined
 behavior.
 
-mci_gc_generation_get_collections
----------------------------------
+gc_generation_get_collections
+-----------------------------
 
 **Signature**
-    ``uint mci_gc_generation_get_collections(uint)``
+    ``uint gc_generation_get_collections(uint)``
 
 Gets a value indicating the amount of collections the GC has performed in the
 generation given by the ID in the argument.
@@ -457,21 +457,21 @@ generation given by the ID in the argument.
 Calling this function if the GC is not generational results in undefined
 behavior.
 
-mci_gc_is_interactive
----------------------
+gc_is_interactive
+-----------------
 
 **Signature**
-    ``uint mci_gc_is_interactive()``
+    ``uint gc_is_interactive()``
 
 Gets a value indicating whether the GC is interactive (i.e. supports allocate
 and free callbacks). Returns 1 if the GC is interactive; otherwise, returns
 0.
 
-mci_gc_add_allocate_callback
-----------------------------
+gc_add_allocate_callback
+------------------------
 
 **Signature**
-    ``void mci_gc_add_allocate_callback(void(Object&) cdecl)``
+    ``void gc_add_allocate_callback(void(Object&) cdecl)``
 
 Adds a callback to the GC which will be called on every allocation made in
 the program. The parameter given to the function pointer is the newly
@@ -481,11 +481,11 @@ memory has been allocated.
 Calling this function if the GC is not interactive results in undefined
 behavior.
 
-mci_gc_add_free_callback
-------------------------
+gc_add_free_callback
+--------------------
 
 **Signature**
-    ``void mci_gc_add_free_callback(void(Object&) cdecl)``
+    ``void gc_add_free_callback(void(Object&) cdecl)``
 
 Adds a callback to the GC which will be called on every freeing of memory
 made in the program. The argument given to the function pointer is the freed
@@ -495,20 +495,20 @@ actually freed.
 Calling this function if the GC is not interactive results in undefined
 behavior.
 
-mci_gc_is_atomic
-----------------
+gc_is_atomic
+------------
 
 **Signature**
-    ``uint mci_gc_is_atomic()``
+    ``uint gc_is_atomic()``
 
 Gets a value indicating whether the GC is atomic (i.e. requires read or write
 barriers). Returns 1 if the GC is atomic; otherwise, returns 0.
 
-mci_gc_get_barriers
--------------------
+gc_get_barriers
+---------------
 
 **Signature**
-    ``uint8 mci_gc_get_barriers()``
+    ``uint8 gc_get_barriers()``
 
 Returns flags indicating which barriers the current GC requires.
 
@@ -527,62 +527,62 @@ Possible flags:
 Math and IEEE 754 operations
 ++++++++++++++++++++++++++++
 
-mci_nan_payload_f32
--------------------
+nan_payload_f32
+---------------
 
 **Signature**
-    ``float32 mci_nan_payload_f32(uint32)``
+    ``float32 nan_payload_f32(uint32)``
 
 Produces a NaN (not a number) value with a given user payload. This abuses an
 obscure feature of IEEE 754 that allows 22 bits of a NaN value to be set to a
 user-specified value. This does of course mean that only 22 bits of the given
 payload will be inserted in the NaN value.
 
-mci_nan_payload_f64
--------------------
+nan_payload_f64
+---------------
 
 **Signature**
-    ``float64 mci_nan_payload_f64(uint64)``
+    ``float64 nan_payload_f64(uint64)``
 
 Produces a NaN (not a number) value with a given user payload. This abuses an
 obscure feature of IEEE 754 that allows 51 bits of a NaN value to be set to a
 user-specified value. This does of course mean that only 51 bits of the given
 payload will be inserted in the NaN value.
 
-mci_is_nan_f32
---------------
+is_nan_f32
+----------
 
 **Signature**
-    ``uint mci_is_nan_f32(float32)``
+    ``uint is_nan_f32(float32)``
 
 Returns 1 if the given value is NaN (not a number); otherwise, returns 0. This
 function is payload-aware, so NaNs with payloads will correctly be regarded
 NaN.
 
-mci_is_nan_f64
---------------
+is_nan_f64
+----------
 
 **Signature**
-    ``uint mci_is_nan_f64(float64)``
+    ``uint is_nan_f64(float64)``
 
 Returns 1 if the given value is NaN (not a number); otherwise, returns 0. This
 function is payload-aware, so NaNs with payloads will correctly be regarded
 NaN.
 
-mci_is_inf_f32
---------------
+is_inf_f32
+----------
 
 **Signature**
-    ``uint mci_is_inf_f32(float32)``
+    ``uint is_inf_f32(float32)``
 
 Returns 1 if the given value is positive or negative infinity; otherwise,
 returns 0.
 
-mci_is_inf_f64
---------------
+is_inf_f64
+----------
 
 **Signature**
-    ``uint mci_is_inf_f64(float64)``
+    ``uint is_inf_f64(float64)``
 
 Returns 1 if the given value is positive or negative infinity; otherwise,
 returns 0.

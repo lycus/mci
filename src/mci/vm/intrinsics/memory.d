@@ -5,84 +5,84 @@ import mci.vm.intrinsics.context,
 
 extern (C)
 {
-    public size_t mci_is_aligned(VirtualMachineContext context, ubyte* ptr)
+    public size_t is_aligned(VirtualMachineContext context, ubyte* ptr)
     {
         return isSystemAligned(ptr);
     }
 
-    public void mci_gc_collect(VirtualMachineContext context)
+    public void gc_collect(VirtualMachineContext context)
     {
         context.engine.gc.collect();
     }
 
-    public void mci_gc_minimize(VirtualMachineContext context)
+    public void gc_minimize(VirtualMachineContext context)
     {
         context.engine.gc.minimize();
     }
 
-    public ulong mci_gc_get_collections(VirtualMachineContext context)
+    public ulong gc_get_collections(VirtualMachineContext context)
     {
         return context.engine.gc.collections;
     }
 
-    public void mci_gc_add_pressure(VirtualMachineContext context, size_t amount)
+    public void gc_add_pressure(VirtualMachineContext context, size_t amount)
     {
         context.engine.gc.addPressure(amount);
     }
 
-    public void mci_gc_remove_pressure(VirtualMachineContext context, size_t amount)
+    public void gc_remove_pressure(VirtualMachineContext context, size_t amount)
     {
         context.engine.gc.removePressure(amount);
     }
 
-    public size_t mci_gc_is_generational(VirtualMachineContext context)
+    public size_t gc_is_generational(VirtualMachineContext context)
     {
         return !!cast(GenerationalGarbageCollector)context.engine.gc;
     }
 
-    public size_t mci_gc_get_generations(VirtualMachineContext context)
+    public size_t gc_get_generations(VirtualMachineContext context)
     {
         return (cast(GenerationalGarbageCollector)context.engine.gc).generations.count;
     }
 
-    public void mci_gc_generation_collect(VirtualMachineContext context, size_t id)
+    public void gc_generation_collect(VirtualMachineContext context, size_t id)
     {
         (cast(GenerationalGarbageCollector)context.engine.gc).generations[id].collect();
     }
 
-    public void mci_gc_generation_minimize(VirtualMachineContext context, size_t id)
+    public void gc_generation_minimize(VirtualMachineContext context, size_t id)
     {
         (cast(GenerationalGarbageCollector)context.engine.gc).generations[id].minimize();
     }
 
-    public ulong mci_gc_generation_get_collections(VirtualMachineContext context, size_t id)
+    public ulong gc_generation_get_collections(VirtualMachineContext context, size_t id)
     {
         return (cast(GenerationalGarbageCollector)context.engine.gc).generations[id].collections;
     }
 
-    public size_t mci_gc_is_interactive(VirtualMachineContext context)
+    public size_t gc_is_interactive(VirtualMachineContext context)
     {
         return !!cast(InteractiveGarbageCollector)context.engine.gc;
     }
 
     public alias extern (C) void function(RuntimeObject*) GCCallbackFunction;
 
-    public void mci_gc_add_allocate_callback(VirtualMachineContext context, GCCallbackFunction callback)
+    public void gc_add_allocate_callback(VirtualMachineContext context, GCCallbackFunction callback)
     {
         (cast(InteractiveGarbageCollector)context.engine.gc).addAllocateCallback((RuntimeObject* rto) => callback(rto));
     }
 
-    public void mci_gc_add_free_callback(VirtualMachineContext context, GCCallbackFunction callback)
+    public void gc_add_free_callback(VirtualMachineContext context, GCCallbackFunction callback)
     {
         (cast(InteractiveGarbageCollector)context.engine.gc).addFreeCallback((RuntimeObject* rto) => callback(rto));
     }
 
-    public size_t mci_gc_is_atomic(VirtualMachineContext context)
+    public size_t gc_is_atomic(VirtualMachineContext context)
     {
         return !!cast(AtomicGarbageCollector)context.engine.gc;
     }
 
-    public ubyte mci_gc_get_barriers(VirtualMachineContext context)
+    public ubyte gc_get_barriers(VirtualMachineContext context)
     {
         return (cast(AtomicGarbageCollector)context.engine.gc).barriers;
     }
