@@ -44,7 +44,7 @@ public abstract class TreeNode
     }
 }
 
-public final class ChildNodeContainer(T : TreeNode) : NoNullList!T
+public final class ChildNodeList(T : TreeNode) : NoNullList!T
 {
     private TreeNode _node;
 
@@ -63,14 +63,14 @@ public final class ChildNodeContainer(T : TreeNode) : NoNullList!T
         _node = node;
     }
 
-    public override ChildNodeContainer!T opSlice()
+    public override ChildNodeList!T opSlice()
     {
         return duplicate();
     }
 
-    public override ChildNodeContainer!T opSlice(size_t x, size_t y)
+    public override ChildNodeList!T opSlice(size_t x, size_t y)
     {
-        auto list = new ChildNodeContainer!T(_node);
+        auto list = new ChildNodeList!T(_node);
 
         for (auto i = x; i < y; i++)
             list.add(this[i]);
@@ -78,7 +78,7 @@ public final class ChildNodeContainer(T : TreeNode) : NoNullList!T
         return list;
     }
 
-    public override ChildNodeContainer!T opCat(Iterable!T rhs)
+    public override ChildNodeList!T opCat(Iterable!T rhs)
     {
         auto list = duplicate();
 
@@ -88,7 +88,7 @@ public final class ChildNodeContainer(T : TreeNode) : NoNullList!T
         return list;
     }
 
-    public override ChildNodeContainer!T opCatAssign(Iterable!T rhs)
+    public override ChildNodeList!T opCatAssign(Iterable!T rhs)
     {
         foreach (item; rhs)
             add(item);
@@ -96,9 +96,9 @@ public final class ChildNodeContainer(T : TreeNode) : NoNullList!T
         return this;
     }
 
-    public override ChildNodeContainer!T duplicate()
+    public override ChildNodeList!T duplicate()
     {
-        auto l = new ChildNodeContainer!T(_node);
+        auto l = new ChildNodeList!T(_node);
 
         foreach (item; this)
             l.add(item);

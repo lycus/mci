@@ -10,7 +10,7 @@ public abstract class StatementNode : TreeNode
 
 public class BlockNode : StatementNode
 {
-    private NoNullList!StatementNode _statements;
+    private ChildNodeList!StatementNode _statements;
 
     invariant()
     {
@@ -19,10 +19,10 @@ public class BlockNode : StatementNode
 
     public this()
     {
-        _statements = new typeof(_statements)();
+        _statements = new typeof(_statements)(this);
     }
 
-    @property public NoNullList!StatementNode statements()
+    @property public final ChildNodeList!StatementNode statements()
     out (result)
     {
         assert(result);
@@ -47,7 +47,7 @@ public class RawCodeNode : StatementNode
         _instructions = new typeof(_instructions)();
     }
 
-    @property public NoNullList!Instruction instructions()
+    @property public final NoNullList!Instruction instructions()
     out (result)
     {
         assert(result);
