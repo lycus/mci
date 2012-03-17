@@ -842,6 +842,10 @@ behavior occurs.
 
 The source register must be a pointer, a reference, an array, or a vector.
 
+Note that when using this instruction, one cannot rely on free callbacks
+registered with the GC being called. Some GCs will do this as expected, but
+others will not.
+
 mem.salloc
 ----------
 
