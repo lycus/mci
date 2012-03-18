@@ -95,7 +95,7 @@ public final class GraphTool : Tool
             auto funcName = args[1];
 
             if (auto func = mod.functions.get(funcName))
-                graph.write(func);
+                graph.write(*func);
             else
             {
                 logf("Error: Function '%s' does not exist.", funcName);
