@@ -86,10 +86,6 @@ public final class Weak(T : Object)
 
         // HACK: See above.
         GC.addRange(monitor, mon.devt.length * FinalizeCallback.sizeof);
-
-        // This ensures that the GC does not see the reference to the object that we
-        // have embedded inside the this reference.
-        GC.setAttr(cast(void*)this, GC.BlkAttr.NO_SCAN);
     }
 
     @property public T object()
