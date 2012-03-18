@@ -93,10 +93,9 @@ public final class GraphTool : Tool
             auto graph = new GraphWriter(stream);
 
             auto funcName = args[1];
-            auto func = find(mod.functions, (Tuple!(string, Function) x) => x.x == funcName);
 
-            if (func.y)
-                graph.write(func.y);
+            if (auto func = mod.functions.get(funcName))
+                graph.write(func);
             else
             {
                 logf("Error: Function '%s' does not exist.", funcName);
