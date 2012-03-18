@@ -89,5 +89,8 @@ public final class GraphWriter
     {
         foreach (branch; getBranches(block))
             _writer.writefln("    \"%s\" -> \"%s\";", block.name, branch.name);
+
+        if (block.unwindBlock)
+            _writer.writefln("    \"%s\" -> \"%s\";", block.name, block.unwindBlock.name);
     }
 }

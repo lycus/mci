@@ -15,6 +15,8 @@ import std.exception,
        mci.vm.io.exception,
        mci.vm.io.reader;
 
+public enum string graphFileExtension = ".dot";
+
 public final class GraphTool : Tool
 {
     @property public string description()
@@ -48,6 +50,18 @@ public final class GraphTool : Tool
         if (args.length != 2)
         {
             log("Error: Exactly one input module and one function name must be given.");
+            return 2;
+        }
+
+        if (output[0] == '.' && output.length <= graphFileExtension.length + 1)
+        {
+            logf("Error: Output file '%s' has no name part.", output);
+            return 2;
+        }
+
+        if (extension(output) != graphFileExtension)
+        {
+            logf("Error: Output file '%s' does not end in '%s'.", output, graphFileExtension);
             return 2;
         }
 
