@@ -9,6 +9,13 @@ public alias void delegate(Object) FinalizeCallback;
 private extern (C) void rt_attachDisposeEvent(Object h, FinalizeCallback e);
 private extern (C) void rt_detachDisposeEvent(Object h, FinalizeCallback e);
 
+private struct SMonitor
+{
+    public Object.Monitor impl;
+    public FinalizeCallback[] devt;
+    public size_t refs;
+}
+
 public final class Weak(T : Object)
 {
     // Note: This class uses a clever trick which works fine for a conservative GC
@@ -43,14 +50,22 @@ public final class Weak(T : Object)
         _hash = typeid(T).getHash(&object);
 
         FinalizeCallback dg;
+        void* monitor;
 
         dg = (Object o)
         {
+            // HACK: This is completely and utterly insane. Don't do this at home. It will
+            // kill your dog, eat your laundry, and possibly assassinate your family. This
+            // is a temporary hack to make the invariant described below (before the
+            // rt_attachDisposeEvent call) hold.
+            GC.removeRange(monitor);
+
+            rt_detachDisposeEvent(o, dg);
+
             // This assignment is important. If we don't null _object when it is collected,
             // the check in object could return false positives where the GC has reused the
             // memory for a new object.
-            if (this) // This can apparently happen during runtime shutdown.
-                atomicStore(*cast(shared)&_object, cast(size_t)0);
+            atomicStore(*cast(shared)&_object, cast(size_t)0);
 
             if (callbacks)
                 foreach (cb; callbacks)
@@ -65,6 +80,12 @@ public final class Weak(T : Object)
         // that this invariant doesn't actually hold during runtime shutdown (see the
         // note in the delegate above).
         rt_attachDisposeEvent(object, dg);
+
+        auto mon = cast(SMonitor*)object.__monitor;
+        monitor = mon.devt.ptr;
+
+        // HACK: See above.
+        GC.addRange(monitor, mon.devt.length * FinalizeCallback.sizeof);
 
         // This ensures that the GC does not see the reference to the object that we
         // have embedded inside the this reference.
