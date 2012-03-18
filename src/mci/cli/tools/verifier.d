@@ -73,6 +73,7 @@ public final class VerifierTool : Tool
 
                 auto reader = new ModuleReader(manager);
                 auto mod = reader.load(file);
+
                 auto verifier = new VerificationManager();
 
                 foreach (func; mod.functions)

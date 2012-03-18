@@ -116,6 +116,7 @@ public final class OptimizerTool : Tool
 
                 auto reader = new ModuleReader(manager);
                 auto mod = reader.load(file);
+
                 auto optimizer = new OptimizationManager();
 
                 if (fast)

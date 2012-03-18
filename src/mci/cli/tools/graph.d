@@ -1,23 +1,25 @@
-module mci.cli.tools.disassembler;
+module mci.cli.tools.graph;
 
 import std.exception,
        std.getopt,
        std.path,
-       mci.assembler.disassembly.modules,
+       mci.cli.main,
+       mci.cli.tool,
+       mci.core.container,
        mci.core.io,
+       mci.core.tuple,
+       mci.core.code.functions,
+       mci.core.code.graph,
        mci.core.code.modules,
        mci.vm.intrinsics.declarations,
        mci.vm.io.exception,
-       mci.vm.io.reader,
-       mci.cli.main,
-       mci.cli.tool,
-       mci.cli.tools.assembler;
+       mci.vm.io.reader;
 
-public final class DisassemblerTool : Tool
+public final class GraphTool : Tool
 {
     @property public string description()
     {
-        return "Disassemble an assembled module into IAL code.";
+        return "Outputs a Graphviz-compatible DOT specification of a function.";
     }
 
     @property public string[] options()
@@ -27,7 +29,7 @@ public final class DisassemblerTool : Tool
 
     public ubyte run(string[] args)
     {
-        string output = "out.ial";
+        string output = "out.dot";
 
         try
         {
@@ -43,21 +45,9 @@ public final class DisassemblerTool : Tool
             return 2;
         }
 
-        if (args.length != 1)
+        if (args.length != 2)
         {
-            log("Error: Exactly one input module must be given.");
-            return 2;
-        }
-
-        if (output[0] == '.' && output.length <= inputFileExtension.length + 1)
-        {
-            logf("Error: Output file '%s' has no name part.", output);
-            return 2;
-        }
-
-        if (extension(output) != inputFileExtension)
-        {
-            logf("Error: Output file '%s' does not end in '%s'.", output, inputFileExtension);
+            log("Error: Exactly one input module and one function name must be given.");
             return 2;
         }
 
@@ -86,9 +76,18 @@ public final class DisassemblerTool : Tool
             auto mod = reader.load(file);
 
             stream = new FileStream(output, FileAccess.write, FileMode.truncate);
-            auto disasm = new ModuleDisassembler(stream);
+            auto graph = new GraphWriter(stream);
 
-            disasm.disassemble(mod);
+            auto funcName = args[1];
+            auto func = find(mod.functions, (Tuple!(string, Function) x) => x.x == funcName);
+
+            if (func.y)
+                graph.write(func.y);
+            else
+            {
+                logf("Error: Function '%s' does not exist.", funcName);
+                return 2;
+            }
         }
         catch (ErrnoException ex)
         {
