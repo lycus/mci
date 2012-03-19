@@ -83,6 +83,11 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
         return _instructions[x .. y];
     }
 
+    public ReadOnlyIndexable!Instruction opCat(Instruction rhs)
+    {
+        return _instructions ~ rhs;
+    }
+
     public ReadOnlyIndexable!Instruction opCat(Iterable!Instruction rhs)
     {
         return _instructions ~ rhs;

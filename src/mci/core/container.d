@@ -61,12 +61,16 @@ public interface ReadOnlyIndexable(T) : Countable!T
 
     public ReadOnlyIndexable!T opSlice();
 
+    public ReadOnlyIndexable!T opCat(T rhs);
+
     public ReadOnlyIndexable!T opCat(Iterable!T rhs);
 }
 
 public interface Indexable(T) : ReadOnlyIndexable!T
 {
     public T opIndexAssign(T item, size_t index);
+
+    public Indexable!T opCatAssign(T rhs);
 
     public Indexable!T opCatAssign(Iterable!T rhs);
 
@@ -647,6 +651,15 @@ public class List(T) : Indexable!T, Collection!T
         return list;
     }
 
+    public List!T opCat(T rhs)
+    {
+        auto list = duplicate();
+
+        list.add(rhs);
+
+        return list;
+    }
+
     public List!T opCat(Iterable!T rhs)
     {
         auto list = duplicate();
@@ -655,6 +668,13 @@ public class List(T) : Indexable!T, Collection!T
             list.add(item);
 
         return list;
+    }
+
+    public Indexable!T opCatAssign(T rhs)
+    {
+        add(rhs);
+
+        return this;
     }
 
     public List!T opCatAssign(Iterable!T rhs)
@@ -918,6 +938,15 @@ public class NoNullList(T)
         return list;
     }
 
+    public override NoNullList!T opCat(T rhs)
+    {
+        auto list = duplicate();
+
+        list.add(rhs);
+
+        return list;
+    }
+
     public override NoNullList!T opCat(Iterable!T rhs)
     {
         auto list = duplicate();
@@ -926,6 +955,13 @@ public class NoNullList(T)
             list.add(item);
 
         return list;
+    }
+
+    public override NoNullList!T opCatAssign(T rhs)
+    {
+        add(rhs);
+
+        return this;
     }
 
     public override NoNullList!T opCatAssign(Iterable!T rhs)
