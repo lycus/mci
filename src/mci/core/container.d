@@ -2,6 +2,7 @@ module mci.core.container;
 
 import core.exception,
        std.algorithm,
+       std.bitmanip,
        std.exception,
        std.range,
        std.traits,
@@ -1780,4 +1781,194 @@ public final class HashSet(T) : Set!T
     {
         _dict.clear();
     }
+}
+
+public class BitArray : Indexable!bool
+{
+    private std.bitmanip.BitArray _bits;
+
+    public this()
+    {
+    }
+
+    public this(Iterable!bool items)
+    in
+    {
+        assert(items);
+    }
+    body
+    {
+        foreach (item; items)
+            this ~= item;
+    }
+
+    public final int opApply(scope int delegate(bool) dg)
+    {
+        foreach (b; _bits)
+        {
+            auto status = dg(b);
+
+            if (status)
+                return status;
+        }
+
+        return 0;
+    }
+
+    public final int opApply(scope int delegate(size_t, bool) dg)
+    {
+        foreach (i, b; _bits)
+        {
+            auto status = dg(i, b);
+
+            if (status)
+                return status;
+        }
+
+        return 0;
+    }
+
+    public final bool opIndex(size_t index)
+    {
+        return _bits[index];
+    }
+
+    public final bool opIndexAssign(bool item, size_t index)
+    {
+        _bits[index] = item;
+
+        return item;
+    }
+
+    public BitArray opSlice()
+    {
+        return duplicate();
+    }
+
+    public BitArray opSlice(size_t x, size_t y)
+    {
+        auto bits = new BitArray();
+
+        for (auto i = x; i < y; i++)
+            bits ~= _bits[i];
+
+        return bits;
+    }
+
+    public BitArray opCat(bool rhs)
+    {
+        auto bits = duplicate();
+
+        bits ~= rhs;
+
+        return bits;
+    }
+
+    public BitArray opCat(Iterable!bool rhs)
+    {
+        auto bits = duplicate();
+
+        foreach (item; rhs)
+            bits ~= item;
+
+        return bits;
+    }
+
+    public BitArray opCatAssign(bool rhs)
+    {
+        _bits ~= rhs;
+
+        return this;
+    }
+
+    public BitArray opCatAssign(Iterable!bool rhs)
+    {
+        foreach (item; rhs)
+            _bits ~= item;
+
+        return this;
+    }
+
+    public final override equals_t opEquals(Object o)
+    {
+        if (this is o)
+            return true;
+
+        if (auto bits = cast(BitArray)o)
+            return _bits == bits._bits;
+
+        return false;
+    }
+
+    public final override hash_t toHash()
+    {
+        return typeid(typeof(_bits)).getHash(&_bits);
+    }
+
+    public final override int opCmp(Object o)
+    {
+        if (this is o)
+            return 0;
+
+        if (auto bits = cast(BitArray)o)
+            return typeid(typeof(_bits)).compare(&_bits, &bits._bits);
+
+        return 1;
+    }
+
+    @property public final size_t count()
+    {
+        return _bits.length;
+    }
+
+    @property public final bool empty()
+    {
+        return !_bits.length;
+    }
+
+    public BitArray duplicate()
+    {
+        auto bits = new BitArray();
+
+        bits._bits = _bits.dup;
+
+        return bits;
+    }
+
+    public final bool[] toArray()
+    {
+        auto arr = new bool[_bits.length];
+
+        foreach (i, b; _bits)
+            arr[i] = b;
+
+        return arr;
+    }
+
+    public final void insert(size_t index, bool item)
+    {
+        if (index >= _bits.length)
+        {
+            _bits.length = index + 1;
+            _bits[index] = item;
+        }
+        else
+        {
+            assert(false); version (none) {
+            // The index lies within the managed area, so shift all elements forward.
+            _bits.length = _bits.length + 1;
+            _size++;
+
+            for (size_t i = 0; i < _size; i++)
+                if (i >= index)
+                    _bits[i] = _bits[i + 1];
+
+            _bits[index] = item; }
+        }
+    }
+}
+
+unittest
+{
+    auto ba = new BitArray();
 }
