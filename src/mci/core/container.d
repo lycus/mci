@@ -53,7 +53,7 @@ public interface Collection(T) : ReadOnlyCollection!T
     public void clear();
 }
 
-public interface ReadOnlyIndexable(T) : ReadOnlyCollection!T
+public interface ReadOnlyIndexable(T) : Countable!T
 {
     public T opIndex(size_t index);
 
@@ -64,7 +64,7 @@ public interface ReadOnlyIndexable(T) : ReadOnlyCollection!T
     public ReadOnlyIndexable!T opCat(Iterable!T rhs);
 }
 
-public interface Indexable(T) : ReadOnlyIndexable!T, Collection!T
+public interface Indexable(T) : ReadOnlyIndexable!T
 {
     public T opIndexAssign(T item, size_t index);
 
@@ -562,7 +562,7 @@ body
     return item;
 }
 
-public class List(T) : Indexable!T
+public class List(T) : Indexable!T, Collection!T
 {
     private T[] _array;
     private size_t _size;
@@ -611,7 +611,7 @@ public class List(T) : Indexable!T
     public final T* opBinaryRight(string op : "in")(T item)
     {
         for (size_t i = 0; i < _size; i++)
-            if (_array[i] == _array[i])
+            if (_array[i] == item)
                 return &_array[i];
 
         return null;
