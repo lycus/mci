@@ -1,7 +1,6 @@
 module mci.vm.memory.info;
 
-import std.bitmanip,
-       mci.core.common,
+import mci.core.common,
        mci.core.container,
        mci.core.nullable,
        mci.core.tuple,
@@ -14,27 +13,27 @@ public final class RuntimeTypeInfo
 {
     private Type _type;
     private size_t _size;
-    private Nullable!(const BitArray) _bitmap;
+    private BitArray _bitmap;
 
     invariant()
     {
         assert(_type);
         assert(isManaged(cast()_type));
-        assert(tryCast!StructureType(_type) ? (cast()_bitmap).hasValue : !(cast()_bitmap).hasValue);
+        assert(tryCast!StructureType(_type) ? !!_bitmap : !_bitmap);
     }
 
-    private this(Type type, size_t size, Nullable!BitArray bitmap)
+    private this(Type type, size_t size, BitArray bitmap)
     in
     {
         assert(type);
         assert(isManaged(type));
-        assert(tryCast!StructureType(type) ? bitmap.hasValue : !bitmap.hasValue);
+        assert(tryCast!StructureType(type) ? !!bitmap : !bitmap);
     }
     body
     {
         _type = type;
         _size = size;
-        _bitmap = bitmap.hasValue ? nullable!(const BitArray)(bitmap.value.dup) : Nullable!(const BitArray)();
+        _bitmap = bitmap;
     }
 
     @property public Type type()
@@ -53,14 +52,14 @@ public final class RuntimeTypeInfo
         return _size;
     }
 
-    @property public const(BitArray) bitmap()
+    @property public ReadOnlyIndexable!bool bitmap()
     out (result)
     {
-        assert(tryCast!StructureType(_type));
+        assert(tryCast!StructureType(_type) ? !!result : !result);
     }
     body
     {
-        return _bitmap.value;
+        return _bitmap;
     }
 }
 
@@ -102,10 +101,10 @@ body
         if (auto info = tup in typeInfoCache)
             return *info;
 
-        Nullable!BitArray bitmap;
+        BitArray bitmap;
 
         if (auto structType = tryCast!StructureType(type))
-            bitmap = nullable(computeBitmap(structType, is32Bit));
+            bitmap = computeBitmap(structType, is32Bit);
 
         return typeInfoCache[tup] = new RuntimeTypeInfo(type, computeRealSize(type, is32Bit), bitmap);
     }

@@ -1,7 +1,6 @@
 module mci.vm.memory.layout;
 
-import std.bitmanip,
-       mci.core.common,
+import mci.core.common,
        mci.core.container,
        mci.core.tuple,
        mci.core.analysis.utilities,
@@ -109,7 +108,7 @@ in
 }
 body
 {
-    BitArray bits;
+    auto bits = new BitArray();
 
     bits ~= false; // The runtime type info.
     bits ~= false; // The GC header.
@@ -131,7 +130,7 @@ body
             if (auto structType = tryCast!StructureType(field.y.type))
                 innerCompute(structType, offset);
             else if (!(offset % wordSize))
-                    bits ~= isManaged(field.y.type);
+                bits ~= isManaged(field.y.type);
         }
     }
 

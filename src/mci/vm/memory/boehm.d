@@ -1,7 +1,6 @@
 module mci.vm.memory.boehm;
 
 import core.stdc.string,
-       std.bitmanip,
        std.conv,
        gc,
        mci.core.common,
@@ -42,10 +41,12 @@ static if (operatingSystem != OperatingSystem.windows)
                         descr = *d;
                     else
                     {
-                        auto bm = type.bitmap;
-                        auto bitmap = *cast(BitArray*)cast(void*)&bm;
+                        auto words = new size_t[type.bitmap.count + (size_t.sizeof * 8 - 1) / size_t.sizeof * 8];
 
-                        descr = GC_make_descriptor((cast(size_t[])cast(void[])bitmap).ptr, bitmap.length);
+                        foreach (b; type.bitmap)
+                            words ~= b;
+
+                        descr = GC_make_descriptor(words.ptr, words.length);
 
                         _registeredBitmaps.add(type, descr);
                     }
