@@ -1,10 +1,13 @@
 module mci.vm.memory.boehm;
 
 import core.stdc.string,
+       std.bitmanip,
        std.conv,
        gc,
        mci.core.common,
+       mci.core.container,
        mci.core.config,
+       mci.core.typing.types,
        mci.vm.memory.base,
        mci.vm.memory.info;
 
@@ -12,6 +15,13 @@ static if (operatingSystem != OperatingSystem.windows)
 {
     public final class BoehmGarbageCollector : GarbageCollector
     {
+        private __gshared Dictionary!(RuntimeTypeInfo, size_t) _registeredBitmaps;
+
+        shared static this()
+        {
+            _registeredBitmaps = new typeof(_registeredBitmaps)();
+        }
+
         @property public ulong collections()
         {
             return GC_gc_no;
@@ -20,7 +30,31 @@ static if (operatingSystem != OperatingSystem.windows)
         public RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0)
         {
             auto size = RuntimeObject.sizeof + type.size + extraSize;
-            auto mem = GC_malloc(size);
+            void* mem;
+
+            if (tryCast!StructureType(type.type))
+            {
+                size_t descr;
+
+                synchronized (_registeredBitmaps)
+                {
+                    if (auto d = type in _registeredBitmaps)
+                        descr = *d;
+                    else
+                    {
+                        auto bm = type.bitmap;
+                        auto bitmap = *cast(BitArray*)cast(void*)&bm;
+
+                        descr = GC_make_descriptor((cast(size_t[])cast(void[])bitmap).ptr, bitmap.length);
+
+                        _registeredBitmaps.add(type, descr);
+                    }
+                }
+
+                mem = GC_malloc_explicitly_typed(size, descr);
+            }
+            else
+                mem = GC_malloc(size);
 
             if (!mem)
                 return null;
