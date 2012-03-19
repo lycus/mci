@@ -37,7 +37,7 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
         return _block;
     }
 
-    public final int opApply(scope int delegate(ref Instruction) dg)
+    public final int opApply(scope int delegate(Instruction) dg)
     {
         foreach (item; _instructions)
         {
@@ -50,7 +50,7 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
         return 0;
     }
 
-    public final int opApply(scope int delegate(ref size_t, ref Instruction) dg)
+    public final int opApply(scope int delegate(size_t, Instruction) dg)
     {
         foreach (i, item; _instructions)
         {

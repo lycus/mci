@@ -10,13 +10,13 @@ import core.exception,
 
 public interface Iterable(T)
 {
-    public int opApply(scope int delegate(ref T) dg)
+    public int opApply(scope int delegate(T) dg)
     in
     {
         assert(dg);
     }
 
-    public int opApply(scope int delegate(ref size_t, ref T) dg)
+    public int opApply(scope int delegate(size_t, T) dg)
     in
     {
         assert(dg);
@@ -582,12 +582,11 @@ public class List(T) : Indexable!T
             add(item);
     }
 
-    public final int opApply(scope int delegate(ref T) dg)
+    public final int opApply(scope int delegate(T) dg)
     {
         for (size_t i = 0; i < _size; i++)
         {
-            auto item = _array[i];
-            auto status = dg(item);
+            auto status = dg(_array[i]);
 
             if (status)
                 return status;
@@ -596,12 +595,11 @@ public class List(T) : Indexable!T
         return 0;
     }
 
-    public final int opApply(scope int delegate(ref size_t, ref T) dg)
+    public final int opApply(scope int delegate(size_t, T) dg)
     {
         for (size_t i = 0; i < _size; i++)
         {
-            auto item = _array[i];
-            auto status = dg(i, item);
+            auto status = dg(i, _array[i]);
 
             if (status)
                 return status;
@@ -1004,7 +1002,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
             add(item);
     }
 
-    public final int opApply(scope int delegate(ref Tuple!(K, V)) dg)
+    public final int opApply(scope int delegate(Tuple!(K, V)) dg)
     {
         static if (order)
         {
@@ -1031,7 +1029,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
         return 0;
     }
 
-    public final int opApply(scope int delegate(ref size_t, ref Tuple!(K, V)) dg)
+    public final int opApply(scope int delegate(size_t, Tuple!(K, V)) dg)
     {
         static if (order)
         {
@@ -1340,7 +1338,7 @@ public class ArrayQueue(T) : Queue!T
             enqueue(item);
     }
 
-    public final int opApply(scope int delegate(ref T) dg)
+    public final int opApply(scope int delegate(T) dg)
     {
         for (auto i = _head; i < _size; i++)
         {
@@ -1354,7 +1352,7 @@ public class ArrayQueue(T) : Queue!T
         return 0;
     }
 
-    public final int opApply(scope int delegate(ref size_t, ref T) dg)
+    public final int opApply(scope int delegate(size_t, T) dg)
     {
         for (auto i = _head; i < _size; i++)
         {
@@ -1504,7 +1502,7 @@ public class ArrayStack(T) : Stack!T
             push(item);
     }
 
-    public final int opApply(scope int delegate(ref T) dg)
+    public final int opApply(scope int delegate(T) dg)
     {
         foreach (item; _list)
         {
@@ -1517,7 +1515,7 @@ public class ArrayStack(T) : Stack!T
         return 0;
     }
 
-    public final int opApply(scope int delegate(ref size_t, ref T) dg)
+    public final int opApply(scope int delegate(size_t, T) dg)
     {
         foreach (i, item; _list)
         {
@@ -1644,7 +1642,7 @@ public final class HashSet(T) : Set!T
             add(item);
     }
 
-    public final int opApply(scope int delegate(ref T) dg)
+    public final int opApply(scope int delegate(T) dg)
     {
         foreach (tup; _dict)
         {
@@ -1658,7 +1656,7 @@ public final class HashSet(T) : Set!T
         return 0;
     }
 
-    public final int opApply(scope int delegate(ref size_t, ref T) dg)
+    public final int opApply(scope int delegate(size_t, T) dg)
     {
         foreach (i, tup; _dict)
         {
