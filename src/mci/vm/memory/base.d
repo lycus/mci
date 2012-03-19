@@ -10,6 +10,8 @@ import mci.core.config,
 
 public struct RuntimeObject
 {
+    // Remember to keep this in sync with mci.vm.memory.layout.computeBitmap.
+
     private RuntimeTypeInfo _typeInfo;
     package GarbageCollectorHeader header;
     public RuntimeObject* userData;

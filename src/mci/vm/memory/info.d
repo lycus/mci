@@ -1,7 +1,9 @@
 module mci.vm.memory.info;
 
-import mci.core.common,
+import std.bitmanip,
+       mci.core.common,
        mci.core.container,
+       mci.core.nullable,
        mci.core.tuple,
        mci.core.analysis.utilities,
        mci.core.typing.core,
@@ -12,23 +14,27 @@ public final class RuntimeTypeInfo
 {
     private Type _type;
     private size_t _size;
+    private Nullable!(const BitArray) _bitmap;
 
     invariant()
     {
         assert(_type);
         assert(isManaged(cast()_type));
+        assert(tryCast!StructureType(_type) ? (cast()_bitmap).hasValue : !(cast()_bitmap).hasValue);
     }
 
-    private this(Type type, size_t size)
+    private this(Type type, size_t size, Nullable!BitArray bitmap)
     in
     {
         assert(type);
         assert(isManaged(type));
+        assert(tryCast!StructureType(type) ? bitmap.hasValue : !bitmap.hasValue);
     }
     body
     {
         _type = type;
         _size = size;
+        _bitmap = bitmap.hasValue ? nullable!(const BitArray)(bitmap.value.dup) : Nullable!(const BitArray)();
     }
 
     @property public Type type()
@@ -45,6 +51,16 @@ public final class RuntimeTypeInfo
     @property public size_t size()
     {
         return _size;
+    }
+
+    @property public const(BitArray) bitmap()
+    out (result)
+    {
+        assert(tryCast!StructureType(_type));
+    }
+    body
+    {
+        return _bitmap.value;
     }
 }
 
@@ -86,6 +102,11 @@ body
         if (auto info = tup in typeInfoCache)
             return *info;
 
-        return typeInfoCache[tup] = new RuntimeTypeInfo(type, computeRealSize(type, is32Bit));
+        Nullable!BitArray bitmap;
+
+        if (auto structType = tryCast!StructureType(type))
+            bitmap = nullable(computeBitmap(structType, is32Bit));
+
+        return typeInfoCache[tup] = new RuntimeTypeInfo(type, computeRealSize(type, is32Bit), bitmap);
     }
 }

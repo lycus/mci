@@ -1,8 +1,10 @@
 module mci.vm.memory.layout;
 
-import mci.core.common,
+import std.bitmanip,
+       mci.core.common,
        mci.core.container,
        mci.core.tuple,
+       mci.core.analysis.utilities,
        mci.core.typing.core,
        mci.core.typing.members,
        mci.core.typing.types;
@@ -98,4 +100,42 @@ public size_t computeAlignment(Type type, bool is32Bit)
     }
 
     return computeSize(type, is32Bit);
+}
+
+public BitArray computeBitmap(StructureType type, bool is32Bit)
+in
+{
+    assert(type);
+}
+body
+{
+    BitArray bits;
+
+    bits ~= false; // The runtime type info.
+    bits ~= false; // The GC header.
+    bits ~= true; // The user data field.
+
+    auto wordSize = computeSize(NativeUIntType.instance, is32Bit);
+
+    void innerCompute(StructureType type, size_t baseOffset)
+    in
+    {
+        assert(type);
+    }
+    body
+    {
+        foreach (field; type.fields)
+        {
+            auto offset = baseOffset + computeOffset(field.y, is32Bit);
+
+            if (auto structType = tryCast!StructureType(field.y.type))
+                innerCompute(structType, offset);
+            else if (!(offset % wordSize))
+                    bits ~= isManaged(field.y.type);
+        }
+    }
+
+    innerCompute(type, 0);
+
+    return bits;
 }
