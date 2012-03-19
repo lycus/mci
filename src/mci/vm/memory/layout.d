@@ -72,13 +72,13 @@ body
         if (fld.y.storage != FieldStorage.instance)
             continue;
 
-        if (fld.y is field)
-            break;
-
         auto al = alignment ? alignment : computeAlignment(fld.y.type, is32Bit);
 
         if (offset % al)
             offset += al - offset % al;
+
+        if (fld.y is field)
+            break;
 
         offset += computeSize(fld.y.type, is32Bit);
     }
@@ -96,7 +96,7 @@ public size_t computeAlignment(Type type, bool is32Bit)
         if (struc.fields.empty)
             return 1;
 
-        return computeAlignment(first(struc.fields).y.type, is32Bit);
+        return computeSize(NativeUIntType.instance, is32Bit);
     }
 
     return computeSize(type, is32Bit);
