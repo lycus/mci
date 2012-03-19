@@ -198,6 +198,7 @@
   <Folder name="code">
    <File path="code\emit.d" />
    <File path="code\functions.d" />
+   <File path="code\graph.d" />
    <File path="code\instructions.d" />
    <File path="code\metadata.d" />
    <File path="code\modules.d" />
@@ -225,5 +226,6 @@
   <File path="tuple.d" />
   <File path="utilities.d" />
   <File path="visitor.d" />
+  <File path="weak.d" />
  </Folder>
 </DProject>

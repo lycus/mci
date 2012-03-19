@@ -194,6 +194,7 @@
    <File path="tools\assembler.d" />
    <File path="tools\debugger.d" />
    <File path="tools\disassembler.d" />
+   <File path="tools\graph.d" />
    <File path="tools\interpreter.d" />
    <File path="tools\jit.d" />
    <File path="tools\linker.d" />
