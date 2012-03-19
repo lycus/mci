@@ -48,8 +48,9 @@ The following emulation layers can optionally be used:
 Byte order must also be determined when compiling.
 
 The MCI also depends on the libffi library with full support for the
-closure API. As far as we are aware, this configuration is available
-across all combinations of supported architectures and operating systems.
-In addition, on POSIX, we make use of libdl for dynamically loading shared
+closure API and the libgc library with full support for the typed GC API
+(on POSIX). As far as we are aware, this configuration is available across
+all combinations of supported architectures and operating systems. In
+addition, on POSIX, we make use of libdl for dynamically loading shared
 object files in the VM. This library is present on virtually any POSIX
 system, except BSD (where it's included in the standard C library anyway).

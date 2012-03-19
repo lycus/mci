@@ -38,7 +38,8 @@ The MCI Waf script also supports some additional options:
         this is disabled on OS X regardless of this setting.
 
 You will need to have libffi, libgc and libdl installed for the build
-to succeed. Your libffi installation must support the closure API.
+to succeed. Your libffi installation must support the closure API. Your
+libgc installation must support the typed GC API.
 
 For example, to build for a 32-bit CPU, do:
 
