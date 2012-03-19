@@ -51,9 +51,6 @@ public final class GraphWriter
         foreach (i, bb; function_.blocks)
         {
             writeBlock(bb.y);
-
-            _writer.writeln();
-
             writeBranches(bb.y);
 
             if (i != function_.blocks.count - 1)
@@ -87,7 +84,14 @@ public final class GraphWriter
     }
     body
     {
-        foreach (branch; getBranches(block))
+        auto branches = getBranches(block);
+
+        if (branches.empty)
+            return;
+
+        _writer.writeln();
+
+        foreach (branch; branches)
             _writer.writefln("    \"%s\" -> \"%s\";", block.name, branch.name);
 
         if (block.unwindBlock)
