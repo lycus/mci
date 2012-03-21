@@ -1,6 +1,7 @@
 module mci.debugger.client;
 
 import core.thread,
+       std.signals,
        std.socket,
        mci.core.io,
        mci.debugger.protocol,
@@ -230,4 +231,92 @@ public abstract class DebuggerClient
     protected abstract void handle(Socket socket, ServerDisassemblyPacket packet);
 
     protected abstract void handle(Socket socket, ServerValuesPacket packet);
+}
+
+public final class SignalDebuggerClient : DebuggerClient
+{
+    public this(Address address)
+    in
+    {
+        assert(address);
+        assert(address.addressFamily == AddressFamily.INET || address.addressFamily == AddressFamily.INET6);
+    }
+    body
+    {
+        super(address);
+    }
+
+    protected override void handleConnect(Socket socket)
+    {
+        Connected.emit(socket);
+    }
+
+    protected override void handleDisconnect(Socket socket)
+    {
+        Disconnected.emit(socket);
+    }
+
+    protected override void handle(Socket socket, ServerResultPacket packet)
+    {
+        Received.emit(socket, packet);
+    }
+
+    protected override void handle(Socket socket, ServerStartedPacket packet)
+    {
+        Received.emit(socket, packet);
+    }
+
+    protected override void handle(Socket socket, ServerPausedPacket packet)
+    {
+        Received.emit(socket, packet);
+    }
+
+    protected override void handle(Socket socket, ServerContinuedPacket packet)
+    {
+        Received.emit(socket, packet);
+    }
+
+    protected override void handle(Socket socket, ServerExitedPacket packet)
+    {
+        Received.emit(socket, packet);
+    }
+
+    protected override void handle(Socket socket, ServerThreadPacket packet)
+    {
+        Received.emit(socket, packet);
+    }
+
+    protected override void handle(Socket socket, ServerFramePacket packet)
+    {
+        Received.emit(socket, packet);
+    }
+
+    protected override void handle(Socket socket, ServerBreakPacket packet)
+    {
+        Received.emit(socket, packet);
+    }
+
+    protected override void handle(Socket socket, ServerCatchPacket packet)
+    {
+        Received.emit(socket, packet);
+    }
+
+    protected override void handle(Socket socket, ServerUnhandledPacket packet)
+    {
+        Received.emit(socket, packet);
+    }
+
+    protected override void handle(Socket socket, ServerDisassemblyPacket packet)
+    {
+        Received.emit(socket, packet);
+    }
+
+    protected override void handle(Socket socket, ServerValuesPacket packet)
+    {
+        Received.emit(socket, packet);
+    }
+
+    mixin Signal!Socket Connected;
+    mixin Signal!Socket Disconnected;
+    mixin Signal!(Socket, Packet) Received;
 }
