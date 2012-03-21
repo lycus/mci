@@ -168,15 +168,9 @@ public final class MemoryStream : Stream
     public this(bool canWrite = true)
     {
         _canWrite = canWrite;
-        _data.length = 1;
     }
 
     public this(ubyte[] data, bool canWrite = true)
-    in
-    {
-        assert(data);
-    }
-    body
     {
         _data = data;
         _canWrite = canWrite;
