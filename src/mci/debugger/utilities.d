@@ -4,7 +4,7 @@ import std.socket,
        mci.core.io,
        mci.core.tuple;
 
-package bool receive(Socket socket, ref ubyte[] buffer, ptrdiff_t expected)
+package bool receive(Socket socket, ubyte[] buffer)
 in
 {
     assert(socket);
@@ -12,12 +12,9 @@ in
 }
 body
 {
-    if (buffer.length < expected)
-        buffer.length = expected;
-
     ptrdiff_t len;
 
-    while (len < expected)
+    while (len < buffer.length)
     {
         auto ret = socket.receive(buffer[len .. $ - len]);
 

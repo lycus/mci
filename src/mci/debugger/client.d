@@ -26,7 +26,6 @@ public abstract class DebuggerClient
     body
     {
         _address = address;
-        _thread = new typeof(_thread)(&run);
         _socket = new typeof(_socket)(address.addressFamily);
     }
 
@@ -38,6 +37,8 @@ public abstract class DebuggerClient
     }
     body
     {
+        _thread = new typeof(_thread)(&run);
+        _thread.isDaemon = true;
         _thread.start();
     }
 
@@ -71,7 +72,7 @@ public abstract class DebuggerClient
         while (_thread)
         {
             // Read the header. This contains opcode, protocol version, and length.
-            if (!receive(_socket, buf, packetHeaderSize))
+            if (!receive(_socket, buf))
                 break;
 
             auto br = new BinaryReader(new MemoryStream(buf, false));
@@ -79,8 +80,10 @@ public abstract class DebuggerClient
 
             br.stream.close();
 
+            buf = new ubyte[header.z];
+
             // Next up, we fetch the body of the packet.
-            if (!receive(_socket, buf, header.z))
+            if (!receive(_socket, buf))
                 break;
 
             br = new BinaryReader(new MemoryStream(buf, false));
@@ -196,9 +199,13 @@ public abstract class DebuggerClient
         stream.close();
     }
 
-    protected abstract void handleConnect(Socket socket);
+    protected void handleConnect(Socket socket)
+    {
+    }
 
-    protected abstract void handleDisconnect(Socket socket);
+    protected void handleDisconnect(Socket socket)
+    {
+    }
 
     protected abstract void handle(Socket socket, ServerResultPacket packet);
 
