@@ -1,6 +1,7 @@
 module mci.debugger.server;
 
 import core.thread,
+       std.signals,
        std.socket,
        mci.core.io,
        mci.debugger.protocol,
@@ -235,4 +236,87 @@ public abstract class DebuggerServer
     protected abstract void handle(Socket client, ClientDisassemblePacket packet);
 
     protected abstract void handle(Socket client, ClientInspectPacket packet);
+}
+
+public final class SignalDebuggerServer : DebuggerServer
+{
+    public this(Address address)
+    in
+    {
+        assert(address);
+        assert(address.addressFamily == AddressFamily.INET || address.addressFamily == AddressFamily.INET6);
+    }
+    body
+    {
+        super(address);
+    }
+
+    protected override void handleConnect(Socket socket)
+    {
+        Connected.emit(socket);
+    }
+
+    protected override void handleDisconnect(Socket socket)
+    {
+        Disconnected.emit(socket);
+    }
+
+    protected override void handle(Socket client, ClientQueryPacket packet)
+    {
+        Connected.emit(client);
+    }
+
+    protected override void handle(Socket client, ClientStartPacket packet)
+    {
+        Connected.emit(client);
+    }
+
+    protected override void handle(Socket client, ClientPausePacket packet)
+    {
+        Connected.emit(client);
+    }
+
+    protected override void handle(Socket client, ClientContinuePacket packet)
+    {
+        Connected.emit(client);
+    }
+
+    protected override void handle(Socket client, ClientExitPacket packet)
+    {
+        Connected.emit(client);
+    }
+
+    protected override void handle(Socket client, ClientThreadPacket packet)
+    {
+        Connected.emit(client);
+    }
+
+    protected override void handle(Socket client, ClientFramePacket packet)
+    {
+        Connected.emit(client);
+    }
+
+    protected override void handle(Socket client, ClientBreakpointPacket packet)
+    {
+        Connected.emit(client);
+    }
+
+    protected override void handle(Socket client, ClientCatchpointPacket packet)
+    {
+        Connected.emit(client);
+    }
+
+    protected override void handle(Socket client, ClientDisassemblePacket packet)
+    {
+        Connected.emit(client);
+    }
+
+    protected override void handle(Socket client, ClientInspectPacket packet)
+    {
+        Connected.emit(client);
+    }
+
+    mixin Signal!Socket Connected;
+    mixin Signal!Socket Disconnected;
+    mixin Signal!(Socket, Packet) Received;
 }
