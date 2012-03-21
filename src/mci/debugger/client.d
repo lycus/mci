@@ -84,7 +84,7 @@ public abstract class DebuggerClient
             buf = new ubyte[header.z];
 
             // Next up, we fetch the body of the packet.
-            if (!receive(_socket, buf))
+            if (header.z && !receive(_socket, buf))
                 break;
 
             br = new BinaryReader(new MemoryStream(buf, false));
