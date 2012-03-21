@@ -147,7 +147,6 @@ public class ClientThreadPacket : Packet
 {
     public ThreadAction action;
     public ulong thread;
-    public ulong[] threads;
 
     @property public ubyte opCode()
     {
@@ -158,37 +157,22 @@ public class ClientThreadPacket : Packet
     {
         writer.write(action);
 
-        final switch (action)
-        {
-            case ThreadAction.list:
-                writer.write(cast(uint)threads.length);
-                writer.writeArray(threads);
-                break;
-            case ThreadAction.switch_:
-                writer.write(thread);
-                break;
-        }
+        if (action == ThreadAction.switch_)
+            writer.write(thread);
     }
 
     public void read(BinaryReader reader)
     {
         action = reader.read!ThreadAction();
 
-        final switch (action)
-        {
-            case ThreadAction.list:
-                threads = reader.readArray!(ulong[])(reader.read!uint());
-                break;
-            case ThreadAction.switch_:
-                thread = reader.read!ulong();
-                break;
-        }
+        if (action == ThreadAction.switch_)
+            thread = reader.read!ulong();
     }
 }
 
 public class ClientFramePacket : Packet
 {
-    public uint frame;
+    public ulong frame;
 
     @property public ubyte opCode()
     {
@@ -202,7 +186,7 @@ public class ClientFramePacket : Packet
 
     public void read(BinaryReader reader)
     {
-        frame = reader.read!uint();
+        frame = reader.read!ulong();
     }
 }
 
@@ -461,7 +445,7 @@ public class ServerThreadPacket : Packet
 
 public class ServerFramePacket : Packet
 {
-    public ubyte frame;
+    public ulong frame;
 
     @property public ubyte opCode()
     {
@@ -475,7 +459,7 @@ public class ServerFramePacket : Packet
 
     public void read(BinaryReader reader)
     {
-        frame = reader.read!ubyte();
+        frame = reader.read!ulong();
     }
 }
 
