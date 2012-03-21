@@ -73,10 +73,10 @@ public abstract class DebuggerServer
 
         handleConnect(_client);
 
-        auto buf = new ubyte[packetHeaderSize];
-
         while (_thread)
         {
+            auto buf = new ubyte[packetHeaderSize];
+
             // Read the header. This contains opcode, protocol version, and length.
             if (!receive(_client, buf))
                 break;
