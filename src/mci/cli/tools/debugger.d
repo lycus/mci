@@ -2,7 +2,8 @@ module mci.cli.tools.debugger;
 
 import std.getopt,
        mci.cli.main,
-       mci.cli.tool;
+       mci.cli.tool,
+       mci.debugger.cli;
 
 public final class DebuggerTool : Tool
 {
@@ -18,6 +19,6 @@ public final class DebuggerTool : Tool
 
     public ubyte run(string[] args)
     {
-        return 0;
+        return (new CommandLineDebugger()).run();
     }
 }
