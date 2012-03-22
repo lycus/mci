@@ -59,7 +59,9 @@ body
             {
                 alias FArgs[0] U;
 
-                if (auto res = tryCast!U(obj))
+                if (!obj && is(U == typeof(null)))
+                    return cases[i](null);
+                else if (auto res = tryCast!U(obj))
                     return cases[i](res);
             }
         }
