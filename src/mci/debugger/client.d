@@ -248,75 +248,75 @@ public final class SignalDebuggerClient : DebuggerClient
 
     protected override void handleConnect(Socket socket)
     {
-        Connected.emit(socket);
+        connected.emit(socket);
     }
 
     protected override void handleDisconnect(Socket socket)
     {
-        Disconnected.emit(socket);
+        disconnected.emit(socket);
     }
 
     protected override void handle(Socket socket, ServerResultPacket packet)
     {
-        Received.emit(socket, packet);
+        received.emit(socket, packet);
     }
 
     protected override void handle(Socket socket, ServerStartedPacket packet)
     {
-        Received.emit(socket, packet);
+        received.emit(socket, packet);
     }
 
     protected override void handle(Socket socket, ServerPausedPacket packet)
     {
-        Received.emit(socket, packet);
+        received.emit(socket, packet);
     }
 
     protected override void handle(Socket socket, ServerContinuedPacket packet)
     {
-        Received.emit(socket, packet);
+        received.emit(socket, packet);
     }
 
     protected override void handle(Socket socket, ServerExitedPacket packet)
     {
-        Received.emit(socket, packet);
+        received.emit(socket, packet);
     }
 
     protected override void handle(Socket socket, ServerThreadPacket packet)
     {
-        Received.emit(socket, packet);
+        received.emit(socket, packet);
     }
 
     protected override void handle(Socket socket, ServerFramePacket packet)
     {
-        Received.emit(socket, packet);
+        received.emit(socket, packet);
     }
 
     protected override void handle(Socket socket, ServerBreakPacket packet)
     {
-        Received.emit(socket, packet);
+        received.emit(socket, packet);
     }
 
     protected override void handle(Socket socket, ServerCatchPacket packet)
     {
-        Received.emit(socket, packet);
+        received.emit(socket, packet);
     }
 
     protected override void handle(Socket socket, ServerUnhandledPacket packet)
     {
-        Received.emit(socket, packet);
+        received.emit(socket, packet);
     }
 
     protected override void handle(Socket socket, ServerDisassemblyPacket packet)
     {
-        Received.emit(socket, packet);
+        received.emit(socket, packet);
     }
 
     protected override void handle(Socket socket, ServerValuesPacket packet)
     {
-        Received.emit(socket, packet);
+        received.emit(socket, packet);
     }
 
-    mixin Signal!Socket Connected;
-    mixin Signal!Socket Disconnected;
-    mixin Signal!(Socket, Packet) Received;
+    mixin Signal!Socket connected;
+    mixin Signal!Socket disconnected;
+    mixin Signal!(Socket, Packet) received;
 }

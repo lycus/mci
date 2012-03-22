@@ -253,70 +253,70 @@ public final class SignalDebuggerServer : DebuggerServer
 
     protected override void handleConnect(Socket socket)
     {
-        Connected.emit(socket);
+        connected.emit(socket);
     }
 
     protected override void handleDisconnect(Socket socket)
     {
-        Disconnected.emit(socket);
+        disconnected.emit(socket);
     }
 
     protected override void handle(Socket client, ClientQueryPacket packet)
     {
-        Connected.emit(client);
+        received.emit(client, packet);
     }
 
     protected override void handle(Socket client, ClientStartPacket packet)
     {
-        Connected.emit(client);
+        received.emit(client, packet);
     }
 
     protected override void handle(Socket client, ClientPausePacket packet)
     {
-        Connected.emit(client);
+        received.emit(client, packet);
     }
 
     protected override void handle(Socket client, ClientContinuePacket packet)
     {
-        Connected.emit(client);
+        received.emit(client, packet);
     }
 
     protected override void handle(Socket client, ClientExitPacket packet)
     {
-        Connected.emit(client);
+        received.emit(client, packet);
     }
 
     protected override void handle(Socket client, ClientThreadPacket packet)
     {
-        Connected.emit(client);
+        received.emit(client, packet);
     }
 
     protected override void handle(Socket client, ClientFramePacket packet)
     {
-        Connected.emit(client);
+        received.emit(client, packet);
     }
 
     protected override void handle(Socket client, ClientBreakpointPacket packet)
     {
-        Connected.emit(client);
+        received.emit(client, packet);
     }
 
     protected override void handle(Socket client, ClientCatchpointPacket packet)
     {
-        Connected.emit(client);
+        received.emit(client, packet);
     }
 
     protected override void handle(Socket client, ClientDisassemblePacket packet)
     {
-        Connected.emit(client);
+        received.emit(client, packet);
     }
 
     protected override void handle(Socket client, ClientInspectPacket packet)
     {
-        Connected.emit(client);
+        received.emit(client, packet);
     }
 
-    mixin Signal!Socket Connected;
-    mixin Signal!Socket Disconnected;
-    mixin Signal!(Socket, Packet) Received;
+    mixin Signal!Socket connected;
+    mixin Signal!Socket disconnected;
+    mixin Signal!(Socket, Packet) received;
 }

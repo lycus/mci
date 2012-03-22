@@ -105,6 +105,9 @@ public final class CommandLineDebugger
                     }
 
                     _client = new SignalDebuggerClient(addr);
+                    _client.connected.connect(&connected);
+                    _client.disconnected.connect(&disconnected);
+                    _client.received.connect(&received);
                     _client.start();
 
                     break;
