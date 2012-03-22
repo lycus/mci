@@ -49,16 +49,19 @@ body
 {
     alias TypeTuple!F TFuncs;
 
-    foreach (i, f; TFuncs)
+    if (obj)
     {
-        alias ParameterTypeTuple!f FArgs;
-
-        static if (FArgs.length)
+        foreach (i, f; TFuncs)
         {
-            alias FArgs[0] U;
+            alias ParameterTypeTuple!f FArgs;
 
-            if (auto res = tryCast!U(obj))
-                return cases[i](res);
+            static if (FArgs.length)
+            {
+                alias FArgs[0] U;
+
+                if (auto res = tryCast!U(obj))
+                    return cases[i](res);
+            }
         }
     }
 
