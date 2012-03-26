@@ -1,6 +1,6 @@
 <DProject>
  <ProjectGuid>{14CFD7AD-776F-469E-8C17-5ACE3B4603A2}</ProjectGuid>
- <Config name="Debug">
+ <Config name="Debug" platform="Win32">
   <obj>0</obj>
   <link>0</link>
   <lib>0</lib>
@@ -42,6 +42,7 @@
   <nofloat>0</nofloat>
   <Dversion>2.043</Dversion>
   <ignoreUnsupportedPragmas>1</ignoreUnsupportedPragmas>
+  <compiler>0</compiler>
   <otherDMD>0</otherDMD>
   <program>$(DMDInstallDir)windows\bin\dmd.exe</program>
   <imppath>..\..;..\..\..\libffi-d</imppath>
@@ -94,7 +95,7 @@
   <pauseAfterRunning>0</pauseAfterRunning>
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
- <Config name="Release">
+ <Config name="Release" platform="Win32">
   <obj>0</obj>
   <link>0</link>
   <lib>0</lib>
@@ -136,6 +137,7 @@
   <nofloat>0</nofloat>
   <Dversion>2.043</Dversion>
   <ignoreUnsupportedPragmas>1</ignoreUnsupportedPragmas>
+  <compiler>0</compiler>
   <otherDMD>0</otherDMD>
   <program>$(DMDInstallDir)windows\bin\dmd.exe</program>
   <imppath>..\..;..\..\..\libffi-d</imppath>
