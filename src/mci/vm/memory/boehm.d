@@ -2,7 +2,6 @@ module mci.vm.memory.boehm;
 
 import core.stdc.string,
        std.conv,
-       gc,
        mci.core.common,
        mci.core.container,
        mci.core.config,
@@ -12,6 +11,8 @@ import core.stdc.string,
 
 static if (operatingSystem != OperatingSystem.windows)
 {
+    import gc;
+
     public final class BoehmGarbageCollector : GarbageCollector
     {
         private __gshared Dictionary!(RuntimeTypeInfo, size_t) _registeredBitmaps;

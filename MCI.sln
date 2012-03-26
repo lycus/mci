@@ -17,7 +17,6 @@ Project("{002A2DE9-8BB6-484D-9802-7E4AD4084715}") = "mci.assembler", "src\mci\as
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Miscellaneous", "Miscellaneous", "{F6494086-CE93-4F63-8501-29FD51EA7A71}"
 	ProjectSection(SolutionItems) = preProject
-		Makefile = Makefile
 		mci.gdb = mci.gdb
 	EndProjectSection
 EndProject

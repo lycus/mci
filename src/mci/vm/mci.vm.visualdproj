@@ -213,8 +213,9 @@
    <File path="memory\libc.d" />
    <File path="memory\prettyprint.d" />
   </Folder>
-  <Folder name="thread">
-   <File path="threading\rename.d" />
+  <Folder name="threading">
+   <File path="threading\cleanup.d" />
+   <File path="threading\id.d" />
    <File path="threading\tls.d" />
   </Folder>
   <File path="execution.d" />
