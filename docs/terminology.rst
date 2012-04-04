@@ -246,3 +246,9 @@ A terminator is an instruction which, while code is in SSA_ form, indicates
 the end of a `basic block`_. Only one terminator is allowed in a
 `basic block`_, and it must appear as the last instruction. All basic blocks
 must end with a terminator.
+
+TLS
++++
+
+Abbreviation for thread-local storage. This is a mechanism by which each
+thread in a program gets its own isolated version of a variable.
