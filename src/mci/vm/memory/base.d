@@ -72,7 +72,7 @@ package union GarbageCollectorHeader
     private size_t bits;
 }
 
-public bool isSystemAligned(ubyte* ptr)
+public bool isSystemAligned(void* ptr)
 {
     return !(cast(size_t)ptr % computeSize(NativeUIntType.instance, is32Bit));
 }
@@ -99,21 +99,21 @@ public interface GarbageCollector
             assert(isSystemAligned(cast(ubyte*)data));
     }
 
-    public void addRoot(ubyte* ptr)
+    public void addRoot(RuntimeObject** ptr)
     in
     {
         assert(ptr);
         assert(isSystemAligned(ptr));
     }
 
-    public void removeRoot(ubyte* ptr)
+    public void removeRoot(RuntimeObject** ptr)
     in
     {
         assert(ptr);
         assert(isSystemAligned(ptr));
     }
 
-    public void addRange(ubyte* ptr, size_t words)
+    public void addRange(RuntimeObject** ptr, size_t words)
     in
     {
         assert(ptr);
@@ -121,7 +121,7 @@ public interface GarbageCollector
         assert(words);
     }
 
-    public void removeRange(ubyte* ptr, size_t words)
+    public void removeRange(RuntimeObject** ptr, size_t words)
     in
     {
         assert(ptr);

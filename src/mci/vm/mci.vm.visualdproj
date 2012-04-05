@@ -213,6 +213,7 @@
    <File path="memory\info.d" />
    <File path="memory\layout.d" />
    <File path="memory\libc.d" />
+   <File path="memory\pinning.d" />
    <File path="memory\prettyprint.d" />
   </Folder>
   <Folder name="threading">

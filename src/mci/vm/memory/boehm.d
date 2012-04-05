@@ -7,7 +7,8 @@ import core.stdc.string,
        mci.core.config,
        mci.core.typing.types,
        mci.vm.memory.base,
-       mci.vm.memory.info;
+       mci.vm.memory.info,
+       mci.vm.memory.pinning;
 
 static if (operatingSystem != OperatingSystem.windows)
 {
@@ -16,10 +17,16 @@ static if (operatingSystem != OperatingSystem.windows)
     public final class BoehmGarbageCollector : GarbageCollector
     {
         private __gshared Dictionary!(RuntimeTypeInfo, size_t) _registeredBitmaps;
+        private PinnedObjectManager _pinManager;
 
         shared static this()
         {
             _registeredBitmaps = new typeof(_registeredBitmaps)();
+        }
+
+        public this()
+        {
+            _pinManager = new typeof(_pinManager)(this);
         }
 
         @property public ulong collections()
@@ -72,35 +79,34 @@ static if (operatingSystem != OperatingSystem.windows)
             GC_free(data);
         }
 
-        public void addRoot(ubyte* ptr)
+        public void addRoot(RuntimeObject** ptr)
         {
             GC_add_roots(ptr, ptr + size_t.sizeof + 1);
         }
 
-        public void removeRoot(ubyte* ptr)
+        public void removeRoot(RuntimeObject** ptr)
         {
             GC_remove_roots(ptr, ptr + size_t.sizeof + 1);
         }
 
-        public void addRange(ubyte* ptr, size_t words)
+        public void addRange(RuntimeObject** ptr, size_t words)
         {
             GC_add_roots(ptr, ptr + size_t.sizeof * words + 1);
         }
 
-        public void removeRange(ubyte* ptr, size_t words)
+        public void removeRange(RuntimeObject** ptr, size_t words)
         {
             GC_remove_roots(ptr, ptr + size_t.sizeof * words + 1);
         }
 
         public size_t pin(RuntimeObject* data)
         {
-            // Pinning is not supported in libgc.
-            return 0;
+            return _pinManager.pin(data);
         }
 
         public void unpin(size_t handle)
         {
-            // Pinning is not supported in libgc.
+            _pinManager.unpin(handle);
         }
 
         public void collect()

@@ -6,14 +6,22 @@ import core.exception,
        std.conv,
        mci.core.container,
        mci.vm.memory.base,
-       mci.vm.memory.info;
+       mci.vm.memory.info,
+       mci.vm.memory.pinning;
 
 public final class DGarbageCollector : GarbageCollector
 {
+    private PinnedObjectManager _pinManager;
+
     @property public ulong collections()
     {
         // We can't query D's GC about this.
         return 0;
+    }
+
+    public this()
+    {
+        _pinManager = new typeof(_pinManager)(this);
     }
 
     public RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0)
@@ -41,35 +49,34 @@ public final class DGarbageCollector : GarbageCollector
             GC.free(data);
     }
 
-    public void addRoot(ubyte* ptr)
+    public void addRoot(RuntimeObject** ptr)
     {
         GC.addRoot(ptr);
     }
 
-    public void removeRoot(ubyte* ptr)
+    public void removeRoot(RuntimeObject** ptr)
     {
         GC.removeRoot(ptr);
     }
 
-    public void addRange(ubyte* ptr, size_t words)
+    public void addRange(RuntimeObject** ptr, size_t words)
     {
         GC.addRange(ptr, words * size_t.sizeof);
     }
 
-    public void removeRange(ubyte* ptr, size_t words)
+    public void removeRange(RuntimeObject** ptr, size_t words)
     {
         GC.removeRange(ptr);
     }
 
     public size_t pin(RuntimeObject* data)
     {
-        // This is not a compacting GC.
-        return 0;
+        return _pinManager.pin(data);
     }
 
     public void unpin(size_t handle)
     {
-        // This is not a compacting GC.
+        _pinManager.unpin(handle);
     }
 
     public void collect()

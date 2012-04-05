@@ -52,19 +52,19 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         .free(data);
     }
 
-    public void addRoot(ubyte* ptr)
+    public void addRoot(RuntimeObject** ptr)
     {
     }
 
-    public void removeRoot(ubyte* ptr)
+    public void removeRoot(RuntimeObject** ptr)
     {
     }
 
-    public void addRange(ubyte* ptr, size_t words)
+    public void addRange(RuntimeObject** ptr, size_t words)
     {
     }
 
-    public void removeRange(ubyte* ptr, size_t words)
+    public void removeRange(RuntimeObject** ptr, size_t words)
     {
     }
 
