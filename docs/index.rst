@@ -17,6 +17,7 @@ Infrastructure guide
    instruction_set.rst
    intrinsics.rst
    concurrency.rst
+   garbage_collection.rst
 
 Framework reference
 +++++++++++++++++++
