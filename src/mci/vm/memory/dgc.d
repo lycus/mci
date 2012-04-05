@@ -29,6 +29,8 @@ public final class DGarbageCollector : GarbageCollector
         }
         catch (OutOfMemoryError)
         {
+            // This might not actually work at all due to D's fairly stupid
+            // rule about Error objects not getting any cleanup guarantees.
             return null;
         }
     }
@@ -82,10 +84,12 @@ public final class DGarbageCollector : GarbageCollector
 
     public void attach()
     {
+        // Threads are already implicitly attached to druntime.
     }
 
     public void detach()
     {
+        // Threads are already implicitly detached from druntime.
     }
 
     public void addPressure(size_t amount)

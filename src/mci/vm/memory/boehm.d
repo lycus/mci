@@ -128,10 +128,12 @@ static if (operatingSystem != OperatingSystem.windows)
 
         public void addPressure(size_t amount)
         {
+            // Pressure notifications are not supported in libgc.
         }
 
         public void removePressure(size_t amount)
         {
+            // Pressure notifications are not supported in libgc.
         }
     }
 }
