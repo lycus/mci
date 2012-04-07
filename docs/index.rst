@@ -15,6 +15,7 @@ Infrastructure guide
    terminology.rst
    type_system.rst
    instruction_set.rst
+   assembly_language.rst
    intrinsics.rst
    concurrency.rst
    garbage_collection.rst

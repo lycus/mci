@@ -1,9 +1,8 @@
 Type system
 ===========
 
-The MCI usus a strongly typed, nominal type system (although there is no
-support for OO-like sub-typing). The type system consists of the following
-categories of types:
+The MCI usus a mostly strong, nominal type system. The type system consists of
+the following categories of types:
 
 * Primitive types: Integer and floating-point types (``int32``, ``int64``,
   ``float32``, ``float64``, etc).
