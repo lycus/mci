@@ -1,9 +1,9 @@
 Assembly language
 =================
 
-Programs for the MCI can be written in the built-in assembly language. The
-assembler takes as input a series of source files and assembles them to a
-single output file (a module).
+Programs for the MCI can be written in the built-in assembly language, IAL
+(Intermediate Assembly Language). The assembler takes as input a series of
+source files and assembles them to a single output file (a module).
 
 The grammar is:
 
