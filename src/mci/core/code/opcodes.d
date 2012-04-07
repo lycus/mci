@@ -468,7 +468,7 @@ shared static this()
 
     opNop = create("nop", OperationCode.nop, OpCodeType.noOperation, OperandType.none, 0, false);
     opComment = create("comment", OperationCode.comment, OpCodeType.annotation, OperandType.uint8Array, 0, false);
-    opDead = create("dead", OperationCode.dead, OpCodeType.annotation, OperandType.none, 0, false);
+    opDead = create("dead", OperationCode.dead, OpCodeType.controlFlow, OperandType.none, 0, false);
     opLoadI8 = create("load.i8", OperationCode.loadI8, OpCodeType.normal, OperandType.int8, 0, true);
     opLoadUI8 = create("load.ui8", OperationCode.loadUI8, OpCodeType.normal, OperandType.uint8, 0, true);
     opLoadI16 = create("load.i16", OperationCode.loadI16, OpCodeType.normal, OperandType.int16, 0, true);
