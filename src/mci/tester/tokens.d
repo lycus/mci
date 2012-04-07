@@ -10,7 +10,7 @@ unittest
 
     list.add(new Token(TokenType.begin, null, SourceLocation(1, 1)));
     list.add(new Token(TokenType.void_, "void", SourceLocation(1, 1)));
-    list.add(new Token(TokenType.constant, "const", SourceLocation(1, 1)));
+    list.add(new Token(TokenType.static_, "const", SourceLocation(1, 1)));
     list.add(new Token(TokenType.end, null, SourceLocation(1, 1)));
 
     auto stream = new MemoryTokenStream(list);
@@ -23,10 +23,10 @@ unittest
     assert(next.type == TokenType.void_);
     assert(stream.previous.type == TokenType.begin);
     assert(stream.current.type == TokenType.void_);
-    assert(stream.next.type == TokenType.constant);
+    assert(stream.next.type == TokenType.static_);
 
     auto next2 = stream.moveNext();
 
-    assert(next2.type == TokenType.constant);
+    assert(next2.type == TokenType.static_);
     assert(stream.next.type == TokenType.end);
 }

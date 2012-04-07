@@ -29,7 +29,6 @@ public enum TokenType : ubyte
     instance,
     static_,
     thread,
-    constant,
     function_,
     cdecl,
     stdCall,
