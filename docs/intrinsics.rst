@@ -45,7 +45,6 @@ Value Description
 1     Digital Mars D (DMD).
 2     GNU D Compiler (GDC).
 3     LLVM D Compiler (LDC).
-4     Stupid D Compiler (SDC).
 ===== ========================
 
 get_architecture
