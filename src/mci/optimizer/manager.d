@@ -115,6 +115,9 @@ public final class OptimizationManager
     }
     body
     {
+        if (function_.attributes & FunctionAttributes.noOptimization)
+            return;
+
         foreach (opt; _codeOptimizers)
             opt.optimize(function_);
 
