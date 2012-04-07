@@ -1,0 +1,20 @@
+function void tramp_test()
+{
+    register void() f;
+    register void() cdecl g;
+
+    block entry
+    {
+        f = load.func (foo);
+        g = tramp f;
+        leave;
+    }
+}
+
+function void foo()
+{
+    block entry
+    {
+        leave;
+    }
+}

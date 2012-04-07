@@ -2163,3 +2163,23 @@ Inserts a full read/write memory barrier. This ensures that all loads and
 stores prior to this instruction will always be executed before loads and
 stores following this instruction. This is particularly useful in lock-free
 data structures and similar low-level constructs.
+
+tramp
+-----
+
+**Has target register**
+    Yes
+**Source registers**
+    1
+**Operand type**
+    None
+
+Constructs a trampoline for a given function pointer. Trampolines are useful
+if the function pointer is to be passed to external code (e.g. via ffi_) which
+might use the function pointer in threads not registered with the MCI. The
+generated trampoline will ensure that such an external thread is correctly
+registered before allowing it to call into managed code.
+
+The source register must be any function pointer type. The target register
+must be a function pointer type with ``cdecl`` or ``stdcall`` calling
+convention.

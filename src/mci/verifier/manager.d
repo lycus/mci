@@ -64,7 +64,8 @@ public final class VerificationManager
                                          new ArrayConversionVerifier(),
                                          new FieldTypeVerifier(),
                                          new UserFieldVerifier(),
-                                         new FieldStorageVerifier()));
+                                         new FieldStorageVerifier(),
+                                         new TrampolineVerifier()));
     }
 
     public void verify(Function function_)

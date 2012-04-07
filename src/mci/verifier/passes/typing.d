@@ -82,20 +82,20 @@ public final class ConstantLoadVerifier : CodeVerifier
                     auto func = *instr.operand.peek!Function();
                     auto target = cast(FunctionPointerType)instr.targetRegister.type;
 
-                    if (func.callingConvention != target.callingConvention)
+                    if (target.callingConvention != func.callingConvention)
                         error(instr, "The calling convention of the target function does not match that of the operand.");
 
-                    if (func.returnType !is target.returnType)
+                    if (target.returnType !is func.returnType)
                         error(instr, "The return type of the target function signature (%s) does not match that of the operand (%s).",
                               target.returnType ? to!string(target.returnType) : "void",
                               func.returnType ? to!string(func.returnType) : "void");
 
-                    if (func.parameters.count != target.parameterTypes.count)
+                    if (target.parameterTypes.count != func.parameters.count)
                         error(instr, "The parameter count of the target function signature ('%s') does not match that of the " ~
-                              "operand ('%s').", func.parameters.count, target.parameterTypes.count);
+                              "operand ('%s').", target.parameterTypes.count, func.parameters.count);
 
-                    for (size_t i = 0; i < func.parameters.count; i++)
-                        if (func.parameters[i].type !is target.parameterTypes[i])
+                    for (size_t i = 0; i < target.parameterTypes.count; i++)
+                        if (target.parameterTypes[i] !is func.parameters[i].type)
                             error(instr, "Parameter at index '%s' (type %s) of the target function signature does not match " ~
                                   "that of the operand (%s).", i, target.parameterTypes[i], func.parameters[i].type);
                 }
@@ -687,6 +687,45 @@ public final class ExceptionTypeVerifier : CodeVerifier
 
                 if (instr.opCode is opEHCatch && !tryCast!ReferenceType(instr.targetRegister.type))
                     error(instr, "The target register must be a reference.");
+            }
+        }
+    }
+}
+
+public final class TrampolineVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+        {
+            foreach (instr; bb.y.stream)
+            {
+                if (instr.opCode is opTramp)
+                {
+                    if (auto fpt = tryCast!FunctionPointerType(instr.sourceRegister1.type))
+                    {
+                        if (auto target = tryCast!FunctionPointerType(instr.targetRegister.type))
+                        {
+                            if (target.returnType !is fpt.returnType)
+                                error(instr, "The return type of the target function signature (%s) does not match that of the source (%s).",
+                                      target.returnType ? to!string(target.returnType) : "void",
+                                      fpt.returnType ? to!string(fpt.returnType) : "void");
+
+                            if (target.parameterTypes.count != fpt.parameterTypes.count)
+                                error(instr, "The parameter count of the target function signature ('%s') does not match that of the " ~
+                                      "source ('%s').", target.parameterTypes.count, fpt.parameterTypes.count);
+
+                            for (size_t i = 0; i < target.parameterTypes.count; i++)
+                                if (target.parameterTypes[i] !is fpt.parameterTypes[i])
+                                    error(instr, "Parameter at index '%s' (type %s) of the target function signature does not match " ~
+                                          "that of the source (%s).", i, target.parameterTypes[i], fpt.parameterTypes[i]);
+                        }
+                        else
+                            error(instr, "The target register must be a function pointer.");
+                    }
+                    else
+                        error(instr, "The source register must be a function pointer.");
+                }
             }
         }
     }
