@@ -23,6 +23,8 @@ public __gshared
     Function getEndianness;
     Function is32Bit;
 
+    Function atomicLoadU;
+    Function atomicStoreU;
     Function atomicExchangeU;
     Function atomicAddU;
     Function atomicSubU;
@@ -32,6 +34,8 @@ public __gshared
     Function atomicAndU;
     Function atomicOrU;
     Function atomicXOrU;
+    Function atomicLoadS;
+    Function atomicStoreS;
     Function atomicExchangeS;
     Function atomicAddS;
     Function atomicSubS;
@@ -109,6 +113,11 @@ shared static this()
     getEndianness = createFunction!get_endianness(UInt8Type.instance);
     is32Bit = createFunction!is_32_bit(NativeUIntType.instance);
 
+    atomicLoadU = createFunction!atomic_load_u(NativeUIntType.instance,
+                                               getPointerType(NativeUIntType.instance));
+    atomicStoreU = createFunction!atomic_store_u(null,
+                                                 getPointerType(NativeUIntType.instance),
+                                                 NativeUIntType.instance);
     atomicExchangeU = createFunction!atomic_exchange_u(NativeUIntType.instance,
                                                        getPointerType(NativeUIntType.instance),
                                                        NativeUIntType.instance,
@@ -139,7 +148,12 @@ shared static this()
     atomicXOrU = createFunction!atomic_xor_u(NativeUIntType.instance,
                                              getPointerType(NativeUIntType.instance),
                                              NativeUIntType.instance);
-    atomicExchangeS = createFunction!atomic_exchange_s(NativeUIntType.instance,
+    atomicLoadS = createFunction!atomic_load_s(NativeIntType.instance,
+                                               getPointerType(NativeIntType.instance));
+    atomicStoreS = createFunction!atomic_store_s(null,
+                                                 getPointerType(NativeIntType.instance),
+                                                 NativeIntType.instance);
+    atomicExchangeS = createFunction!atomic_exchange_s(NativeIntType.instance,
                                                        getPointerType(NativeIntType.instance),
                                                        NativeIntType.instance,
                                                        NativeIntType.instance);

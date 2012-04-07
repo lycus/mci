@@ -6,6 +6,16 @@ import core.atomic,
 
 extern (C)
 {
+    public size_t atomic_load_u(VirtualMachineContext context, size_t* ptr)
+    {
+        return atomicLoad(*cast(shared)ptr);
+    }
+
+    public void atomic_store_u(VirtualMachineContext context, size_t* ptr, size_t value)
+    {
+        atomicStore(*cast(shared)ptr, value);
+    }
+
     public size_t atomic_exchange_u(VirtualMachineContext context, size_t* ptr, size_t condition, size_t value)
     {
         // Do a cast; we don't want to introduce shared in the intrinsics.
@@ -50,6 +60,16 @@ extern (C)
     public size_t atomic_xor_u(VirtualMachineContext context, size_t* lhs, size_t rhs)
     {
         return atomicOp!("^=", size_t, size_t)(*lhs, rhs);
+    }
+
+    public isize_t atomic_load_s(VirtualMachineContext context, isize_t* ptr)
+    {
+        return atomicLoad(*cast(shared)ptr);
+    }
+
+    public void atomic_store_s(VirtualMachineContext context, isize_t* ptr, isize_t value)
+    {
+        atomicStore(*cast(shared)ptr, value);
     }
 
     public size_t atomic_exchange_s(VirtualMachineContext context, isize_t* ptr, isize_t condition, isize_t value)

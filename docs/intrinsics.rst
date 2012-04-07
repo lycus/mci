@@ -142,6 +142,24 @@ it's compiled for 32-bit pointers.
 Atomic operations
 +++++++++++++++++
 
+atomic_load_u
+-------------
+
+**Signature**
+    ``uint atomic_load_u(uint*)``
+
+Atomically loads the value from the memory location pointed to by the first
+argument.
+
+atomic_store_u
+--------------
+
+**Signature**
+    ``void atomic_store_u(uint*, uint)``
+
+Atomically sets the location pointed to by the first argument to the value in
+the second argument.
+
 atomic_exchange_u
 -----------------
 
@@ -242,11 +260,29 @@ argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
+atomic_load_s
+-------------
+
+**Signature**
+    ``int atomic_load_s(int*)``
+
+Atomically loads the value from the memory location pointed to by the first
+argument.
+
+atomic_store_s
+--------------
+
+**Signature**
+    ``void atomic_store_s(int*, int)``
+
+Atomically sets the location pointed to by the first argument to the value in
+the second argument.
+
 atomic_exchange_s
 -----------------
 
 **Signature**
-    ``uint atomic_exchange_s(int*. int, int)``
+    ``int atomic_exchange_s(int*. int, int)``
 
 Stores the value in the third argument to the location pointed to by the
 first argument if the value pointed to by the first argument is equal to
