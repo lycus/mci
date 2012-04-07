@@ -210,6 +210,7 @@ def docs(ctx):
                 'devhelp',
                 'epub',
                 'latex',
+                'latexpdf',
                 'text',
                 'man',
                 'changes',
