@@ -10,6 +10,11 @@ The grammar is:
 .. productionlist::
     Program : { `TypeDeclaration` | `FunctionDeclaration` }
 
+Module references have the grammar:
+
+.. productionlist::
+    Module : `Identifier`
+
 Some common grammar elements that will be used:
 
 .. productionlist::
@@ -22,6 +27,7 @@ Some common grammar elements that will be used:
     QuotedIdentifierCharacter : ? any character ? - "'" | "\'"
     QuotedIdentifier : "'" `QuotedIdentifierCharacter` { `QuotedIdentifierCharacter` } "'"
     Literal : [ "+" | "-" ] ( `IntegerLiteral` | `FloatingPointLiteral` | "nan" | "inf" )
+    LiteralArray : `Literal` { "," `Literal` }
     IntegerLiteral : `DecimalSequence` | "0x" `HexadecimalSequence`
     FloatingPointLiteral : `DecimalSequence` "." `DecimalSequence` [ "e" [ "+" | "-" ] `DecimalSequence` ]
 
@@ -47,17 +53,21 @@ Type declarations have the grammar:
 The alignment specification can be used to override the automatic alignment
 algorithm that the MCI uses.
 
+Type references have the grammar:
+
+.. productionlist::
+    Type : [ `Module` "/" ] `Identifier`
+
 The grammar for type specifications is:
 
 .. productionlist::
-    ReturnType : "void" | `Type`
-    Type : ( `CoreType` | `TypeReference` ) | `PointerType` | `ReferenceType` | `ArrayType` | `VectorType` | `FunctionPointerType`
-    PointerType : `Type` "*"
-    ReferenceType : `Type` "&"
-    ArrayType : `Type` "[" "]"
-    VectorType : `Type` "[" `Literal` "]"
+    ReturnType : "void" | `TypeSpecification`
+    TypeSpecification : ( `CoreType` | `Type` ) | `PointerType` | `ReferenceType` | `ArrayType` | `VectorType` | `FunctionPointerType`
+    PointerType : `TypeSpecification` "*"
+    ReferenceType : `TypeSpecification` "&"
+    ArrayType : `TypeSpecification` "[" "]"
+    VectorType : `TypeSpecification` "[" `Literal` "]"
     FunctionPointerType : `ReturnType` "(" `ParameterList` ")" [ "cdecl" | "stdcall" ]
-    TypeReference : [ `Identifier` "/" ] `Identifier`
     CoreType : "int" | "uint" | "int8" | "uint8" | "int16" | "uint16" | "int32 | "uint32" | "int64" | "uint64" | "float32" | "float64"
 
 Fields
@@ -69,7 +79,7 @@ that represent the physical contents of structure types.
 Field declarations have the grammar:
 
 .. productionlist::
-    FieldDeclaration : [ `MetadataList` ] "field" `FieldStorage` `Type` `Identifier` ";"
+    FieldDeclaration : [ `MetadataList` ] "field" `FieldStorage` `TypeSpecification` `Identifier` ";"
     FieldStorage : "instance" | "static" | "thread"
 
 Fields stored as ``instance`` are part of all instances of the type.
@@ -80,6 +90,11 @@ the C sense). They are shared between threads.
 Fields marked as ``thread`` go into thread-local storage. They are similar to
 ``static`` fields in that they are not part of the instance of a type, but
 each thread in the program gets a distinct copy of a ``thread`` field.
+
+Field references have the grammar:
+
+.. productionlist::
+    Field : `Type` ":" `Identifier`
 
 Functions
 +++++++++
@@ -92,7 +107,7 @@ Function declarations have the grammar:
 .. productionlist::
     FunctionDeclaration : [ `MetadataList` ] "function" `FunctionAttributes` `ReturnType` `Identifier` `ParameterList` "{" `FunctionBody` "}"
     FunctionAttributes : [ "ssa" ] [ "pure" ] [ "nooptimize" ] [ "noinline" ]
-    ParameterList : "(" [ `Type` { "," `Type` } ] ")"
+    ParameterList : "(" [ `TypeSpecification` { "," `TypeSpecification` } ] ")"
     FunctionBody : { `RegisterDeclaration` | `BasicBlockDeclaration` }
 
 The ``ssa`` attribute specifies that the function is in SSA form. When a
@@ -113,6 +128,11 @@ will be ignored entirely by the optimization pipeline.
 
 The ``noinline`` flag prevents a function from being inlined at call sites.
 
+Function references have the grammar:
+
+.. productionlist::
+    Function : [ `Identifier` "/" ] `Identifier`
+
 Registers
 ---------
 
@@ -123,7 +143,12 @@ assigned once.
 Register declarations have the grammar:
 
 .. productionlist::
-    RegisterDeclaration : [ `MetadataList` ] "register" `Type` `Identifier` ";"
+    RegisterDeclaration : [ `MetadataList` ] "register" `TypeSpecification` `Identifier` ";"
+
+The grammar for a register reference is:
+
+.. productionlist::
+    Register : `Identifier`
 
 Basic blocks
 ------------
@@ -136,10 +161,15 @@ Basic block declarations have the grammar:
 
 .. productionlist::
     BasicBlockDeclaration : [ `MetadataList` ] "block" `Identifier` [ `UnwindSpecification` ] "{" `Instruction` { `Instruction` } "}"
-    UnwindSpecification : "unwind" `Identifier`
+    UnwindSpecification : "unwind" `BasicBlock`
 
 The unwind specification is a basic block reference and specifies where to
 unwind to if an exception is thrown within the basic block.
+
+The grammar for a basic block reference is:
+
+.. productionlist::
+    BasicBlock : `Identifier`
 
 Instructions
 ~~~~~~~~~~~~
@@ -150,7 +180,11 @@ in basic blocks.
 Their grammar is:
 
 .. productionlist::
-    Instruction : [ `MetadataList` ] [ `Identifier` "=" ] ? any instruction ? [ `Identifier` [ "," `Identifier` [ "," `Identifier` ] ] ] ";"
+    Instruction : [ `MetadataList` ] [ `Register` "=" ] ? any instruction ? [ `Register` [ "," `Register` [ "," `Register` ] ] ] [ InstructionOperand ] ";"
+    InstructionOperand : "(" ( `Literal` | `LiteralArray` | `BasicBlock` | `BranchTarget` | `FFISignature` | `TypeSpecification` | `Field` | `Function` ) ")"
+    BranchTarget : `BasicBlock` "," `BasicBlock`
+    RegisterSelector : `Register` { "," `Register` }
+    FFISignature : `Identifier` "," `Identifier`
 
 The full list of valid instructions can be found on the instruction set page.
 
