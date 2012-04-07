@@ -55,7 +55,6 @@ public enum TokenType : ubyte
     float64,
     opCode,
     literal,
-    string,
 }
 
 private __gshared TokenType[char] delimiters;

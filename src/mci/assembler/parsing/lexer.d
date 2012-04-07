@@ -260,10 +260,6 @@ public final class Lexer
             if (isDigit(chr) || chr == '-' || chr == '+')
                 return lexLiteral(chr);
 
-            // Handle string literals.
-            if (chr == '"')
-                return lexString();
-
             errorGot("any valid character", _source.location, chr);
         }
 
@@ -364,7 +360,7 @@ public final class Lexer
             id ~= idChr;
         }
 
-        if (!id.length)
+        if (!id)
             errorGot("non-empty quoted identifier", loc, id);
 
         return new Token(TokenType.identifier, id, makeSourceLocation(id, _source.location));
@@ -406,16 +402,15 @@ public final class Lexer
         while (true)
         {
             auto digChr = _source.next();
-            auto isDot = digChr == '.';
 
-            if (isDot)
+            if (digChr == '.')
             {
                 if (isHexLiteral)
                     error("base-16 digit", _source.location);
                 else
                 {
                     _source.moveNext();
-                    return lexFloatingPoint(str ~ '.');
+                    return lexFloatingPoint(str ~ cast(char)digChr);
                 }
             }
 
@@ -453,7 +448,7 @@ public final class Lexer
 
         auto peek = _source.next();
 
-        if (peek == 'e' || peek == 'E')
+        if (peek == 'e')
         {
             str ~= _source.moveNext();
 
@@ -474,41 +469,6 @@ public final class Lexer
         }
 
         return new Token(TokenType.literal, str, makeSourceLocation(str, _source.location));
-    }
-
-    private Token lexString()
-    out (result)
-    {
-        assert(result);
-    }
-    body
-    {
-        string str;
-
-        while (true)
-        {
-            auto chr = _source.next();
-
-            if (chr == '"')
-            {
-                _source.moveNext();
-                break;
-            }
-
-            if (chr == '\\')
-            {
-                _source.moveNext();
-
-                if (_source.next() == '"')
-                    chr = _source.moveNext();
-            }
-            else
-                _source.moveNext();
-
-            str ~= chr;
-        }
-
-        return new Token(TokenType.string, str, makeSourceLocation(str, _source.location));
     }
 }
 
