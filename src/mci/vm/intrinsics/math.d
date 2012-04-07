@@ -5,14 +5,25 @@ import std.math,
 
 extern (C)
 {
-    public float nan_payload_f32(VirtualMachineContext context, uint payload)
+    public float nan_with_payload_f32(VirtualMachineContext context, uint payload)
     {
         return NaN(payload);
     }
 
-    public double nan_payload_f64(VirtualMachineContext context, ulong payload)
+    public double nan_with_payload_f64(VirtualMachineContext context, ulong payload)
     {
         return NaN(payload);
+    }
+
+    public uint nan_get_payload_f32(VirtualMachineContext context, float value)
+    {
+        // This cast is safe due to the size constraints of the stored payload.
+        return cast(uint)getNaNPayload(value);
+    }
+
+    public ulong nan_get_payload_f64(VirtualMachineContext context, double value)
+    {
+        return getNaNPayload(value);
     }
 
     public size_t is_nan_f32(VirtualMachineContext context, float value)

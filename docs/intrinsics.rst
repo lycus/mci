@@ -526,27 +526,43 @@ Possible flags:
 Math and IEEE 754 operations
 ++++++++++++++++++++++++++++
 
-nan_payload_f32
----------------
+nan_with_payload_f32
+--------------------
 
 **Signature**
-    ``float32 nan_payload_f32(uint32)``
+    ``float32 nan_with_payload_f32(uint32)``
 
 Produces a NaN (not a number) value with a given user payload. This abuses an
 obscure feature of IEEE 754 that allows 22 bits of a NaN value to be set to a
 user-specified value. This does of course mean that only 22 bits of the given
 payload will be inserted in the NaN value.
 
-nan_payload_f64
----------------
+nan_with_payload_f64
+--------------------
 
 **Signature**
-    ``float64 nan_payload_f64(uint64)``
+    ``float64 nan_with_payload_f64(uint64)``
 
 Produces a NaN (not a number) value with a given user payload. This abuses an
 obscure feature of IEEE 754 that allows 51 bits of a NaN value to be set to a
 user-specified value. This does of course mean that only 51 bits of the given
 payload will be inserted in the NaN value.
+
+nan_get_payload_f32
+-------------------
+
+**Signature**
+    ``uint32 nan_get_payload_f32(float32)``
+
+Extracts the 22-bit payload stored in a NaN (not a number) value.
+
+nan_get_payload_f64
+-------------------
+
+**Signature**
+    ``uint64 nan_get_payload_f64(float64)``
+
+Extracts the 51-bit payload stored in a NaN (not a number) value.
 
 is_nan_f32
 ----------

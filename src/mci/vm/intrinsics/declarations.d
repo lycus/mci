@@ -59,8 +59,10 @@ public __gshared
     Function gcIsAtomic;
     Function gcGetBarriers;
 
-    Function nanPayloadF32;
-    Function nanPayloadF64;
+    Function nanWithPayloadF32;
+    Function nanWithPayloadF64;
+    Function nanGetPayloadF32;
+    Function nanGetPayloadF64;
     Function isNANF32;
     Function isNANF64;
     Function isInfF32;
@@ -193,10 +195,14 @@ shared static this()
     gcIsAtomic = createFunction!gc_is_atomic(NativeUIntType.instance);
     gcGetBarriers = createFunction!gc_get_barriers(UInt8Type.instance);
 
-    nanPayloadF32 = createFunction!nan_payload_f32(Float32Type.instance,
-                                                   UInt32Type.instance);
-    nanPayloadF64 = createFunction!nan_payload_f64(Float64Type.instance,
-                                                   UInt64Type.instance);
+    nanWithPayloadF32 = createFunction!nan_with_payload_f32(Float32Type.instance,
+                                                            UInt32Type.instance);
+    nanWithPayloadF64 = createFunction!nan_with_payload_f64(Float64Type.instance,
+                                                            UInt64Type.instance);
+    nanGetPayloadF32 = createFunction!nan_get_payload_f32(UInt32Type.instance,
+                                                          Float32Type.instance);
+    nanGetPayloadF64 = createFunction!nan_get_payload_f64(UInt64Type.instance,
+                                                          Float64Type.instance);
     isNANF32 = createFunction!is_nan_f32(NativeUIntType.instance,
                                          Float32Type.instance);
     isNANF64 = createFunction!is_nan_f64(NativeUIntType.instance,
