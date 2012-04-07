@@ -50,6 +50,15 @@ algorithm that the MCI uses.
 The grammar for type specifications is:
 
 .. productionlist::
+    ReturnType : "void" | `Type`
+    Type : ( `CoreType` | `TypeReference` ) | `PointerType` | `ReferenceType` | `ArrayType` | `VectorType` | `FunctionPointerType`
+    PointerType : `Type` "*"
+    ReferenceType : `Type` "&"
+    ArrayType : `Type` "[" "]"
+    VectorType : `Type` "[" `Literal` "]"
+    FunctionPointerType : `ReturnType` "(" `ParameterList` ")" [ "cdecl" | "stdcall" ]
+    TypeReference : [ `Identifier` "/" ] `Identifier`
+    CoreType : "int" | "uint" | "int8" | "uint8" | "int16" | "uint16" | "int32 | "uint32" | "int64" | "uint64" | "float32" | "float64"
 
 Fields
 ------
