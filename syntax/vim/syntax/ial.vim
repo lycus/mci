@@ -38,6 +38,7 @@ syn keyword ialInstruction              jump jump.cond leave return dead phi raw
 syn keyword ialInstruction              eh.throw eh.rethrow eh.catch
 syn keyword ialInstruction              conv
 syn keyword ialInstruction              fence
+syn keyword ialInstruction              tramp
 
 syn keyword ialTodo                     contained TODO FIXME HACK UNDONE XXX NOTE
 syn match   ialComment                  "//.*$" contains=ialTodo
