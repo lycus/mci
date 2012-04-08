@@ -57,9 +57,7 @@ public abstract class DebuggerClient
     private void run()
     {
         try
-        {
             _socket.connect(_address);
-        }
         catch (SocketOSException)
         {
             kill();

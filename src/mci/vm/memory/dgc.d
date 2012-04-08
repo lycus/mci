@@ -36,11 +36,7 @@ public final class DGarbageCollector : GarbageCollector
             return emplace!RuntimeObject(mem[0 .. RuntimeObject.sizeof], type);
         }
         catch (OutOfMemoryError)
-        {
-            // This might not actually work at all due to D's fairly stupid
-            // rule about Error objects not getting any cleanup guarantees.
-            return null;
-        }
+            return null; // This might not actually work at all due to how D handles catching of Error objects.
     }
 
     public void free(RuntimeObject* data)

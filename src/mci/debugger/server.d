@@ -53,9 +53,7 @@ public abstract class DebuggerServer
     private void run()
     {
         try
-        {
             _socket.listen(1);
-        }
         catch (SocketOSException)
         {
             kill();
@@ -63,9 +61,7 @@ public abstract class DebuggerServer
         }
 
         try
-        {
             _client = _socket.accept();
-        }
         catch (SocketAcceptException)
         {
             kill();

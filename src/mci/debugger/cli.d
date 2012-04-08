@@ -79,9 +79,7 @@ public final class CommandLineDebugger
                     ushort port;
 
                     try
-                    {
                         port = to!ushort(args[1]);
-                    }
                     catch (ConvException)
                     {
                         writefln("Invalid port: '%s'", args[1]);
@@ -91,11 +89,10 @@ public final class CommandLineDebugger
                     Address addr;
 
                     try
-                    {
                         addr = parseAddress(args[0], port);
-                    }
                     catch (SocketException)
                     {
+                        // Handled below.
                     }
 
                     if (!addr || (addr.addressFamily != AddressFamily.INET && addr.addressFamily != AddressFamily.INET6))
@@ -162,9 +159,7 @@ public final class CommandLineDebugger
                         ulong id;
 
                         try
-                        {
                             id = to!ulong(args[0]);
-                        }
                         catch (ConvException)
                         {
                             writefln("Invalid thread ID: '%s'", args[0]);
@@ -193,9 +188,7 @@ public final class CommandLineDebugger
                         ulong id;
 
                         try
-                        {
                             id = to!ulong(args[0]);
-                        }
                         catch (ConvException)
                         {
                             writefln("Invalid frame ID: '%s'", args[0]);
