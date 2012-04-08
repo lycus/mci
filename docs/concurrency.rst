@@ -32,8 +32,8 @@ Atomic intrinsics
 
 The virtual machine provides a number of intrinsics to do various atomic
 operations on word-size values (i.e. ``int`` and ``uint``). Most basic
-arithmetic and logic operations are supported, as well as the CAS
-(compare-and-swap) operation.
+arithmetic and logic operations are supported, simple loads and stores, as
+well as the CAS (compare-and-swap) operation.
 
 The reason for not supporting fixed-size integer types is that implementing
 atomic operations for these across all supported architectures is hard, and

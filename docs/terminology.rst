@@ -23,6 +23,11 @@ An abstract tree-based representation of source code. Most parsers emit an AST
 from every parsed document, as this is usually the easiest kind of data
 structure to work with.
 
+BB
+++
+
+Abbreviation for `basic block`_.
+
 Basic block
 +++++++++++
 
@@ -31,11 +36,6 @@ contains a number of simple instructions terminated by a single terminator_
 instruction. If one were to compare with the C programming language, a basic
 block can be considered a label which a ``goto`` statement can transfer
 control to.
-
-BB
-++
-
-Abbreviation for `basic block`_.
 
 CSE
 +++
@@ -72,6 +72,12 @@ optimize to::
     bar();
 
 Further optimization would remove ``x`` entirely.
+
+EP
+++
+
+Abbreviation for entry point. An entry point of `main module`_ is called upon
+startup and returns the exit code of the program.
 
 FFI
 +++
@@ -159,6 +165,13 @@ JIT
 An abbreviation for just in time. It generally refers to either the technique
 of compiling code on demand, or such a compiler itself.
 
+LTO
++++
+
+Link-time optimization. This is the practice of doing IPO_ across modules. As
+far as the MCI_ is concerned, this optimization comes for free, as all code
+must be available in IR_ form.
+
 LibC
 ++++
 
@@ -167,17 +180,16 @@ exploited by many other languages, however, as it provides the easiest access
 to memory, I/O, and other such facilities which are very close to the
 operating system.
 
-LTO
-+++
-
-Link-time optimization. This is the practice of doing IPO_ across modules. As
-far as the MCI_ is concerned, this optimization comes for free, as all code
-must be available in IR_ form.
-
 MCI
 +++
 
 Abbreviation for Managed Compiler Infrastructure.
+
+Main module
++++++++++++
+
+The main module of a program is the module that was passed to the virtual
+machine for execution.
 
 PRE
 +++
@@ -233,6 +245,18 @@ from.
 
 SSA is mostly useful in analysis and optimization.
 
+TEP
++++
+
+Abbreviation for thread entry point. A thread entry point of a `main module`_
+is called whenever a properly registered thread enters managed code.
+
+TLS
++++
+
+Abbreviation for thread-local storage. This is a mechanism by which each
+thread in a program gets its own isolated version of a variable.
+
 Target
 ++++++
 
@@ -246,9 +270,3 @@ A terminator is an instruction which, while code is in SSA_ form, indicates
 the end of a `basic block`_. Only one terminator is allowed in a
 `basic block`_, and it must appear as the last instruction. All basic blocks
 must end with a terminator.
-
-TLS
-+++
-
-Abbreviation for thread-local storage. This is a mechanism by which each
-thread in a program gets its own isolated version of a variable.
