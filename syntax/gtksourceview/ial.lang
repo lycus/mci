@@ -52,6 +52,7 @@
           <keyword>function</keyword>
           <keyword>register</keyword>
           <keyword>block</keyword>
+          <keyword>entry</keyword>
         </context>
 
         <context id="modifiers" style-ref="modifier">

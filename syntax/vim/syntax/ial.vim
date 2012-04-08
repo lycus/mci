@@ -10,7 +10,7 @@ endif
 setlocal iskeyword+=.
 
 syn keyword ialType                     void int8 uint8 int16 uint16 int32 uint32 int64 uint64 int uint float32 float64
-syn keyword ialDeclaration              type field function register block
+syn keyword ialDeclaration              type field function register block entry
 syn keyword ialModifier                 instance static thread ssa pure nooptimize noinline align unwind
 syn keyword ialConvention               cdecl stdcall
 syn keyword ialInstruction              nop comment
