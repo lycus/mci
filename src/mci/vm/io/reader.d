@@ -464,6 +464,12 @@ public final class ModuleReader : ModuleLoader
             }
         }
 
+        if (_reader.read!bool())
+            mod.entryPoint = readFunctionReference();
+
+        if (_reader.read!bool())
+            mod.threadEntryPoint = readFunctionReference();
+
         return mod;
     }
 

@@ -8,7 +8,7 @@ source files and assembles them to a single output file (a module).
 The grammar is:
 
 .. productionlist::
-    Program : { `TypeDeclaration` | `FunctionDeclaration` }
+    Program : { `TypeDeclaration` | `FunctionDeclaration` | `EntryPointDeclaration` | `ThreadEntryPointDeclaration` }
 
 Module references have the grammar:
 
@@ -58,6 +58,9 @@ Type references have the grammar:
 .. productionlist::
     Type : [ `Module` "/" ] `Identifier`
 
+The module reference is optional. If it is not specified, the type is looked
+up in the module being assembled.
+
 The grammar for type specifications is:
 
 .. productionlist::
@@ -67,7 +70,7 @@ The grammar for type specifications is:
     ReferenceType : `TypeSpecification` "&"
     ArrayType : `TypeSpecification` "[" "]"
     VectorType : `TypeSpecification` "[" `Literal` "]"
-    FunctionPointerType : `ReturnType` "(" `ParameterList` ")" [ "cdecl" | "stdcall" ]
+    FunctionPointerType : `ReturnType` "(" `ParameterList` ")" [ `CallingConvention` ]
     CoreType : "int" | "uint" | "int8" | "uint8" | "int16" | "uint16" | "int32 | "uint32" | "int64" | "uint64" | "float32" | "float64"
 
 Fields
@@ -105,9 +108,10 @@ a number of arguments as input and returns a single output value.
 Function declarations have the grammar:
 
 .. productionlist::
-    FunctionDeclaration : [ `MetadataList` ] "function" `FunctionAttributes` `ReturnType` `Identifier` `ParameterList` "{" `FunctionBody` "}"
+    FunctionDeclaration : [ `MetadataList` ] "function" `FunctionAttributes` `ReturnType` `Identifier` `ParameterList` [ `CallingConvention` ] "{" `FunctionBody` "}"
     FunctionAttributes : [ "ssa" ] [ "pure" ] [ "nooptimize" ] [ "noinline" ]
     ParameterList : "(" [ `TypeSpecification` { "," `TypeSpecification` } ] ")"
+    CallingConvention : "cdecl" | "stdcall"
     FunctionBody : { `RegisterDeclaration` | `BasicBlockDeclaration` }
 
 The ``ssa`` attribute specifies that the function is in SSA form. When a
@@ -131,7 +135,10 @@ The ``noinline`` flag prevents a function from being inlined at call sites.
 Function references have the grammar:
 
 .. productionlist::
-    Function : [ `Identifier` "/" ] `Identifier`
+    Function : [ `Module` "/" ] `Identifier`
+
+The module reference is optional. If it is not specified, the function is
+looked up in the module being assembled.
 
 Registers
 ---------
@@ -160,7 +167,7 @@ other basic blocks, return from the function, etc.
 Basic block declarations have the grammar:
 
 .. productionlist::
-    BasicBlockDeclaration : [ `MetadataList` ] "block" `Identifier` [ `UnwindSpecification` ] "{" `Instruction` { `Instruction` } "}"
+    BasicBlockDeclaration : [ `MetadataList` ] "block" ( "entry" | `Identifier` ) [ `UnwindSpecification` ] "{" `Instruction` { `Instruction` } "}"
     UnwindSpecification : "unwind" `BasicBlock`
 
 The unwind specification is a basic block reference and specifies where to
@@ -186,7 +193,37 @@ Their grammar is:
     RegisterSelector : `Register` { "," `Register` }
     FFISignature : `Identifier` "," `Identifier`
 
-The full list of valid instructions can be found on the instruction set page.
+The full list of valid instructions (with register counts, operand types, and
+so on) can be found on the instruction set page.
+
+Entry points
+++++++++++++
+
+An entry point can be specified for a module. If this is done, the module
+effectively becomes executable as a program.
+
+The grammar is:
+
+.. productionlist::
+    EntryPointDeclaration : "entry" `Function` ";"
+
+An entry point function must return ``int32``, have no parameters, and have
+standard calling convention.
+
+A thread entry point can also be specified. Such an entry point is guaranteed
+to run before a properly registered thread gets a chance to execute any other
+managed code. This is useful for initializing TLS data.
+
+The grammar is:
+
+.. productionlist::
+    ThreadEntryPointDeclaration : "thread" "entry" `Function` ";"
+
+A thread entry point function must return ``void``, have no parameters, and
+have standard calling convention.
+
+A module can only have one entry point and one thread entry point (both are
+optional). Both must refer to functions inside the module.
 
 Metadata
 ++++++++

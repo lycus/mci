@@ -1,10 +1,12 @@
 module mci.assembler.generation.driver;
 
-import mci.core.container,
+import mci.core.common,
+       mci.core.container,
        mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.modules,
        mci.core.typing.members,
+       mci.core.typing.core,
        mci.core.typing.types,
        mci.assembler.parsing.ast,
        mci.assembler.parsing.parser,
@@ -129,6 +131,7 @@ public final class GeneratorDriver
         _passes.add(new TypeCreationPass());
         _passes.add(new TypeClosurePass());
         _passes.add(new FunctionCreationPass());
+        _passes.add(new EntryPointPass());
     }
 
     public Module run()
@@ -174,7 +177,7 @@ public final class TypeCreationPass : GeneratorPass
             state.currentFile = unit.x;
 
             foreach (node; unit.y.nodes)
-                if (auto type = cast(TypeDeclarationNode)node)
+                if (auto type = tryCast!TypeDeclarationNode(node))
                     state.types.add(tuple(unit.x, type, generateType(type, state.module_)));
         }
     }
@@ -214,11 +217,52 @@ public final class FunctionCreationPass : GeneratorPass
             auto funcs = new List!(Tuple!(FunctionDeclarationNode, Function))();
 
             foreach (node; unit.y.nodes)
-                if (auto func = cast(FunctionDeclarationNode)node)
+                if (auto func = tryCast!FunctionDeclarationNode(node))
                     funcs.add(tuple(func, generateFunction(func, state.module_, state.manager)));
 
             foreach (func; funcs)
                 generateFunctionBody(func.x, func.y, state.module_, state.manager);
+        }
+    }
+}
+
+public final class EntryPointPass : GeneratorPass
+{
+    public void run(GeneratorState state)
+    {
+        foreach (unit; state.units)
+        {
+            state.currentFile = unit.x;
+
+            foreach (node; unit.y.nodes)
+            {
+                if (auto ep = tryCast!EntryPointDeclarationNode(node))
+                {
+                    auto tep = tryCast!ThreadEntryPointDeclarationNode(ep);
+                    auto loc = tep ? tep.location : ep.location;
+                    auto func = resolveFunction(tep ? tep.function_ : ep.function_, state.module_, state.manager);
+                    auto str = (tep ? "Thread entry point " : "Entry point ") ~ "function " ~ func.toString();
+
+                    if (func.module_ !is state.module_)
+                        throw new GenerationException(str ~ " is not within the assembled module.", loc);
+
+                    if (func.callingConvention != CallingConvention.standard)
+                        throw new GenerationException(str ~ " does not have standard calling convention.", loc);
+
+                    auto retType = tep ? null : Int32Type.instance;
+
+                    if (func.returnType !is retType)
+                        throw new GenerationException(str ~ " does not have return type " ~ (retType ? retType.toString() : "void") ~ ".", loc);
+
+                    if (!func.parameters.empty)
+                        throw new GenerationException(str ~ " does not have an empty parameter list.", loc);
+
+                    if (tep)
+                        state.module_.threadEntryPoint = func;
+                    else
+                        state.module_.entryPoint = func;
+                }
+            }
         }
     }
 }

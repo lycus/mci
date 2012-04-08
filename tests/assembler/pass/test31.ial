@@ -1,0 +1,22 @@
+function int32 main()
+{
+    register int32 x;
+
+    block entry
+    {
+        x = load.i32 (0);
+        return x;
+    }
+}
+
+entry main;
+
+function void thread_main()
+{
+    block entry
+    {
+        leave;
+    }
+}
+
+thread entry thread_main;

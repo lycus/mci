@@ -65,6 +65,16 @@ public final class ModuleWriter : ModuleSaver
                     writeInstruction(instr);
             }
         }
+
+        _writer.write(!!module_.entryPoint);
+
+        if (module_.entryPoint)
+            writeFunctionReference(module_.entryPoint);
+
+        _writer.write(!!module_.threadEntryPoint);
+
+        if (module_.threadEntryPoint)
+            writeFunctionReference(module_.threadEntryPoint);
     }
 
     private void writeType(StructureType type)

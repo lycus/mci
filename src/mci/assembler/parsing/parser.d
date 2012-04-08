@@ -208,12 +208,46 @@ public final class Parser
                 case TokenType.function_:
                     ast.add(parseFunctionDeclaration());
                     break;
+                case TokenType.entry:
+                case TokenType.thread:
+                    ast.add(parseEntryPointDeclaration());
+                    break;
                 default:
-                    errorGot("'type' or 'function'", token.location, token.value);
+                    errorGot("'type', 'function', 'entry', or 'thread'", token.location, token.value);
             }
         }
 
         return new CompilationUnit(ast);
+    }
+
+    private EntryPointDeclarationNode parseEntryPointDeclaration()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        EntryPointDeclarationNode node;
+        bool isThread;
+
+        if (peek().type == TokenType.thread)
+        {
+            next();
+            isThread = true;
+        }
+
+        consume("entry");
+
+        auto func = parseFunctionReference();
+
+        consume(";");
+
+        if (isThread)
+            node = new ThreadEntryPointDeclarationNode(func.location, func);
+        else
+            node = new EntryPointDeclarationNode(func.location, func);
+
+        return node;
     }
 
     private TypeDeclarationNode parseTypeDeclaration()
@@ -552,17 +586,11 @@ public final class Parser
         auto literal = parseAnyLiteralValue();
 
         try
-        {
             to!T(literal.value);
-        }
         catch (ConvOverflowException)
-        {
             error(T.stringof ~ " literal overflow", literal.location);
-        }
         catch (ConvException)
-        {
             error("invalid " ~ T.stringof ~ " literal", literal.location);
-        }
 
         return literal;
     }
@@ -813,7 +841,15 @@ public final class Parser
 
         consume("block");
 
-        auto name = parseSimpleName();
+        SimpleNameNode name;
+
+        if (peek().type == TokenType.entry)
+        {
+            auto entry = next();
+            name = new SimpleNameNode(entry.location, entry.value);
+        }
+        else
+            name = parseSimpleName();
 
         BasicBlockReferenceNode unwind;
 

@@ -9,6 +9,7 @@ import std.array,
        mci.core.container,
        mci.core.code.functions,
        mci.core.code.metadata,
+       mci.core.typing.core,
        mci.core.typing.types,
        mci.core.utilities;
 
@@ -17,6 +18,8 @@ public final class Module
     private string _name;
     private NoNullDictionary!(string, Function) _functions;
     private NoNullDictionary!(string, StructureType) _types;
+    private Function _entryPoint;
+    private Function _threadEntryPoint;
 
     invariant()
     {
@@ -65,6 +68,70 @@ public final class Module
     body
     {
         return _types;
+    }
+
+    @property public Function entryPoint()
+    out (result)
+    {
+        if (result)
+        {
+            assert((cast()result).module_ is this);
+            assert((cast()result).callingConvention == CallingConvention.standard);
+            assert((cast()result).returnType is Int32Type.instance);
+            assert((cast()result).parameters.empty);
+        }
+    }
+    body
+    {
+        return _entryPoint;
+    }
+
+    @property public void entryPoint(Function entryPoint)
+    in
+    {
+        if (entryPoint)
+        {
+            assert((cast()entryPoint).module_ is this);
+            assert((cast()entryPoint).callingConvention == CallingConvention.standard);
+            assert((cast()entryPoint).returnType is Int32Type.instance);
+            assert((cast()entryPoint).parameters.empty);
+        }
+    }
+    body
+    {
+        _entryPoint = entryPoint;
+    }
+
+    @property public Function threadEntryPoint()
+    out (result)
+    {
+        if (result)
+        {
+            assert((cast()result).module_ is this);
+            assert((cast()result).callingConvention == CallingConvention.standard);
+            assert(!(cast()result).returnType);
+            assert((cast()result).parameters.empty);
+        }
+    }
+    body
+    {
+        return _threadEntryPoint;
+    }
+
+    @property public void threadEntryPoint(Function threadEntryPoint)
+    in
+    {
+        if (threadEntryPoint)
+        {
+            assert((cast()threadEntryPoint).module_ is this);
+            assert((cast()threadEntryPoint).callingConvention == CallingConvention.standard);
+            assert(!(cast()threadEntryPoint).returnType);
+            assert((cast()threadEntryPoint).parameters.empty);
+        }
+    }
+    body
+    {
+        _threadEntryPoint = threadEntryPoint;
     }
 
     public override string toString()

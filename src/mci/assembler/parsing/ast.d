@@ -800,6 +800,51 @@ public class FunctionDeclarationNode : DeclarationNode
     }
 }
 
+public class EntryPointDeclarationNode : DeclarationNode
+{
+    private FunctionReferenceNode _function;
+
+    invariant()
+    {
+        assert(_function);
+    }
+
+    public this(SourceLocation location, FunctionReferenceNode function_)
+    in
+    {
+        assert(function_);
+    }
+    body
+    {
+        super(location);
+
+        _function = function_;
+    }
+
+    @property public final FunctionReferenceNode function_()
+    {
+        return _function;
+    }
+
+    @property public override ReadOnlyIndexable!Node children()
+    {
+        return toReadOnlyIndexable!Node(_function);
+    }
+}
+
+public class ThreadEntryPointDeclarationNode : EntryPointDeclarationNode
+{
+    public this(SourceLocation location, FunctionReferenceNode function_)
+    in
+    {
+        assert(function_);
+    }
+    body
+    {
+        super(location, function_);
+    }
+}
+
 public class RegisterDeclarationNode : Node
 {
     private SimpleNameNode _name;
