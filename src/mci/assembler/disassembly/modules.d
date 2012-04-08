@@ -53,6 +53,12 @@ public final class ModuleDisassembler
 
         foreach (func; module_.functions)
             writeFunction(func.y);
+
+        if (module_.entryPoint)
+            writeEntryPoint(module_.entryPoint);
+
+        if (module_.threadEntryPoint)
+            writeThreadEntryPoint(module_.threadEntryPoint);
     }
 
     private void writeType(StructureType type)
@@ -186,5 +192,25 @@ public final class ModuleDisassembler
 
         _writer.writeln("}");
         _writer.writeln();
+    }
+
+    private void writeEntryPoint(Function function_)
+    in
+    {
+        assert(function_);
+    }
+    body
+    {
+        _writer.writefln("entry %s;", function_);
+    }
+
+    private void writeThreadEntryPoint(Function function_)
+    in
+    {
+        assert(function_);
+    }
+    body
+    {
+        _writer.writefln("thread entry %s;", function_);
     }
 }
