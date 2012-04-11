@@ -187,7 +187,7 @@ in basic blocks.
 Their grammar is:
 
 .. productionlist::
-    Instruction : [ `MetadataList` ] [ `Register` "=" ] ? any instruction ? [ `Register` [ "," `Register` [ "," `Register` ] ] ] [ InstructionOperand ] ";"
+    Instruction : [ `MetadataList` ] [ `Register` "=" ] ? any instruction ? [ `Register` [ "," `Register` [ "," `Register` ] ] ] [ `InstructionOperand` ] ";"
     InstructionOperand : "(" ( `Literal` | `LiteralArray` | `BasicBlock` | `BranchTarget` | `FFISignature` | `TypeSpecification` | `Field` | `Function` ) ")"
     BranchTarget : `BasicBlock` "," `BasicBlock`
     RegisterSelector : `Register` { "," `Register` }
