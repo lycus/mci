@@ -86,7 +86,7 @@ public final class GraphWriter
     {
         auto branches = getBranches(block);
 
-        if (branches.empty)
+        if (branches.type == ControlFlowType.exit)
             return;
 
         _writer.writeln();
