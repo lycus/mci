@@ -160,7 +160,7 @@ public final class ModuleManager
 
         _probePaths.add(".");
 
-        static if (isPosix)
+        static if (isPOSIX)
         {
             static if (operatingSystem == OperatingSystem.osx)
             {
@@ -185,7 +185,7 @@ public final class ModuleManager
                 _probePaths.add(buildPath(sysRoot, "System32"));
         }
 
-        auto path = std.process.environment[isPosix ? "PATH" : "Path"];
+        auto path = std.process.environment[isPOSIX ? "PATH" : "Path"];
 
         if (path)
             foreach (dir; split(path, pathSeparator))

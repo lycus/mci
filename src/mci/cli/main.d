@@ -7,7 +7,7 @@ import std.stdio,
        mci.core.config,
        mci.optimizer.manager;
 
-static if (operatingSystem != OperatingSystem.windows)
+static if (isPOSIX)
 {
     public enum GarbageCollectorType : ubyte
     {

@@ -10,7 +10,7 @@ import core.stdc.string,
        mci.vm.memory.info,
        mci.vm.memory.pinning;
 
-static if (operatingSystem != OperatingSystem.windows)
+static if (isPOSIX)
 {
     import gc;
 
