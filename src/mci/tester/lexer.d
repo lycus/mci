@@ -8,8 +8,8 @@ unittest
 
     auto source = new Source(str);
 
-    assert(source.current == dchar.init);
-    assert(source.peek(0) == dchar.init);
+    assert(source.current == char.init);
+    assert(source.peek(0) == char.init);
     assert(source.peek(1) == 'a');
     assert(source.peek(2) == 'b');
 
@@ -25,14 +25,14 @@ unittest
 
     assert(source.current == 'z');
     assert(source.peek(0) == 'z');
-    assert(source.peek(1) == dchar.init);
+    assert(source.peek(1) == char.init);
 }
 
 unittest
 {
     auto source = new Source("abcdefghijklmnopqrstuvwxyz");
 
-    assert(source.current == dchar.init);
+    assert(source.current == char.init);
     assert(source.location.line == 1);
     assert(source.location.column == 0);
 

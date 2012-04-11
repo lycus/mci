@@ -16,7 +16,7 @@ public final class Source
 {
     private string _source;
     private size_t _position;
-    private dchar _current;
+    private char _current;
     private SourceLocation _location;
 
     public this(string source)
@@ -43,7 +43,7 @@ public final class Source
         _location = typeof(_location)(1, 0);
     }
 
-    @property public dchar current()
+    @property public char current()
     {
         return _current;
     }
@@ -53,10 +53,10 @@ public final class Source
         return _location;
     }
 
-    public dchar moveNext()
+    public char moveNext()
     {
         if (_position == _source.length)
-            return _current = dchar.init;
+            return _current = char.init;
 
         auto chr = _source[_position];
         auto line = _location.line;
@@ -72,20 +72,20 @@ public final class Source
 
         _location = typeof(_location)(line, column);
 
-        return _current = decode(_source, _position);
+        return _current = cast(char)decode(_source, _position);
     }
 
-    public dchar next()
+    public char next()
     {
         if (_position == _source.length)
-            return dchar.init;
+            return char.init;
 
         auto index = _position;
 
-        return decode(_source, index);
+        return cast(char)decode(_source, index);
     }
 
-    public dchar peek(size_t offset)
+    public char peek(size_t offset)
     {
         if (!offset)
             return _current;
@@ -95,9 +95,9 @@ public final class Source
         for (size_t i = 0; i < offset; i++)
         {
             if (idx >= _source.length)
-                return dchar.init;
+                return char.init;
 
-            auto chr = decode(_source, idx);
+            auto chr = cast(char)decode(_source, idx);
 
             if (i == offset - 1)
                 return chr;
@@ -109,7 +109,7 @@ public final class Source
     public void reset()
     {
         _position = 0;
-        _current = dchar.init;
+        _current = char.init;
         _location = typeof(_location)(1, 1);
     }
 }
@@ -205,8 +205,8 @@ public final class Lexer
     {
         string s;
 
-        static if (is(T == dchar))
-            s = got == dchar.init ? "end of file" : "'" ~ to!string(got) ~ "'";
+        static if (is(T == char))
+            s = got == char.init ? "end of file" : "'" ~ to!string(got) ~ "'";
         else
             s = to!string(got);
 
@@ -226,14 +226,14 @@ public final class Lexer
     private Token lexNext()
     out (result)
     {
-        if (_source.current != dchar.init)
+        if (_source.current != char.init)
             assert(result);
     }
     body
     {
-        dchar chr;
+        char chr;
 
-        while ((chr = _source.moveNext()) != dchar.init)
+        while ((chr = _source.moveNext()) != char.init)
         {
             // Skip any white space.
             if (std.uni.isWhite(chr))
@@ -270,12 +270,12 @@ public final class Lexer
     private bool lexComment()
     {
         // We have a comment, so scan to the end of the line (or stream).
-        dchar cmtChr;
+        char cmtChr;
 
         do
         {
             // If this happens, we've reached the end of the file.
-            if ((cmtChr = _source.moveNext()) == dchar.init)
+            if ((cmtChr = _source.moveNext()) == char.init)
                 return false;
         }
         while (cmtChr != '\n');
@@ -283,10 +283,10 @@ public final class Lexer
         return true;
     }
 
-    private Token lexDelimiter(dchar chr)
+    private Token lexDelimiter(char chr)
     {
         // Simple operators/delimiters.
-        auto delim = delimiterCharToType(cast(char)chr);
+        auto delim = delimiterCharToType(chr);
 
         if (delim.hasValue)
         {
@@ -297,14 +297,14 @@ public final class Lexer
             return null;
     }
 
-    private Token lexIdentifier(dchar chr)
+    private Token lexIdentifier(char chr)
     out (result)
     {
         assert(result);
     }
     body
     {
-        string id = [cast(char)chr];
+        string id = [chr];
 
         while (true)
         {
@@ -366,14 +366,14 @@ public final class Lexer
         return new Token(TokenType.identifier, id, makeSourceLocation(id, _source.location));
     }
 
-    private Token lexLiteral(dchar chr)
+    private Token lexLiteral(char chr)
     out (result)
     {
         assert(result);
     }
     body
     {
-        string str = [cast(char)chr];
+        string str = [chr];
         auto peek = _source.next();
         auto isN = peek == 'n';
         auto isI = peek == 'i';
@@ -410,7 +410,7 @@ public final class Lexer
                 else
                 {
                     _source.moveNext();
-                    return lexFloatingPoint(str ~ cast(char)digChr);
+                    return lexFloatingPoint(str ~ digChr);
                 }
             }
 
@@ -482,7 +482,7 @@ body
     return SourceLocation(location.line, location.column - cast(uint)value.length);
 }
 
-private bool isIdentifierChar(dchar chr)
+private bool isIdentifierChar(char chr)
 {
     return chr == '_' || chr == '.' || std.ascii.isAlpha(chr);
 }
