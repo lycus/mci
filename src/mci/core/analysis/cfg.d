@@ -17,12 +17,15 @@ public enum ControlFlowType : ubyte
 
 public struct ControlFlowBranch
 {
+    private BasicBlock _block;
     private ControlFlowType _type;
     private BasicBlock _block1;
     private BasicBlock _block2;
 
     invariant()
     {
+        assert(_block);
+
         final switch (_type)
         {
             case ControlFlowType.exit:
@@ -40,14 +43,19 @@ public struct ControlFlowBranch
         }
     }
 
-    private this(Instruction instruction)
+    @disable this();
+
+    private this(BasicBlock block, Instruction instruction)
     in
     {
+        assert(block);
         assert(instruction);
         assert(instruction.opCode.type == OpCodeType.controlFlow);
     }
     body
     {
+        _block = block;
+
         match(instruction.operand,
               (BasicBlock bb)
               {
@@ -105,6 +113,16 @@ public struct ControlFlowBranch
         return 0;
     }
 
+    @property public BasicBlock block()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _block;
+    }
+
     @property public ControlFlowType type()
     {
         return _type;
@@ -138,7 +156,7 @@ in
 }
 body
 {
-    return ControlFlowBranch(last(block.stream));
+    return ControlFlowBranch(block, last(block.stream));
 }
 
 public ReadOnlyIndexable!BasicBlock getPredecessors(BasicBlock block)
