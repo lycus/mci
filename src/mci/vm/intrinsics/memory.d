@@ -65,16 +65,19 @@ extern (C)
         return !!cast(InteractiveGarbageCollector)context.engine.gc;
     }
 
-    public alias extern (C) void function(RuntimeObject*) GCCallbackFunction;
-
-    public void gc_add_allocate_callback(VirtualMachineContext context, GCCallbackFunction callback)
+    public void gc_add_allocate_callback(VirtualMachineContext context, GarbageCollectorCallbackFunction callback)
     {
-        (cast(InteractiveGarbageCollector)context.engine.gc).addAllocateCallback((RuntimeObject* rto) => callback(rto));
+        (cast(InteractiveGarbageCollector)context.engine.gc).addAllocateCallback(callback);
     }
 
-    public void gc_add_free_callback(VirtualMachineContext context, GCCallbackFunction callback)
+    public void gc_remove_allocate_callback(VirtualMachineContext context, GarbageCollectorCallbackFunction callback)
     {
-        (cast(InteractiveGarbageCollector)context.engine.gc).addFreeCallback((RuntimeObject* rto) => callback(rto));
+        (cast(InteractiveGarbageCollector)context.engine.gc).removeAllocateCallback(callback);
+    }
+
+    public void gc_add_free_callback(VirtualMachineContext context, RuntimeObject* rto, GarbageCollectorCallbackFunction callback)
+    {
+        (cast(InteractiveGarbageCollector)context.engine.gc).addFreeCallback(rto, callback);
     }
 
     public size_t gc_is_atomic(VirtualMachineContext context)

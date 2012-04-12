@@ -171,17 +171,26 @@ public interface GenerationalGarbageCollector : GarbageCollector
     }
 }
 
+public alias extern (C) void function(RuntimeObject*) GarbageCollectorCallbackFunction;
+
 public interface InteractiveGarbageCollector : GarbageCollector
 {
-    public void addAllocateCallback(void delegate(RuntimeObject*) callback)
+    public void addAllocateCallback(GarbageCollectorCallbackFunction callback)
     in
     {
         assert(callback);
     }
 
-    public void addFreeCallback(void delegate(RuntimeObject*) callback)
+    public void removeAllocateCallback(GarbageCollectorCallbackFunction callback)
     in
     {
+        assert(callback);
+    }
+
+    public void addFreeCallback(RuntimeObject* rto, GarbageCollectorCallbackFunction callback)
+    in
+    {
+        assert(rto);
         assert(callback);
     }
 }

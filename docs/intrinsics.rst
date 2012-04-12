@@ -515,22 +515,35 @@ the program. The parameter given to the function pointer is the newly
 allocated object. Note that the callback will be triggered right after the
 memory has been allocated.
 
-Calling this function if the GC is not interactive results in undefined
-behavior.
+Calling this function if the GC is not interactive or with a null callback
+pointer results in undefined behavior.
+
+gc_remove_allocate_callback
+---------------------------
+
+**Signature**
+    ``void gc_remove_allocate_callback(void(Object&) cdecl)``
+
+Removes a callback previously added with gc_add_allocate_callback_. If the
+given callback was not registered previously, nothing happens.
+
+Calling this function if the GC is not interactive or with a null callback
+pointer results in undefined behavior.
 
 gc_add_free_callback
 --------------------
 
 **Signature**
-    ``void gc_add_free_callback(void(Object&) cdecl)``
+    ``void gc_add_free_callback(Object&, void(Object&) cdecl)``
 
-Adds a callback to the GC which will be called on every freeing of memory
-made in the program. The argument given to the function pointer is the freed
-object. Note that the callback will be triggered just before the memory is
-actually freed.
+Adds a callback to the GC which will be called on the given object when it is
+no longer reachable (i.e. considered garbage). Note that this callback will be
+triggered just before the memory is actually freed.
 
-Calling this function if the GC is not interactive results in undefined
-behavior.
+The callback is automatically removed when the object is freed.
+
+Calling this function if the GC is not interactive or with a null object, or
+null callback pointer, results in undefined behavior.
 
 gc_is_atomic
 ------------

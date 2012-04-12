@@ -9,8 +9,8 @@ import core.stdc.stdlib,
 
 public final class LibCGarbageCollector : InteractiveGarbageCollector
 {
-    private NoNullList!(void delegate(RuntimeObject*)) _allocCallbacks;
-    private NoNullList!(void delegate(RuntimeObject*)) _freeCallbacks;
+    private NoNullList!GarbageCollectorCallbackFunction _allocCallbacks;
+    private NoNullDictionary!(RuntimeObject*, NoNullList!GarbageCollectorCallbackFunction) _freeCallbacks;
     private Mutex _allocateCallbackLock;
     private Mutex _freeCallbackLock;
 
@@ -60,8 +60,15 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
             scope (exit)
                 _freeCallbackLock.unlock();
 
-            foreach (cb; _freeCallbacks)
-                cb(data);
+            auto callbacks = data in _freeCallbacks;
+
+            if (callbacks)
+            {
+                foreach (cb; *callbacks)
+                    cb(data);
+
+                _freeCallbacks.remove(data);
+            }
         }
 
         .free(data);
@@ -118,7 +125,7 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
     {
     }
 
-    public void addAllocateCallback(void delegate(RuntimeObject*) callback)
+    public void addAllocateCallback(GarbageCollectorCallbackFunction callback)
     {
         _allocateCallbackLock.lock();
 
@@ -128,13 +135,32 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         _allocCallbacks.add(callback);
     }
 
-    public void addFreeCallback(void delegate(RuntimeObject*) callback)
+    public void removeAllocateCallback(GarbageCollectorCallbackFunction callback)
+    {
+        _allocateCallbackLock.lock();
+
+        scope (exit)
+            _allocateCallbackLock.unlock();
+
+        _allocCallbacks.remove(callback);
+    }
+
+    public void addFreeCallback(RuntimeObject* rto, GarbageCollectorCallbackFunction callback)
     {
         _freeCallbackLock.lock();
 
         scope (exit)
             _freeCallbackLock.unlock();
 
-        _freeCallbacks.add(callback);
+        auto cbs = rto in _freeCallbacks;
+        auto callbacks = cbs ? *cbs : null;
+
+        if (!callbacks)
+        {
+            callbacks = new NoNullList!GarbageCollectorCallbackFunction();
+            _freeCallbacks[rto] = callbacks;
+        }
+
+        callbacks.add(callback);
     }
 }

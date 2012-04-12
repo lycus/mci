@@ -59,6 +59,7 @@ public __gshared
     Function gcGenerationGetCollections;
     Function gcIsInteractive;
     Function gcAddAllocateCallback;
+    Function gcRemoveAllocateCallback;
     Function gcAddFreeCallback;
     Function gcIsAtomic;
     Function gcGetBarriers;
@@ -203,7 +204,11 @@ shared static this()
     gcAddAllocateCallback = createFunction!gc_add_allocate_callback(null,
                                                                     getFunctionPointerType(CallingConvention.cdecl, null,
                                                                                            toNoNullList(toIterable!Type(objectType))));
+    gcRemoveAllocateCallback = createFunction!gc_remove_allocate_callback(null,
+                                                                          getFunctionPointerType(CallingConvention.cdecl, null,
+                                                                                                 toNoNullList(toIterable!Type(objectType))));
     gcAddFreeCallback = createFunction!gc_add_free_callback(null,
+                                                            objectType,
                                                             getFunctionPointerType(CallingConvention.cdecl, null,
                                                                                    toNoNullList(toIterable!Type(objectType))));
     gcIsAtomic = createFunction!gc_is_atomic(NativeUIntType.instance);
