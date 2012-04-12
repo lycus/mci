@@ -146,7 +146,7 @@ body
     exit:
 
     static if (!is(typeof(return) == void))
-        return *res;
+        return res ? *res : typeof(return).init;
 }
 
 public bool powerOfTwo(T)(T value)
