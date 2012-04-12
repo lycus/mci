@@ -2,7 +2,8 @@ module mci.vm.threading.tls;
 
 import mci.core.common,
        mci.core.config,
-       mci.core.container;
+       mci.core.container,
+       mci.core.sync;
 
 // This file contains a dirty hack to get callbacks on Windows when threads start/stop.
 
@@ -15,6 +16,7 @@ static if (isWindows)
     public final class ThreadEvent
     {
         private NoNullList!WindowsThreadEventCallback _callbacks;
+        private Mutex _lock;
 
         invariant()
         {
@@ -24,6 +26,7 @@ static if (isWindows)
         private this()
         {
             _callbacks = new typeof(_callbacks)();
+            _lock = new typeof(_lock)();
         }
 
         public void add(WindowsThreadEventCallback cb)
@@ -33,8 +36,12 @@ static if (isWindows)
         }
         body
         {
-            synchronized (_callbacks)
-                _callbacks.add(cb);
+            _lock.lock();
+
+            scope (exit)
+                _lock.unlock();
+
+            _callbacks.add(cb);
         }
 
         public void remove(WindowsThreadEventCallback cb)
@@ -44,15 +51,23 @@ static if (isWindows)
         }
         body
         {
-            synchronized (_callbacks)
-                _callbacks.remove(cb);
+            _lock.lock();
+
+            scope (exit)
+                _lock.unlock();
+
+            _callbacks.remove(cb);
         }
 
         private void invoke()
         {
-            synchronized (_callbacks)
-                foreach (cb; _callbacks)
-                    cb();
+            _lock.lock();
+
+            scope (exit)
+                _lock.unlock();
+
+            foreach (cb; _callbacks)
+                cb();
         }
     }
 

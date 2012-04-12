@@ -3,8 +3,9 @@ module mci.vm.memory.boehm;
 import core.stdc.string,
        std.conv,
        mci.core.common,
-       mci.core.container,
        mci.core.config,
+       mci.core.container,
+       mci.core.sync,
        mci.core.typing.types,
        mci.vm.memory.base,
        mci.vm.memory.info,
@@ -17,11 +18,13 @@ static if (isPOSIX)
     public final class BoehmGarbageCollector : GarbageCollector
     {
         private __gshared Dictionary!(RuntimeTypeInfo, size_t) _registeredBitmaps;
+        private __gshared Mutex _bitmapsLock;
         private PinnedObjectManager _pinManager;
 
         shared static this()
         {
             _registeredBitmaps = new typeof(_registeredBitmaps)();
+            _bitmapsLock = new typeof(_bitmapsLock)();
         }
 
         public this()
@@ -43,8 +46,12 @@ static if (isPOSIX)
             {
                 size_t descr;
 
-                synchronized (_registeredBitmaps)
                 {
+                    _bitmapsLock.lock();
+
+                    scope (exit)
+                        _bitmapsLock.unlock();
+
                     if (auto d = type in _registeredBitmaps)
                         descr = *d;
                     else

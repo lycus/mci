@@ -3,6 +3,7 @@ module mci.vm.memory.info;
 import mci.core.common,
        mci.core.container,
        mci.core.nullable,
+       mci.core.sync,
        mci.core.tuple,
        mci.core.analysis.utilities,
        mci.core.typing.core,
@@ -64,10 +65,12 @@ public final class RuntimeTypeInfo
 }
 
 private __gshared NoNullDictionary!(Tuple!(Type, bool), RuntimeTypeInfo, false) typeInfoCache;
+private __gshared Mutex typeInfoCacheLock;
 
 shared static this()
 {
     typeInfoCache = new typeof(typeInfoCache)();
+    typeInfoCacheLock = new typeof(typeInfoCacheLock)();
 }
 
 private size_t computeRealSize(Type type, bool is32Bit)
@@ -94,18 +97,20 @@ in
 }
 body
 {
-    synchronized (typeInfoCache)
-    {
-        auto tup = tuple(type, is32Bit);
+    typeInfoCacheLock.lock();
 
-        if (auto info = tup in typeInfoCache)
-            return *info;
+    scope (exit)
+        typeInfoCacheLock.unlock();
 
-        BitArray bitmap;
+    auto tup = tuple(type, is32Bit);
 
-        if (auto structType = tryCast!StructureType(type))
-            bitmap = computeBitmap(structType, is32Bit);
+    if (auto info = tup in typeInfoCache)
+        return *info;
 
-        return typeInfoCache[tup] = new RuntimeTypeInfo(type, computeRealSize(type, is32Bit), bitmap);
-    }
+    BitArray bitmap;
+
+    if (auto structType = tryCast!StructureType(type))
+        bitmap = computeBitmap(structType, is32Bit);
+
+    return typeInfoCache[tup] = new RuntimeTypeInfo(type, computeRealSize(type, is32Bit), bitmap);
 }

@@ -3,6 +3,7 @@ module mci.core.typing.cache;
 import mci.core.common,
        mci.core.container,
        mci.core.nullable,
+       mci.core.sync,
        mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.modules,
@@ -11,18 +12,32 @@ import mci.core.common,
        mci.core.typing.types;
 
 private __gshared NoNullDictionary!(Tuple!(CallingConvention, Type, NoNullList!Type), FunctionPointerType, false) functionPointerTypes;
+private __gshared Mutex functionPointerTypesLock;
+
 private __gshared NoNullDictionary!(Type, PointerType, false) pointerTypes;
+private __gshared Mutex pointerTypesLock;
+
 private __gshared NoNullDictionary!(StructureType, ReferenceType, false) referenceTypes;
+private __gshared Mutex referenceTypesLock;
+
 private __gshared NoNullDictionary!(Type, ArrayType, false) arrayTypes;
+private __gshared Mutex arrayTypesLock;
+
 private __gshared NoNullDictionary!(Tuple!(Type, uint), VectorType, false) vectorTypes;
+private __gshared Mutex vectorTypesLock;
 
 shared static this()
 {
     functionPointerTypes = new typeof(functionPointerTypes)();
+    functionPointerTypesLock = new typeof(functionPointerTypesLock)();
     pointerTypes = new typeof(pointerTypes)();
+    pointerTypesLock = new typeof(pointerTypesLock)();
     referenceTypes = new typeof(referenceTypes)();
+    referenceTypesLock = new typeof(referenceTypesLock)();
     arrayTypes = new typeof(arrayTypes)();
+    arrayTypesLock = new typeof(arrayTypesLock)();
     vectorTypes = new typeof(vectorTypes)();
+    vectorTypesLock = new typeof(vectorTypesLock)();
 }
 
 public FunctionPointerType getFunctionPointerType(CallingConvention callingConvention, Type returnType,
@@ -37,16 +52,18 @@ out (result)
 }
 body
 {
-    synchronized (functionPointerTypes)
-    {
-        auto params = parameterTypes.duplicate();
-        auto tup = tuple(callingConvention, returnType, params);
+    functionPointerTypesLock.lock();
 
-        if (auto fpType = tup in functionPointerTypes)
-            return *fpType;
+    scope (exit)
+        functionPointerTypesLock.unlock();
 
-        return functionPointerTypes[tup] = new FunctionPointerType(callingConvention, returnType, params);
-    }
+    auto params = parameterTypes.duplicate();
+    auto tup = tuple(callingConvention, returnType, params);
+
+    if (auto fpType = tup in functionPointerTypes)
+        return *fpType;
+
+    return functionPointerTypes[tup] = new FunctionPointerType(callingConvention, returnType, params);
 }
 
 public PointerType getPointerType(Type elementType)
@@ -60,13 +77,15 @@ out (result)
 }
 body
 {
-    synchronized (pointerTypes)
-    {
-        if (auto ptrType = elementType in pointerTypes)
-            return *ptrType;
+    pointerTypesLock.lock();
 
-        return pointerTypes[elementType] = new PointerType(elementType);
-    }
+    scope (exit)
+        pointerTypesLock.unlock();
+
+    if (auto ptrType = elementType in pointerTypes)
+        return *ptrType;
+
+    return pointerTypes[elementType] = new PointerType(elementType);
 }
 
 public ReferenceType getReferenceType(StructureType elementType)
@@ -80,13 +99,15 @@ out (result)
 }
 body
 {
-    synchronized (referenceTypes)
-    {
-        if (auto refType = elementType in referenceTypes)
-            return *refType;
+    referenceTypesLock.lock();
 
-        return referenceTypes[elementType] = new ReferenceType(elementType);
-    }
+    scope (exit)
+        referenceTypesLock.unlock();
+
+    if (auto refType = elementType in referenceTypes)
+        return *refType;
+
+    return referenceTypes[elementType] = new ReferenceType(elementType);
 }
 
 public ArrayType getArrayType(Type elementType)
@@ -100,13 +121,15 @@ out (result)
 }
 body
 {
-    synchronized (arrayTypes)
-    {
-        if (auto arrType = elementType in arrayTypes)
-            return *arrType;
+    arrayTypesLock.lock();
 
-        return arrayTypes[elementType] = new ArrayType(elementType);
-    }
+    scope (exit)
+        arrayTypesLock.unlock();
+
+    if (auto arrType = elementType in arrayTypes)
+        return *arrType;
+
+    return arrayTypes[elementType] = new ArrayType(elementType);
 }
 
 public VectorType getVectorType(Type elementType, uint elements)
@@ -120,13 +143,15 @@ out (result)
 }
 body
 {
-    synchronized (vectorTypes)
-    {
-        auto tup = tuple(elementType, elements);
+    vectorTypesLock.lock();
 
-        if (auto vecType = tup in vectorTypes)
-            return *vecType;
+    scope (exit)
+        vectorTypesLock.unlock();
 
-        return vectorTypes[tup] = new VectorType(elementType, elements);
-    }
+    auto tup = tuple(elementType, elements);
+
+    if (auto vecType = tup in vectorTypes)
+        return *vecType;
+
+    return vectorTypes[tup] = new VectorType(elementType, elements);
 }

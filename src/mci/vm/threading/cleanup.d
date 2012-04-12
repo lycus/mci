@@ -3,7 +3,8 @@ module mci.vm.threading.cleanup;
 import core.thread,
        mci.core.common,
        mci.core.config,
-       mci.core.container;
+       mci.core.container,
+       mci.core.sync;
 
 public alias void delegate() ThreadEventCallback;
 
@@ -12,10 +13,12 @@ static if (isWindows)
     import mci.vm.threading.tls;
 
     private __gshared NoNullDictionary!(Thread, ThreadEventCallback) callbacks;
+    private __gshared Mutex lock;
 
     shared static this()
     {
         callbacks = new typeof(callbacks)();
+        lock = new typeof(lock)();
 
         onThreadDestroy.add(&threadExit);
     }
@@ -24,8 +27,12 @@ static if (isWindows)
     {
         ThreadEventCallback* cb;
 
-        synchronized (callbacks)
         {
+            lock.lock();
+
+            scope (exit)
+                lock.unlock();
+
             auto key = Thread.getThis();
 
             cb = callbacks.get(key);
@@ -47,8 +54,12 @@ static if (isWindows)
     }
     body
     {
-        synchronized (callbacks)
-            callbacks.add(Thread.getThis(), cb);
+        lock.lock();
+
+        scope (exit)
+            lock.unlock();
+
+        callbacks.add(Thread.getThis(), cb);
     }
 }
 else

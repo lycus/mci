@@ -3,20 +3,23 @@ module mci.vm.memory.libc;
 import core.stdc.stdlib,
        std.conv,
        mci.core.container,
+       mci.core.sync,
        mci.vm.memory.base,
        mci.vm.memory.info;
 
 public final class LibCGarbageCollector : InteractiveGarbageCollector
 {
-    private Object _cbLock;
     private NoNullList!(void delegate(RuntimeObject*)) _allocCallbacks;
     private NoNullList!(void delegate(RuntimeObject*)) _freeCallbacks;
+    private Mutex _allocateCallbackLock;
+    private Mutex _freeCallbackLock;
 
     public this()
     {
-        _cbLock = new typeof(_cbLock)();
         _allocCallbacks = new typeof(_allocCallbacks)();
         _freeCallbacks = new typeof(_freeCallbacks)();
+        _allocateCallbackLock = new typeof(_allocateCallbackLock)();
+        _freeCallbackLock = new typeof(_freeCallbackLock)();
     }
 
     @property public ulong collections()
@@ -33,9 +36,15 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
 
         auto obj = emplace!RuntimeObject(mem[0 .. RuntimeObject.sizeof], type);
 
-        synchronized (_cbLock)
+        {
+            _allocateCallbackLock.lock();
+
+            scope (exit)
+                _allocateCallbackLock.unlock();
+
             foreach (cb; _allocCallbacks)
                 cb(obj);
+        }
 
         return obj;
     }
@@ -45,9 +54,15 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         if (!data)
             return;
 
-        synchronized (_cbLock)
+        {
+            _freeCallbackLock.lock();
+
+            scope (exit)
+                _freeCallbackLock.unlock();
+
             foreach (cb; _freeCallbacks)
                 cb(data);
+        }
 
         .free(data);
     }
@@ -105,13 +120,21 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
 
     public void addAllocateCallback(void delegate(RuntimeObject*) callback)
     {
-        synchronized (_cbLock)
-            _allocCallbacks.add(callback);
+        _allocateCallbackLock.lock();
+
+        scope (exit)
+            _allocateCallbackLock.unlock();
+
+        _allocCallbacks.add(callback);
     }
 
     public void addFreeCallback(void delegate(RuntimeObject*) callback)
     {
-        synchronized (_cbLock)
-            _freeCallbacks.add(callback);
+        _freeCallbackLock.lock();
+
+        scope (exit)
+            _freeCallbackLock.unlock();
+
+        _freeCallbacks.add(callback);
     }
 }
