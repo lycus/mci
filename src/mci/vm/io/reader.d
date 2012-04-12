@@ -933,7 +933,7 @@ public final class ModuleReader : ModuleLoader
         auto mdCount = _reader.read!uint();
 
         for (uint i = 0; i < mdCount; i++)
-            instr.metadata.add(new MetadataPair(_reader.readString(), _reader.readString()));
+            instr.metadata.add(MetadataPair(_reader.readString(), _reader.readString()));
 
         return instr;
     }

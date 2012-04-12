@@ -1,6 +1,6 @@
 module mci.core.code.metadata;
 
-public final class MetadataPair
+public struct MetadataPair
 {
     private string _key;
     private string _value;
@@ -10,6 +10,8 @@ public final class MetadataPair
         assert(_key);
         assert(_value);
     }
+
+    @disable this();
 
     public this(string key, string value)
     in

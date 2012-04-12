@@ -39,7 +39,7 @@ body
 
         if (param.metadata)
             foreach (md; param.metadata.metadata)
-                p.metadata.add(new MetadataPair(md.key.name, md.value.name));
+                p.metadata.add(MetadataPair(md.key.name, md.value.name));
     }
 
     func.close();
@@ -66,7 +66,7 @@ body
 
         if (reg.metadata)
             foreach (md; reg.metadata.metadata)
-                register.metadata.add(new MetadataPair(md.key.name, md.value.name));
+                register.metadata.add(MetadataPair(md.key.name, md.value.name));
     }
 
     foreach (block; node.blocks)
@@ -88,7 +88,7 @@ body
 
         if (block.metadata)
             foreach (md; block.metadata.metadata)
-                bb.metadata.add(new MetadataPair(md.key.name, md.value.name));
+                bb.metadata.add(MetadataPair(md.key.name, md.value.name));
     }
 
     foreach (block; node.blocks)
@@ -219,13 +219,13 @@ body
 
             if (instrNode.metadata)
                 foreach (md; instrNode.metadata.metadata)
-                    instr.metadata.add(new MetadataPair(md.key.name, md.value.name));
+                    instr.metadata.add(MetadataPair(md.key.name, md.value.name));
         }
     }
 
     if (node.metadata)
         foreach (md; node.metadata.metadata)
-            function_.metadata.add(new MetadataPair(md.key.name, md.value.name));
+            function_.metadata.add(MetadataPair(md.key.name, md.value.name));
 }
 
 public Function resolveFunction(FunctionReferenceNode node, Module module_, ModuleManager manager)

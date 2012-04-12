@@ -15,7 +15,7 @@ public final class BasicBlock
     private BasicBlock _unwindBlock;
     private InstructionStream _stream;
     private bool _isClosed;
-    private NoNullList!MetadataPair _metadata;
+    private List!MetadataPair _metadata;
 
     invariant()
     {
@@ -94,7 +94,7 @@ public final class BasicBlock
         return _isClosed;
     }
 
-    @property public NoNullList!MetadataPair metadata()
+    @property public List!MetadataPair metadata()
     out (result)
     {
         assert(result);
@@ -126,7 +126,7 @@ public final class Parameter
 {
     private Function _function;
     private Type _type;
-    private NoNullList!MetadataPair _metadata;
+    private List!MetadataPair _metadata;
 
     invariant()
     {
@@ -168,7 +168,7 @@ public final class Parameter
         return _type;
     }
 
-    @property public NoNullList!MetadataPair metadata()
+    @property public List!MetadataPair metadata()
     out (result)
     {
         assert(result);
@@ -205,7 +205,7 @@ public final class Function
     private NoNullDictionary!(string, BasicBlock) _blocks;
     private NoNullDictionary!(string, Register) _registers;
     private bool _isClosed;
-    private NoNullList!MetadataPair _metadata;
+    private List!MetadataPair _metadata;
 
     invariant()
     {
@@ -314,7 +314,7 @@ public final class Function
         return _registers;
     }
 
-    @property public NoNullList!MetadataPair metadata()
+    @property public List!MetadataPair metadata()
     out (result)
     {
         assert(result);

@@ -31,7 +31,7 @@ public final class StructureType : Type
     private uint _alignment;
     private NoNullDictionary!(string, Field) _fields;
     private bool _isClosed;
-    private NoNullList!MetadataPair _metadata;
+    private List!MetadataPair _metadata;
 
     invariant()
     {
@@ -95,7 +95,7 @@ public final class StructureType : Type
         return _isClosed;
     }
 
-    @property public NoNullList!MetadataPair metadata()
+    @property public List!MetadataPair metadata()
     out (result)
     {
         assert(result);

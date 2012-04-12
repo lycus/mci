@@ -44,7 +44,7 @@ public final class Register
         _type = type;
         _uses = new NoNullList!Instruction();
         _definitions = new NoNullList!Instruction();
-        _metadata = new NoNullList!MetadataPair();
+        _metadata = new List!MetadataPair();
     }
 
     @property public Function function_()
@@ -97,14 +97,14 @@ public final class Register
         return cast(ReadOnlyIndexable!Instruction)_definitions;
     }
 
-    @property public NoNullList!MetadataPair metadata()
+    @property public List!MetadataPair metadata()
     out (result)
     {
         assert(result);
     }
     body
     {
-        return cast(NoNullList!MetadataPair)_metadata;
+        return cast(List!MetadataPair)_metadata;
     }
 
     public override string toString()
@@ -154,7 +154,7 @@ public final class Instruction
     private Register _sourceRegister3;
     private NoNullList!Register _registers;
     private NoNullList!Register _sourceRegisters;
-    private NoNullList!MetadataPair _metadata;
+    private List!MetadataPair _metadata;
 
     invariant()
     {
@@ -272,7 +272,7 @@ public final class Instruction
         return _sourceRegisters = toNoNullList(filter(regs, (Register r) => !!r));
     }
 
-    @property public NoNullList!MetadataPair metadata()
+    @property public List!MetadataPair metadata()
     out (result)
     {
         assert(result);

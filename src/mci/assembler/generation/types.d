@@ -45,7 +45,7 @@ body
 
     if (node.metadata)
         foreach (md; node.metadata.metadata)
-            type.metadata.add(new MetadataPair(md.key.name, md.value.name));
+            type.metadata.add(MetadataPair(md.key.name, md.value.name));
 
     return type;
 }
@@ -68,7 +68,7 @@ body
 
     if (node.metadata)
         foreach (md; node.metadata.metadata)
-            field.metadata.add(new MetadataPair(md.key.name, md.value.name));
+            field.metadata.add(MetadataPair(md.key.name, md.value.name));
 
     return field;
 }

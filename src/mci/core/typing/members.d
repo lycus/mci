@@ -19,7 +19,7 @@ public final class Field
     private string _name;
     private Type _type;
     private FieldStorage _storage;
-    private NoNullList!MetadataPair _metadata;
+    private List!MetadataPair _metadata;
 
     invariant()
     {
@@ -80,7 +80,7 @@ public final class Field
         return _storage;
     }
 
-    @property public NoNullList!MetadataPair metadata()
+    @property public List!MetadataPair metadata()
     out (result)
     {
         assert(result);
