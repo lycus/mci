@@ -132,7 +132,7 @@ body
     return TokenType.identifier;
 }
 
-public final class Token
+public struct Token
 {
     private TokenType _type;
     private string _value;
@@ -142,6 +142,8 @@ public final class Token
     {
         assert(_type != TokenType.begin && _type != TokenType.end ? !!_value : !_value);
     }
+
+    //@disable this();
 
     public this(TokenType type, string value, SourceLocation location)
     in
@@ -178,44 +180,24 @@ public final class Token
 
 public interface TokenStream
 {
-    @property public Token current()
-    out (result)
-    {
-        assert(result);
-    }
+    @property public Token current();
 
-    @property public Token previous()
-    out (result)
-    {
-        assert(result);
-    }
+    @property public Token previous();
 
-    @property public Token next()
-    out (result)
-    {
-        assert(result);
-    }
+    @property public Token next();
 
     @property public bool done();
 
-    public Token movePrevious()
-    out (result)
-    {
-        assert(result);
-    }
+    public Token movePrevious();
 
-    public Token moveNext()
-    out (result)
-    {
-        assert(result);
-    }
+    public Token moveNext();
 
     public void reset();
 }
 
 public final class MemoryTokenStream : TokenStream
 {
-    private NoNullList!Token _stream;
+    private List!Token _stream;
     private size_t _position;
 
     invariant()
@@ -226,7 +208,7 @@ public final class MemoryTokenStream : TokenStream
         assert((cast()_stream)[(cast()_stream).count - 1].type == TokenType.end);
     }
 
-    public this(NoNullList!Token stream)
+    public this(List!Token stream)
     in
     {
         assert(stream);

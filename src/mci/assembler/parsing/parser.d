@@ -68,10 +68,6 @@ public final class Parser
     {
         assert(!_stream.done);
     }
-    out (result)
-    {
-        assert(result);
-    }
     body
     {
         if (_stream.next.type == TokenType.end)
@@ -85,10 +81,6 @@ public final class Parser
     {
         assert(!_stream.done);
     }
-    out (result)
-    {
-        assert(result);
-    }
     body
     {
         return _stream.next;
@@ -98,10 +90,6 @@ public final class Parser
     in
     {
         assert(!_stream.done);
-    }
-    out (result)
-    {
-        assert(result);
     }
     body
     {
@@ -119,10 +107,6 @@ public final class Parser
     {
         assert(!_stream.done);
     }
-    out (result)
-    {
-        assert(result);
-    }
     body
     {
         return _stream.moveNext();
@@ -132,10 +116,6 @@ public final class Parser
     in
     {
         assert(!_stream.done);
-    }
-    out (result)
-    {
-        assert(result);
     }
     body
     {
@@ -196,7 +176,7 @@ public final class Parser
         if (_stream.done)
             return new CompilationUnit(ast);
 
-        Token token;
+        auto token = Token.init;
 
         while ((token = peekEof()).type != TokenType.end)
         {
@@ -277,8 +257,7 @@ public final class Parser
         consume("{");
 
         auto fields = new NoNullList!FieldDeclarationNode();
-
-        Token token;
+        auto token = Token.init;
 
         while ((token = peek()).type != TokenType.closeBrace)
         {
@@ -782,8 +761,7 @@ public final class Parser
 
         auto registers = new NoNullList!RegisterDeclarationNode();
         auto blocks = new NoNullList!BasicBlockDeclarationNode();
-
-        Token tok;
+        auto tok = Token.init;
 
         while ((tok = peek()).type != TokenType.closeBrace)
         {
@@ -862,8 +840,7 @@ public final class Parser
         consume("{");
 
         auto instructions = new NoNullList!InstructionNode();
-
-        Token tok;
+        auto tok = Token.init;
 
         while ((tok = peek()).type != TokenType.closeBrace)
             instructions.add(parseInstruction());

@@ -7,6 +7,7 @@ import std.ascii,
        mci.core.io,
        mci.core.common,
        mci.core.container,
+       mci.core.nullable,
        mci.assembler.exception,
        mci.assembler.parsing.exception,
        mci.assembler.parsing.location,
@@ -157,15 +158,15 @@ public final class Lexer
     {
         _source.reset();
 
-        auto stream = new NoNullList!Token();
-        stream.add(new Token(TokenType.begin, null, _source.location));
+        auto stream = new List!Token();
+        stream.add(Token(TokenType.begin, null, _source.location));
 
-        Token tok;
+        auto tok = nullable(Token.init);
 
-        while ((tok = lexNext()) !is null)
-            stream.add(tok);
+        while ((tok = lexNext()).hasValue)
+            stream.add(tok.value);
 
-        stream.add(new Token(TokenType.end, null, _source.location));
+        stream.add(Token(TokenType.end, null, _source.location));
 
         return new MemoryTokenStream(stream);
     }
@@ -223,13 +224,13 @@ public final class Lexer
         throw new LexerException("Expected " ~ expected ~ ".", location);
     }
 
-    private Token lexNext()
-    out (result)
-    {
-        if (_source.current != char.init)
-            assert(result);
-    }
-    body
+    private Nullable!Token lexNext()
+    //out (result)
+    //{
+    //    if (_source.current != char.init)
+    //        assert(result.hasValue);
+    //}
+    //body
     {
         char chr;
 
@@ -242,7 +243,7 @@ public final class Lexer
             if (chr == '/' && _source.next() == '/')
             {
                 _source.moveNext();
-                return lexComment() ? lexNext() : null;
+                return lexComment() ? lexNext() : Nullable!Token();
             }
 
             auto del = lexDelimiter(chr);
@@ -251,20 +252,20 @@ public final class Lexer
                 return del;
 
             if (isIdentifierChar(chr))
-                return lexIdentifier(chr);
+                return nullable(lexIdentifier(chr));
 
             if (chr == '\'')
-                return lexQuotedIdentifier();
+                return nullable(lexQuotedIdentifier());
 
             // Handle integer and float literals.
             if (isDigit(chr) || chr == '-' || chr == '+')
-                return lexLiteral(chr);
+                return nullable(lexLiteral(chr));
 
             errorGot("any valid character", _source.location, chr);
         }
 
         // We reached EOF; stop iterating.
-        return null;
+        return Nullable!Token();
     }
 
     private bool lexComment()
@@ -283,7 +284,7 @@ public final class Lexer
         return true;
     }
 
-    private Token lexDelimiter(char chr)
+    private Nullable!Token lexDelimiter(char chr)
     {
         // Simple operators/delimiters.
         auto delim = delimiterCharToType(chr);
@@ -291,18 +292,13 @@ public final class Lexer
         if (delim.hasValue)
         {
             auto str = to!string(chr);
-            return new Token(delim.value, str, makeSourceLocation(str, _source.location));
+            return nullable(Token(delim.value, str, makeSourceLocation(str, _source.location)));
         }
-         else
-            return null;
+        else
+            return Nullable!Token();
     }
 
     private Token lexIdentifier(char chr)
-    out (result)
-    {
-        assert(result);
-    }
-    body
     {
         string id = [chr];
 
@@ -319,20 +315,15 @@ public final class Lexer
         auto loc = makeSourceLocation(id, _source.location);
 
         if (id == "nan" || id == "inf")
-            return new Token(TokenType.literal, id, loc);
+            return Token(TokenType.literal, id, loc);
 
         auto type = identifierToType(id);
 
         // This can be a keyword, an opcode, or an identifier.
-        return new Token(type, id, loc);
+        return Token(type, id, loc);
     }
 
     private Token lexQuotedIdentifier()
-    out (result)
-    {
-        assert(result);
-    }
-    body
     {
         string id;
         auto loc = _source.location;
@@ -363,15 +354,10 @@ public final class Lexer
         if (!id)
             errorGot("non-empty quoted identifier", loc, id);
 
-        return new Token(TokenType.identifier, id, makeSourceLocation(id, _source.location));
+        return Token(TokenType.identifier, id, makeSourceLocation(id, _source.location));
     }
 
     private Token lexLiteral(char chr)
-    out (result)
-    {
-        assert(result);
-    }
-    body
     {
         string str = [chr];
         auto peek = _source.next();
@@ -387,7 +373,7 @@ public final class Lexer
             else
                 id = expect("inf");
 
-            return new Token(TokenType.literal, id, makeSourceLocation(id, _source.location));
+            return Token(TokenType.literal, id, makeSourceLocation(id, _source.location));
         }
 
         bool isHexLiteral;
@@ -420,15 +406,10 @@ public final class Lexer
             str ~= _source.moveNext();
         }
 
-        return new Token(TokenType.literal, str, makeSourceLocation(str, _source.location));
+        return Token(TokenType.literal, str, makeSourceLocation(str, _source.location));
     }
 
     private Token lexFloatingPoint(string str)
-    out (result)
-    {
-        assert(result);
-    }
-    body
     {
         bool hasTrailingDigit;
 
@@ -468,7 +449,7 @@ public final class Lexer
             }
         }
 
-        return new Token(TokenType.literal, str, makeSourceLocation(str, _source.location));
+        return Token(TokenType.literal, str, makeSourceLocation(str, _source.location));
     }
 }
 

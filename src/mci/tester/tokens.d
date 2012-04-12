@@ -6,12 +6,12 @@ import mci.core.container,
 
 unittest
 {
-    auto list = new NoNullList!Token();
+    auto list = new List!Token();
 
-    list.add(new Token(TokenType.begin, null, SourceLocation(1, 1)));
-    list.add(new Token(TokenType.void_, "void", SourceLocation(1, 1)));
-    list.add(new Token(TokenType.static_, "const", SourceLocation(1, 1)));
-    list.add(new Token(TokenType.end, null, SourceLocation(1, 1)));
+    list.add(Token(TokenType.begin, null, SourceLocation(1, 1)));
+    list.add(Token(TokenType.void_, "void", SourceLocation(1, 1)));
+    list.add(Token(TokenType.static_, "const", SourceLocation(1, 1)));
+    list.add(Token(TokenType.end, null, SourceLocation(1, 1)));
 
     auto stream = new MemoryTokenStream(list);
 
