@@ -1143,7 +1143,16 @@ public final class Parser
     }
     body
     {
-        auto name = parseSimpleName();
+
+        SimpleNameNode name;
+
+        if (peek().type == TokenType.entry)
+        {
+            auto entry = next();
+            name = new SimpleNameNode(entry.location, entry.value);
+        }
+        else
+            name = parseSimpleName();
 
         return new BasicBlockReferenceNode(name.location, name);
     }

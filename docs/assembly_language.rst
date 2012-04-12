@@ -177,7 +177,7 @@ unwind to if an exception is thrown within the basic block.
 The grammar for a basic block reference is:
 
 .. productionlist::
-    BasicBlock : `Identifier`
+    BasicBlock : "entry" | `Identifier`
 
 Instructions
 ~~~~~~~~~~~~
