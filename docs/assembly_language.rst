@@ -70,7 +70,8 @@ The grammar for type specifications is:
     ReferenceType : `TypeSpecification` "&"
     ArrayType : `TypeSpecification` "[" "]"
     VectorType : `TypeSpecification` "[" `Literal` "]"
-    FunctionPointerType : `ReturnType` "(" `ParameterList` ")" [ `CallingConvention` ]
+    FunctionPointerType : `ReturnType` "(" `TypeParameterList` ")" [ `CallingConvention` ]
+    TypeParameterList : "(" [ `TypeSpecification` { "," `TypeSpecification` } ] ")"
     CoreType : "int" | "uint" | "int8" | "uint8" | "int16" | "uint16" | "int32 | "uint32" | "int64" | "uint64" | "float32" | "float64"
 
 Fields
@@ -110,7 +111,7 @@ Function declarations have the grammar:
 .. productionlist::
     FunctionDeclaration : [ `MetadataList` ] "function" `FunctionAttributes` `ReturnType` `Identifier` `ParameterList` [ `CallingConvention` ] "{" `FunctionBody` "}"
     FunctionAttributes : [ "ssa" ] [ "pure" ] [ "nooptimize" ] [ "noinline" ]
-    ParameterList : "(" [ `TypeSpecification` { "," `TypeSpecification` } ] ")"
+    ParameterList : "(" [ [ `MetadataList` ] `TypeSpecification` { "," [ `MetadataList` ] `TypeSpecification` } ] ")"
     CallingConvention : "cdecl" | "stdcall"
     FunctionBody : { `RegisterDeclaration` | `BasicBlockDeclaration` }
 
