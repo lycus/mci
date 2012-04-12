@@ -6,23 +6,23 @@ import core.exception,
 
 unittest
 {
-    auto a = new Constant(4UL);
-    auto b = new Constant(12UL);
+    auto a = Constant(4UL);
+    auto b = Constant(12UL);
 
-    assert(a + b == new Constant(16UL));
+    assert(a + b == Constant(16UL));
 }
 
 unittest
 {
-    auto a = new Constant(42UL);
-    auto b = new Constant(2UL);
+    auto a = Constant(42UL);
+    auto b = Constant(2UL);
 
-    assert(a * b == new Constant(84UL));
+    assert(a * b == Constant(84UL));
 }
 
 unittest
 {
-    auto a = new Constant(1.0f);
+    auto a = Constant(1.0f);
 
     debug
         assertThrown!AssertError(~a);
@@ -30,14 +30,14 @@ unittest
 
 unittest
 {
-    auto a = new Constant(42UL);
+    auto a = Constant(42UL);
 
-    assert(a.not() == new Constant(0UL));
+    assert(a.not() == Constant(0UL));
 }
 
 unittest
 {
-    auto a = new Constant(0UL);
+    auto a = Constant(0UL);
 
-    assert(a.not() == new Constant(1UL));
+    assert(a.not() == Constant(1UL));
 }

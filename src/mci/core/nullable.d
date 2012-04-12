@@ -57,7 +57,7 @@ public struct Nullable(T)
     {
         if (!_hasValue)
         {
-            T def;
+            auto def = T.init;
             return typeid(T).getHash(&def);
         }
 
@@ -67,6 +67,11 @@ public struct Nullable(T)
     public string toString()
     {
         return _hasValue ? to!string(_value) : "null";
+    }
+
+    public bool opCast(T : bool)()
+    {
+        return _hasValue;
     }
 }
 

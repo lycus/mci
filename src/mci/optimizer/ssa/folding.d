@@ -2,6 +2,7 @@ module mci.optimizer.ssa.folding;
 
 import mci.core.common,
        mci.core.container,
+       mci.core.nullable,
        mci.core.analysis.constant,
        mci.core.analysis.utilities,
        mci.core.code.functions,
@@ -39,23 +40,19 @@ in
 {
     assert(operand.hasValue);
 }
-out (result)
-{
-    assert(result);
-}
 body
 {
     return match(operand,
-                 (byte v) => new Constant(cast(long)v),
-                 (ubyte v) => new Constant(cast(ulong)v),
-                 (short v) => new Constant(cast(long)v),
-                 (ushort v) => new Constant(cast(ulong)v),
-                 (int v) => new Constant(cast(long)v),
-                 (uint v) => new Constant(cast(ulong)v),
-                 (long v) => new Constant(v),
-                 (ulong v) => new Constant(v),
-                 (float v) => new Constant(v),
-                 (double v) => new Constant(v));
+                 (byte v) => Constant(cast(long)v),
+                 (ubyte v) => Constant(cast(ulong)v),
+                 (short v) => Constant(cast(long)v),
+                 (ushort v) => Constant(cast(ulong)v),
+                 (int v) => Constant(cast(long)v),
+                 (uint v) => Constant(cast(ulong)v),
+                 (long v) => Constant(v),
+                 (ulong v) => Constant(v),
+                 (float v) => Constant(v),
+                 (double v) => Constant(v));
 }
 
 private InstructionOperand constantToOperand(Constant constant, CoreType type)
@@ -150,10 +147,10 @@ public final class ConstantFolder : OptimizerDefinition
 
                     foreach (instr; insns)
                     {
-                        Constant result;
+                        auto result = nullable(Constant.init);
                         auto r1 = operandToConstant(first(instr.sourceRegister1.definitions).operand);
-                        Constant r2;
-                        Constant r3;
+                        auto r2 = Constant.init;
+                        auto r3 = Constant.init;
 
                         if (instr.sourceRegister2)
                             r2 = operandToConstant(first(instr.sourceRegister2.definitions).operand);
@@ -162,18 +159,18 @@ public final class ConstantFolder : OptimizerDefinition
                             r3 = operandToConstant(first(instr.sourceRegister3.definitions).operand);
 
                         if (instr.opCode is opAriAdd)
-                            result = r1 + r2;
+                            result = nullable(r1 + r2);
                         else if (instr.opCode is opAriSub)
-                            result = r1 - r2;
+                            result = nullable(r1 - r2);
                         else if (instr.opCode is opAriMul)
-                            result = r1 * r2;
+                            result = nullable(r1 * r2);
                         else if (instr.opCode is opAriDiv)
                         {
                             // We can't handle division by zero in any sane fashion, so we simply stop folding.
                             if (tryCast!IntegerType(instr.targetRegister.type) && r2.castTo!ulong() == 0)
                                 constantOps.remove(instr);
                             else
-                                result = r1 / r2;
+                                result = nullable(r1 / r2);
                         }
                         else if (instr.opCode is opAriRem)
                         {
@@ -181,24 +178,24 @@ public final class ConstantFolder : OptimizerDefinition
                             if (tryCast!IntegerType(instr.targetRegister.type) && r2.castTo!ulong() == 0)
                                 constantOps.remove(instr);
                             else
-                                result = r1 % r2;
+                                result = nullable(r1 % r2);
                         }
                         else if (instr.opCode is opAriNeg)
-                            result = -r1;
+                            result = nullable(-r1);
                         else if (instr.opCode is opBitAnd)
-                            result = r1 & r2;
+                            result = nullable(r1 & r2);
                         else if (instr.opCode is opBitOr)
-                            result = r1 | r2;
+                            result = nullable(r1 | r2);
                         else if (instr.opCode is opBitXOr)
-                            result = r1 ^ r2;
+                            result = nullable(r1 ^ r2);
                         else if (instr.opCode is opBitNeg)
-                            result = ~r1;
+                            result = nullable(~r1);
                         else if (instr.opCode is opNot)
-                            result = r1.not();
+                            result = nullable(r1.not());
 
                         if (result)
                             instr.block.stream.replace(instr, typeToConstantLoadOpCode(cast(CoreType)instr.targetRegister.type),
-                                                       constantToOperand(result, cast(CoreType)instr.targetRegister.type),
+                                                       constantToOperand(result.value, cast(CoreType)instr.targetRegister.type),
                                                        instr.targetRegister, null, null, null);
                     }
 

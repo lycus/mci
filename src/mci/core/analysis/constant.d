@@ -19,10 +19,12 @@ public enum ConstantType : ubyte
     float64,
 }
 
-public final class Constant
+public struct Constant
 {
     private ConstantData _data;
     private ConstantType _type;
+
+    @disable this();
 
     public this(long value)
     {
@@ -67,9 +69,9 @@ public final class Constant
             switch (_type)
             {
                 case ConstantType.int64:
-                    return new Constant(~_data.int64);
+                    return Constant(~_data.int64);
                 case ConstantType.uint64:
-                    return new Constant(~_data.uint64);
+                    return Constant(~_data.uint64);
                 default:
                     assert(false);
             }
@@ -79,13 +81,13 @@ public final class Constant
             final switch (_type)
             {
                 case ConstantType.int64:
-                    return new Constant(mixin(op ~ "_data.int64"));
+                    return Constant(mixin(op ~ "_data.int64"));
                 case ConstantType.uint64:
-                    return new Constant(mixin(op ~ "_data.uint64"));
+                    return Constant(mixin(op ~ "_data.uint64"));
                 case ConstantType.float32:
-                    return new Constant(mixin(op ~ "_data.float32"));
+                    return Constant(mixin(op ~ "_data.float32"));
                 case ConstantType.float64:
-                    return new Constant(mixin(op ~ "_data.float64"));
+                    return Constant(mixin(op ~ "_data.float64"));
             }
         }
     }
@@ -96,7 +98,6 @@ public final class Constant
             op == "<<" || op == ">>")
     in
     {
-        assert(rhs);
         assert(rhs._type == _type);
 
         static if (op == "&" || op == "|" || op == "^" || op == "<<" || op == ">>")
@@ -112,11 +113,11 @@ public final class Constant
                 case ConstantType.int64:
                     // Special case for >>> because D's built-in >> is completely retarded.
                     static if (op == ">>")
-                        return new Constant(_data.int64 >>> rhs._data.int64);
+                        return Constant(_data.int64 >>> rhs._data.int64);
                     else
-                        return new Constant(mixin("_data.int64 " ~ op ~ " rhs._data.int64"));
+                        return Constant(mixin("_data.int64 " ~ op ~ " rhs._data.int64"));
                 case ConstantType.uint64:
-                    return new Constant(mixin("_data.uint64 " ~ op ~ " rhs._data.uint64"));
+                    return Constant(mixin("_data.uint64 " ~ op ~ " rhs._data.uint64"));
                 default:
                     assert(false);
             }
@@ -126,41 +127,18 @@ public final class Constant
             final switch (_type)
             {
                 case ConstantType.int64:
-                    return new Constant(mixin("_data.int64 " ~ op ~ " rhs._data.int64"));
+                    return Constant(mixin("_data.int64 " ~ op ~ " rhs._data.int64"));
                 case ConstantType.uint64:
-                    return new Constant(mixin("_data.uint64 " ~ op ~ " rhs._data.uint64"));
+                    return Constant(mixin("_data.uint64 " ~ op ~ " rhs._data.uint64"));
                 case ConstantType.float32:
-                    return new Constant(mixin("_data.float32 " ~ op ~ " rhs._data.float32"));
+                    return Constant(mixin("_data.float32 " ~ op ~ " rhs._data.float32"));
                 case ConstantType.float64:
-                    return new Constant(mixin("_data.float64 " ~ op ~ " rhs._data.float64"));
+                    return Constant(mixin("_data.float64 " ~ op ~ " rhs._data.float64"));
             }
         }
     }
 
-    public final override equals_t opEquals(Object o)
-    {
-        if (this is o)
-            return true;
-
-        if (auto constant = cast(Constant)o)
-        {
-            final switch (_type)
-            {
-                case ConstantType.int64:
-                    return typeid(typeof(_data.int64)).equals(&_data.int64, &constant._data.int64);
-                case ConstantType.uint64:
-                    return typeid(typeof(_data.uint64)).equals(&_data.uint64, &constant._data.uint64);
-                case ConstantType.float32:
-                    return typeid(typeof(_data.float32)).equals(&_data.float32, &constant._data.float32);
-                case ConstantType.float64:
-                    return typeid(typeof(_data.float64)).equals(&_data.float64, &constant._data.float64);
-            }
-        }
-
-        return false;
-    }
-
-    public final override hash_t toHash()
+    public hash_t toHash() const
     {
         final switch (_type)
         {
@@ -175,69 +153,66 @@ public final class Constant
         }
     }
 
-    public final override int opCmp(Object o)
-    {
-        if (this is o)
-            return 0;
-
-        if (auto constant = cast(Constant)o)
-        {
-            final switch (_type)
-            {
-                case ConstantType.int64:
-                    return typeid(typeof(_data.int64)).compare(&_data.int64, &constant._data.int64);
-                case ConstantType.uint64:
-                    return typeid(typeof(_data.uint64)).compare(&_data.uint64, &constant._data.uint64);
-                case ConstantType.float32:
-                    return typeid(typeof(_data.float32)).compare(&_data.float32, &constant._data.float32);
-                case ConstantType.float64:
-                    return typeid(typeof(_data.float64)).compare(&_data.float64, &constant._data.float64);
-            }
-        }
-
-        return 1;
-    }
-
-    // Until the compiler is fixed to allow overloading the unary not operator...
-    public Constant not()
-    out (result)
-    {
-        assert(result);
-    }
-    body
+    public equals_t opEquals(Constant rhs) const
     {
         final switch (_type)
         {
             case ConstantType.int64:
-                return new Constant(cast(long)!_data.int64);
+                return typeid(typeof(_data.int64)).equals(&_data.int64, &rhs._data.int64);
             case ConstantType.uint64:
-                return new Constant(cast(ulong)!_data.uint64);
+                return typeid(typeof(_data.uint64)).equals(&_data.uint64, &rhs._data.uint64);
             case ConstantType.float32:
-                return new Constant(cast(float)!_data.float32);
+                return typeid(typeof(_data.float32)).equals(&_data.float32, &rhs._data.float32);
             case ConstantType.float64:
-                return new Constant(cast(double)!_data.float64);
+                return typeid(typeof(_data.float64)).equals(&_data.float64, &rhs._data.float64);
+        }
+    }
+
+    public int opCmp(ref const Constant rhs) const
+    {
+        final switch (_type)
+        {
+            case ConstantType.int64:
+                return typeid(typeof(_data.int64)).compare(&_data.int64, &rhs._data.int64);
+            case ConstantType.uint64:
+                return typeid(typeof(_data.uint64)).compare(&_data.uint64, &rhs._data.uint64);
+            case ConstantType.float32:
+                return typeid(typeof(_data.float32)).compare(&_data.float32, &rhs._data.float32);
+            case ConstantType.float64:
+                return typeid(typeof(_data.float64)).compare(&_data.float64, &rhs._data.float64);
+        }
+    }
+
+    // Until the compiler is fixed to allow overloading the unary not operator...
+    public Constant not()
+    {
+        final switch (_type)
+        {
+            case ConstantType.int64:
+                return Constant(cast(long)!_data.int64);
+            case ConstantType.uint64:
+                return Constant(cast(ulong)!_data.uint64);
+            case ConstantType.float32:
+                return Constant(cast(float)!_data.float32);
+            case ConstantType.float64:
+                return Constant(cast(double)!_data.float64);
         }
     }
 
     public Constant rotate(string direction)(Constant amount)
     in
     {
-        assert(amount);
         assert(amount._type == _type);
         assert(_type != ConstantType.float32 && _type != ConstantType.float64);
-    }
-    out (result)
-    {
-        assert(result);
     }
     body
     {
         switch (_type)
         {
             case ConstantType.int64:
-                return new Constant(.rotate!direction(_data.int64, amount._data.int64));
+                return Constant(.rotate!direction(_data.int64, amount._data.int64));
             case ConstantType.uint64:
-                return new Constant(.rotate!direction(_data.uint64, amount._data.uint64));
+                return Constant(.rotate!direction(_data.uint64, amount._data.uint64));
             default:
                 assert(false);
         }

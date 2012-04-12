@@ -120,7 +120,7 @@ body
     }
 
     static if (!is(typeof(return) == void))
-        typeof(return) res;
+        typeof(return)* res;
 
     foreach (i, f; TFuncs)
     {
@@ -130,7 +130,10 @@ body
         static if (!FArgs.length)
         {
             static if (!is(typeof(return) == void))
-                res = cases[i]();
+            {
+                auto r = cases[i]();
+                res = &r;
+            }
             else
                 cases[i]();
 
@@ -143,7 +146,7 @@ body
     exit:
 
     static if (!is(typeof(return) == void))
-        return res;
+        return *res;
 }
 
 public bool powerOfTwo(T)(T value)
