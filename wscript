@@ -34,7 +34,6 @@ def configure(conf):
 
     if conf.env.COMPILER_D == 'dmd':
         add_option('-w')
-        add_option('-wi')
         add_option('-ignore')
         add_option('-property')
         add_option('-gc')
@@ -49,6 +48,7 @@ def configure(conf):
             conf.fatal('--mode must be either debug or release.')
     elif conf.env.COMPILER_D == 'gdc':
         add_option('-Wall')
+        add_option('-Werror')
         add_option('-fignore-unknown-pragmas')
         add_option('-fproperty')
         add_option('-g')
