@@ -29,7 +29,7 @@ public struct Tuple(X)
         return 0;
     }
 
-    public hash_t toHash() const
+    public hash_t toHash() const nothrow
     {
         return typeid(X).getHash(&_x);
     }
@@ -77,7 +77,7 @@ public struct Tuple(X, Y)
         return 0;
     }
 
-    public hash_t toHash() const
+    public hash_t toHash() const nothrow
     {
         return typeid(X).getHash(&_x) + typeid(Y).getHash(&_y);
     }
@@ -135,7 +135,7 @@ public struct Tuple(X, Y, Z)
         return 0;
     }
 
-    public hash_t toHash() const
+    public hash_t toHash() const nothrow
     {
         return typeid(X).getHash(&_x) + typeid(Y).getHash(&_y) + typeid(Z).getHash(&_z);
     }

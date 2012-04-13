@@ -53,7 +53,7 @@ public struct Nullable(T)
         return 0;
     }
 
-    public hash_t toHash() const
+    public hash_t toHash() const nothrow
     {
         if (!_hasValue)
         {

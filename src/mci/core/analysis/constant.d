@@ -138,7 +138,7 @@ public struct Constant
         }
     }
 
-    public hash_t toHash() const
+    public hash_t toHash() const nothrow
     {
         final switch (_type)
         {
