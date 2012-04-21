@@ -30,7 +30,7 @@ public interface ExecutionEngine
         assert(function_.returnType ? !!result : !result);
     }
 
-    public RuntimeValue execute(function_t function_, Type returnType, NoNullList!RuntimeValue arguments)
+    public RuntimeValue execute(function_t function_, CallingConvention callingConvention, Type returnType, NoNullList!RuntimeValue arguments)
     in
     {
         assert(function_);
