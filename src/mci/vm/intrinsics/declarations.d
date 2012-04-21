@@ -23,6 +23,9 @@ public __gshared
     Function getEndianness;
     Function is32Bit;
 
+    Function atomicLoad;
+    Function atomicStore;
+    Function atomicExchange;
     Function atomicLoadU;
     Function atomicStoreU;
     Function atomicExchangeU;
@@ -114,6 +117,15 @@ shared static this()
     getEndianness = createFunction!get_endianness(UInt8Type.instance);
     is32Bit = createFunction!is_32_bit(NativeUIntType.instance);
 
+    atomicLoad = createFunction!atomic_load(objectType,
+                                            getPointerType(objectType));
+    atomicStore = createFunction!atomic_store(null,
+                                              getPointerType(objectType),
+                                              objectType);
+    atomicExchange = createFunction!atomic_exchange(NativeUIntType.instance,
+                                                    getPointerType(objectType),
+                                                    objectType,
+                                                    objectType);
     atomicLoadU = createFunction!atomic_load_u(NativeUIntType.instance,
                                                getPointerType(NativeUIntType.instance));
     atomicStoreU = createFunction!atomic_store_u(null,

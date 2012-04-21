@@ -2,10 +2,27 @@ module mci.vm.intrinsics.atomic;
 
 import core.atomic,
        mci.core.common,
-       mci.vm.intrinsics.context;
+       mci.vm.intrinsics.context,
+       mci.vm.memory.base;
 
 extern (C)
 {
+    public RuntimeObject* atomic_load(VirtualMachineContext context, RuntimeObject** ptr)
+    {
+        return cast(RuntimeObject*)atomicLoad(*cast(shared)ptr);
+    }
+
+    public void atomic_store(VirtualMachineContext context, RuntimeObject** ptr, RuntimeObject* value)
+    {
+        atomicStore(*cast(shared)ptr, cast(shared)value);
+    }
+
+    public size_t atomic_exchange(VirtualMachineContext context, RuntimeObject** ptr, RuntimeObject* condition, RuntimeObject* value)
+    {
+        // Do casts; we don't want to introduce shared in the intrinsics.
+        return cas(cast(shared)ptr, cast(shared)condition, cast(shared)value);
+    }
+
     public size_t atomic_load_u(VirtualMachineContext context, size_t* ptr)
     {
         return atomicLoad(*cast(shared)ptr);
@@ -18,7 +35,6 @@ extern (C)
 
     public size_t atomic_exchange_u(VirtualMachineContext context, size_t* ptr, size_t condition, size_t value)
     {
-        // Do a cast; we don't want to introduce shared in the intrinsics.
         return cas(cast(shared)ptr, condition, value);
     }
 
@@ -74,7 +90,6 @@ extern (C)
 
     public size_t atomic_exchange_s(VirtualMachineContext context, isize_t* ptr, isize_t condition, isize_t value)
     {
-        // Do a cast; we don't want to introduce shared in the intrinsics.
         return cas(cast(shared)ptr, condition, value);
     }
 
