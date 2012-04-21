@@ -3,6 +3,7 @@ module mci.vm.execution;
 import core.stdc.stdlib,
        std.algorithm,
        std.socket,
+       mci.core.common,
        mci.core.config,
        mci.core.container,
        mci.core.code.functions,
@@ -27,6 +28,17 @@ public interface ExecutionEngine
     out (result)
     {
         assert(function_.returnType ? !!result : !result);
+    }
+
+    public RuntimeValue execute(function_t function_, Type returnType, NoNullList!RuntimeValue arguments)
+    in
+    {
+        assert(function_);
+        assert(arguments);
+    }
+    out (result)
+    {
+        assert(returnType ? !!result : !result);
     }
 
     public void startDebugger(Address address)
