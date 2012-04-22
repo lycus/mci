@@ -221,6 +221,7 @@
    <File path="threading\id.d" />
    <File path="threading\tls.d" />
   </Folder>
+  <File path="exception.d" />
   <File path="execution.d" />
  </Folder>
 </DProject>
