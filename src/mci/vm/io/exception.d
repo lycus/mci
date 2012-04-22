@@ -1,6 +1,6 @@
 module mci.vm.io.exception;
 
-public import mci.core.exception;
+import mci.core.exception;
 
 public class ReaderException : CompilerException
 {
