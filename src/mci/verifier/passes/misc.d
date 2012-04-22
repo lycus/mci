@@ -233,8 +233,7 @@ public final class SSAFormVerifier : CodeVerifier
                 }
             }
         }
-        else
-            if (auto phi = getFirstInstruction(function_, opPhi))
-                error(phi, "The 'phi' instruction is not valid in non-SSA functions.");
+        else if (auto phi = getFirstInstruction(function_, opPhi))
+            error(phi, "The 'phi' instruction is not valid in non-SSA functions.");
     }
 }
