@@ -88,18 +88,26 @@ public final class Weak(T : Object)
         GC.addRange(monitor, mon.devt.length * FinalizeCallback.sizeof);
     }
 
-    @property public T object()
+    @property public T object() nothrow
     {
-        auto obj = cast(T)cast(void*)atomicLoad(*cast(shared)&_object);
+        try
+        {
+            auto obj = cast(T)cast(void*)atomicLoad(*cast(shared)&_object);
 
-        // We've moved it into the GC-scanned stack space, so it's now safe to ask
-        // the GC whether the object is still alive. Note that even if the cast and
-        // assignment of the obj local doesn't put the object on the stack, this
-        // call will. So, either way, this is safe.
-        if (GC.addrOf(cast(void*)obj))
-            return obj;
+            // We've moved it into the GC-scanned stack space, so it's now safe to ask
+            // the GC whether the object is still alive. Note that even if the cast and
+            // assignment of the obj local doesn't put the object on the stack, this
+            // call will. So, either way, this is safe.
+            if (GC.addrOf(cast(void*)obj))
+                return obj;
 
-        return null;
+            return null;
+        }
+        catch
+        {
+            // A little hack so we can be nothrow.
+            assert(false);
+        }
     }
 
     public override equals_t opEquals(Object o)
@@ -121,7 +129,7 @@ public final class Weak(T : Object)
         return 1;
     }
 
-    public override hash_t toHash()
+    @trusted public override hash_t toHash()
     {
         auto obj = object;
 
