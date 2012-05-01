@@ -111,11 +111,7 @@ public struct Constant
             switch (_type)
             {
                 case ConstantType.int64:
-                    // Special case for >>> because D's built-in >> is completely retarded.
-                    static if (op == ">>")
-                        return Constant(_data.int64 >>> rhs._data.int64);
-                    else
-                        return Constant(mixin("_data.int64 " ~ op ~ " rhs._data.int64"));
+                    return Constant(mixin("_data.int64 " ~ op ~ " rhs._data.int64"));
                 case ConstantType.uint64:
                     return Constant(mixin("_data.uint64 " ~ op ~ " rhs._data.uint64"));
                 default:
