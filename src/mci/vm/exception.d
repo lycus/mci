@@ -2,23 +2,24 @@ module mci.vm.exception;
 
 import mci.core.exception,
        mci.core.code.instructions,
-       mci.vm.execution;
+       mci.vm.execution,
+       mci.vm.trace;
 
 public class ExecutionException : CompilerException
 {
-    private Instruction _instruction;
+    private StackTrace _trace;
     private RuntimeValue _exception;
 
     invariant()
     {
-        assert(_instruction);
+        assert(_trace);
         assert(_exception);
     }
 
-    public this(Instruction instruction, RuntimeValue exception, string msg, string file = __FILE__, size_t line = __LINE__)
+    public this(StackTrace trace, RuntimeValue exception, string msg, string file = __FILE__, size_t line = __LINE__)
     in
     {
-        assert(instruction);
+        assert(trace);
         assert(exception);
         assert(msg);
         assert(file);
@@ -28,14 +29,14 @@ public class ExecutionException : CompilerException
     {
         super(msg, file, line);
 
-        _instruction = instruction;
+        _trace = trace;
         _exception = exception;
     }
 
-    public this(Instruction instruction, RuntimeValue exception, string msg, Throwable next, string file = __FILE__, size_t line = __LINE__)
+    public this(StackTrace trace, RuntimeValue exception, string msg, Throwable next, string file = __FILE__, size_t line = __LINE__)
     in
     {
-        assert(instruction);
+        assert(trace);
         assert(exception);
         assert(msg);
         assert(next);
@@ -46,18 +47,18 @@ public class ExecutionException : CompilerException
     {
         super(msg, next, file, line);
 
-        _instruction = instruction;
+        _trace = trace;
         _exception = exception;
     }
 
-    @property public Instruction instruction()
+    @property public StackTrace trace()
     out (result)
     {
         assert(result);
     }
     body
     {
-        return _instruction;
+        return _trace;
     }
 
     @property public RuntimeValue exception()
