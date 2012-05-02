@@ -1967,8 +1967,3 @@ public class BitArray : Indexable!bool
         }
     }
 }
-
-unittest
-{
-    auto ba = new BitArray();
-}
