@@ -254,8 +254,8 @@ public final class Instruction
         if (_registers)
             return _registers;
 
-        auto regs = toIterable(_targetRegister, _sourceRegister1, _sourceRegister2, _sourceRegister3);
-        return _registers = toNoNullList(filter(regs, (Register r) => !!r));
+        return _registers = toNoNullList(filter(toIterable(_targetRegister, _sourceRegister1, _sourceRegister2, _sourceRegister3),
+                                         (Register r) => !!r));
     }
 
     @property public ReadOnlyIndexable!Register sourceRegisters()
@@ -268,8 +268,7 @@ public final class Instruction
         if (_sourceRegisters)
             return _sourceRegisters;
 
-        auto regs = toIterable(_sourceRegister1, _sourceRegister2, _sourceRegister3);
-        return _sourceRegisters = toNoNullList(filter(regs, (Register r) => !!r));
+        return _sourceRegisters = toNoNullList(filter(toIterable(_sourceRegister1, _sourceRegister2, _sourceRegister3), (Register r) => !!r));
     }
 
     @property public List!MetadataPair metadata()
