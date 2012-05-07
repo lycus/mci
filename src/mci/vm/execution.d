@@ -13,52 +13,53 @@ import core.stdc.stdlib,
        mci.vm.memory.base,
        mci.vm.memory.layout;
 
-public interface ExecutionEngine
+public abstract class ExecutionEngine
 {
-    public RuntimeValue execute(Function function_, NoNullList!RuntimeValue arguments)
+    private GarbageCollector _gc;
+    private VirtualMachineContext _context;
+
+    invariant()
+    {
+        assert(_gc);
+    }
+
+    protected this(GarbageCollector gc)
     in
     {
-        assert(function_);
-        assert(arguments);
-        assert(arguments.count == function_.parameters.count);
-
-        foreach (i, arg; arguments)
-            assert(arg is function_.parameters[i].type);
+        assert(gc);
     }
-    out (result)
+    body
     {
-        assert(function_.returnType ? !!result : !result);
+        _gc = gc;
+        _context = new typeof(_context)(this);
     }
 
-    public RuntimeValue execute(function_t function_, CallingConvention callingConvention, Type returnType, NoNullList!RuntimeValue arguments)
-    in
-    {
-        assert(function_);
-        assert(arguments);
-    }
-    out (result)
-    {
-        assert(returnType ? !!result : !result);
-    }
+    public abstract RuntimeValue execute(Function function_, NoNullList!RuntimeValue arguments);
 
-    public void startDebugger(Address address)
-    in
-    {
-        assert(address);
-    }
+    public abstract RuntimeValue execute(function_t function_, CallingConvention callingConvention, Type returnType, NoNullList!RuntimeValue arguments);
 
-    public void stopDebugger();
+    public abstract void startDebugger(Address address);
+
+    public abstract void stopDebugger();
 
     @property public GarbageCollector gc()
     out (result)
     {
         assert(result);
     }
+    body
+    {
+        return _gc;
+    }
 
     @property public VirtualMachineContext context()
     out (result)
     {
         assert(result);
+    }
+    body
+    {
+        return _context;
     }
 }
 
