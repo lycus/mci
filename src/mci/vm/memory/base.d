@@ -13,7 +13,7 @@ public struct RuntimeObject
     // Remember to keep this in sync with mci.vm.memory.layout.computeBitmap.
 
     private RuntimeTypeInfo _typeInfo;
-    package GarbageCollectorHeader header;
+    public GarbageCollectorHeader header;
     public RuntimeObject* userData;
 
     invariant()
@@ -66,7 +66,7 @@ public struct RuntimeObject
     }
 }
 
-package union GarbageCollectorHeader
+public union GarbageCollectorHeader
 {
     // Temporary padding until we make use of this union.
     private size_t bits;
