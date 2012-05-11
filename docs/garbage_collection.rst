@@ -140,8 +140,9 @@ copied to/from on each collection (this halves the heap space, but requires
 less passes over the heap than compaction).
 
 The possible presence of these algorithms means that code must not assume that
-objects are fixed at a certain location in memory (the MCI's type system and
-ISA enforce this by design).
+objects are fixed at a certain location in memory. The MCI's type system and
+ISA both try to enforce this by design (there are ways around this, but doing
+so is not supported in any way).
 
 Pinning
 -------
@@ -177,7 +178,9 @@ for the given object. Note that a callback is automatically removed once
 it has been run.
 
 No particular order of finalization is guaranteed. Callbacks should be
-programmed to not rely on order at all.
+programmed to not rely on order at all. Additionally, it is not guaranteed
+what thread a finalizer will run on, but it is guaranteed that the world will
+be resumed by the time a finalizer callback runs.
 
 The ``gc_wait_for_free_callbacks`` intrinsic will block the calling thread
 until all queued finalization callbacks have been called. It can be useful
@@ -247,8 +250,6 @@ Boehm-Demers-Weiser garbage collector
 **Uses barriers**
     No
 
-Note that this GC is not available on Windows.
-
 This GC uses the Boehm-Demers-Weiser garbage collector (libgc). It has partial
 support for precise scanning using type bitmaps (only for structure types).
 
@@ -256,6 +257,11 @@ This GC is highly tuned through more than two centuries of development. It
 supports parallel marking and incremental collection.
 
 This is a stop-the-world collector with no support for concurrent GC.
+
+Note that this GC is not available on Windows. Also note that the MCI assumes
+that it is the only user of libgc in the process it's running in, so it will
+liberally set certain options without regarding any values they may have been
+set to previously (and also assumes those options won't be changed).
 
 LibC garbage collector
 ----------------------
