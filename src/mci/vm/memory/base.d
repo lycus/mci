@@ -5,6 +5,8 @@ import mci.core.config,
        mci.core.typing.core,
        mci.core.typing.members,
        mci.core.typing.types,
+       mci.vm.execution,
+       mci.vm.exception,
        mci.vm.memory.info,
        mci.vm.memory.layout;
 
@@ -171,28 +173,39 @@ public interface GenerationalGarbageCollector : GarbageCollector
     }
 }
 
-public alias extern (C) void function(RuntimeObject*) GarbageCollectorCallbackFunction;
+public alias extern (C) void function(RuntimeObject*) GarbageCollectorFinalizer;
+
+public alias void delegate(RuntimeObject*, GarbageCollectorFinalizer, ExecutionEngine, ExecutionException) GarbageCollectorExceptionHandler;
 
 public interface InteractiveGarbageCollector : GarbageCollector
 {
-    public void addAllocateCallback(GarbageCollectorCallbackFunction callback)
+    public void addAllocateCallback(GarbageCollectorFinalizer callback)
     in
     {
         assert(callback);
     }
 
-    public void removeAllocateCallback(GarbageCollectorCallbackFunction callback)
+    public void removeAllocateCallback(GarbageCollectorFinalizer callback)
     in
     {
         assert(callback);
     }
 
-    public void addFreeCallback(RuntimeObject* rto, GarbageCollectorCallbackFunction callback)
+    public void addFreeCallback(RuntimeObject* rto, GarbageCollectorFinalizer callback, ExecutionEngine engine)
     in
     {
         assert(rto);
-        assert(callback);
+        assert(isSystemAligned(cast(ubyte*)rto));
+        assert(engine);
     }
+
+    public void invokeFreeCallbacks();
+
+    public void waitForFreeCallbacks();
+
+    @property public GarbageCollectorExceptionHandler exceptionHandler();
+
+    @property public void exceptionHandler(GarbageCollectorExceptionHandler exceptionHandler);
 }
 
 public interface MovingGarbageCollector : GarbageCollector

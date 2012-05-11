@@ -258,6 +258,17 @@ body
         col.add(i);
 }
 
+public void addRange(T)(Collection!T col, T[] values ...)
+in
+{
+    assert(col);
+    assert(values);
+}
+body
+{
+    addRange(col, values);
+}
+
 public void removeRange(T, V)(Collection!T col, V values)
     if (isIterable!V)
 in
@@ -269,6 +280,17 @@ body
 {
     foreach (i; values)
         col.remove(i);
+}
+
+public void removeRange(T)(Collection!T col, T[] values ...)
+in
+{
+    assert(col);
+    assert(values);
+}
+body
+{
+    removeRange(col, values);
 }
 
 public bool contains(T)(Iterable!T iter, T value)
@@ -832,21 +854,58 @@ public class List(T) : Indexable!T, Collection!T
 }
 
 public List!T toList(T)(T[] items ...)
+in
+{
+    assert(items);
+}
 out (result)
 {
     assert(result);
 }
 body
 {
-    auto list = new List!T();
+    return toList(items);
+}
 
-    foreach (item; items)
-        list.add(item);
+public List!(ForeachType!V) toList(V)(V items)
+    if (isIterable!V)
+in
+{
+    assert(items);
+}
+out (result)
+{
+    assert(result);
+}
+body
+{
+    auto list = new List!(ForeachType!V)();
+
+    addRange(list, items);
 
     return list;
 }
 
 public Indexable!T toIndexable(T)(T[] items ...)
+in
+{
+    assert(items);
+}
+out (result)
+{
+    assert(result);
+}
+body
+{
+    return toIndexable(items);
+}
+
+public Indexable!(ForeachType!V) toIndexable(V)(V items)
+    if (isIterable!V)
+in
+{
+    assert(items);
+}
 out (result)
 {
     assert(result);
@@ -857,6 +916,25 @@ body
 }
 
 public ReadOnlyIndexable!T toReadOnlyIndexable(T)(T[] items ...)
+in
+{
+    assert(items);
+}
+out (result)
+{
+    assert(result);
+}
+body
+{
+    return toReadOnlyIndexable(items);
+}
+
+public ReadOnlyIndexable!(ForeachType!V) toReadOnlyIndexable(V)(V items)
+    if (isIterable!V)
+in
+{
+    assert(items);
+}
 out (result)
 {
     assert(result);
@@ -867,6 +945,25 @@ body
 }
 
 public Collection!T toCollection(T)(T[] items ...)
+in
+{
+    assert(items);
+}
+out (result)
+{
+    assert(result);
+}
+body
+{
+    return toCollection(items);
+}
+
+public Collection!(ForeachType!V) toCollection(V)(V items)
+    if (isIterable!V)
+in
+{
+    assert(items);
+}
 out (result)
 {
     assert(result);
@@ -877,6 +974,25 @@ body
 }
 
 public ReadOnlyCollection!T toReadOnlyCollection(T)(T[] items ...)
+in
+{
+    assert(items);
+}
+out (result)
+{
+    assert(result);
+}
+body
+{
+    return toReadOnlyCollection(items);
+}
+
+public ReadOnlyCollection!(ForeachType!V) toReadOnlyCollection(V)(V items)
+    if (isIterable!V)
+in
+{
+    assert(items);
+}
 out (result)
 {
     assert(result);
@@ -887,6 +1003,25 @@ body
 }
 
 public Countable!T toCountable(T)(T[] items ...)
+in
+{
+    assert(items);
+}
+out (result)
+{
+    assert(result);
+}
+body
+{
+    return toCountable(items);
+}
+
+public Countable!(ForeachType!V) toCountable(V)(V items)
+    if (isIterable!V)
+in
+{
+    assert(items);
+}
 out (result)
 {
     assert(result);
@@ -897,13 +1032,32 @@ body
 }
 
 public Iterable!T toIterable(T)(T[] items ...)
+in
+{
+    assert(items);
+}
 out (result)
 {
     assert(result);
 }
 body
 {
-    return toCountable(items);
+    return toIterable(items);
+}
+
+public Iterable!(ForeachType!V) toIterable(V)(V items)
+    if (isIterable!V)
+in
+{
+    assert(items);
+}
+out (result)
+{
+    assert(result);
+}
+body
+{
+    return toList(items);
 }
 
 public class NoNullList(T)
@@ -994,10 +1148,10 @@ public class NoNullList(T)
     }
 }
 
-public NoNullList!T toNoNullList(T)(Iterable!T iter)
+public NoNullList!T toNoNullList(T)(T[] items ...)
 in
 {
-    assert(iter);
+    assert(items);
 }
 out (result)
 {
@@ -1005,12 +1159,26 @@ out (result)
 }
 body
 {
-    auto l = new NoNullList!T();
+    return toNoNullList(items);
+}
 
-    foreach (obj; iter)
-        l.add(obj);
+public NoNullList!(ForeachType!V) toNoNullList(V)(V items)
+    if (isIterable!V)
+in
+{
+    assert(items);
+}
+out (result)
+{
+    assert(result);
+}
+body
+{
+    auto list = new NoNullList!(ForeachType!V)();
 
-    return l;
+    addRange(list, items);
+
+    return list;
 }
 
 public class Dictionary(K, V, bool order = true) : Map!(K, V)

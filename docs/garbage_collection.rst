@@ -167,7 +167,24 @@ shutdown).
 Finalization
 ++++++++++++
 
-.. TODO: Define clearly how we want to support finalization.
+It is possible to register finalizers for all managed objects (including
+arrays and vectors). The ``gc_add_free_callback`` intrinsic registers a
+callback for a specific object. This callback will be called when the object
+is no longer reachable from any live object regardless of cycles (i.e. the
+finalizable object is reachable directly or indirectly from itself). Passing a
+null callback to ``gc_add_free_callback`` will remove all callbacks registered
+for the given object. Note that a callback is automatically removed once
+it has been run.
+
+No particular order of finalization is guaranteed. Callbacks should be
+programmed to not rely on order at all.
+
+The ``gc_wait_for_free_callbacks`` intrinsic will block the calling thread
+until all queued finalization callbacks have been called. It can be useful
+if one needs to wait for a particular set of objects' finalization callbacks
+to run before continuing execution. Generally, this is achieved by letting
+those objects become garbage, calling ``gc_collect``, and finally calling
+``gc_wait_for_free_callbacks``.
 
 Barriers
 ++++++++
@@ -192,7 +209,7 @@ D runtime garbage collector
 ---------------------------
 
 **GC name**
-    dgc
+    ``dgc``
 **Type precision**
     Conservative
 **Supports finalization**
@@ -218,7 +235,7 @@ Boehm-Demers-Weiser garbage collector
 -------------------------------------
 
 **GC name**
-    boehm
+    ``boehm``
 **Type precision**
     Partially conservative
 **Supports finalization**
@@ -235,7 +252,7 @@ Note that this GC is not available on Windows.
 This GC uses the Boehm-Demers-Weiser garbage collector (libgc). It has partial
 support for precise scanning using type bitmaps (only for structure types).
 
-This GC is highly tuned through more than a century of development. It
+This GC is highly tuned through more than two centuries of development. It
 supports parallel marking and incremental collection.
 
 This is a stop-the-world collector with no support for concurrent GC.
@@ -244,7 +261,7 @@ LibC garbage collector
 ----------------------
 
 **GC name**
-    libc
+    ``libc``
 **Type precision**
     N/A
 **Supports finalization**

@@ -4,22 +4,47 @@ import core.stdc.stdlib,
        std.conv,
        mci.core.container,
        mci.core.sync,
+       mci.core.tuple,
+       mci.vm.execution,
        mci.vm.memory.base,
+       mci.vm.memory.finalization,
        mci.vm.memory.info;
 
 public final class LibCGarbageCollector : InteractiveGarbageCollector
 {
-    private NoNullList!GarbageCollectorCallbackFunction _allocCallbacks;
-    private NoNullDictionary!(RuntimeObject*, NoNullList!GarbageCollectorCallbackFunction) _freeCallbacks;
+    private NoNullList!GarbageCollectorFinalizer _allocCallbacks;
+    private NoNullDictionary!(RuntimeObject*, List!(Tuple!(GarbageCollectorFinalizer, ExecutionEngine))) _freeCallbacks;
+    private ArrayQueue!(Tuple!(RuntimeObject*, List!(Tuple!(GarbageCollectorFinalizer, ExecutionEngine)))) _finalizables;
     private Mutex _allocateCallbackLock;
     private Mutex _freeCallbackLock;
+    private Mutex _finalizableLock;
+    private GarbageCollectorExceptionHandler _exceptionHandler;
+    private FinalizerThread _finalizerThread;
+
+    invariant()
+    {
+        assert(_allocCallbacks);
+        assert(_freeCallbacks);
+        assert(_finalizables);
+        assert(_allocateCallbackLock);
+        assert(_freeCallbackLock);
+        assert(_finalizableLock);
+    }
 
     public this()
     {
         _allocCallbacks = new typeof(_allocCallbacks)();
         _freeCallbacks = new typeof(_freeCallbacks)();
+        _finalizables = new typeof(_finalizables)();
         _allocateCallbackLock = new typeof(_allocateCallbackLock)();
         _freeCallbackLock = new typeof(_freeCallbackLock)();
+        _finalizableLock = new typeof(_finalizableLock)();
+        _finalizerThread = new typeof(_finalizerThread)(this);
+    }
+
+    ~this()
+    {
+        _finalizerThread.exit();
     }
 
     @property public ulong collections()
@@ -54,24 +79,33 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         if (!data)
             return;
 
+        bool finalizable;
+
         {
             _freeCallbackLock.lock();
 
             scope (exit)
                 _freeCallbackLock.unlock();
 
-            auto callbacks = data in _freeCallbacks;
-
-            if (callbacks)
+            if (auto cbs = data in _freeCallbacks)
             {
-                foreach (cb; *callbacks)
-                    cb(data);
+                finalizable = true;
 
                 _freeCallbacks.remove(data);
+
+                _finalizableLock.lock();
+
+                scope (exit)
+                    _finalizableLock.unlock();
+
+                _finalizables.enqueue(tuple(data, *cbs));
+
+                _finalizerThread.notify();
             }
         }
 
-        .free(data);
+        if (!finalizable)
+            .free(data);
     }
 
     public void addRoot(RuntimeObject** ptr)
@@ -92,6 +126,7 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
 
     public size_t pin(RuntimeObject* data)
     {
+        // Pinning is not actually necessary since we don't reclaim objects automatically.
         return 0;
     }
 
@@ -125,7 +160,7 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
     {
     }
 
-    public void addAllocateCallback(GarbageCollectorCallbackFunction callback)
+    public void addAllocateCallback(GarbageCollectorFinalizer callback)
     {
         _allocateCallbackLock.lock();
 
@@ -135,7 +170,7 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         _allocCallbacks.add(callback);
     }
 
-    public void removeAllocateCallback(GarbageCollectorCallbackFunction callback)
+    public void removeAllocateCallback(GarbageCollectorFinalizer callback)
     {
         _allocateCallbackLock.lock();
 
@@ -145,22 +180,64 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         _allocCallbacks.remove(callback);
     }
 
-    public void addFreeCallback(RuntimeObject* rto, GarbageCollectorCallbackFunction callback)
+    public void addFreeCallback(RuntimeObject* rto, GarbageCollectorFinalizer callback, ExecutionEngine engine)
     {
         _freeCallbackLock.lock();
 
         scope (exit)
             _freeCallbackLock.unlock();
 
+        if (!callback)
+        {
+            _freeCallbacks.remove(rto);
+            return;
+        }
+
         auto cbs = rto in _freeCallbacks;
         auto callbacks = cbs ? *cbs : null;
 
         if (!callbacks)
         {
-            callbacks = new NoNullList!GarbageCollectorCallbackFunction();
+            callbacks = new List!(Tuple!(GarbageCollectorFinalizer, ExecutionEngine))();
             _freeCallbacks[rto] = callbacks;
         }
 
-        callbacks.add(callback);
+        callbacks.add(tuple(callback, engine));
+    }
+
+    public void invokeFreeCallbacks()
+    {
+        _finalizableLock.lock();
+
+        scope (exit)
+            _finalizableLock.unlock();
+
+        while (!_finalizables.empty)
+        {
+            auto tup = _finalizables.dequeue();
+
+            foreach (finalizer; tup.y)
+            {
+                finalize(this, tup.x, finalizer.x, finalizer.y, _exceptionHandler);
+
+                // Actually free the object; this isn't done the normal way for finalizables.
+                .free(finalizer.x);
+            }
+        }
+    }
+
+    public void waitForFreeCallbacks()
+    {
+        _finalizerThread.wait();
+    }
+
+    @property public GarbageCollectorExceptionHandler exceptionHandler()
+    {
+        return _exceptionHandler;
+    }
+
+    @property public void exceptionHandler(GarbageCollectorExceptionHandler exceptionHandler)
+    {
+        _exceptionHandler = exceptionHandler;
     }
 }

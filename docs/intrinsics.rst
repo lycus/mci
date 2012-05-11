@@ -568,12 +568,22 @@ gc_add_free_callback
 
 Adds a callback to the GC which will be called on the given object when it is
 no longer reachable (i.e. considered garbage). Note that this callback will be
-triggered just before the memory is actually freed.
+triggered just before the memory is actually freed. Passing a null value as the
+second argument will remove any existing callbacks for the given object.
 
 The callback is automatically removed when the object is freed.
 
-Calling this function if the GC is not interactive or with a null object, or
-null callback pointer, results in undefined behavior.
+Calling this function if the GC is not interactive or with a null object results
+in undefined behavior.
+
+gc_wait_for_free_callbacks
+--------------------------
+
+**Signature**
+    ``void gc_wait_for_free_callbacks()``
+
+Blocks the current thread until all free callbacks that are currently enqueued
+have been processed by the finalization thread.
 
 gc_is_atomic
 ------------

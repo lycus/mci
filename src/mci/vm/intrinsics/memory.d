@@ -65,19 +65,24 @@ extern (C)
         return !!cast(InteractiveGarbageCollector)context.engine.gc;
     }
 
-    public void gc_add_allocate_callback(VirtualMachineContext context, GarbageCollectorCallbackFunction callback)
+    public void gc_add_allocate_callback(VirtualMachineContext context, GarbageCollectorFinalizer callback)
     {
         (cast(InteractiveGarbageCollector)context.engine.gc).addAllocateCallback(callback);
     }
 
-    public void gc_remove_allocate_callback(VirtualMachineContext context, GarbageCollectorCallbackFunction callback)
+    public void gc_remove_allocate_callback(VirtualMachineContext context, GarbageCollectorFinalizer callback)
     {
         (cast(InteractiveGarbageCollector)context.engine.gc).removeAllocateCallback(callback);
     }
 
-    public void gc_add_free_callback(VirtualMachineContext context, RuntimeObject* rto, GarbageCollectorCallbackFunction callback)
+    public void gc_add_free_callback(VirtualMachineContext context, RuntimeObject* rto, GarbageCollectorFinalizer callback)
     {
-        (cast(InteractiveGarbageCollector)context.engine.gc).addFreeCallback(rto, callback);
+        (cast(InteractiveGarbageCollector)context.engine.gc).addFreeCallback(rto, callback, context.engine);
+    }
+
+    public void gc_wait_for_free_callbacks(VirtualMachineContext context)
+    {
+        (cast(InteractiveGarbageCollector)context.engine.gc).waitForFreeCallbacks();
     }
 
     public size_t gc_is_atomic(VirtualMachineContext context)

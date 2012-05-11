@@ -21,6 +21,11 @@ static if (isPOSIX)
         private __gshared Mutex _bitmapsLock;
         private PinnedObjectManager _pinManager;
 
+        invariant()
+        {
+            assert(_pinManager);
+        }
+
         shared static this()
         {
             _registeredBitmaps = new typeof(_registeredBitmaps)();
