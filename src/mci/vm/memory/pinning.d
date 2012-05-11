@@ -5,7 +5,7 @@ import core.stdc.stdlib,
        mci.core.tuple,
        mci.vm.memory.base;
 
-package final class PinnedObjectManager
+public final class PinnedObjectManager
 {
     private GarbageCollector _gc;
     private Dictionary!(size_t, RuntimeObject**) _objects;
@@ -35,6 +35,7 @@ package final class PinnedObjectManager
     in
     {
         assert(rto);
+        assert(isSystemAligned(cast(ubyte*)rto));
     }
     body
     {
