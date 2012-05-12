@@ -1,6 +1,9 @@
 module mci.vm.threading.cleanup;
 
-import core.thread,
+import core.memory,
+       core.thread,
+       core.stdc.stdlib,
+       std.conv,
        mci.core.common,
        mci.core.config,
        mci.core.container,
@@ -56,7 +59,7 @@ else
 
     private __gshared pthread_key_t key;
 
-    private final class CallbackData
+    private struct CallbackData
     {
         private ThreadEventCallback _callback;
 
@@ -64,6 +67,8 @@ else
         {
             assert(_callback);
         }
+
+        //@disable this();
 
         public this(ThreadEventCallback callback)
         in
@@ -91,7 +96,7 @@ else
         pthread_key_create(&key, &threadExit);
     }
 
-    private static extern (C) void threadExit(void *cd)
+    private static extern (C) void threadExit(void* cd)
     in
     {
         assert(cd);
@@ -101,7 +106,12 @@ else
     {
         pthread_setspecific(key, null);
 
-        (cast(CallbackData)cd).callback()();
+        auto cbd = cast(CallbackData*)cd;
+
+        cbd.callback()();
+
+        GC.removeRange(cbd);
+        free(cd);
     }
 }
 
@@ -125,5 +135,17 @@ body
             callbacks.remove(Thread.getThis());
     }
     else
-        pthread_setspecific(key, cb ? cast(void*)new CallbackData(cb) : null);
+    {
+        CallbackData* cbd;
+
+        if (cb)
+        {
+            auto mem = calloc(1, CallbackData.sizeof);
+            cbd = emplace!CallbackData(mem[0 .. CallbackData.sizeof], cb);
+
+            GC.addRange(cbd, CallbackData.sizeof); // To keep the delegate alive.
+        }
+
+        pthread_setspecific(key, cbd);
+    }
 }
