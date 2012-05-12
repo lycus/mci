@@ -190,5 +190,14 @@
   <pauseAfterRunning>0</pauseAfterRunning>
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
- <Folder name="mci.compiler" />
+ <Folder name="mci.compiler">
+  <Folder name="x86">
+   <File path="x86\instructions.d" />
+   <File path="x86\opcodes.d" />
+   <File path="x86\registers.d" />
+  </Folder>
+  <File path="instructions.d" />
+  <File path="opcodes.d" />
+  <File path="registers.d" />
+ </Folder>
 </DProject>
