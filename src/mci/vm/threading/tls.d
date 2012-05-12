@@ -21,6 +21,7 @@ static if (isWindows)
         invariant()
         {
             assert(_callbacks);
+            assert(_lock);
         }
 
         private this()
@@ -111,13 +112,5 @@ static if (isWindows)
         DWORD Characteristics;
     }
 
-    private extern (C) __gshared IMAGE_TLS_DIRECTORY _tls_used =
-    {
-        &_tlsstart,
-        &_tlsend,
-        &_tls_index,
-        &callbacks,
-        0,
-        0
-    };
+    private extern (C) __gshared IMAGE_TLS_DIRECTORY _tls_used = IMAGE_TLS_DIRECTORY(&_tlsstart, &_tlsend, &_tls_index, &callbacks, 0, 0);
 }

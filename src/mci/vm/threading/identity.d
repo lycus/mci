@@ -46,6 +46,11 @@ static ~this()
 }
 
 public static ulong getCurrentThreadID()
+in
+{
+    assert(Thread.getThis());
+}
+body
 {
     return getIDByThread(Thread.getThis()).value;
 }

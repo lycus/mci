@@ -24,8 +24,13 @@ static if (isWindows)
     }
 
     private static void threadExit()
+    in
     {
-        ThreadEventCallback* cb;
+        assert(Thread.getThis());
+    }
+    body
+    {
+        ThreadEventCallback cb;
 
         {
             lock.lock();
@@ -34,8 +39,7 @@ static if (isWindows)
                 lock.unlock();
 
             auto key = Thread.getThis();
-
-            cb = callbacks.get(key);
+            cb = key in callbacks;
 
             if (!cb)
                 return;
@@ -43,13 +47,12 @@ static if (isWindows)
             callbacks.remove(key);
         }
 
-        (*cb)();
+        cb();
     }
 
     public void registerThreadCleanup(ThreadEventCallback cb)
     in
     {
-        assert(cb);
         assert(Thread.getThis());
     }
     body
@@ -59,7 +62,10 @@ static if (isWindows)
         scope (exit)
             lock.unlock();
 
-        callbacks.add(Thread.getThis(), cb);
+        if (cb)
+            callbacks.add(Thread.getThis(), cb);
+        else
+            callbacks.remove(Thread.getThis());
     }
 }
 else
@@ -105,21 +111,19 @@ else
 
     private static extern (C) void threadExit(void *cd)
     {
-        (cast(CallbackData)cd).callback()();
-
         pthread_setspecific(key, null);
+
+        (cast(CallbackData)cd).callback()();
     }
 
     public void registerThreadCleanup(ThreadEventCallback cb)
     in
     {
-        assert(cb);
         assert(Thread.getThis());
-        assert(!pthread_getspecific(key));
     }
     body
     {
-        pthread_setspecific(key, cast(void*)new CallbackData(cb));
+        pthread_setspecific(key, cb ? cast(void*)new CallbackData(cb) : null);
     }
 }
 
