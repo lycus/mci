@@ -169,13 +169,13 @@ Finalization
 ++++++++++++
 
 It is possible to register finalizers for all managed objects (including
-arrays and vectors). The ``gc_add_free_callback`` intrinsic registers a
+arrays and vectors). The ``gc_set_free_callback`` intrinsic registers a
 callback for a specific object. This callback will be called when the object
 is no longer reachable from any live object regardless of cycles (i.e. the
 finalizable object is reachable directly or indirectly from itself). Passing a
-null callback to ``gc_add_free_callback`` will remove all callbacks registered
-for the given object. Note that a callback is automatically removed once
-it has been run.
+null callback to ``gc_add_free_callback`` will remove any callback registered
+for the given object. Note that a callback is automatically removed before it
+is run.
 
 No particular order of finalization is guaranteed. Callbacks should be
 programmed to not rely on order at all. Additionally, it is not guaranteed

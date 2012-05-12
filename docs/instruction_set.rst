@@ -842,9 +842,10 @@ behavior occurs.
 
 The source register must be a pointer, a reference, an array, or a vector.
 
-Note that when using this instruction, one cannot rely on free callbacks
-registered with the GC being called. Some GCs will do this as expected, but
-others will not.
+When invoking this instruction on a reference, an array, or a vector, it is
+assumed that the object being freed is only live in the source register, and
+absolutely nowhere else in the program. This makes this instruction very
+dangerous to use for managed objects.
 
 mem.salloc
 ----------

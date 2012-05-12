@@ -560,16 +560,18 @@ given callback was not registered previously, nothing happens.
 Calling this function if the GC is not interactive or with a null callback
 pointer results in undefined behavior.
 
-gc_add_free_callback
+gc_set_free_callback
 --------------------
 
 **Signature**
-    ``void gc_add_free_callback(Object&, void(Object&) cdecl)``
+    ``void gc_set_free_callback(Object&, void(Object&) cdecl)``
 
 Adds a callback to the GC which will be called on the given object when it is
 no longer reachable (i.e. considered garbage). Note that this callback will be
 triggered just before the memory is actually freed. Passing a null value as the
-second argument will remove any existing callbacks for the given object.
+second argument will remove any existing callback for the given object. Passing
+any other value when a callback is already registered simply overwrites the
+existing callback.
 
 The callback is automatically removed when the object is freed.
 

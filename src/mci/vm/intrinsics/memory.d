@@ -75,9 +75,9 @@ extern (C)
         (cast(InteractiveGarbageCollector)context.engine.gc).removeAllocateCallback(callback);
     }
 
-    public void gc_add_free_callback(VirtualMachineContext context, RuntimeObject* rto, GarbageCollectorFinalizer callback)
+    public void gc_set_free_callback(VirtualMachineContext context, RuntimeObject* rto, GarbageCollectorFinalizer callback)
     {
-        (cast(InteractiveGarbageCollector)context.engine.gc).addFreeCallback(rto, callback, context.engine);
+        (cast(InteractiveGarbageCollector)context.engine.gc).setFreeCallback(rto, callback, context.engine);
     }
 
     public void gc_wait_for_free_callbacks(VirtualMachineContext context)

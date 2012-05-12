@@ -1,13 +1,16 @@
 module mci.vm.memory.boehm;
 
-import core.stdc.string,
+import core.stdc.stdlib,
        std.conv,
        mci.core.common,
        mci.core.config,
        mci.core.container,
        mci.core.sync,
+       mci.core.tuple,
        mci.core.typing.types,
+       mci.vm.execution,
        mci.vm.memory.base,
+       mci.vm.memory.finalization,
        mci.vm.memory.info,
        mci.vm.memory.pinning;
 
@@ -15,26 +18,136 @@ static if (isPOSIX)
 {
     import gc;
 
-    public final class BoehmGarbageCollector : GarbageCollector
+    private struct FinalizationRecord
+    {
+        private GarbageCollectorFinalizer _finalizer;
+        private InteractiveGarbageCollector _gc;
+        private ExecutionEngine _engine;
+        public bool free;
+
+        invariant()
+        {
+            assert(_finalizer);
+            assert(_gc);
+            assert(_engine);
+        }
+
+        public this(GarbageCollectorFinalizer finalizer, InteractiveGarbageCollector gc, ExecutionEngine engine)
+        in
+        {
+            assert(finalizer);
+            assert(gc);
+            assert(engine);
+        }
+        body
+        {
+            _finalizer = finalizer;
+            _gc = gc;
+            _engine = engine;
+        }
+
+        @property public GarbageCollectorFinalizer finalizer()
+        out (result)
+        {
+            assert(result);
+        }
+        body
+        {
+            return _finalizer;
+        }
+
+        @property public InteractiveGarbageCollector gc()
+        out (result)
+        {
+            assert(result);
+        }
+        body
+        {
+            return _gc;
+        }
+
+        @property public ExecutionEngine engine()
+        out (result)
+        {
+            assert(result);
+        }
+        body
+        {
+            return _engine;
+        }
+    }
+
+    public final class BoehmGarbageCollector : InteractiveGarbageCollector
     {
         private __gshared Dictionary!(RuntimeTypeInfo, size_t) _registeredBitmaps;
         private __gshared Mutex _bitmapsLock;
+        private __gshared List!size_t _gcs;
+        private __gshared Mutex _gcLock;
         private PinnedObjectManager _pinManager;
+        private NoNullList!GarbageCollectorFinalizer _allocCallbacks;
+        private Mutex _allocateCallbackLock;
+        private GarbageCollectorExceptionHandler _exceptionHandler;
+        private FinalizerThread _finalizerThread;
 
         invariant()
         {
             assert(_pinManager);
+            assert(_allocCallbacks);
+            assert(_allocateCallbackLock);
         }
 
         shared static this()
         {
             _registeredBitmaps = new typeof(_registeredBitmaps)();
             _bitmapsLock = new typeof(_bitmapsLock)();
+            _gcs = new typeof(_gcs)();
+            _gcLock = new typeof(_gcLock)();
+
+            // Note that this is not necessarily sufficient. On some weird platforms, this call
+            // should rather happen in the main executable due to funny issues with fetching
+            // data segment bracket addresses from a shared library. However, in any case, this
+            // Should Work (TM) for the platforms we support.
+            GC_init();
+
+            GC_finalize_on_demand = true; // Actually an integer, but this is prettier.
+            GC_finalizer_notifier = ()
+            {
+                _gcLock.lock();
+
+                scope (exit)
+                    _gcLock.unlock();
+
+                // A bit of an ugly attempt to map libgc's global design to our OO design.
+                foreach (gc; _gcs)
+                    (cast(BoehmGarbageCollector)cast(void*)gc)._finalizerThread.notify();
+            };
         }
 
         public this()
         {
             _pinManager = new typeof(_pinManager)(this);
+            _allocCallbacks = new typeof(_allocCallbacks)();
+            _allocateCallbackLock = new typeof(_allocateCallbackLock)();
+            _finalizerThread = new typeof(_finalizerThread)(this);
+
+            _gcLock.lock();
+
+            scope (exit)
+                _gcLock.unlock();
+
+            _gcs.add(cast(size_t)cast(void*)this);
+        }
+
+        ~this()
+        {
+            _gcLock.lock();
+
+            scope (exit)
+                _gcLock.unlock();
+
+            _gcs.remove(cast(size_t)cast(void*)this);
+
+            _finalizerThread.exit();
         }
 
         @property public ulong collections()
@@ -80,7 +193,19 @@ static if (isPOSIX)
             if (!mem)
                 return null;
 
-            return emplace!RuntimeObject(mem[0 .. RuntimeObject.sizeof], type);
+            auto obj = emplace!RuntimeObject(mem[0 .. RuntimeObject.sizeof], type);
+
+            {
+                _allocateCallbackLock.lock();
+
+                scope (exit)
+                    _allocateCallbackLock.unlock();
+
+                foreach (cb; _allocCallbacks)
+                    cb(obj);
+            }
+
+            return obj;
         }
 
         public void free(RuntimeObject* data)
@@ -88,7 +213,19 @@ static if (isPOSIX)
             if (!data)
                 return;
 
-            GC_free(data);
+            FinalizationRecord* oldRecord;
+
+            GC_register_finalizer_no_order(data, null, null, null, cast(void**)&oldRecord);
+
+            if (oldRecord)
+            {
+                // Signal that we want the object freed when the finalizer has run.
+                oldRecord.free = true;
+
+                GC_register_finalizer_no_order(data, cast(gc_finalization_proc_fun)oldRecord.finalizer, oldRecord, null, null);
+            }
+            else
+                GC_free(data);
         }
 
         public void addRoot(RuntimeObject** ptr)
@@ -152,6 +289,82 @@ static if (isPOSIX)
         public void removePressure(size_t amount)
         {
             // Pressure notifications are not supported in libgc.
+        }
+
+        public void addAllocateCallback(GarbageCollectorFinalizer callback)
+        {
+            _allocateCallbackLock.lock();
+
+            scope (exit)
+                _allocateCallbackLock.unlock();
+
+            _allocCallbacks.add(callback);
+        }
+
+        public void removeAllocateCallback(GarbageCollectorFinalizer callback)
+        {
+            _allocateCallbackLock.lock();
+
+            scope (exit)
+                _allocateCallbackLock.unlock();
+
+            _allocCallbacks.remove(callback);
+        }
+
+        private static void finalizeCallback(RuntimeObject* rto, FinalizationRecord* record)
+        {
+            finalize(record.gc, rto, record.finalizer, record.engine);
+
+            if (record.free)
+                GC_free(rto);
+
+            .free(record);
+        }
+
+        public void setFreeCallback(RuntimeObject* rto, GarbageCollectorFinalizer callback, ExecutionEngine engine)
+        {
+            FinalizationRecord* oldRecord;
+
+            // We shouldn't need any synchronization here, since GC_register_finalizer_no_order
+            // takes care of locking internally.
+            if (!callback)
+                GC_register_finalizer_no_order(rto, null, null, null, cast(void**)&oldRecord);
+            else
+            {
+                auto mem = calloc(1, FinalizationRecord.sizeof);
+                auto record = emplace!FinalizationRecord(mem[0 .. FinalizationRecord.sizeof], callback, this, engine);
+
+                GC_register_finalizer_no_order(rto, cast(gc_finalization_proc_fun)&finalizeCallback, record, null, cast(void**)&oldRecord);
+            }
+
+            // It's possible that oldRecord is null here when the method is called with a
+            // null callback where no callback was installed to begin with, or when a new
+            // callback is installed and none was present previously. Either way, free
+            // allows null pointers, so we're good.
+            .free(oldRecord);
+        }
+
+        public void invokeFreeCallbacks()
+        {
+            // This will of course race; it's a heuristic. When there's no work, the call
+            // to GC_invoke_finalizers just does nothing.
+            if (GC_should_invoke_finalizers())
+                GC_invoke_finalizers();
+        }
+
+        public void waitForFreeCallbacks()
+        {
+            _finalizerThread.wait();
+        }
+
+        @property public GarbageCollectorExceptionHandler exceptionHandler()
+        {
+            return _exceptionHandler;
+        }
+
+        @property public void exceptionHandler(GarbageCollectorExceptionHandler exceptionHandler)
+        {
+            _exceptionHandler = exceptionHandler;
         }
     }
 }

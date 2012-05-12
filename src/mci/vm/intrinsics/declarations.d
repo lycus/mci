@@ -63,7 +63,7 @@ public __gshared
     Function gcIsInteractive;
     Function gcAddAllocateCallback;
     Function gcRemoveAllocateCallback;
-    Function gcAddFreeCallback;
+    Function gcSetFreeCallback;
     Function gcWaitForFreeCallbacks;
     Function gcIsAtomic;
     Function gcGetBarriers;
@@ -220,7 +220,7 @@ shared static this()
     gcRemoveAllocateCallback = createFunction!gc_remove_allocate_callback(null,
                                                                           getFunctionPointerType(CallingConvention.cdecl, null,
                                                                                                  toNoNullList(toIterable!Type(objectType))));
-    gcAddFreeCallback = createFunction!gc_add_free_callback(null,
+    gcSetFreeCallback = createFunction!gc_set_free_callback(null,
                                                             objectType,
                                                             getFunctionPointerType(CallingConvention.cdecl, null,
                                                                                    toNoNullList(toIterable!Type(objectType))));

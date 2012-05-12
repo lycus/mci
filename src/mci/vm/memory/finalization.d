@@ -11,15 +11,13 @@ import core.atomic,
        mci.vm.intrinsics.declarations,
        mci.vm.memory.base;
 
-public void finalize(GarbageCollector gc, RuntimeObject* rto, GarbageCollectorFinalizer finalizer, ExecutionEngine engine,
-                     GarbageCollectorExceptionHandler exceptionHandler)
+public void finalize(InteractiveGarbageCollector gc, RuntimeObject* rto, GarbageCollectorFinalizer finalizer, ExecutionEngine engine)
 in
 {
     assert(gc);
     assert(rto);
     assert(finalizer);
     assert(engine);
-    assert(exceptionHandler);
 }
 body
 {
@@ -33,8 +31,10 @@ body
     }
     catch (ExecutionException ex)
     {
-        if (exceptionHandler)
-            exceptionHandler(rto, finalizer, engine, ex);
+        auto eh = gc.exceptionHandler;
+
+        if (eh)
+            eh(rto, finalizer, engine, ex);
 
         // We just silently ignore the exception if there's no handler.
     }

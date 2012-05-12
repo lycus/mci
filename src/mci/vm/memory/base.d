@@ -191,7 +191,7 @@ public interface InteractiveGarbageCollector : GarbageCollector
         assert(callback);
     }
 
-    public void addFreeCallback(RuntimeObject* rto, GarbageCollectorFinalizer callback, ExecutionEngine engine)
+    public void setFreeCallback(RuntimeObject* rto, GarbageCollectorFinalizer callback, ExecutionEngine engine)
     in
     {
         assert(rto);
