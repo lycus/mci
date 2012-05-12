@@ -160,7 +160,7 @@ atomic_load
 -----------
 
 **Signature**
-    ``Object atomic_load_u(Object*)``
+    ``Object& atomic_load(Object&*)``
 
 Atomically loads the reference from the memory location pointed to by the
 first argument.
@@ -169,7 +169,7 @@ atomic_store
 ------------
 
 **Signature**
-    ``void atomic_store_u(Object*, Object)``
+    ``void atomic_store(Object&*, Object&)``
 
 Atomically sets the location pointed to by the first argument to the reference
 in the second argument.
@@ -178,7 +178,7 @@ atomic_exchange
 ---------------
 
 **Signature**
-    ``uint atomic_exchange_u(Object*, Object, Object)``
+    ``uint atomic_exchange(Object&*, Object&, Object&)``
 
 Stores the reference in the third argument to the location pointed to by
 the first argument if the reference pointed to by the first argument is
