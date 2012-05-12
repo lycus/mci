@@ -49,24 +49,6 @@ static if (isWindows)
 
         cb();
     }
-
-    public void registerThreadCleanup(ThreadEventCallback cb)
-    in
-    {
-        assert(Thread.getThis());
-    }
-    body
-    {
-        lock.lock();
-
-        scope (exit)
-            lock.unlock();
-
-        if (cb)
-            callbacks.add(Thread.getThis(), cb);
-        else
-            callbacks.remove(Thread.getThis());
-    }
 }
 else
 {
@@ -110,20 +92,38 @@ else
     }
 
     private static extern (C) void threadExit(void *cd)
+    in
+    {
+        assert(cd);
+        assert(Thread.getThis());
+    }
+    body
     {
         pthread_setspecific(key, null);
 
         (cast(CallbackData)cd).callback()();
     }
-
-    public void registerThreadCleanup(ThreadEventCallback cb)
-    in
-    {
-        assert(Thread.getThis());
-    }
-    body
-    {
-        pthread_setspecific(key, cb ? cast(void*)new CallbackData(cb) : null);
-    }
 }
 
+public void registerThreadCleanup(ThreadEventCallback cb)
+in
+{
+    assert(Thread.getThis());
+}
+body
+{
+    static if (isWindows)
+    {
+        lock.lock();
+
+        scope (exit)
+            lock.unlock();
+
+        if (cb)
+            callbacks.add(Thread.getThis(), cb);
+        else
+            callbacks.remove(Thread.getThis());
+    }
+    else
+        pthread_setspecific(key, cb ? cast(void*)new CallbackData(cb) : null);
+}
