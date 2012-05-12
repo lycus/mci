@@ -219,6 +219,8 @@ D runtime garbage collector
     No
 **Is generational**
     No
+**Is incremental**
+    No
 **Is moving**
     No
 **Uses barriers**
@@ -244,7 +246,9 @@ Boehm-Demers-Weiser garbage collector
 **Supports finalization**
     Yes
 **Is generational**
-    No
+    Optionally
+**Is incremental**
+    Optionally
 **Is moving**
     No
 **Uses barriers**
@@ -273,6 +277,8 @@ LibC garbage collector
 **Supports finalization**
     Yes
 **Is generational**
+    No
+**Is incremental**
     No
 **Is moving**
     No
