@@ -182,10 +182,7 @@ static if (isPOSIX)
                         descr = *d;
                     else
                     {
-                        auto words = new size_t[type.bitmap.count + (size_t.sizeof * 8 - 1) / size_t.sizeof * 8];
-
-                        foreach (b; type.bitmap)
-                            words ~= b;
+                        auto words = type.bitmap.toWordArray();
 
                         descr = GC_make_descriptor(words.ptr, words.length);
 

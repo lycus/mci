@@ -190,6 +190,11 @@ public interface Set(T) : ReadOnlyCollection!T
     }
 }
 
+public interface BitSequence : ReadOnlyIndexable!bool
+{
+    public size_t[] toWordArray();
+}
+
 public Iterable!T asIterable(T)(Iterable!T items)
 {
     return items;
@@ -1951,7 +1956,7 @@ public final class HashSet(T) : Set!T
     }
 }
 
-public class BitArray : Indexable!bool
+public class BitArray : BitSequence, Indexable!bool
 {
     private std.bitmanip.BitArray _bits;
 
@@ -2111,6 +2116,11 @@ public class BitArray : Indexable!bool
             arr[i] = b;
 
         return arr;
+    }
+
+    public final size_t[] toWordArray()
+    {
+        return (cast(size_t[])_bits).dup;
     }
 
     public final void insert(size_t index, bool item)

@@ -53,7 +53,7 @@ public final class RuntimeTypeInfo
         return _size;
     }
 
-    @property public ReadOnlyIndexable!bool bitmap()
+    @property public BitSequence bitmap()
     out (result)
     {
         assert(tryCast!StructureType(_type) ? !!result : !result);
