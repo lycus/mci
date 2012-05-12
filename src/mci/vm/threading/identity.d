@@ -1,4 +1,4 @@
-module mci.vm.threading.identity;
+module mci.vm.threading.id;
 
 import core.thread,
        mci.core.container,

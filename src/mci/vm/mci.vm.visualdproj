@@ -219,7 +219,7 @@
   </Folder>
   <Folder name="threading">
    <File path="threading\cleanup.d" />
-   <File path="threading\id.d" />
+   <File path="threading\identity.d" />
    <File path="threading\tls.d" />
   </Folder>
   <File path="exception.d" />
