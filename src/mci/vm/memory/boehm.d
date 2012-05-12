@@ -32,6 +32,8 @@ static if (isPOSIX)
             assert(_engine);
         }
 
+        //@disable this();
+
         public this(GarbageCollectorFinalizer finalizer, InteractiveGarbageCollector gc, ExecutionEngine engine)
         in
         {

@@ -118,15 +118,15 @@ shared static this()
     getEndianness = createFunction!get_endianness(UInt8Type.instance);
     is32Bit = createFunction!is_32_bit(NativeUIntType.instance);
 
-    atomicLoad = createFunction!atomic_load(objectType,
-                                            getPointerType(objectType));
+    atomicLoad = createFunction!atomic_load(getReferenceType(objectType),
+                                            getPointerType(getReferenceType(objectType)));
     atomicStore = createFunction!atomic_store(null,
-                                              getPointerType(objectType),
-                                              objectType);
+                                              getPointerType(getReferenceType(objectType)),
+                                              getReferenceType(objectType));
     atomicExchange = createFunction!atomic_exchange(NativeUIntType.instance,
-                                                    getPointerType(objectType),
-                                                    objectType,
-                                                    objectType);
+                                                    getPointerType(getReferenceType(objectType)),
+                                                    getReferenceType(objectType),
+                                                    getReferenceType(objectType));
     atomicLoadU = createFunction!atomic_load_u(NativeUIntType.instance,
                                                getPointerType(NativeUIntType.instance));
     atomicStoreU = createFunction!atomic_store_u(null,
@@ -216,14 +216,14 @@ shared static this()
     gcIsInteractive = createFunction!gc_is_interactive(NativeUIntType.instance);
     gcAddAllocateCallback = createFunction!gc_add_allocate_callback(null,
                                                                     getFunctionPointerType(CallingConvention.cdecl, null,
-                                                                                           toNoNullList(toIterable!Type(objectType))));
+                                                                                           toNoNullList(toIterable!Type(getReferenceType(objectType)))));
     gcRemoveAllocateCallback = createFunction!gc_remove_allocate_callback(null,
                                                                           getFunctionPointerType(CallingConvention.cdecl, null,
-                                                                                                 toNoNullList(toIterable!Type(objectType))));
+                                                                                                 toNoNullList(toIterable!Type(getReferenceType(objectType)))));
     gcSetFreeCallback = createFunction!gc_set_free_callback(null,
-                                                            objectType,
+                                                            getReferenceType(objectType),
                                                             getFunctionPointerType(CallingConvention.cdecl, null,
-                                                                                   toNoNullList(toIterable!Type(objectType))));
+                                                                                   toNoNullList(toIterable!Type(getReferenceType(objectType)))));
     gcWaitForFreeCallbacks = createFunction!gc_wait_for_free_callbacks(null);
     gcIsAtomic = createFunction!gc_is_atomic(NativeUIntType.instance);
     gcGetBarriers = createFunction!gc_get_barriers(UInt8Type.instance);
