@@ -6,6 +6,7 @@ import std.stdio,
        mci.tester.container,
        mci.tester.lexer,
        mci.tester.nullable,
+       mci.tester.io,
        mci.tester.tokens,
        mci.tester.types;
 

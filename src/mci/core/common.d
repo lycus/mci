@@ -156,7 +156,7 @@ public bool powerOfTwo(T)(T value)
     return value && !(value & (value - 1));
 }
 
-public T rotate(string direction, T)(T value, T amount)
+public T rotate(string direction, T)(T value, uint amount)
     if (isIntegral!T)
 in
 {

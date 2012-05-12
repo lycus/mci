@@ -197,6 +197,7 @@
   <File path="lexer.d" />
   <File path="main.d" />
   <File path="nullable.d" />
+  <File path="io.d" />
   <File path="tokens.d" />
   <File path="types.d" />
  </Folder>

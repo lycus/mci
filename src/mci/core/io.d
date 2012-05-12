@@ -218,7 +218,7 @@ public final class MemoryStream : Stream
     }
     body
     {
-        return _data;
+        return _data.dup;
     }
 
     public ubyte read()
