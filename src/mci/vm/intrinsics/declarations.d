@@ -10,7 +10,8 @@ import mci.core.common,
        mci.vm.intrinsics.atomic,
        mci.vm.intrinsics.config,
        mci.vm.intrinsics.math,
-       mci.vm.intrinsics.memory;
+       mci.vm.intrinsics.memory,
+       mci.vm.intrinsics.weak;
 
 public __gshared Module intrinsicModule;
 public __gshared Lookup!(Function, function_t) intrinsicFunctions;
@@ -77,7 +78,12 @@ public __gshared
     Function isInfF32;
     Function isInfF64;
 
+    Function createWeak;
+    Function getWeakTarget;
+    Function setWeakTarget;
+
     StructureType objectType;
+    StructureType weakType;
 }
 
 public enum string intrinsicModuleName = "mci";
@@ -111,6 +117,10 @@ shared static this()
 
     objectType = new StructureType(intrinsicModule, "Object");
     objectType.close();
+
+    weakType = new StructureType(intrinsicModule, "Weak");
+    weakType.createField("value", getReferenceType(objectType));
+    weakType.close();
 
     getCompiler = createFunction!get_compiler(UInt8Type.instance);
     getArchitecture = createFunction!get_architecture(UInt8Type.instance);
@@ -244,4 +254,12 @@ shared static this()
                                          Float32Type.instance);
     isInfF64 = createFunction!is_inf_f64(NativeUIntType.instance,
                                          Float64Type.instance);
+
+    createWeak = createFunction!create_weak(getReferenceType(weakType),
+                                            getReferenceType(objectType));
+    getWeakTarget = createFunction!get_weak_target(getReferenceType(objectType),
+                                                   getReferenceType(weakType));
+    setWeakTarget = createFunction!set_weak_target(null,
+                                                   getReferenceType(weakType),
+                                                   getReferenceType(objectType));
 }

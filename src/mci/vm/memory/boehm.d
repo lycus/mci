@@ -9,9 +9,11 @@ import core.stdc.stdlib,
        mci.core.tuple,
        mci.core.typing.types,
        mci.vm.execution,
+       mci.vm.intrinsics.declarations,
        mci.vm.memory.base,
        mci.vm.memory.finalization,
        mci.vm.memory.info,
+       mci.vm.memory.layout,
        mci.vm.memory.pinning;
 
 static if (isPOSIX)
@@ -90,12 +92,15 @@ static if (isPOSIX)
         private Mutex _allocateCallbackLock;
         private GarbageCollectorExceptionHandler _exceptionHandler;
         private FinalizerThread _finalizerThread;
+        private Mutex _weakRefLock;
 
         invariant()
         {
             assert(_pinManager);
             assert(_allocCallbacks);
             assert(_allocateCallbackLock);
+            assert(_finalizerThread);
+            assert(_weakRefLock);
         }
 
         shared static this()
@@ -131,6 +136,7 @@ static if (isPOSIX)
             _allocCallbacks = new typeof(_allocCallbacks)();
             _allocateCallbackLock = new typeof(_allocateCallbackLock)();
             _finalizerThread = new typeof(_finalizerThread)(this);
+            _weakRefLock = new typeof(_weakRefLock)();
 
             _gcLock.lock();
 
@@ -291,6 +297,61 @@ static if (isPOSIX)
         public void removePressure(size_t amount)
         {
             // Pressure notifications are not supported in libgc.
+        }
+
+        public RuntimeObject* createWeak(RuntimeObject* target)
+        {
+            auto weak = allocate(getTypeInfo(weakType, mci.core.config.is32Bit));
+
+            if (!weak)
+                return null;
+
+            auto addr = cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
+
+            // This obscures the pointer so it doesn't look like a GC reference.
+            *addr = cast(RuntimeObject*)hidePointer(target);
+            GC_general_register_disappearing_link(cast(void**)addr, target);
+
+            return weak;
+        }
+
+        public RuntimeObject* getWeakTarget(RuntimeObject* weak)
+        {
+            extern (C) static void* reveal(void* ptr)
+            {
+                return revealPointer(*cast(RuntimeObject**)ptr);
+            }
+
+            auto addr = cast(void*)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
+
+            _weakRefLock.lock();
+
+            scope (exit)
+                _weakRefLock.unlock();
+
+            return cast(RuntimeObject*)GC_call_with_alloc_lock(&reveal, addr);
+        }
+
+        public void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
+        {
+            auto addr = cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
+
+            _weakRefLock.lock();
+
+            scope (exit)
+                _weakRefLock.unlock();
+
+            if (*addr)
+            {
+                GC_unregister_disappearing_link(cast(void**)addr);
+                *addr = null;
+            }
+
+            if (target)
+            {
+                *addr = cast(RuntimeObject*)hidePointer(target);
+                GC_general_register_disappearing_link(cast(void**)addr, target);
+            }
         }
 
         public void addAllocateCallback(GarbageCollectorFinalizer callback)

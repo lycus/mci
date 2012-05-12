@@ -24,6 +24,20 @@ reference type::
     {
     }
 
+Weak
+----
+
+This is an opaque wrapper type given special treatment by garbage collector
+implementations that support it. It facilitates so-called weak references::
+
+    type Weak
+    {
+    }
+
+Instances of this type should not be manipulated directly. The layout of this
+type is completely unspecified and any reliance on it is unsupported. To work
+with instances of ``Weak``, use the related intrinsics.
+
 Configuration information
 +++++++++++++++++++++++++
 
@@ -694,3 +708,40 @@ is_inf_f64
 
 Returns 1 if the given value is positive or negative infinity; otherwise,
 returns 0.
+
+Weak references
++++++++++++++++
+
+create_weak
+-----------
+
+**Signature**
+    ``Weak& create_weak(Object&)``
+
+Creates a weak reference to an object given in the first parameter. Calling
+this function with a null parameter results in undefined behavior.
+
+This function returns null if insufficient memory is available. The weak
+reference returned by this intrinsic must not be freed with ``mem.free`` or
+any other deallocation mechanism.
+
+get_weak_target
+---------------
+
+**Signature**
+    ``Object& get_weak_target(Weak&)``
+
+Gets the target of a given weak reference. Calling this function with a null
+weak reference results in undefined behavior.
+
+The returned object may be null, since the target of the weak reference could
+have been collected since it was set.
+
+set_weak_target
+---------------
+
+**Signature**
+    ``void set_weak_target(Weak&, Object&)``
+
+Sets the target of a given weak reference. Calling this function with a null
+weak reference results in undefined behavior.

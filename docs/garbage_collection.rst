@@ -129,6 +129,21 @@ scanned conservatively in all GCs. This may change in the future if we decide
 to compute precise stack maps, but this doesn't appear to be worth the effort
 and time/space cost currently.
 
+Weak references
+---------------
+
+There is support for weak references in all garbage collectors the MCI
+provides. They are manipulated through the ``create_weak``,
+``get_weak_target``, and ``set_weak_target`` intrinsics and are based on the
+``Weak`` intrinsic type which is given special treatment by the virtual
+machine. The object a weak reference points to can be collected if there are
+no direct references to it other than through weak references. This can be
+useful for caching mechanisms in particular.
+
+It is not actually guaranteed whether the target of a weak reference will be
+collected at all. Some garbage collectors may choose to treat weak references
+as strong references if absolutely necessary.
+
 Compaction and copying
 ++++++++++++++++++++++
 

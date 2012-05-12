@@ -6,9 +6,11 @@ import core.stdc.stdlib,
        mci.core.sync,
        mci.core.tuple,
        mci.vm.execution,
+       mci.vm.intrinsics.declarations,
        mci.vm.memory.base,
        mci.vm.memory.finalization,
-       mci.vm.memory.info;
+       mci.vm.memory.info,
+       mci.vm.memory.layout;
 
 public final class LibCGarbageCollector : InteractiveGarbageCollector
 {
@@ -158,6 +160,28 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
 
     public void removePressure(size_t amount)
     {
+    }
+
+    public RuntimeObject* createWeak(RuntimeObject* target)
+    {
+        auto weak = allocate(getTypeInfo(weakType, mci.core.config.is32Bit));
+
+        if (!weak)
+            return null;
+
+        *cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit)) = target;
+
+        return weak;
+    }
+
+    public RuntimeObject* getWeakTarget(RuntimeObject* weak)
+    {
+        return *cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
+    }
+
+    public void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
+    {
+        *cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit)) = target;
     }
 
     public void addAllocateCallback(GarbageCollectorFinalizer callback)

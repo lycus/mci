@@ -151,6 +151,40 @@ public interface GarbageCollector
     public void addPressure(size_t amount);
 
     public void removePressure(size_t amount);
+
+    public RuntimeObject* createWeak(RuntimeObject* target)
+    in
+    {
+        assert(target);
+        assert(isSystemAligned(cast(ubyte*)target));
+    }
+    out (result)
+    {
+        if (result)
+            assert(isSystemAligned(cast(ubyte*)result));
+    }
+
+    public RuntimeObject* getWeakTarget(RuntimeObject* weak)
+    in
+    {
+        assert(weak);
+        assert(isSystemAligned(cast(ubyte*)weak));
+    }
+    out (result)
+    {
+        if (result)
+            assert(isSystemAligned(cast(ubyte*)result));
+    }
+
+    public void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
+    in
+    {
+        assert(weak);
+        assert(isSystemAligned(cast(ubyte*)weak));
+
+        if (target)
+            assert(isSystemAligned(cast(ubyte*)target));
+    }
 }
 
 public interface GarbageCollectorGeneration

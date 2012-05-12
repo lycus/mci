@@ -104,4 +104,20 @@ public final class DGarbageCollector : GarbageCollector
     {
         // D's GC doesn't support pressure notifications.
     }
+
+    public RuntimeObject* createWeak(RuntimeObject* target)
+    {
+        // FIXME: Can't implement this until 2.060.
+        assert(false);
+    }
+
+    public RuntimeObject* getWeakTarget(RuntimeObject* weak)
+    {
+        assert(false);
+    }
+
+    public void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
+    {
+        assert(false);
+    }
 }
