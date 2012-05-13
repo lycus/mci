@@ -39,7 +39,7 @@ body
         return lib;
     }
     else
-        return LoadLibraryW(toUTFz!(const(wchar)*)(name));
+        return LoadLibraryW(toUTF16z(name));
 }
 
 public EntryPoint getProcedure(void* library, string name)
