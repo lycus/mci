@@ -42,7 +42,7 @@ public abstract class ExecutionEngine
 
     public abstract void stopDebugger();
 
-    @property public GarbageCollector gc()
+    @property public final GarbageCollector gc()
     out (result)
     {
         assert(result);
@@ -52,7 +52,7 @@ public abstract class ExecutionEngine
         return _gc;
     }
 
-    @property public VirtualMachineContext context()
+    @property public final VirtualMachineContext context()
     out (result)
     {
         assert(result);
