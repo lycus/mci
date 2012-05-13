@@ -26,6 +26,11 @@ public abstract class Node
     }
 
     @property public ReadOnlyIndexable!Node children()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return new List!Node();
     }
@@ -62,11 +67,21 @@ public class MetadataNode : Node
     }
 
     @property public final SimpleNameNode key()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _key;
     }
 
     @property public final SimpleNameNode value()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _value;
     }
@@ -81,6 +96,11 @@ public class MetadataListNode : Node
 {
     private NoNullList!MetadataNode _metadata;
 
+    invariant()
+    {
+        assert(_metadata);
+    }
+
     public this(SourceLocation location, NoNullList!MetadataNode metadata)
     in
     {
@@ -94,6 +114,11 @@ public class MetadataListNode : Node
     }
 
     @property public final ReadOnlyIndexable!MetadataNode metadata()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _metadata;
     }
@@ -134,6 +159,11 @@ public class SimpleNameNode : Node
     }
 
     @property public final string name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
@@ -166,6 +196,11 @@ public class ModuleReferenceNode : Node
     }
 
     @property public final SimpleNameNode name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
@@ -213,6 +248,11 @@ public class StructureTypeReferenceNode : TypeReferenceNode
     }
 
     @property public final SimpleNameNode name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
@@ -245,6 +285,11 @@ public class PointerTypeReferenceNode : TypeReferenceNode
     }
 
     @property public final TypeReferenceNode elementType()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _elementType;
     }
@@ -277,6 +322,11 @@ public class ReferenceTypeReferenceNode : TypeReferenceNode
     }
 
     @property public final StructureTypeReferenceNode elementType()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _elementType;
     }
@@ -309,6 +359,11 @@ public class ArrayTypeReferenceNode : TypeReferenceNode
     }
 
     @property public final TypeReferenceNode elementType()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _elementType;
     }
@@ -345,11 +400,21 @@ public class VectorTypeReferenceNode : TypeReferenceNode
     }
 
     @property public final TypeReferenceNode elementType()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _elementType;
     }
 
     @property public final LiteralValueNode elements()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _elements;
     }
@@ -397,6 +462,11 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
     }
 
     @property public final ReadOnlyIndexable!TypeReferenceNode parameterTypes()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _parameterTypes;
     }
@@ -491,11 +561,21 @@ public class FieldReferenceNode : Node
     }
 
     @property public final StructureTypeReferenceNode typeName()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _typeName;
     }
 
     @property public final SimpleNameNode name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
@@ -535,6 +615,11 @@ public class FunctionReferenceNode : Node
     }
 
     @property public final SimpleNameNode name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
@@ -576,6 +661,11 @@ public class TypeDeclarationNode : DeclarationNode
     }
 
     @property public final SimpleNameNode name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
@@ -586,6 +676,11 @@ public class TypeDeclarationNode : DeclarationNode
     }
 
     @property public final ReadOnlyIndexable!FieldDeclarationNode fields()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _fields;
     }
@@ -632,11 +727,21 @@ public class FieldDeclarationNode : Node
     }
 
     @property public final TypeReferenceNode type()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _type;
     }
 
     @property public final SimpleNameNode name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
@@ -686,6 +791,11 @@ public class ParameterNode : Node
     }
 
     @property public final TypeReferenceNode type()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _type;
     }
@@ -746,6 +856,11 @@ public class FunctionDeclarationNode : DeclarationNode
     }
 
     @property public final SimpleNameNode name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
@@ -761,6 +876,11 @@ public class FunctionDeclarationNode : DeclarationNode
     }
 
     @property public final ReadOnlyIndexable!ParameterNode parameters()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _parameters;
     }
@@ -771,11 +891,21 @@ public class FunctionDeclarationNode : DeclarationNode
     }
 
     @property public final ReadOnlyIndexable!RegisterDeclarationNode registers()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _registers;
     }
 
     @property public final ReadOnlyIndexable!BasicBlockDeclarationNode blocks()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _blocks;
     }
@@ -822,6 +952,11 @@ public class EntryPointDeclarationNode : DeclarationNode
     }
 
     @property public final FunctionReferenceNode function_()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _function;
     }
@@ -873,11 +1008,21 @@ public class RegisterDeclarationNode : Node
     }
 
     @property public final SimpleNameNode name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
 
     @property public final TypeReferenceNode type()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _type;
     }
@@ -924,6 +1069,11 @@ public class BasicBlockDeclarationNode : Node
     }
 
     @property public final SimpleNameNode name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
@@ -934,6 +1084,11 @@ public class BasicBlockDeclarationNode : Node
     }
 
     @property public final ReadOnlyIndexable!InstructionNode instructions()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _instructions;
     }
@@ -971,6 +1126,11 @@ public class RegisterReferenceNode : Node
     }
 
     @property public final SimpleNameNode name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
@@ -1003,6 +1163,11 @@ public class BasicBlockReferenceNode : Node
     }
 
     @property public final SimpleNameNode name()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _name;
     }
@@ -1039,11 +1204,21 @@ public class BranchSelectorNode : Node
     }
 
     @property public final BasicBlockReferenceNode trueBlock()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _trueBlock;
     }
 
     @property public final BasicBlockReferenceNode falseBlock()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _falseBlock;
     }
@@ -1076,6 +1251,11 @@ public class RegisterSelectorNode : Node
     }
 
     @property public final ReadOnlyIndexable!RegisterReferenceNode registers()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _registers;
     }
@@ -1108,6 +1288,11 @@ public class LiteralValueNode : Node
     }
 
     @property public final string value()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _value;
     }
@@ -1140,6 +1325,11 @@ public class ArrayLiteralNode : Node
     }
 
     @property public final ReadOnlyIndexable!LiteralValueNode values()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _values;
     }
@@ -1233,6 +1423,11 @@ public class InstructionOperandNode : Node
     }
 
     @property public final InstructionOperand operand()
+    out (result)
+    {
+        assert(result.hasValue);
+    }
+    body
     {
         return _operand;
     }
@@ -1279,6 +1474,11 @@ public class InstructionNode : Node
     }
 
     @property public final OpCode opCode()
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _opCode;
     }
