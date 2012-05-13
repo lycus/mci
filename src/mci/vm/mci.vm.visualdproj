@@ -224,6 +224,7 @@
   </Folder>
   <File path="exception.d" />
   <File path="execution.d" />
+  <File path="ffi.d" />
   <File path="trace.d" />
  </Folder>
 </DProject>
