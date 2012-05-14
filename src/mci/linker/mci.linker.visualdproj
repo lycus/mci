@@ -4,6 +4,7 @@
   <obj>0</obj>
   <link>0</link>
   <lib>1</lib>
+  <subsystem>0</subsystem>
   <multiobj>0</multiobj>
   <singleFileCompilation>0</singleFileCompilation>
   <oneobj>0</oneobj>
@@ -42,7 +43,7 @@
   <nofloat>0</nofloat>
   <Dversion>2.043</Dversion>
   <ignoreUnsupportedPragmas>1</ignoreUnsupportedPragmas>
-  <compiler>1</compiler>
+  <compiler>0</compiler>
   <otherDMD>0</otherDMD>
   <program>$(DMDInstallDir)windows\bin\dmd.exe</program>
   <imppath>..\..;..\..\..\libffi-d</imppath>
@@ -99,6 +100,7 @@
   <obj>0</obj>
   <link>0</link>
   <lib>1</lib>
+  <subsystem>0</subsystem>
   <multiobj>0</multiobj>
   <singleFileCompilation>0</singleFileCompilation>
   <oneobj>0</oneobj>

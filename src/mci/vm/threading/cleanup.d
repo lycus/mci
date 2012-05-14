@@ -33,7 +33,7 @@ static if (isWindows)
     }
     body
     {
-        ThreadEventCallback cb;
+        ThreadEventCallback* cb;
 
         {
             lock.lock();
@@ -50,7 +50,7 @@ static if (isWindows)
             callbacks.remove(key);
         }
 
-        cb();
+        (*cb)();
     }
 }
 else

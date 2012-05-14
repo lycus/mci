@@ -53,7 +53,7 @@ body
     static if (isPOSIX)
         return cast(EntryPoint)dlsym(library, toUTFz!(const(char)*)(name));
     else
-        return cast(EntryPoint)GetProcAddress(library, name);
+        return cast(EntryPoint)GetProcAddress(library, toUTFz!(const(char)*)(name));
 }
 
 public bool closeLibrary(void* library)
