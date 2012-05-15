@@ -82,6 +82,7 @@ public final class FileStream : Stream
 
     @property public ulong position()
     {
+        // FIXME: This only returns a 32-bit value.
         return _file.tell;
     }
 
