@@ -21,7 +21,8 @@ import std.exception,
        mci.core.typing.types,
        mci.vm.io.common,
        mci.vm.io.exception,
-       mci.vm.io.extended;
+       mci.vm.io.extended,
+       mci.vm.io.table;
 
 private final class TypeDescriptor
 {
@@ -375,11 +376,13 @@ public final class ModuleReader : ModuleLoader
     private VMBinaryReader _reader;
     private bool _done;
     private NoNullDictionary!(StructureType, TypeDescriptor) _types;
+    private StringTable _table;
 
     invariant()
     {
         assert(_manager);
         assert(_types);
+        assert(_table);
     }
 
     public this(ModuleManager manager)
@@ -391,6 +394,7 @@ public final class ModuleReader : ModuleLoader
     {
         _manager = manager;
         _types = new typeof(_types)();
+        _table = new typeof(_table)();
     }
 
     public Module load(string path)
@@ -428,6 +432,16 @@ public final class ModuleReader : ModuleLoader
             error("File magic '%s' doesn't match expected '%s'.", magic, fileMagic);
 
         auto ver = _reader.read!uint();
+        auto stOffset = _reader.read!ulong();
+
+        auto pos = _reader.stream.position;
+
+        _reader.stream.position = stOffset;
+
+        readStringTable();
+
+        _reader.stream.position = pos;
+
         auto mod = _manager.attach(new Module(baseName(_file.name, moduleFileExtension)));
 
         auto typeCount = _reader.read!uint();
@@ -471,6 +485,14 @@ public final class ModuleReader : ModuleLoader
             mod.threadEntryPoint = readFunctionReference();
 
         return mod;
+    }
+
+    private void readStringTable()
+    {
+        auto count = _reader.read!uint();
+
+        for (uint i = 0; i < count; i++)
+            _table.addPair(_reader.read!uint(), _reader.readString());
     }
 
     private Type toType(TypeReferenceDescriptor descriptor)
@@ -534,7 +556,7 @@ public final class ModuleReader : ModuleLoader
     }
     body
     {
-        auto name = _reader.readString();
+        auto name = readString();
         auto alignment = _reader.read!uint();
         auto type = new TypeDescriptor(name, alignment);
         auto fieldCount = _reader.read!uint();
@@ -552,7 +574,7 @@ public final class ModuleReader : ModuleLoader
     }
     body
     {
-        auto name = _reader.readString();
+        auto name = readString();
         auto attributes = _reader.read!FieldStorage();
         auto type = readTypeReference();
 
@@ -605,8 +627,8 @@ public final class ModuleReader : ModuleLoader
 
                 assert(false);
             case TypeReferenceType.structure:
-                auto mod = _reader.readString();
-                auto type = _reader.readString();
+                auto mod = readString();
+                auto type = readString();
 
                 return new StructureTypeReferenceDescriptor(type, mod);
             case TypeReferenceType.pointer:
@@ -664,7 +686,7 @@ public final class ModuleReader : ModuleLoader
             error("Structure type expected.");
 
         auto type = cast(StructureType)toType(declType);
-        auto name = _reader.readString();
+        auto name = readString();
 
         if (auto field = type.fields.get(name))
             return *field;
@@ -680,8 +702,8 @@ public final class ModuleReader : ModuleLoader
     }
     body
     {
-        auto mod = toModule(_reader.readString());
-        auto name = _reader.readString();
+        auto mod = toModule(readString());
+        auto name = readString();
 
         if (auto func = mod.functions.get(name))
             return *func;
@@ -701,7 +723,7 @@ public final class ModuleReader : ModuleLoader
     }
     body
     {
-        auto name = _reader.readString();
+        auto name = readString();
         auto attributes = _reader.read!FunctionAttributes();
 
         TypeReferenceDescriptor retType;
@@ -746,7 +768,7 @@ public final class ModuleReader : ModuleLoader
     }
     body
     {
-        auto name = _reader.readString();
+        auto name = readString();
         auto type = toType(readTypeReference());
 
         return function_.createRegister(name, type);
@@ -763,7 +785,7 @@ public final class ModuleReader : ModuleLoader
     }
     body
     {
-        return function_.createBasicBlock(_reader.readString());
+        return function_.createBasicBlock(readString());
     }
 
     private BasicBlock readBasicBlockUnwindSpecification(Function function_)
@@ -933,7 +955,7 @@ public final class ModuleReader : ModuleLoader
         auto mdCount = _reader.read!uint();
 
         for (uint i = 0; i < mdCount; i++)
-            instr.metadata.add(MetadataPair(_reader.readString(), _reader.readString()));
+            instr.metadata.add(MetadataPair(readString(), readString()));
 
         return instr;
     }
@@ -949,7 +971,7 @@ public final class ModuleReader : ModuleLoader
     }
     body
     {
-        auto name = _reader.readString();
+        auto name = readString();
 
         if (auto reg = function_.registers.get(name))
             return *reg;
@@ -969,7 +991,7 @@ public final class ModuleReader : ModuleLoader
     }
     body
     {
-        auto name = _reader.readString();
+        auto name = readString();
 
         if (auto block = function_.blocks.get(name))
             return *block;
@@ -985,10 +1007,20 @@ public final class ModuleReader : ModuleLoader
     }
     body
     {
-        auto library = _reader.readString();
-        auto ep = _reader.readString();
+        auto library = readString();
+        auto ep = readString();
 
         return new FFISignature(library, ep);
+    }
+
+    private string readString()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _table.getString(_reader.read!uint());
     }
 
     private static void error(T ...)(T args)

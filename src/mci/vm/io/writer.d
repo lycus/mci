@@ -11,13 +11,25 @@ import mci.core.common,
        mci.core.typing.members,
        mci.core.typing.types,
        mci.vm.io.common,
-       mci.vm.io.extended;
+       mci.vm.io.extended,
+       mci.vm.io.table;
 
 public final class ModuleWriter : ModuleSaver
 {
     private FileStream _file;
     private VMBinaryWriter _writer;
     private bool _done;
+    private StringTable _table;
+
+    invariant()
+    {
+        assert(_table);
+    }
+
+    public this()
+    {
+        _table = new typeof(_table)();
+    }
 
     public void save(Module module_, string path)
     in
@@ -45,6 +57,9 @@ public final class ModuleWriter : ModuleSaver
         _writer.writeArray(fileMagic);
         _writer.write(fileVersion);
 
+        auto stOffset = _writer.stream.position;
+
+        _writer.write!ulong(0); // String table offset.
         _writer.write(cast(uint)module_.types.count);
 
         foreach (type; module_.types)
@@ -75,6 +90,26 @@ public final class ModuleWriter : ModuleSaver
 
         if (module_.threadEntryPoint)
             writeFunctionReference(module_.threadEntryPoint);
+
+        auto st = _writer.stream.position;
+
+        writeStringTable();
+
+        // Now go back and write the start of the string table.
+        _writer.stream.position = stOffset;
+
+        _writer.write(st);
+    }
+
+    private void writeStringTable()
+    {
+        _writer.write(cast(uint)_table.table.count);
+
+        foreach (kvp; _table.table)
+        {
+            _writer.write(kvp.x);
+            _writer.writeString(kvp.y);
+        }
     }
 
     private void writeType(StructureType type)
@@ -84,7 +119,7 @@ public final class ModuleWriter : ModuleSaver
     }
     body
     {
-        _writer.writeString(type.name);
+        writeString(type.name);
         _writer.write(type.alignment);
 
         _writer.write(cast(uint)type.fields.count);
@@ -100,7 +135,7 @@ public final class ModuleWriter : ModuleSaver
     }
     body
     {
-        _writer.writeString(field.name);
+        writeString(field.name);
         _writer.write(field.storage);
         writeTypeReference(field.type);
     }
@@ -112,7 +147,7 @@ public final class ModuleWriter : ModuleSaver
     }
     body
     {
-        _writer.writeString(function_.name);
+        writeString(function_.name);
         _writer.write(function_.attributes);
         _writer.write(!!function_.returnType);
 
@@ -146,7 +181,7 @@ public final class ModuleWriter : ModuleSaver
     }
     body
     {
-        _writer.writeString(register.name);
+        writeString(register.name);
         writeTypeReference(register.type);
     }
 
@@ -157,7 +192,7 @@ public final class ModuleWriter : ModuleSaver
     }
     body
     {
-        _writer.writeString(block.name);
+        writeString(block.name);
     }
 
     private void writeBasicBlockUnwindSpecification(BasicBlock block)
@@ -266,8 +301,8 @@ public final class ModuleWriter : ModuleSaver
 
         foreach (md; instruction.metadata)
         {
-            _writer.writeString(md.key);
-            _writer.writeString(md.value);
+            writeString(md.key);
+            writeString(md.value);
         }
     }
 
@@ -278,7 +313,7 @@ public final class ModuleWriter : ModuleSaver
     }
     body
     {
-        _writer.writeString(register.name);
+        writeString(register.name);
     }
 
     private void writeBasicBlockReference(BasicBlock block)
@@ -288,7 +323,7 @@ public final class ModuleWriter : ModuleSaver
     }
     body
     {
-        _writer.writeString(block.name);
+        writeString(block.name);
     }
 
     private void writeModuleReference(Module module_)
@@ -298,7 +333,7 @@ public final class ModuleWriter : ModuleSaver
     }
     body
     {
-        _writer.writeString(module_.name);
+        writeString(module_.name);
     }
 
     private void writeStructureTypeReference(StructureType type)
@@ -310,7 +345,7 @@ public final class ModuleWriter : ModuleSaver
     {
         _writer.write(TypeReferenceType.structure);
         writeModuleReference(type.module_);
-        _writer.writeString(type.name);
+        writeString(type.name);
     }
 
     private void writeFunctionPointerTypeReference(FunctionPointerType type)
@@ -392,7 +427,7 @@ public final class ModuleWriter : ModuleSaver
     body
     {
         writeTypeReference(field.declaringType);
-        _writer.writeString(field.name);
+        writeString(field.name);
     }
 
     private void writeFunctionReference(Function function_)
@@ -403,7 +438,7 @@ public final class ModuleWriter : ModuleSaver
     body
     {
         writeModuleReference(function_.module_);
-        _writer.writeString(function_.name);
+        writeString(function_.name);
     }
 
     private void writeFFISignature(FFISignature signature)
@@ -413,7 +448,17 @@ public final class ModuleWriter : ModuleSaver
     }
     body
     {
-        _writer.writeString(signature.library);
-        _writer.writeString(signature.entryPoint);
+        writeString(signature.library);
+        writeString(signature.entryPoint);
+    }
+
+    private void writeString(string value)
+    in
+    {
+        assert(value);
+    }
+    body
+    {
+        _writer.write(_table.getID(value));
     }
 }
