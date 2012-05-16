@@ -225,12 +225,12 @@ public final class Lexer
     }
 
     private Nullable!Token lexNext()
-    //out (result)
-    //{
-    //    if (_source.current != char.init)
-    //        assert(result.hasValue);
-    //}
-    //body
+    out (result)
+    {
+        if (_source.current != char.init)
+            assert(*cast(Nullable!Token*)&result);
+    }
+    body
     {
         char chr;
 
