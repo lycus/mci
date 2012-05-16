@@ -207,6 +207,7 @@
    <File path="io\exception.d" />
    <File path="io\extended.d" />
    <File path="io\reader.d" />
+   <File path="io\table.d" />
    <File path="io\writer.d" />
   </Folder>
   <Folder name="memory">
