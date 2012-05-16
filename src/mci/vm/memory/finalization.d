@@ -1,7 +1,7 @@
 module mci.vm.memory.finalization;
 
-import core.atomic,
-       core.thread,
+import core.thread,
+       mci.core.atomic,
        mci.core.common,
        mci.core.container,
        mci.core.sync,
@@ -49,7 +49,7 @@ public final class FinalizerThread
     private Condition _pendingCondition;
     private Mutex _shutdownMutex;
     private Condition _shutdownCondition;
-    private bool _running;
+    private Atomic!bool _running;
     private Thread _thread;
 
     invariant()
@@ -59,7 +59,7 @@ public final class FinalizerThread
         assert(_finalizerCondition);
         assert(_pendingMutex);
         assert(_pendingCondition);
-        assert(core.atomic.atomicLoad(*cast(shared)&_running) ? !!_thread : !_thread);
+        assert((cast()_running).value ? !!_thread : !_thread);
     }
 
     public this(InteractiveGarbageCollector gc)
@@ -80,17 +80,17 @@ public final class FinalizerThread
 
     @property public bool isRunning()
     {
-        return core.atomic.atomicLoad(*cast(shared)&_running);
+        return _running.value;
     }
 
     public void run()
     in
     {
-        assert(!core.atomic.atomicLoad(*cast(shared)&_running));
+        assert(!_running.value);
     }
     body
     {
-        core.atomic.atomicStore(*cast(shared)&_running, true);
+        _running.value = true;
 
         _thread = new Thread(&loop);
         _thread.start();
@@ -99,25 +99,25 @@ public final class FinalizerThread
     public void exit()
     in
     {
-        assert(core.atomic.atomicLoad(*cast(shared)&_running));
+        assert(_running.value);
     }
     body
     {
-        core.atomic.atomicStore(*cast(shared)&_running, false);
+        _running.value = false;
 
         _shutdownMutex.lock();
 
         scope (exit)
             _shutdownMutex.unlock();
 
-        while (core.atomic.atomicLoad(*cast(shared)&_running))
+        while (_running.value)
             _shutdownCondition.wait();
     }
 
     public void notify()
     in
     {
-        assert(core.atomic.atomicLoad(*cast(shared)&_running));
+        assert(_running.value);
     }
     body
     {
@@ -132,7 +132,7 @@ public final class FinalizerThread
     public void wait()
     in
     {
-        assert(core.atomic.atomicLoad(*cast(shared)&_running));
+        assert(_running.value);
     }
     body
     {
@@ -158,7 +158,7 @@ public final class FinalizerThread
         scope (exit)
             _shutdownMutex.unlock();
 
-        while (core.atomic.atomicLoad(*cast(shared)&_running))
+        while (_running.value)
         {
             {
                 _finalizerMutex.lock();

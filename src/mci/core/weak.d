@@ -1,7 +1,7 @@
 module mci.core.weak;
 
-import core.atomic,
-       core.memory,
+import core.memory,
+       mci.core.atomic,
        mci.core.container;
 
 public alias void delegate(Object) FinalizeCallback;
@@ -23,7 +23,7 @@ public final class Weak(T : Object)
     // if compaction is ever added to D's GC, this class will break horribly. If
     // D ever gets such a GC, we should push strongly for built-in weak references.
 
-    private size_t _object;
+    private Atomic!size_t _object;
     private size_t _ptr;
     private hash_t _hash;
 
@@ -43,7 +43,7 @@ public final class Weak(T : Object)
 
         // We use atomics because not all architectures may guarantee atomic store
         // and load of these values.
-        atomicStore(*cast(shared)&_object, ptr);
+        _object.value = ptr;
 
         // Only assigned once, so no atomics.
         _ptr = ptr;
@@ -65,7 +65,7 @@ public final class Weak(T : Object)
             // This assignment is important. If we don't null _object when it is collected,
             // the check in object could return false positives where the GC has reused the
             // memory for a new object.
-            atomicStore(*cast(shared)&_object, cast(size_t)0);
+            _object.value = 0;
 
             if (callbacks)
                 foreach (cb; callbacks)
@@ -92,7 +92,7 @@ public final class Weak(T : Object)
     {
         try
         {
-            auto obj = cast(T)cast(void*)atomicLoad(*cast(shared)&_object);
+            auto obj = cast(T)cast(void*)_object.value;
 
             // We've moved it into the GC-scanned stack space, so it's now safe to ask
             // the GC whether the object is still alive. Note that even if the cast and
