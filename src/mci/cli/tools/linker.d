@@ -6,12 +6,12 @@ import std.getopt,
 
 public final class LinkerTool : Tool
 {
-    @property public string description()
+    @property public string description() pure nothrow
     {
         return "Combine a series of assembled modules into a single module.";
     }
 
-    @property public string[] options()
+    @property public string[] options() pure nothrow
     {
         return ["\t--strategy=<type>\t-s <type>\tSpecifies which name clash resolution strategy to use."];
     }

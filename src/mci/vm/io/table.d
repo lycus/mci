@@ -57,7 +57,7 @@ package final class StringTable
         return null;
     }
 
-    @property public Lookup!(uint, string) table()
+    @property public Lookup!(uint, string) table() pure nothrow
     out (result)
     {
         assert(result);

@@ -4,12 +4,12 @@ public struct Tuple(X)
 {
     private X _x;
 
-    public this(X x)
+    public this(X x) pure nothrow
     {
         _x = x;
     }
 
-    @property public X x()
+    @property public X x() pure nothrow
     {
         return _x;
     }
@@ -35,7 +35,7 @@ public struct Tuple(X)
     }
 }
 
-public Tuple!X tuple(X)(X x)
+public Tuple!X tuple(X)(X x) pure nothrow
 {
     return Tuple!X(x);
 }
@@ -45,18 +45,18 @@ public struct Tuple(X, Y)
     private X _x;
     private Y _y;
 
-    public this(X x, Y y)
+    public this(X x, Y y) pure nothrow
     {
         _x = x;
         _y = y;
     }
 
-    @property public X x()
+    @property public X x() pure nothrow
     {
         return _x;
     }
 
-    @property public Y y()
+    @property public Y y() pure nothrow
     {
         return _y;
     }
@@ -83,7 +83,7 @@ public struct Tuple(X, Y)
     }
 }
 
-public Tuple!(X, Y) tuple(X, Y)(X x, Y y)
+public Tuple!(X, Y) tuple(X, Y)(X x, Y y) pure nothrow
 {
     return Tuple!(X, Y)(x, y);
 }
@@ -94,24 +94,24 @@ public struct Tuple(X, Y, Z)
     private Y _y;
     private Z _z;
 
-    public this(X x, Y y, Z z)
+    public this(X x, Y y, Z z) pure nothrow
     {
         _x = x;
         _y = y;
         _z = z;
     }
 
-    @property public X x()
+    @property public X x() pure nothrow
     {
         return _x;
     }
 
-    @property public Y y()
+    @property public Y y() pure nothrow
     {
         return _y;
     }
 
-    @property public Z z()
+    @property public Z z() pure nothrow
     {
         return _z;
     }
@@ -141,7 +141,7 @@ public struct Tuple(X, Y, Z)
     }
 }
 
-public Tuple!(X, Y, Z) tuple(X, Y, Z)(X x, Y y, Z z)
+public Tuple!(X, Y, Z) tuple(X, Y, Z)(X x, Y y, Z z) pure nothrow
 {
     return Tuple!(X, Y, Z)(x, y, z);
 }

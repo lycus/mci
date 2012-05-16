@@ -78,7 +78,7 @@ public final class FinalizerThread
         _shutdownCondition = new typeof(_shutdownCondition)(_shutdownMutex);
     }
 
-    @property public bool isRunning()
+    @property public bool isRunning() pure // TODO: Make this nothrow in 2.060.
     {
         return _running.value;
     }

@@ -23,7 +23,7 @@ public struct SourceLocation
         _column = column;
     }
 
-    @property public uint line()
+    @property public uint line() pure nothrow
     out (result)
     {
         assert(result);
@@ -33,7 +33,7 @@ public struct SourceLocation
         return _line;
     }
 
-    @property public uint column()
+    @property public uint column() pure nothrow
     {
         return _column;
     }

@@ -105,22 +105,22 @@ body
 
 public final class ConstantFolder : OptimizerDefinition
 {
-    @property public override string name()
+    @property public override string name() pure nothrow
     {
         return "const-fold";
     }
 
-    @property public override string description()
+    @property public override string description() pure nothrow
     {
         return "Folds constant computations.";
     }
 
-    @property public override PassType type()
+    @property public override PassType type() pure nothrow
     {
         return PassType.ssa;
     }
 
-    public override OptimizerPass create()
+    public override OptimizerPass create() pure nothrow
     {
         return new class OptimizerPass
         {

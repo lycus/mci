@@ -37,7 +37,7 @@ public final class RuntimeTypeInfo
         _bitmap = bitmap;
     }
 
-    @property public Type type()
+    @property public Type type() pure nothrow
     out (result)
     {
         assert(result);
@@ -48,12 +48,12 @@ public final class RuntimeTypeInfo
         return _type;
     }
 
-    @property public size_t size()
+    @property public size_t size() pure nothrow
     {
         return _size;
     }
 
-    @property public BitSequence bitmap()
+    @property public BitSequence bitmap() pure nothrow
     out (result)
     {
         assert(tryCast!StructureType(_type) ? !!result : !result);

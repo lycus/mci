@@ -16,16 +16,16 @@ public enum PassType : ubyte
 
 public abstract class OptimizerDefinition
 {
-    @property public abstract string name();
+    @property public abstract string name() pure nothrow;
 
-    @property public abstract string description();
+    @property public abstract string description() pure nothrow;
 
-    @property public abstract PassType type();
+    @property public abstract PassType type() pure nothrow;
 
-    @property public bool isUnsafe()
+    @property public bool isUnsafe() pure nothrow
     {
         return false;
     }
 
-    public abstract OptimizerPass create();
+    public abstract OptimizerPass create() pure nothrow;
 }

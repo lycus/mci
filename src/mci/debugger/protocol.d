@@ -42,7 +42,7 @@ public enum size_t packetHeaderSize = ubyte.sizeof + uint.sizeof + uint.sizeof;
 
 public interface Packet
 {
-    @property public ubyte opCode();
+    @property public ubyte opCode() pure nothrow;
 
     public void write(BinaryWriter writer)
     in
@@ -59,7 +59,7 @@ public interface Packet
 
 public class ClientQueryPacket : Packet
 {
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerClientOpCode.query;
     }
@@ -75,7 +75,7 @@ public class ClientQueryPacket : Packet
 
 public class ClientStartPacket : Packet
 {
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerClientOpCode.start;
     }
@@ -91,7 +91,7 @@ public class ClientStartPacket : Packet
 
 public class ClientPausePacket : Packet
 {
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerClientOpCode.pause;
     }
@@ -107,7 +107,7 @@ public class ClientPausePacket : Packet
 
 public class ClientContinuePacket : Packet
 {
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerClientOpCode.continue_;
     }
@@ -123,7 +123,7 @@ public class ClientContinuePacket : Packet
 
 public class ClientExitPacket : Packet
 {
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerClientOpCode.exit;
     }
@@ -148,7 +148,7 @@ public class ClientThreadPacket : Packet
     public ThreadAction action;
     public ulong thread;
 
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerClientOpCode.thread;
     }
@@ -174,7 +174,7 @@ public class ClientFramePacket : Packet
 {
     public ulong frame;
 
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerClientOpCode.frame;
     }
@@ -204,7 +204,7 @@ public class ClientBreakpointPacket : Packet
     public string basicBlockName;
     public uint instructionIndex;
 
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerClientOpCode.breakpoint;
     }
@@ -237,7 +237,7 @@ public class ClientCatchpointPacket : Packet
     public string moduleName;
     public string typeName;
 
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerClientOpCode.catchpoint;
     }
@@ -264,7 +264,7 @@ public class ClientDisassemblePacket : Packet
     public string moduleName;
     public string functionName;
 
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerClientOpCode.disassemble;
     }
@@ -287,7 +287,7 @@ public class ClientDisassemblePacket : Packet
 // TODO: Specify a wire format for types and values.
 public class ClientInspectPacket : Packet
 {
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerClientOpCode.inspect;
     }
@@ -310,7 +310,7 @@ public class ServerResultPacket : Packet
     public EmulationLayer emulationLayer;
     public bool is32Bit;
 
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerServerOpCode.result;
     }
@@ -338,7 +338,7 @@ public class ServerResultPacket : Packet
 
 public class ServerStartedPacket : Packet
 {
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerServerOpCode.started;
     }
@@ -354,7 +354,7 @@ public class ServerStartedPacket : Packet
 
 public class ServerPausedPacket : Packet
 {
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerServerOpCode.paused;
     }
@@ -370,7 +370,7 @@ public class ServerPausedPacket : Packet
 
 public class ServerContinuedPacket : Packet
 {
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerServerOpCode.continued;
     }
@@ -386,7 +386,7 @@ public class ServerContinuedPacket : Packet
 
 public class ServerExitedPacket : Packet
 {
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerServerOpCode.exited;
     }
@@ -406,7 +406,7 @@ public class ServerThreadPacket : Packet
     public ulong thread;
     public ulong[] threads;
 
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerServerOpCode.thread;
     }
@@ -447,7 +447,7 @@ public class ServerFramePacket : Packet
 {
     public ulong frame;
 
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerServerOpCode.frame;
     }
@@ -471,7 +471,7 @@ public class ServerBreakPacket : Packet
     public string basicBlockName;
     public uint instructionIndex;
 
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerServerOpCode.break_;
     }
@@ -507,7 +507,7 @@ public class ServerCatchPacket : Packet
     public uint instructionIndex;
     public ulong exceptionObjectAddress;
 
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerServerOpCode.catch_;
     }
@@ -545,7 +545,7 @@ public class ServerUnhandledPacket : Packet
     public uint instructionIndex;
     public ulong exceptionObjectAddress;
 
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerServerOpCode.unhandled;
     }
@@ -589,7 +589,7 @@ public class ServerDisassemblyPacket : Packet
     public string functionName;
     public DisassemblyInstruction[][string] basicBlocks;
 
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerServerOpCode.disassembly;
     }
@@ -650,7 +650,7 @@ public class ServerDisassemblyPacket : Packet
 // TODO: See ClientInspectPacket note.
 public class ServerValuesPacket : Packet
 {
-    @property public ubyte opCode()
+    @property public ubyte opCode() pure nothrow
     {
         return DebuggerServerOpCode.values;
     }

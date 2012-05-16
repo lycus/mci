@@ -14,8 +14,7 @@ public class CompilerException : Exception
         super(msg, file, line);
     }
 
-    public this(string msg, Throwable next, string file = __FILE__,
-                size_t line = __LINE__)
+    public this(string msg, Throwable next, string file = __FILE__, size_t line = __LINE__)
     in
     {
         assert(msg);

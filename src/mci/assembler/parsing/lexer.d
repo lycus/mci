@@ -44,12 +44,12 @@ public final class Source
         _location = typeof(_location)(1, 0);
     }
 
-    @property public char current()
+    @property public char current() pure nothrow
     {
         return _current;
     }
 
-    @property public SourceLocation location()
+    @property public SourceLocation location() pure nothrow
     {
         return _location;
     }
@@ -115,7 +115,7 @@ public final class Source
     }
 }
 
-private string removeByteOrderMark(string text)
+private string removeByteOrderMark(string text) pure
 {
     // Stolen from Bernard Helyer's SDC. Thanks!
     if (text.length >= 2 && text[0 .. 2] == [0xfe, 0xff] ||
@@ -463,7 +463,7 @@ body
     return SourceLocation(location.line, location.column - cast(uint)value.length);
 }
 
-private bool isIdentifierChar(char chr)
+private bool isIdentifierChar(char chr) pure nothrow
 {
     return chr == '_' || chr == '.' || std.ascii.isAlpha(chr);
 }

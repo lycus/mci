@@ -33,7 +33,7 @@ public struct RuntimeObject
         _typeInfo = typeInfo;
     }
 
-    @property public RuntimeTypeInfo typeInfo()
+    @property public RuntimeTypeInfo typeInfo() pure nothrow
     out (result)
     {
         assert(result);
@@ -43,7 +43,7 @@ public struct RuntimeObject
         return _typeInfo;
     }
 
-    @property public ubyte* data()
+    @property public ubyte* data() pure nothrow
     out (result)
     {
         assert(result);
@@ -53,7 +53,7 @@ public struct RuntimeObject
         return cast(ubyte*)&this + RuntimeObject.sizeof;
     }
 
-    public static RuntimeObject* fromData(ubyte* data)
+    public static RuntimeObject* fromData(ubyte* data) pure nothrow
     in
     {
         assert(data);
@@ -81,7 +81,7 @@ public bool isSystemAligned(void* ptr)
 
 public interface GarbageCollector
 {
-    @property public ulong collections();
+    @property public ulong collections() pure nothrow;
 
     public RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0)
     in
@@ -148,9 +148,9 @@ public interface GarbageCollector
 
     public void detach();
 
-    public void addPressure(size_t amount);
+    public void addPressure(size_t amount) pure nothrow;
 
-    public void removePressure(size_t amount);
+    public void removePressure(size_t amount) pure nothrow;
 
     public RuntimeObject* createWeak(RuntimeObject* target)
     in
@@ -189,9 +189,9 @@ public interface GarbageCollector
 
 public interface GarbageCollectorGeneration
 {
-    @property public size_t id();
+    @property public size_t id() pure nothrow;
 
-    @property public ulong collections();
+    @property public ulong collections() pure nothrow;
 
     public void collect();
 
@@ -200,7 +200,7 @@ public interface GarbageCollectorGeneration
 
 public interface GenerationalGarbageCollector : GarbageCollector
 {
-    @property public ReadOnlyIndexable!GarbageCollectorGeneration generations()
+    @property public ReadOnlyIndexable!GarbageCollectorGeneration generations() pure nothrow
     out (result)
     {
         assert(result);
@@ -237,18 +237,18 @@ public interface InteractiveGarbageCollector : GarbageCollector
 
     public void waitForFreeCallbacks();
 
-    @property public GarbageCollectorExceptionHandler exceptionHandler();
+    @property public GarbageCollectorExceptionHandler exceptionHandler() pure nothrow;
 
-    @property public void exceptionHandler(GarbageCollectorExceptionHandler exceptionHandler);
+    @property public void exceptionHandler(GarbageCollectorExceptionHandler exceptionHandler) pure nothrow;
 }
 
 public interface MovingGarbageCollector : GarbageCollector
 {
-    @property public bool canMove();
+    @property public bool canMove() pure nothrow;
 
-    public void enableMoving();
+    public void enableMoving() pure nothrow;
 
-    public void disableMoving();
+    public void disableMoving() pure nothrow;
 }
 
 public enum BarrierFlags : ubyte
@@ -264,7 +264,7 @@ public enum BarrierFlags : ubyte
 
 public interface AtomicGarbageCollector : GarbageCollector
 {
-    @property public BarrierFlags barriers();
+    @property public BarrierFlags barriers() pure nothrow;
 
     public void fieldGetBarrier(RuntimeObject* rto, Field field, RuntimeObject** source, RuntimeObject** destination)
     in

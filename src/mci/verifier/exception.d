@@ -36,7 +36,7 @@ public class VerifierException : CompilerException
         _instruction = instruction;
     }
 
-    @property public final Instruction instruction()
+    @property public final Instruction instruction() pure nothrow
     {
         return _instruction;
     }

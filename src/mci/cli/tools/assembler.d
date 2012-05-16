@@ -28,12 +28,12 @@ public enum string inputFileExtension = ".ial";
 
 public final class AssemblerTool : Tool
 {
-    @property public string description()
+    @property public string description() pure nothrow
     {
         return "Assemble IAL files into a module.";
     }
 
-    @property public string[] options()
+    @property public string[] options() pure nothrow
     {
         return ["\t--output=<file>\t\t-o <file>\tSpecify module output file.",
                 "\t--dump=<file>\t\t-d <file>\tDump parsed ASTs to the given file.",

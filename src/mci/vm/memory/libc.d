@@ -49,7 +49,7 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         _finalizerThread.exit();
     }
 
-    @property public ulong collections()
+    @property public ulong collections() pure nothrow
     {
         return 0;
     }
@@ -154,11 +154,11 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
     {
     }
 
-    public void addPressure(size_t amount)
+    public void addPressure(size_t amount) pure nothrow
     {
     }
 
-    public void removePressure(size_t amount)
+    public void removePressure(size_t amount) pure nothrow
     {
     }
 
@@ -243,12 +243,12 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         _finalizerThread.wait();
     }
 
-    @property public GarbageCollectorExceptionHandler exceptionHandler()
+    @property public GarbageCollectorExceptionHandler exceptionHandler() pure nothrow
     {
         return _exceptionHandler;
     }
 
-    @property public void exceptionHandler(GarbageCollectorExceptionHandler exceptionHandler)
+    @property public void exceptionHandler(GarbageCollectorExceptionHandler exceptionHandler) pure nothrow
     {
         _exceptionHandler = exceptionHandler;
     }

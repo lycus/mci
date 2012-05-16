@@ -55,7 +55,7 @@ public final class StackFrame
         _instruction = instruction;
     }
 
-    @property public Instruction instruction()
+    @property public Instruction instruction() pure nothrow
     out (result)
     {
         assert(result);

@@ -157,12 +157,12 @@ public struct Token
         _location = location;
     }
 
-    @property public TokenType type()
+    @property public TokenType type() pure nothrow
     {
         return _type;
     }
 
-    @property public string value()
+    @property public string value() pure nothrow
     out (result)
     {
         assert(_type != TokenType.begin && _type != TokenType.end ? !!result : !result);
@@ -172,7 +172,7 @@ public struct Token
         return _value;
     }
 
-    @property public SourceLocation location()
+    @property public SourceLocation location() pure nothrow
     {
         return _location;
     }
@@ -192,7 +192,7 @@ public interface TokenStream
 
     public Token moveNext();
 
-    public void reset();
+    public void reset() pure nothrow;
 }
 
 public final class MemoryTokenStream : TokenStream
@@ -251,7 +251,7 @@ public final class MemoryTokenStream : TokenStream
         return _stream[++_position];
     }
 
-    public void reset()
+    public void reset() pure nothrow
     {
         _position = 0;
     }

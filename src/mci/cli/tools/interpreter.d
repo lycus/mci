@@ -6,12 +6,12 @@ import std.getopt,
 
 public final class InterpreterTool : Tool
 {
-    @property public string description()
+    @property public string description() pure nothrow
     {
         return "Run an assembled module with the interpreter.";
     }
 
-    @property public string[] options()
+    @property public string[] options() pure nothrow
     {
         return ["\t--collector=<type>\t-c <type>\tSpecify which garbage collector to use."];
     }

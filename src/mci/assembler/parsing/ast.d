@@ -20,7 +20,7 @@ public abstract class Node
         _location = location;
     }
 
-    @property public final SourceLocation location()
+    @property public final SourceLocation location() pure nothrow
     {
         return _location;
     }
@@ -66,7 +66,7 @@ public class MetadataNode : Node
         _value = value;
     }
 
-    @property public final SimpleNameNode key()
+    @property public final SimpleNameNode key() pure nothrow
     out (result)
     {
         assert(result);
@@ -76,7 +76,7 @@ public class MetadataNode : Node
         return _key;
     }
 
-    @property public final SimpleNameNode value()
+    @property public final SimpleNameNode value() pure nothrow
     out (result)
     {
         assert(result);
@@ -113,7 +113,7 @@ public class MetadataListNode : Node
         _metadata = metadata.duplicate();
     }
 
-    @property public final ReadOnlyIndexable!MetadataNode metadata()
+    @property public final ReadOnlyIndexable!MetadataNode metadata() pure nothrow
     out (result)
     {
         assert(result);
@@ -158,7 +158,7 @@ public class SimpleNameNode : Node
         _name = name;
     }
 
-    @property public final string name()
+    @property public final string name() pure nothrow
     out (result)
     {
         assert(result);
@@ -195,7 +195,7 @@ public class ModuleReferenceNode : Node
         _name = name;
     }
 
-    @property public final SimpleNameNode name()
+    @property public final SimpleNameNode name() pure nothrow
     out (result)
     {
         assert(result);
@@ -242,12 +242,12 @@ public class StructureTypeReferenceNode : TypeReferenceNode
         _name = name;
     }
 
-    @property public final ModuleReferenceNode moduleName()
+    @property public final ModuleReferenceNode moduleName() pure nothrow
     {
         return _moduleName;
     }
 
-    @property public final SimpleNameNode name()
+    @property public final SimpleNameNode name() pure nothrow
     out (result)
     {
         assert(result);
@@ -284,7 +284,7 @@ public class PointerTypeReferenceNode : TypeReferenceNode
         _elementType = elementType;
     }
 
-    @property public final TypeReferenceNode elementType()
+    @property public final TypeReferenceNode elementType() pure nothrow
     out (result)
     {
         assert(result);
@@ -321,7 +321,7 @@ public class ReferenceTypeReferenceNode : TypeReferenceNode
         _elementType = elementType;
     }
 
-    @property public final StructureTypeReferenceNode elementType()
+    @property public final StructureTypeReferenceNode elementType() pure nothrow
     out (result)
     {
         assert(result);
@@ -358,7 +358,7 @@ public class ArrayTypeReferenceNode : TypeReferenceNode
         _elementType = elementType;
     }
 
-    @property public final TypeReferenceNode elementType()
+    @property public final TypeReferenceNode elementType() pure nothrow
     out (result)
     {
         assert(result);
@@ -399,7 +399,7 @@ public class VectorTypeReferenceNode : TypeReferenceNode
         _elements = elements;
     }
 
-    @property public final TypeReferenceNode elementType()
+    @property public final TypeReferenceNode elementType() pure nothrow
     out (result)
     {
         assert(result);
@@ -409,7 +409,7 @@ public class VectorTypeReferenceNode : TypeReferenceNode
         return _elementType;
     }
 
-    @property public final LiteralValueNode elements()
+    @property public final LiteralValueNode elements() pure nothrow
     out (result)
     {
         assert(result);
@@ -451,17 +451,17 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
         _parameterTypes = parameterTypes.duplicate();
     }
 
-    @property public final CallingConvention callingConvention()
+    @property public final CallingConvention callingConvention() pure nothrow
     {
         return _callingConvention;
     }
 
-    @property public final TypeReferenceNode returnType()
+    @property public final TypeReferenceNode returnType() pure nothrow
     {
         return _returnType;
     }
 
-    @property public final ReadOnlyIndexable!TypeReferenceNode parameterTypes()
+    @property public final ReadOnlyIndexable!TypeReferenceNode parameterTypes() pure nothrow
     out (result)
     {
         assert(result);
@@ -489,7 +489,7 @@ public abstract class CoreTypeReferenceNode : TypeReferenceNode
         super(location);
     }
 
-    @property public abstract SimpleNameNode name();
+    @property public abstract SimpleNameNode name() pure nothrow;
 }
 
 private mixin template DefineCoreTypeNode(string type, string name)
@@ -510,7 +510,7 @@ private mixin template DefineCoreTypeNode(string type, string name)
           "        _name = new SimpleNameNode(location, \"" ~ name ~ "\");" ~
           "    }" ~
           "" ~
-          "    @property public final override SimpleNameNode name()" ~
+          "    @property public final override SimpleNameNode name() pure nothrow" ~
           "    {" ~
           "        return _name;" ~
           "    }" ~
@@ -560,7 +560,7 @@ public class FieldReferenceNode : Node
         _name = name;
     }
 
-    @property public final StructureTypeReferenceNode typeName()
+    @property public final StructureTypeReferenceNode typeName() pure nothrow
     out (result)
     {
         assert(result);
@@ -570,7 +570,7 @@ public class FieldReferenceNode : Node
         return _typeName;
     }
 
-    @property public final SimpleNameNode name()
+    @property public final SimpleNameNode name() pure nothrow
     out (result)
     {
         assert(result);
@@ -609,12 +609,12 @@ public class FunctionReferenceNode : Node
         _name = name;
     }
 
-    @property public final ModuleReferenceNode moduleName()
+    @property public final ModuleReferenceNode moduleName() pure nothrow
     {
         return _moduleName;
     }
 
-    @property public final SimpleNameNode name()
+    @property public final SimpleNameNode name() pure nothrow
     out (result)
     {
         assert(result);
@@ -660,7 +660,7 @@ public class TypeDeclarationNode : DeclarationNode
         _metadata = metadata;
     }
 
-    @property public final SimpleNameNode name()
+    @property public final SimpleNameNode name() pure nothrow
     out (result)
     {
         assert(result);
@@ -670,12 +670,12 @@ public class TypeDeclarationNode : DeclarationNode
         return _name;
     }
 
-    @property public final LiteralValueNode alignment()
+    @property public final LiteralValueNode alignment() pure nothrow
     {
         return _alignment;
     }
 
-    @property public final ReadOnlyIndexable!FieldDeclarationNode fields()
+    @property public final ReadOnlyIndexable!FieldDeclarationNode fields() pure nothrow
     out (result)
     {
         assert(result);
@@ -685,7 +685,7 @@ public class TypeDeclarationNode : DeclarationNode
         return _fields;
     }
 
-    @property public final MetadataListNode metadata()
+    @property public final MetadataListNode metadata() pure nothrow
     {
         return _metadata;
     }
@@ -726,7 +726,7 @@ public class FieldDeclarationNode : Node
         _metadata = metadata;
     }
 
-    @property public final TypeReferenceNode type()
+    @property public final TypeReferenceNode type() pure nothrow
     out (result)
     {
         assert(result);
@@ -736,7 +736,7 @@ public class FieldDeclarationNode : Node
         return _type;
     }
 
-    @property public final SimpleNameNode name()
+    @property public final SimpleNameNode name() pure nothrow
     out (result)
     {
         assert(result);
@@ -746,12 +746,12 @@ public class FieldDeclarationNode : Node
         return _name;
     }
 
-    @property public final FieldStorage storage()
+    @property public final FieldStorage storage() pure nothrow
     {
         return _storage;
     }
 
-    @property public final MetadataListNode metadata()
+    @property public final MetadataListNode metadata() pure nothrow
     {
         return _metadata;
     }
@@ -790,7 +790,7 @@ public class ParameterNode : Node
         _metadata = metadata;
     }
 
-    @property public final TypeReferenceNode type()
+    @property public final TypeReferenceNode type() pure nothrow
     out (result)
     {
         assert(result);
@@ -800,7 +800,7 @@ public class ParameterNode : Node
         return _type;
     }
 
-    @property public final MetadataListNode metadata()
+    @property public final MetadataListNode metadata() pure nothrow
     {
         return _metadata;
     }
@@ -855,7 +855,7 @@ public class FunctionDeclarationNode : DeclarationNode
         _metadata = metadata;
     }
 
-    @property public final SimpleNameNode name()
+    @property public final SimpleNameNode name() pure nothrow
     out (result)
     {
         assert(result);
@@ -865,17 +865,17 @@ public class FunctionDeclarationNode : DeclarationNode
         return _name;
     }
 
-    @property public final CallingConvention callingConvention()
+    @property public final CallingConvention callingConvention() pure nothrow
     {
         return _callingConvention;
     }
 
-    @property public final FunctionAttributes attributes()
+    @property public final FunctionAttributes attributes() pure nothrow
     {
         return _attributes;
     }
 
-    @property public final ReadOnlyIndexable!ParameterNode parameters()
+    @property public final ReadOnlyIndexable!ParameterNode parameters() pure nothrow
     out (result)
     {
         assert(result);
@@ -885,12 +885,12 @@ public class FunctionDeclarationNode : DeclarationNode
         return _parameters;
     }
 
-    @property public final TypeReferenceNode returnType()
+    @property public final TypeReferenceNode returnType() pure nothrow
     {
         return _returnType;
     }
 
-    @property public final ReadOnlyIndexable!RegisterDeclarationNode registers()
+    @property public final ReadOnlyIndexable!RegisterDeclarationNode registers() pure nothrow
     out (result)
     {
         assert(result);
@@ -900,7 +900,7 @@ public class FunctionDeclarationNode : DeclarationNode
         return _registers;
     }
 
-    @property public final ReadOnlyIndexable!BasicBlockDeclarationNode blocks()
+    @property public final ReadOnlyIndexable!BasicBlockDeclarationNode blocks() pure nothrow
     out (result)
     {
         assert(result);
@@ -910,7 +910,7 @@ public class FunctionDeclarationNode : DeclarationNode
         return _blocks;
     }
 
-    @property public final MetadataListNode metadata()
+    @property public final MetadataListNode metadata() pure nothrow
     {
         return _metadata;
     }
@@ -951,7 +951,7 @@ public class EntryPointDeclarationNode : DeclarationNode
         _function = function_;
     }
 
-    @property public final FunctionReferenceNode function_()
+    @property public final FunctionReferenceNode function_() pure nothrow
     out (result)
     {
         assert(result);
@@ -1007,7 +1007,7 @@ public class RegisterDeclarationNode : Node
         _metadata = metadata;
     }
 
-    @property public final SimpleNameNode name()
+    @property public final SimpleNameNode name() pure nothrow
     out (result)
     {
         assert(result);
@@ -1017,7 +1017,7 @@ public class RegisterDeclarationNode : Node
         return _name;
     }
 
-    @property public final TypeReferenceNode type()
+    @property public final TypeReferenceNode type() pure nothrow
     out (result)
     {
         assert(result);
@@ -1027,7 +1027,7 @@ public class RegisterDeclarationNode : Node
         return _type;
     }
 
-    @property public final MetadataListNode metadata()
+    @property public final MetadataListNode metadata() pure nothrow
     {
         return _metadata;
     }
@@ -1068,7 +1068,7 @@ public class BasicBlockDeclarationNode : Node
         _metadata = metadata;
     }
 
-    @property public final SimpleNameNode name()
+    @property public final SimpleNameNode name() pure nothrow
     out (result)
     {
         assert(result);
@@ -1078,12 +1078,12 @@ public class BasicBlockDeclarationNode : Node
         return _name;
     }
 
-    @property public final BasicBlockReferenceNode unwindBlock()
+    @property public final BasicBlockReferenceNode unwindBlock() pure nothrow
     {
         return _unwindBlock;
     }
 
-    @property public final ReadOnlyIndexable!InstructionNode instructions()
+    @property public final ReadOnlyIndexable!InstructionNode instructions() pure nothrow
     out (result)
     {
         assert(result);
@@ -1093,7 +1093,7 @@ public class BasicBlockDeclarationNode : Node
         return _instructions;
     }
 
-    @property public final MetadataListNode metadata()
+    @property public final MetadataListNode metadata() pure nothrow
     {
         return _metadata;
     }
@@ -1125,7 +1125,7 @@ public class RegisterReferenceNode : Node
         _name = name;
     }
 
-    @property public final SimpleNameNode name()
+    @property public final SimpleNameNode name() pure nothrow
     out (result)
     {
         assert(result);
@@ -1162,7 +1162,7 @@ public class BasicBlockReferenceNode : Node
         _name = name;
     }
 
-    @property public final SimpleNameNode name()
+    @property public final SimpleNameNode name() pure nothrow
     out (result)
     {
         assert(result);
@@ -1203,7 +1203,7 @@ public class BranchSelectorNode : Node
         _falseBlock = falseBlock;
     }
 
-    @property public final BasicBlockReferenceNode trueBlock()
+    @property public final BasicBlockReferenceNode trueBlock() pure nothrow
     out (result)
     {
         assert(result);
@@ -1213,7 +1213,7 @@ public class BranchSelectorNode : Node
         return _trueBlock;
     }
 
-    @property public final BasicBlockReferenceNode falseBlock()
+    @property public final BasicBlockReferenceNode falseBlock() pure nothrow
     out (result)
     {
         assert(result);
@@ -1250,7 +1250,7 @@ public class RegisterSelectorNode : Node
         _registers = registers.duplicate();
     }
 
-    @property public final ReadOnlyIndexable!RegisterReferenceNode registers()
+    @property public final ReadOnlyIndexable!RegisterReferenceNode registers() pure nothrow
     out (result)
     {
         assert(result);
@@ -1287,7 +1287,7 @@ public class LiteralValueNode : Node
         _value = value;
     }
 
-    @property public final string value()
+    @property public final string value() pure nothrow
     out (result)
     {
         assert(result);
@@ -1324,7 +1324,7 @@ public class ArrayLiteralNode : Node
         _values = values.duplicate();
     }
 
-    @property public final ReadOnlyIndexable!LiteralValueNode values()
+    @property public final ReadOnlyIndexable!LiteralValueNode values() pure nothrow
     out (result)
     {
         assert(result);
@@ -1365,7 +1365,7 @@ public class FFISignatureNode : Node
         _entryPoint = entryPoint;
     }
 
-    @property public final SimpleNameNode library()
+    @property public final SimpleNameNode library() pure nothrow
     out (result)
     {
         assert(result);
@@ -1375,7 +1375,7 @@ public class FFISignatureNode : Node
         return _library;
     }
 
-    @property public final SimpleNameNode entryPoint()
+    @property public final SimpleNameNode entryPoint() pure nothrow
     out (result)
     {
         assert(result);
@@ -1422,7 +1422,7 @@ public class InstructionOperandNode : Node
         _operand = operand;
     }
 
-    @property public final InstructionOperand operand()
+    @property public final InstructionOperand operand() nothrow // TODO: Make this pure.
     out (result)
     {
         assert(result.hasValue);
@@ -1473,7 +1473,7 @@ public class InstructionNode : Node
         _metadata = metadata;
     }
 
-    @property public final OpCode opCode()
+    @property public final OpCode opCode() pure nothrow
     out (result)
     {
         assert(result);
@@ -1483,32 +1483,32 @@ public class InstructionNode : Node
         return _opCode;
     }
 
-    @property public final RegisterReferenceNode target()
+    @property public final RegisterReferenceNode target() pure nothrow
     {
         return _target;
     }
 
-    @property public final RegisterReferenceNode source1()
+    @property public final RegisterReferenceNode source1() pure nothrow
     {
         return _source1;
     }
 
-    @property public final RegisterReferenceNode source2()
+    @property public final RegisterReferenceNode source2() pure nothrow
     {
         return _source2;
     }
 
-    @property public final RegisterReferenceNode source3()
+    @property public final RegisterReferenceNode source3() pure nothrow
     {
         return _source3;
     }
 
-    @property public final InstructionOperandNode operand()
+    @property public final InstructionOperandNode operand() pure nothrow
     {
         return _operand;
     }
 
-    @property public final MetadataListNode metadata()
+    @property public final MetadataListNode metadata() pure nothrow
     {
         return _metadata;
     }

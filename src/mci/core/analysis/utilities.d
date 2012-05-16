@@ -338,7 +338,7 @@ body
         return (cast(PointerType)type).elementType;
 }
 
-public bool isArrayOrVector(Type type)
+public bool isArrayOrVector(Type type) pure nothrow
 in
 {
     assert(type);
@@ -349,7 +349,7 @@ body
            tryCast!VectorType(type);
 }
 
-public bool isManaged(Type type)
+public bool isManaged(Type type) pure nothrow
 in
 {
     assert(type);
@@ -359,7 +359,7 @@ body
     return tryCast!ReferenceType(type) || isArrayOrVector(type);
 }
 
-public bool isTypeSpecification(Type type)
+public bool isTypeSpecification(Type type) pure nothrow
 in
 {
     assert(type);

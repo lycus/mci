@@ -17,12 +17,12 @@ import std.exception,
 
 public final class OptimizerTool : Tool
 {
-    @property public string description()
+    @property public string description() pure nothrow
     {
         return "Pass assembled modules through the optimization pipeline.";
     }
 
-    @property public string[] options()
+    @property public string[] options() pure nothrow
     {
         return ["\t--pass=<name>\t\t-p <name>\tRun specified pass on the input modules.",
                 "\t--fast\t\t\t-1\t\tRun all fast optimization passes on the input modules.",

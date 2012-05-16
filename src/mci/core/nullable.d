@@ -9,18 +9,18 @@ public struct Nullable(T)
     private bool _hasValue;
     private T _value;
 
-    public this(T value)
+    public this(T value) pure nothrow
     {
         _hasValue = true;
         _value = value;
     }
 
-    @property public bool hasValue()
+    @property public bool hasValue() pure nothrow
     {
         return _hasValue;
     }
 
-    @property public T value()
+    @property public T value() pure nothrow
     in
     {
         assert(_hasValue);
@@ -73,7 +73,7 @@ public struct Nullable(T)
     }
 }
 
-public Nullable!T nullable(T)(T value)
+public Nullable!T nullable(T)(T value) pure nothrow
 {
     return Nullable!T(value);
 }

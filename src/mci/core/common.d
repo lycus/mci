@@ -11,7 +11,7 @@ import core.stdc.stdlib,
 public alias Select!(is32Bit, int, long) isize_t;
 public alias void function() function_t;
 
-public U tryCast(U, T)(T obj)
+public U tryCast(U, T)(T obj) pure nothrow
     if ((is(T == class) || is(T == interface)) &&
         (is(U == class) || is(U == interface)) &&
         is(U : T))
@@ -149,14 +149,14 @@ body
         return res ? *res : typeof(return).init;
 }
 
-public bool powerOfTwo(T)(T value)
+public bool powerOfTwo(T)(T value) pure nothrow
     if (isIntegral!T)
 {
     // See: http://graphics.stanford.edu/~seander/bithacks.html#DetermineIfPowerOf2
     return value && !(value & (value - 1));
 }
 
-public T rotate(string direction, T)(T value, uint amount)
+public T rotate(string direction, T)(T value, uint amount) pure nothrow
     if (isIntegral!T)
 in
 {

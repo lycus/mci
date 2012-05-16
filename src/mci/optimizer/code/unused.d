@@ -9,22 +9,22 @@ import mci.core.common,
 
 public final class UnusedRegisterRemover : OptimizerDefinition
 {
-    @property public override string name()
+    @property public override string name() pure nothrow
     {
         return "unused-reg";
     }
 
-    @property public override string description()
+    @property public override string description() pure nothrow
     {
         return "Eliminates unused registers.";
     }
 
-    @property public override PassType type()
+    @property public override PassType type() pure nothrow
     {
         return PassType.code;
     }
 
-    public override OptimizerPass create()
+    public override OptimizerPass create() pure nothrow
     {
         return new class OptimizerPass
         {
@@ -46,22 +46,22 @@ public final class UnusedRegisterRemover : OptimizerDefinition
 
 public final class UnusedBasicBlockRemover : OptimizerDefinition
 {
-    @property public override string name()
+    @property public override string name() pure nothrow
     {
         return "unused-bb";
     }
 
-    @property public override string description()
+    @property public override string description() pure nothrow
     {
         return "Eliminates unused basic blocks.";
     }
 
-    @property public override PassType type()
+    @property public override PassType type() pure nothrow
     {
         return PassType.code;
     }
 
-    public override OptimizerPass create()
+    public override OptimizerPass create() pure nothrow
     {
         return new class OptimizerPass
         {

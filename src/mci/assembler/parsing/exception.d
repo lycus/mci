@@ -7,8 +7,7 @@ public class LexerException : AssemblerException
 {
     private SourceLocation _location;
 
-    public this(string msg, SourceLocation location, string file = __FILE__,
-                size_t line = __LINE__)
+    public this(string msg, SourceLocation location, string file = __FILE__, size_t line = __LINE__)
     in
     {
         assert(msg);
@@ -22,8 +21,7 @@ public class LexerException : AssemblerException
         _location = location;
     }
 
-    public this(string msg, Throwable next, SourceLocation location,
-                string file = __FILE__, size_t line = __LINE__)
+    public this(string msg, Throwable next, SourceLocation location, string file = __FILE__, size_t line = __LINE__)
     in
     {
         assert(msg);
@@ -38,7 +36,7 @@ public class LexerException : AssemblerException
         _location = location;
     }
 
-    @property public SourceLocation location()
+    @property public SourceLocation location() pure nothrow
     {
         return _location;
     }
@@ -48,8 +46,7 @@ public class ParserException : AssemblerException
 {
     private SourceLocation _location;
 
-    public this(string msg, SourceLocation location, string file = __FILE__,
-                size_t line = __LINE__)
+    public this(string msg, SourceLocation location, string file = __FILE__, size_t line = __LINE__)
     in
     {
         assert(msg);
@@ -63,8 +60,7 @@ public class ParserException : AssemblerException
         _location = location;
     }
 
-    public this(string msg, Throwable next, SourceLocation location,
-                string file = __FILE__, size_t line = __LINE__)
+    public this(string msg, Throwable next, SourceLocation location, string file = __FILE__, size_t line = __LINE__)
     in
     {
         assert(msg);
@@ -79,7 +75,7 @@ public class ParserException : AssemblerException
         _location = location;
     }
 
-    @property public SourceLocation location()
+    @property public SourceLocation location() pure nothrow
     {
         return _location;
     }

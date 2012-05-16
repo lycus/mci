@@ -13,7 +13,7 @@ public final class DGarbageCollector : GarbageCollector
 {
     private PinnedObjectManager _pinManager;
 
-    @property public ulong collections()
+    @property public ulong collections() pure nothrow
     {
         // We can't query D's GC about this.
         return 0;
@@ -95,12 +95,12 @@ public final class DGarbageCollector : GarbageCollector
         // Threads are already implicitly detached from druntime.
     }
 
-    public void addPressure(size_t amount)
+    public void addPressure(size_t amount) pure nothrow
     {
         // D's GC doesn't support pressure notifications.
     }
 
-    public void removePressure(size_t amount)
+    public void removePressure(size_t amount) pure nothrow
     {
         // D's GC doesn't support pressure notifications.
     }

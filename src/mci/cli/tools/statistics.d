@@ -14,12 +14,12 @@ import std.exception,
 
 public final class StatisticsTool : Tool
 {
-    @property public string description()
+    @property public string description() pure nothrow
     {
         return "Show various statistics about assembled modules.";
     }
 
-    @property public string[] options()
+    @property public string[] options() pure nothrow
     {
         return ["\t--functions\t\t-f\t\tPrint a function list.",
                 "\t--types\t\t\t-t\t\tPrint a type list."];

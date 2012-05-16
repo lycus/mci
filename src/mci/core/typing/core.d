@@ -4,21 +4,21 @@ import mci.core.typing.types;
 
 public abstract class CoreType : Type
 {
-    private this()
+    private this() pure nothrow
     {
     }
 }
 
 public abstract class IntegerType : CoreType
 {
-    private this()
+    private this() pure nothrow
     {
     }
 }
 
 public abstract class FloatingPointType : CoreType
 {
-    private this()
+    private this() pure nothrow
     {
     }
 }
@@ -29,7 +29,7 @@ private mixin template DefineCoreType(string type, string name, string base)
           "{" ~
           "    private __gshared " ~ type ~ "Type _instance;" ~
           "" ~
-          "    @property public static " ~ type ~ "Type instance()" ~
+          "    @property public static " ~ type ~ "Type instance() nothrow" ~
           "    out (result)" ~
           "    {" ~
           "        assert(result);" ~
@@ -39,7 +39,7 @@ private mixin template DefineCoreType(string type, string name, string base)
           "        return _instance ? _instance : (_instance = new " ~ type ~ "Type()); " ~
           "    }" ~
           "" ~
-          "    private this()" ~
+          "    private this() pure nothrow" ~
           "    {" ~
           "    }" ~
           "" ~

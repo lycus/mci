@@ -45,7 +45,7 @@ private final class GeneratorState
         _types = new typeof(_types)();
     }
 
-    @property public Module module_()
+    @property public Module module_() pure nothrow
     out (result)
     {
         assert(result);
@@ -55,7 +55,7 @@ private final class GeneratorState
         return _module;
     }
 
-    @property public ModuleManager manager()
+    @property public ModuleManager manager() pure nothrow
     out (result)
     {
         assert(result);
@@ -65,7 +65,7 @@ private final class GeneratorState
         return _manager;
     }
 
-    @property public Lookup!(string, CompilationUnit) units()
+    @property public Lookup!(string, CompilationUnit) units() pure nothrow
     out (result)
     {
         assert(result);
@@ -75,7 +75,7 @@ private final class GeneratorState
         return _units;
     }
 
-    @property public List!(Tuple!(string, TypeDeclarationNode, StructureType)) types()
+    @property public List!(Tuple!(string, TypeDeclarationNode, StructureType)) types() pure nothrow
     out (result)
     {
         assert(result);
@@ -85,12 +85,12 @@ private final class GeneratorState
         return _types;
     }
 
-    @property public string currentFile()
+    @property public string currentFile() pure nothrow
     {
         return _currentFile;
     }
 
-    @property private void currentFile(string currentFile)
+    @property private void currentFile(string currentFile) pure nothrow
     in
     {
         assert(currentFile);
@@ -153,7 +153,7 @@ public final class GeneratorDriver
         return _module;
     }
 
-    @property public string currentFile()
+    @property public string currentFile() pure nothrow
     {
         return _state.currentFile;
     }

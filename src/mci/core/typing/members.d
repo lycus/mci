@@ -45,7 +45,7 @@ public final class Field
         _metadata = new typeof(_metadata)();
     }
 
-    @property public StructureType declaringType()
+    @property public StructureType declaringType() pure nothrow
     out (result)
     {
         assert(result);
@@ -55,7 +55,7 @@ public final class Field
         return _declaringType;
     }
 
-    @property public string name()
+    @property public string name() pure nothrow
     out (result)
     {
         assert(result);
@@ -65,7 +65,7 @@ public final class Field
         return _name;
     }
 
-    @property public Type type()
+    @property public Type type() pure nothrow
     out (result)
     {
         assert(result);
@@ -75,12 +75,12 @@ public final class Field
         return _type;
     }
 
-    @property public FieldStorage storage()
+    @property public FieldStorage storage() pure nothrow
     {
         return _storage;
     }
 
-    @property public List!MetadataPair metadata()
+    @property public List!MetadataPair metadata() pure nothrow
     out (result)
     {
         assert(result);

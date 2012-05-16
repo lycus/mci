@@ -88,7 +88,7 @@ public final class Weak(T : Object)
         GC.addRange(monitor, mon.devt.length * FinalizeCallback.sizeof);
     }
 
-    @property public T object() nothrow
+    @property public T object() nothrow // TODO: Make this pure in 2.060.
     {
         try
         {

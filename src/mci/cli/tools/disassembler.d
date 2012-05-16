@@ -15,12 +15,12 @@ import std.exception,
 
 public final class DisassemblerTool : Tool
 {
-    @property public string description()
+    @property public string description() pure nothrow
     {
         return "Disassemble an assembled module into IAL code.";
     }
 
-    @property public string[] options()
+    @property public string[] options() pure nothrow
     {
         return ["\t--output=<file>\t\t-o <file>\tSpecify module output file."];
     }

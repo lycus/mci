@@ -42,7 +42,7 @@ public abstract class ExecutionEngine
 
     public abstract void stopDebugger();
 
-    @property public final GarbageCollector gc()
+    @property public final GarbageCollector gc() pure nothrow
     out (result)
     {
         assert(result);
@@ -52,7 +52,7 @@ public abstract class ExecutionEngine
         return _gc;
     }
 
-    @property public final VirtualMachineContext context()
+    @property public final VirtualMachineContext context() pure nothrow
     out (result)
     {
         assert(result);
@@ -98,7 +98,7 @@ public final class RuntimeValue
         free(_data);
     }
 
-    @property public GarbageCollector gc()
+    @property public GarbageCollector gc() pure nothrow
     out (result)
     {
         assert(result);
@@ -108,7 +108,7 @@ public final class RuntimeValue
         return _gc;
     }
 
-    @property public Type type()
+    @property public Type type() pure nothrow
     out (result)
     {
         assert(result);
@@ -118,7 +118,7 @@ public final class RuntimeValue
         return _type;
     }
 
-    @property public ubyte* data()
+    @property public ubyte* data() pure nothrow
     out (result)
     {
         assert(result);

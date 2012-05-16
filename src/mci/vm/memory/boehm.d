@@ -50,7 +50,7 @@ static if (isPOSIX)
             _engine = engine;
         }
 
-        @property public GarbageCollectorFinalizer finalizer()
+        @property public GarbageCollectorFinalizer finalizer() pure nothrow
         out (result)
         {
             assert(result);
@@ -60,7 +60,7 @@ static if (isPOSIX)
             return _finalizer;
         }
 
-        @property public InteractiveGarbageCollector gc()
+        @property public InteractiveGarbageCollector gc() pure nothrow
         out (result)
         {
             assert(result);
@@ -70,7 +70,7 @@ static if (isPOSIX)
             return _gc;
         }
 
-        @property public ExecutionEngine engine()
+        @property public ExecutionEngine engine() pure nothrow
         out (result)
         {
             assert(result);
@@ -158,7 +158,7 @@ static if (isPOSIX)
             _finalizerThread.exit();
         }
 
-        @property public ulong collections()
+        @property public ulong collections() pure nothrow
         {
             return GC_gc_no;
         }
@@ -286,12 +286,12 @@ static if (isPOSIX)
             GC_unregister_my_thread();
         }
 
-        public void addPressure(size_t amount)
+        public void addPressure(size_t amount) pure nothrow
         {
             // Pressure notifications are not supported in libgc.
         }
 
-        public void removePressure(size_t amount)
+        public void removePressure(size_t amount) pure nothrow
         {
             // Pressure notifications are not supported in libgc.
         }
@@ -417,12 +417,12 @@ static if (isPOSIX)
             _finalizerThread.wait();
         }
 
-        @property public GarbageCollectorExceptionHandler exceptionHandler()
+        @property public GarbageCollectorExceptionHandler exceptionHandler() pure nothrow
         {
             return _exceptionHandler;
         }
 
-        @property public void exceptionHandler(GarbageCollectorExceptionHandler exceptionHandler)
+        @property public void exceptionHandler(GarbageCollectorExceptionHandler exceptionHandler) pure nothrow
         {
             _exceptionHandler = exceptionHandler;
         }

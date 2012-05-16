@@ -16,13 +16,9 @@ import mci.core.container,
 
 public interface Tool
 {
-    @property public string description()
-    out (result)
-    {
-        assert(result);
-    }
+    @property public string description() pure nothrow;
 
-    @property public string[] options();
+    @property public string[] options() pure nothrow;
 
     public abstract ubyte run(string[] args)
     in

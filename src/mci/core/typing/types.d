@@ -12,7 +12,7 @@ import std.conv,
 
 public abstract class Type
 {
-    package this()
+    package this() pure nothrow
     {
     }
 
@@ -61,12 +61,12 @@ public final class StructureType : Type
         (cast(NoNullDictionary!(string, StructureType))module_.types)[name] = this;
     }
 
-    @property public uint alignment()
+    @property public uint alignment() pure nothrow
     {
         return _alignment;
     }
 
-    @property public Module module_()
+    @property public Module module_() pure nothrow
     out (result)
     {
         assert(result);
@@ -76,7 +76,7 @@ public final class StructureType : Type
         return _module;
     }
 
-    @property public Lookup!(string, Field) fields()
+    @property public Lookup!(string, Field) fields() pure nothrow
     in
     {
         assert(_isClosed);
@@ -90,12 +90,12 @@ public final class StructureType : Type
         return _fields;
     }
 
-    @property public bool isClosed()
+    @property public bool isClosed() pure nothrow
     {
         return _isClosed;
     }
 
-    @property public List!MetadataPair metadata()
+    @property public List!MetadataPair metadata() pure nothrow
     out (result)
     {
         assert(result);
@@ -132,7 +132,7 @@ public final class StructureType : Type
         return _fields[name] = new Field(this, name, type, storage);
     }
 
-    public void close()
+    public void close() pure nothrow
     in
     {
         assert(!_isClosed);
@@ -162,7 +162,7 @@ public final class PointerType : Type
         _elementType = elementType;
     }
 
-    @property public Type elementType()
+    @property public Type elementType() pure nothrow
     out (result)
     {
         assert(result);
@@ -197,7 +197,7 @@ public final class ReferenceType : Type
         _elementType = elementType;
     }
 
-    @property public StructureType elementType()
+    @property public StructureType elementType() pure nothrow
     out (result)
     {
         assert(result);
@@ -236,17 +236,17 @@ public final class FunctionPointerType : Type
         _parameterTypes = parameterTypes.duplicate();
     }
 
-    @property public CallingConvention callingConvention()
+    @property public CallingConvention callingConvention() pure nothrow
     {
         return _callingConvention;
     }
 
-    @property public Type returnType()
+    @property public Type returnType() pure nothrow
     {
         return _returnType;
     }
 
-    @property public ReadOnlyIndexable!Type parameterTypes()
+    @property public ReadOnlyIndexable!Type parameterTypes() pure nothrow
     out (result)
     {
         assert(result);
@@ -307,7 +307,7 @@ public final class ArrayType : Type
         _elementType = elementType;
     }
 
-    @property public Type elementType()
+    @property public Type elementType() pure nothrow
     out (result)
     {
         assert(result);
@@ -344,7 +344,7 @@ public final class VectorType : Type
         _elements = elements;
     }
 
-    @property public Type elementType()
+    @property public Type elementType() pure nothrow
     out (result)
     {
         assert(result);
@@ -354,7 +354,7 @@ public final class VectorType : Type
         return _elementType;
     }
 
-    @property public uint elements()
+    @property public uint elements() pure nothrow
     {
         return _elements;
     }

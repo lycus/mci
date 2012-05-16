@@ -4,11 +4,11 @@ import mci.core.nullable;
 
 public abstract class MachineRegister
 {
-    @property public abstract RegisterCategory category();
+    @property public abstract RegisterCategory category() pure nothrow;
 
-    @property public abstract RegisterSize size();
+    @property public abstract RegisterSize size() pure nothrow;
 
-    @property public abstract string name();
+    @property public abstract string name() pure nothrow;
 }
 
 public enum RegisterCategory : ubyte
@@ -35,7 +35,7 @@ mixin template RegisterBody(string type, string name, RegisterCategory category,
 {
     mixin("private __gshared " ~ type ~ " _instance;" ~
           "" ~
-          "private this()" ~
+          "private this() pure nothrow" ~
           "{" ~
           "}" ~
           "" ~
@@ -49,17 +49,17 @@ mixin template RegisterBody(string type, string name, RegisterCategory category,
           "    return _instance ? _instance : (_instance = new " ~ type ~ "());" ~
           "}" ~
           "" ~
-          "@property public override RegisterCategory category()" ~
+          "@property public override RegisterCategory category() pure nothrow" ~
           "{" ~
           "    return " ~ category.stringof ~ ";" ~
           "}" ~
           "" ~
-          "@property public override RegisterSize size()" ~
+          "@property public override RegisterSize size() pure nothrow" ~
           "{" ~
           "    return " ~ (cast(RegisterSize)size).stringof ~ ";" ~
           "}" ~
           "" ~
-          "@property public override string name()" ~
+          "@property public override string name() pure nothrow" ~
           "{" ~
           "    return \"" ~ name ~ "\";" ~
           "}");

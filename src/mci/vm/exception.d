@@ -51,7 +51,7 @@ public class ExecutionException : CompilerException
         _exception = exception;
     }
 
-    @property public StackTrace trace()
+    @property public StackTrace trace() pure nothrow
     out (result)
     {
         assert(result);
@@ -61,7 +61,7 @@ public class ExecutionException : CompilerException
         return _trace;
     }
 
-    @property public RuntimeValue exception()
+    @property public RuntimeValue exception() pure nothrow
     out (result)
     {
         assert(result);

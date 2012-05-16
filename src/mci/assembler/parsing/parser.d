@@ -33,7 +33,7 @@ public final class CompilationUnit
         _nodes = nodes.duplicate();
     }
 
-    @property public ReadOnlyIndexable!DeclarationNode nodes()
+    @property public ReadOnlyIndexable!DeclarationNode nodes() pure nothrow
     out (result)
     {
         assert(result);
