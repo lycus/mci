@@ -81,7 +81,7 @@ public bool isSystemAligned(void* ptr)
 
 public interface GarbageCollector
 {
-    @property public ulong collections() pure nothrow;
+    @property public ulong collections() nothrow;
 
     public RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0)
     in

@@ -13,15 +13,15 @@ public final class DGarbageCollector : GarbageCollector
 {
     private PinnedObjectManager _pinManager;
 
-    @property public ulong collections() pure nothrow
-    {
-        // We can't query D's GC about this.
-        return 0;
-    }
-
     public this()
     {
         _pinManager = new typeof(_pinManager)(this);
+    }
+
+    @property public ulong collections() nothrow
+    {
+        // We can't query D's GC about this.
+        return 0;
     }
 
     public RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0)

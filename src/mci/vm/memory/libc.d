@@ -49,7 +49,7 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         _finalizerThread.exit();
     }
 
-    @property public ulong collections() pure nothrow
+    @property public ulong collections() nothrow
     {
         return 0;
     }

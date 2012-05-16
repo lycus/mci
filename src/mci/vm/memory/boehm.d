@@ -158,7 +158,7 @@ static if (isPOSIX)
             _finalizerThread.exit();
         }
 
-        @property public ulong collections() pure nothrow
+        @property public ulong collections() nothrow
         {
             return GC_gc_no;
         }
