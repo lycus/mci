@@ -66,3 +66,17 @@ code area.
 All threads created through the intrinsic threading API are implicitly
 registered with the D runtime, hooked up to the garbage collector, etc. For
 such threads, this entire section can be ignored.
+
+Termination
+-----------
+
+It is worth noting that once the entry point function in the program returns,
+the virtual machine will wait for all intrinsic threads that aren't daemon
+threads to join. This does not include threads created outside of the virtual
+machine. As such, it is the programmer's responsibility to ensure that threads
+outside of the virtual machine do not call into managed code once the entry
+point function has returned and the virtual machine has been shut down.
+
+Intrinsic daemon threads will be forcefully terminated by the virtual machine.
+It is important that such threads can cope with this, and that they do not
+rely on any termination code to run.
