@@ -220,6 +220,7 @@
    <File path="typing\members.d" />
    <File path="typing\types.d" />
   </Folder>
+  <File path="atomic.d" />
   <File path="common.d" />
   <File path="config.d" />
   <File path="container.d" />

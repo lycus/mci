@@ -1,6 +1,7 @@
 module mci.tester.main;
 
 import std.stdio,
+       mci.tester.atomic,
        mci.tester.common,
        mci.tester.constant,
        mci.tester.container,

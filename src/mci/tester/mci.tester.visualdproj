@@ -193,6 +193,7 @@
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="mci.tester">
+  <File path="atomic.d" />
   <File path="common.d" />
   <File path="constant.d" />
   <File path="container.d" />
