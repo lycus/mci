@@ -27,7 +27,7 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
         _instructions = new typeof(_instructions)();
     }
 
-    @property public BasicBlock block()
+    @property public BasicBlock block() pure nothrow
     out (result)
     {
         assert(result);

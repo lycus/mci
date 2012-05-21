@@ -46,7 +46,7 @@ public enum FileMode : ubyte
     append,
 }
 
-public char[] accessAndModeToString(FileAccess access, FileMode mode)
+private char[] accessAndModeToString(FileAccess access, FileMode mode) pure nothrow
 out (result)
 {
     assert(result);
@@ -267,7 +267,7 @@ public class BinaryReader
         _endianness = endianness;
     }
 
-    @property public Stream stream()
+    @property public Stream stream() pure nothrow
     out (result)
     {
         assert(result);
@@ -277,7 +277,7 @@ public class BinaryReader
         return _stream;
     }
 
-    @property public Endianness endianness()
+    @property public Endianness endianness() pure nothrow
     {
         return _endianness;
     }
@@ -340,7 +340,7 @@ public class BinaryWriter
         _endianness = endianness;
     }
 
-    @property public Stream stream()
+    @property public Stream stream() pure nothrow
     out (result)
     {
         assert(result);
@@ -350,7 +350,7 @@ public class BinaryWriter
         return _stream;
     }
 
-    @property public Endianness endianness()
+    @property public Endianness endianness() pure nothrow
     {
         return _endianness;
     }
@@ -394,13 +394,13 @@ public class TextWriter : BinaryWriter
         super(stream, endianness);
     }
 
-    public void indent()
+    public void indent() pure nothrow
     {
         if (_indent != typeof(_indent).max)
             _indent++;
     }
 
-    public void dedent()
+    public void dedent() pure nothrow
     {
         if (_indent != typeof(_indent).min)
             _indent--;

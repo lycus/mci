@@ -113,7 +113,7 @@ public struct ControlFlowBranch
         return 0;
     }
 
-    @property public BasicBlock block()
+    @property public BasicBlock block() pure nothrow
     out (result)
     {
         assert(result);
@@ -123,12 +123,12 @@ public struct ControlFlowBranch
         return _block;
     }
 
-    @property public ControlFlowType type()
+    @property public ControlFlowType type() pure nothrow
     {
         return _type;
     }
 
-    @property public BasicBlock block1()
+    @property public BasicBlock block1() pure nothrow
     out (result)
     {
         assert(_type == ControlFlowType.exit ? !!result : !result);
@@ -138,7 +138,7 @@ public struct ControlFlowBranch
         return _block1;
     }
 
-    @property public BasicBlock block2()
+    @property public BasicBlock block2() pure nothrow
     out (result)
     {
         assert(_type == ControlFlowType.conditional ? !!result : !result);

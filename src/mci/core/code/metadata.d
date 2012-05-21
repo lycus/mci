@@ -25,7 +25,7 @@ public struct MetadataPair
         _value = value;
     }
 
-    @property public string key()
+    @property public string key() pure nothrow
     out (result)
     {
         assert(result);
@@ -35,7 +35,7 @@ public struct MetadataPair
         return _key;
     }
 
-    @property public string value()
+    @property public string value() pure nothrow
     out (result)
     {
         assert(result);

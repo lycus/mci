@@ -26,36 +26,36 @@ public struct Constant
 
     @disable this();
 
-    public this(long value)
+    public this(long value) pure nothrow
     {
         _data.int64 = value;
         _type = ConstantType.int64;
     }
 
-    public this(ulong value)
+    public this(ulong value) pure nothrow
     {
         _data.uint64 = value;
         _type = ConstantType.uint64;
     }
 
-    public this(float value)
+    public this(float value) pure nothrow
     {
         _data.float32 = value;
         _type = ConstantType.float32;
     }
 
-    public this(double value)
+    public this(double value) pure nothrow
     {
         _data.float64 = value;
         _type = ConstantType.float64;
     }
 
-    @property public ConstantType type()
+    @property public ConstantType type() pure nothrow
     {
         return _type;
     }
 
-    public Constant opUnary(string op)()
+    public Constant opUnary(string op)() pure nothrow
         if (op == "+" || op == "-" || op == "~")
     in
     {
@@ -92,7 +92,7 @@ public struct Constant
         }
     }
 
-    public Constant opBinary(string op)(Constant rhs)
+    public Constant opBinary(string op)(Constant rhs) pure nothrow
         if (op == "+" || op == "-" || op == "*" || op == "/" ||
             op == "%" || op == "&" || op == "|" || op == "^" ||
             op == "<<" || op == ">>")
@@ -180,7 +180,7 @@ public struct Constant
     }
 
     // Until the compiler is fixed to allow overloading the unary not operator...
-    public Constant not()
+    public Constant not() pure nothrow
     {
         final switch (_type)
         {
@@ -195,7 +195,7 @@ public struct Constant
         }
     }
 
-    public Constant rotate(string direction)(Constant amount)
+    public Constant rotate(string direction)(Constant amount) pure nothrow
     in
     {
         assert(amount._type == _type);
@@ -214,7 +214,7 @@ public struct Constant
         }
     }
 
-    public T castTo(T)()
+    public T castTo(T)() pure nothrow
         if (isNumeric!T)
     {
         final switch (_type)

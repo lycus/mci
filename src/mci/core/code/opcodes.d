@@ -47,7 +47,7 @@ public enum OperandType : ubyte
     ffi,
 }
 
-public bool isArrayOperand(OperandType operandType)
+public bool isArrayOperand(OperandType operandType) pure nothrow
 {
     return operandType == OperandType.int8Array ||
            operandType == OperandType.uint8Array ||
@@ -61,7 +61,7 @@ public bool isArrayOperand(OperandType operandType)
            operandType == OperandType.float64Array;
 }
 
-public TypeInfo operandToTypeInfo(OperandType operandType)
+public TypeInfo operandToTypeInfo(OperandType operandType) pure nothrow
 out (result)
 {
     assert(result);
@@ -161,7 +161,7 @@ public final class OpCode
         _hasTarget = hasTarget;
     }
 
-    @property public string name()
+    @property public string name() pure nothrow
     out (result)
     {
         assert(result);
@@ -171,22 +171,22 @@ public final class OpCode
         return _name;
     }
 
-    @property public OperationCode code()
+    @property public OperationCode code() pure nothrow
     {
         return _code;
     }
 
-    @property public OpCodeType type()
+    @property public OpCodeType type() pure nothrow
     {
         return _type;
     }
 
-    @property public OperandType operandType()
+    @property public OperandType operandType() pure nothrow
     {
         return _operandType;
     }
 
-    @property public uint registers()
+    @property public uint registers() pure nothrow
     out (result)
     {
         assert(result <= maxSourceRegisters);
@@ -196,7 +196,7 @@ public final class OpCode
         return _registers;
     }
 
-    @property public bool hasTarget()
+    @property public bool hasTarget() pure nothrow
     {
         return _hasTarget;
     }

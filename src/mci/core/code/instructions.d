@@ -47,7 +47,7 @@ public final class Register
         _metadata = new List!MetadataPair();
     }
 
-    @property public Function function_()
+    @property public Function function_() pure nothrow
     out (result)
     {
         assert(result);
@@ -57,7 +57,7 @@ public final class Register
         return _function;
     }
 
-    @property public Type type()
+    @property public Type type() pure nothrow
     out (result)
     {
         assert(result);
@@ -67,7 +67,7 @@ public final class Register
         return _type;
     }
 
-    @property public string name()
+    @property public string name() pure nothrow
     out (result)
     {
         assert(result);
@@ -77,7 +77,7 @@ public final class Register
         return _name;
     }
 
-    @property public ReadOnlyIndexable!Instruction uses()
+    @property public ReadOnlyIndexable!Instruction uses() pure nothrow
     out (result)
     {
         assert(result);
@@ -87,7 +87,7 @@ public final class Register
         return cast(ReadOnlyIndexable!Instruction)_uses;
     }
 
-    @property public ReadOnlyIndexable!Instruction definitions()
+    @property public ReadOnlyIndexable!Instruction definitions() pure nothrow
     out (result)
     {
         assert(result);
@@ -97,7 +97,7 @@ public final class Register
         return cast(ReadOnlyIndexable!Instruction)_definitions;
     }
 
-    @property public List!MetadataPair metadata()
+    @property public List!MetadataPair metadata() pure nothrow
     out (result)
     {
         assert(result);
@@ -199,7 +199,7 @@ public final class Instruction
         _metadata = new typeof(_metadata)();
     }
 
-    @property public BasicBlock block()
+    @property public BasicBlock block() pure nothrow
     out (result)
     {
         assert(result);
@@ -209,7 +209,7 @@ public final class Instruction
         return _block;
     }
 
-    @property public OpCode opCode()
+    @property public OpCode opCode() pure nothrow
     out (result)
     {
         assert(result);
@@ -219,27 +219,27 @@ public final class Instruction
         return _opCode;
     }
 
-    @property public InstructionOperand operand()
+    @property public InstructionOperand operand() pure nothrow
     {
         return _operand;
     }
 
-    @property public Register targetRegister()
+    @property public Register targetRegister() pure nothrow
     {
         return _targetRegister;
     }
 
-    @property public Register sourceRegister1()
+    @property public Register sourceRegister1() pure nothrow
     {
         return _sourceRegister1;
     }
 
-    @property public Register sourceRegister2()
+    @property public Register sourceRegister2() pure nothrow
     {
         return _sourceRegister2;
     }
 
-    @property public Register sourceRegister3()
+    @property public Register sourceRegister3() pure nothrow
     {
         return _sourceRegister3;
     }
@@ -271,7 +271,7 @@ public final class Instruction
         return _sourceRegisters = toNoNullList(filter(toIterable(_sourceRegister1, _sourceRegister2, _sourceRegister3), (Register r) => !!r));
     }
 
-    @property public List!MetadataPair metadata()
+    @property public List!MetadataPair metadata() pure nothrow
     out (result)
     {
         assert(result);

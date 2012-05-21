@@ -40,7 +40,7 @@ public final class Module
         _types = new typeof(_types)();
     }
 
-    @property public string name()
+    @property public string name() pure nothrow
     out (result)
     {
         assert(result);
@@ -50,7 +50,7 @@ public final class Module
         return _name;
     }
 
-    @property public Lookup!(string, Function) functions()
+    @property public Lookup!(string, Function) functions() pure nothrow
     out (result)
     {
         assert(result);
@@ -60,7 +60,7 @@ public final class Module
         return _functions;
     }
 
-    @property public Lookup!(string, StructureType) types()
+    @property public Lookup!(string, StructureType) types() pure nothrow
     out (result)
     {
         assert(result);
@@ -193,7 +193,7 @@ public final class ModuleManager
                     _probePaths.add(dir);
     }
 
-    @property public Lookup!(string, Module) modules()
+    @property public Lookup!(string, Module) modules() pure nothrow
     out (result)
     {
         assert(result);
@@ -203,7 +203,7 @@ public final class ModuleManager
         return _modules;
     }
 
-    @property public NoNullList!string probePaths()
+    @property public NoNullList!string probePaths() pure nothrow
     out (result)
     {
         assert(result);

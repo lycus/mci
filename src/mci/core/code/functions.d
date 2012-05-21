@@ -39,7 +39,7 @@ public final class BasicBlock
         _stream = new typeof(_stream)(this);
     }
 
-    @property public Function function_()
+    @property public Function function_() pure nothrow
     out (result)
     {
         assert(result);
@@ -49,7 +49,7 @@ public final class BasicBlock
         return _function;
     }
 
-    @property public string name()
+    @property public string name() pure nothrow
     out (result)
     {
         assert(result);
@@ -59,7 +59,7 @@ public final class BasicBlock
         return _name;
     }
 
-    @property public BasicBlock unwindBlock()
+    @property public BasicBlock unwindBlock() pure nothrow
     in
     {
         assert(_isClosed);
@@ -69,7 +69,7 @@ public final class BasicBlock
         return _unwindBlock;
     }
 
-    @property public void unwindBlock(BasicBlock unwindBlock)
+    @property public void unwindBlock(BasicBlock unwindBlock) pure nothrow
     in
     {
         assert(!_isClosed);
@@ -79,7 +79,7 @@ public final class BasicBlock
         _unwindBlock = unwindBlock;
     }
 
-    @property public InstructionStream stream()
+    @property public InstructionStream stream() pure nothrow
     out (result)
     {
         assert(result);
@@ -89,12 +89,12 @@ public final class BasicBlock
         return _stream;
     }
 
-    @property public bool isClosed()
+    @property public bool isClosed() pure nothrow
     {
         return _isClosed;
     }
 
-    @property public List!MetadataPair metadata()
+    @property public List!MetadataPair metadata() pure nothrow
     out (result)
     {
         assert(result);
@@ -104,7 +104,7 @@ public final class BasicBlock
         return _metadata;
     }
 
-    public void close()
+    public void close() pure nothrow
     in
     {
         assert(!_isClosed);
@@ -148,7 +148,7 @@ public final class Parameter
         _metadata = new typeof(_metadata)();
     }
 
-    @property public Function function_()
+    @property public Function function_() pure nothrow
     out (result)
     {
         assert(result);
@@ -158,7 +158,7 @@ public final class Parameter
         return _function;
     }
 
-    @property public Type type()
+    @property public Type type() pure nothrow
     out (result)
     {
         assert(result);
@@ -168,7 +168,7 @@ public final class Parameter
         return _type;
     }
 
-    @property public List!MetadataPair metadata()
+    @property public List!MetadataPair metadata() pure nothrow
     out (result)
     {
         assert(result);
@@ -240,7 +240,7 @@ public final class Function
         (cast(NoNullDictionary!(string, Function))module_.functions)[name] = this;
     }
 
-    @property public Module module_()
+    @property public Module module_() pure nothrow
     out (result)
     {
         assert(result);
@@ -250,7 +250,7 @@ public final class Function
         return _module;
     }
 
-    @property public string name()
+    @property public string name() pure nothrow
     out (result)
     {
         assert(result);
@@ -260,22 +260,22 @@ public final class Function
         return _name;
     }
 
-    @property public Type returnType()
+    @property public Type returnType() pure nothrow
     {
         return _returnType;
     }
 
-    @property public CallingConvention callingConvention()
+    @property public CallingConvention callingConvention() pure nothrow
     {
         return _callingConvention;
     }
 
-    @property public FunctionAttributes attributes()
+    @property public FunctionAttributes attributes() pure nothrow
     {
         return _attributes;
     }
 
-    @property public ReadOnlyIndexable!Parameter parameters()
+    @property public ReadOnlyIndexable!Parameter parameters() pure nothrow
     in
     {
         assert(_isClosed);
@@ -289,12 +289,12 @@ public final class Function
         return _parameters;
     }
 
-    @property public bool isClosed()
+    @property public bool isClosed() pure nothrow
     {
         return _isClosed;
     }
 
-    @property public Lookup!(string, BasicBlock) blocks()
+    @property public Lookup!(string, BasicBlock) blocks() pure nothrow
     out (result)
     {
         assert(result);
@@ -304,7 +304,7 @@ public final class Function
         return _blocks;
     }
 
-    @property public Lookup!(string, Register) registers()
+    @property public Lookup!(string, Register) registers() pure nothrow
     out (result)
     {
         assert(result);
@@ -314,7 +314,7 @@ public final class Function
         return _registers;
     }
 
-    @property public List!MetadataPair metadata()
+    @property public List!MetadataPair metadata() pure nothrow
     out (result)
     {
         assert(result);
@@ -341,15 +341,14 @@ public final class Function
     }
     body
     {
-        // We keep the Parameter class around for now, since it may
-        // come in handy later for specifying attributes.
         auto param = new Parameter(this, type);
+
         _parameters.add(param);
 
         return param;
     }
 
-    public void close()
+    public void close() pure nothrow
     in
     {
         assert(!_isClosed);
@@ -441,7 +440,7 @@ public final class FFISignature
         _entryPoint = entryPoint;
     }
 
-    @property public string library()
+    @property public string library() pure nothrow
     out (result)
     {
         assert(result);
@@ -451,7 +450,7 @@ public final class FFISignature
         return _library;
     }
 
-    @property public string entryPoint()
+    @property public string entryPoint() pure nothrow
     out (result)
     {
         assert(result);
