@@ -200,7 +200,6 @@
    <File path="analysis\utilities.d" />
   </Folder>
   <Folder name="code">
-   <File path="code\emit.d" />
    <File path="code\functions.d" />
    <File path="code\graph.d" />
    <File path="code\instructions.d" />
