@@ -23,6 +23,12 @@ public struct SourceLocation
         _column = column;
     }
 
+    /**
+     * Gets the line number of this location.
+     *
+     * Returns:
+     *  The line number of this location.
+     */
     @property public uint line() pure nothrow
     out (result)
     {
@@ -33,6 +39,12 @@ public struct SourceLocation
         return _line;
     }
 
+    /**
+     * Gets the column number of this location.
+     *
+     * Returns:
+     *  The column number of this location.
+     */
     @property public uint column() pure nothrow
     {
         return _column;

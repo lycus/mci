@@ -5,11 +5,14 @@ import mci.core.container,
        mci.core.code.opcodes,
        mci.assembler.parsing.location;
 
+/**
+ * Represents the various tokens that can appear in IAL source code.
+ */
 public enum TokenType : ubyte
 {
-    begin,
-    end,
-    identifier,
+    begin, /// Indicates the beginning of a token stream.
+    end, /// Indicates the end of a token stream.
+    identifier, /// Any alphanumeric identifier (may also include underscores and dots).
     openBrace,
     closeBrace,
     openParen,
@@ -54,7 +57,7 @@ public enum TokenType : ubyte
     float32,
     float64,
     opCode,
-    literal,
+    literal, /// Any literal (integer, floating point, etc).
 }
 
 private __gshared TokenType[char] delimiters;
@@ -76,6 +79,16 @@ shared static this()
                   '/' : TokenType.slash];
 }
 
+/**
+ * Maps a character to a delimiter, if possible.
+ *
+ * Params:
+ *  The character to map to a delimiter.
+ *
+ * Returns:
+ *  A non-null token type for the character if it could be mapped
+ *  to a delimiter; otherwise, a null value.
+ */
 public Nullable!TokenType delimiterCharToType(char chr)
 {
     if (auto type = chr in delimiters)
@@ -84,6 +97,19 @@ public Nullable!TokenType delimiterCharToType(char chr)
     return Nullable!TokenType();
 }
 
+/**
+ * Maps an identifier to a token type.
+ *
+ * This first attempts to match the identifier against keywords and
+ * opcode names. If this fails, $(D TokenType.identifier) is returned.
+ *
+ * Params:
+ *  The identifier to map to a token type.
+ *
+ * Returns:
+ *  A token type indicating the keyword or opcode that $(D identifier)
+ *  represents, if any; otherwise, $(D TokenType.identifier).
+ */
 public TokenType identifierToType(string identifier)
 in
 {
@@ -132,6 +158,9 @@ body
     return TokenType.identifier;
 }
 
+/**
+ * Represents a token in IAL source code.
+ */
 public struct Token
 {
     private TokenType _type;
@@ -157,11 +186,24 @@ public struct Token
         _location = location;
     }
 
+    /**
+     * Gets the type of this token.
+     *
+     * Returns:
+     *  The type of this token.
+     */
     @property public TokenType type() pure nothrow
     {
         return _type;
     }
 
+    /**
+     * Gets the value associated with this token.
+     *
+     * Returns:
+     *  The value of this token. This may be $(D null) if the token
+     *  is of type $(D TokenType.begin) or $(D TokenType.end).
+     */
     @property public string value() pure nothrow
     out (result)
     {
@@ -172,6 +214,12 @@ public struct Token
         return _value;
     }
 
+    /**
+     * Gets the location of this token in the source text.
+     *
+     * Returns:
+     *  The location of this token in the source text.
+     */
     @property public SourceLocation location() pure nothrow
     {
         return _location;
