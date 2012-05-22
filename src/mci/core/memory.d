@@ -1,6 +1,7 @@
 module mci.core.memory;
 
-import mci.core.config;
+import std.traits,
+       mci.core.config;
 
 static if (isPOSIX)
 {
@@ -90,4 +91,16 @@ body
         return !munmap(memory, length);
     else
         return !VirtualFree(memory, 0, MEM_RELEASE);
+}
+
+public T alignTo(T)(T value, T alignment = size_t.sizeof)
+    if (isIntegral!T)
+{
+    auto val = value + alignment - 1;
+    return value - value % alignment;
+}
+
+public bool isSystemAligned(T)(T* ptr)
+{
+    return !(cast(size_t)ptr % size_t.sizeof);
 }

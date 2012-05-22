@@ -2,6 +2,7 @@ module mci.vm.memory.base;
 
 import mci.core.config,
        mci.core.container,
+       mci.core.memory,
        mci.core.typing.core,
        mci.core.typing.members,
        mci.core.typing.types,
@@ -74,11 +75,6 @@ public union GarbageCollectorHeader
     private size_t bits;
 }
 
-public bool isSystemAligned(void* ptr)
-{
-    return !(cast(size_t)ptr % computeSize(NativeUIntType.instance, is32Bit));
-}
-
 public interface GarbageCollector
 {
     @property public ulong collections() nothrow;
@@ -91,14 +87,14 @@ public interface GarbageCollector
     out (result)
     {
         if (result)
-            assert(isSystemAligned(cast(ubyte*)result));
+            assert(isSystemAligned(result));
     }
 
     public void free(RuntimeObject* data)
     in
     {
         if (data)
-            assert(isSystemAligned(cast(ubyte*)data));
+            assert(isSystemAligned(data));
     }
 
     public void addRoot(RuntimeObject** ptr)
@@ -135,7 +131,7 @@ public interface GarbageCollector
     in
     {
         assert(data);
-        assert(isSystemAligned(cast(ubyte*)data));
+        assert(isSystemAligned(data));
     }
 
     public void unpin(size_t handle);
@@ -156,34 +152,34 @@ public interface GarbageCollector
     in
     {
         assert(target);
-        assert(isSystemAligned(cast(ubyte*)target));
+        assert(isSystemAligned(target));
     }
     out (result)
     {
         if (result)
-            assert(isSystemAligned(cast(ubyte*)result));
+            assert(isSystemAligned(result));
     }
 
     public RuntimeObject* getWeakTarget(RuntimeObject* weak)
     in
     {
         assert(weak);
-        assert(isSystemAligned(cast(ubyte*)weak));
+        assert(isSystemAligned(weak));
     }
     out (result)
     {
         if (result)
-            assert(isSystemAligned(cast(ubyte*)result));
+            assert(isSystemAligned(result));
     }
 
     public void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
     in
     {
         assert(weak);
-        assert(isSystemAligned(cast(ubyte*)weak));
+        assert(isSystemAligned(weak));
 
         if (target)
-            assert(isSystemAligned(cast(ubyte*)target));
+            assert(isSystemAligned(target));
     }
 }
 
@@ -229,7 +225,7 @@ public interface InteractiveGarbageCollector : GarbageCollector
     in
     {
         assert(rto);
-        assert(isSystemAligned(cast(ubyte*)rto));
+        assert(isSystemAligned(rto));
         assert(engine);
     }
 

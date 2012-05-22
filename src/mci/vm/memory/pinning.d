@@ -2,6 +2,7 @@ module mci.vm.memory.pinning;
 
 import core.stdc.stdlib,
        mci.core.container,
+       mci.core.memory,
        mci.core.tuple,
        mci.vm.memory.base;
 
@@ -35,7 +36,7 @@ public final class PinnedObjectManager
     in
     {
         assert(rto);
-        assert(isSystemAligned(cast(ubyte*)rto));
+        assert(isSystemAligned(rto));
     }
     body
     {

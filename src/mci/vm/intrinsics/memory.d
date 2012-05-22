@@ -1,6 +1,7 @@
 module mci.vm.intrinsics.memory;
 
-import mci.vm.intrinsics.context,
+import mci.core.memory,
+       mci.vm.intrinsics.context,
        mci.vm.memory.base;
 
 extern (C)

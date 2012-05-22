@@ -48,8 +48,7 @@ public final class CodeMemoryAllocator
         // exactly what's handed to us, we'll waste a lot of page space when the
         // length can't fill up (almost) an entire page. This would also mess up
         // any sort of locality.
-        auto realLength = length + pageSize - 1;
-        realLength -= realLength % pageSize;
+        auto realLength = alignTo(length, pageSize);
 
         // We didn't find a region (above) that could hold the amount of requested
         // memory, so we allocate a new one with the rounded-up size. This means we

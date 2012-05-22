@@ -1,8 +1,8 @@
 module mci.core.typing.types;
 
 import std.conv,
-       mci.core.common,
        mci.core.container,
+       mci.core.math,
        mci.core.nullable,
        mci.core.code.metadata,
        mci.core.code.modules,
