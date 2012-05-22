@@ -25,7 +25,6 @@ in
 }
 body
 {
-    // FIXME: When 2.060 is released, we should use Runtime.loadLibrary.
     static if (isPOSIX)
     {
         void* lib;
@@ -63,7 +62,6 @@ in
 }
 body
 {
-    // FIXME: When 2.060 is released, we should use Runtime.unloadLibrary.
     static if (isPOSIX)
         return !dlclose(library);
     else
