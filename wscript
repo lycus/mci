@@ -114,8 +114,10 @@ def build(bld):
     stlib('debugger', 'mci.debugger')
     stlib('vm', 'mci.vm')
     stlib('compiler', 'mci.compiler')
+    stlib('jit', 'mci.jit')
 
-    deps = ['mci.compiler',
+    deps = ['mci.jit',
+            'mci.compiler',
             'mci.vm',
             'mci.debugger',
             'mci.linker',

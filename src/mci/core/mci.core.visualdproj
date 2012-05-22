@@ -225,6 +225,7 @@
   <File path="container.d" />
   <File path="exception.d" />
   <File path="io.d" />
+  <File path="memory.d" />
   <File path="meta.d" />
   <File path="nullable.d" />
   <File path="sync.d" />

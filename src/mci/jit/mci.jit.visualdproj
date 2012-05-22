@@ -193,4 +193,6 @@
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="mci.jit" />
+  <File path="memory.d" />
+ </Folder>
 </DProject>
