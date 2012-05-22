@@ -63,6 +63,10 @@ public final class CodeMemoryAllocator
     }
     body
     {
+        // First, align length to the machine word size. This is so we're sure
+        // that all allocations in here return an aligned pointer.
+        length = alignTo(length);
+
         // Attempt to find a region that can hold the requested amount of bytes.
         foreach (i, region; _regions)
         {
