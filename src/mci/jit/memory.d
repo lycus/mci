@@ -6,8 +6,17 @@ import std.algorithm,
        mci.core.memory,
        mci.core.tuple;
 
+/**
+ * This class manages allocation of executable code memory. It is specifically
+ * designed to not require freeing of memory; it relies on the D GC to do this.
+ * Given this, it is important that any memory allocated via an instance of this
+ * class isn't used after the instance has been collected by the GC.
+ */
 public final class CodeMemoryAllocator
 {
+    /**
+     * Holds a list of memory, position pairs.
+     */
     private List!(Tuple!(ubyte[], size_t)) _regions;
 
     invariant()
@@ -26,10 +35,31 @@ public final class CodeMemoryAllocator
             freeCodeMemory(region.x.ptr, region.x.length);
     }
 
+    /**
+     * Allocates a piece of executable memory.
+     *
+     * If this operation succeeds, the returned pointer is guaranteed to be aligned
+     * on a machine word boundary. It is also guaranteed to have read, write, and
+     * execute permissions.
+     *
+     * Explicitly freeing memory allocated through this method is not necessary.
+     *
+     * Params:
+     *  length = The amount of memory, in bytes, to allocate. Must not be zero.
+     *
+     * Returns:
+     *  A valid pointer to memory with read, write, and execute permissions, or
+     *  $(D null) on failure (i.e. an out of memory condition).
+     */
     public ubyte* allocate(size_t length)
     in
     {
         assert(length);
+    }
+    out (result)
+    {
+        if (result)
+            assert(isAligned(result));
     }
     body
     {

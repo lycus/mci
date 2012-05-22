@@ -36,7 +36,7 @@ public final class PinnedObjectManager
     in
     {
         assert(rto);
-        assert(isSystemAligned(rto));
+        assert(isAligned(rto));
     }
     body
     {

@@ -97,10 +97,22 @@ public T alignTo(T)(T value, T alignment = size_t.sizeof)
     if (isIntegral!T)
 {
     auto val = value + alignment - 1;
-    return value - value % alignment;
+    return val - value % alignment;
 }
 
-public bool isSystemAligned(T)(T* ptr)
+public bool isAligned(T)(T value, T alignment = size_t.sizeof)
+    if (isIntegral!T)
 {
-    return !(cast(size_t)ptr % size_t.sizeof);
+    return !(value % alignment);
+}
+
+public bool isAligned(T)(T* pointer, size_t alignment = size_t.sizeof)
+{
+    return isAligned(cast(size_t)pointer, alignment);
+}
+
+public T alignmentPadding(T)(T value, T alignment = size_t.sizeof)
+{
+    auto al = alignment - 1;
+    return al - (value + al) % al;
 }

@@ -2,6 +2,7 @@ module mci.vm.memory.layout;
 
 import mci.core.common,
        mci.core.container,
+       mci.core.memory,
        mci.core.tuple,
        mci.core.analysis.utilities,
        mci.core.typing.core,
@@ -46,9 +47,7 @@ body
 
         auto al = structType.alignment ? structType.alignment : computeAlignment(field.y.type, is32Bit);
 
-        if (size % al)
-            size += al - size % al;
-
+        size = alignTo(size, al);
         size += computeSize(field.y.type, is32Bit);
     }
 
@@ -73,8 +72,7 @@ body
 
         auto al = alignment ? alignment : computeAlignment(fld.y.type, is32Bit);
 
-        if (offset % al)
-            offset += al - offset % al;
+        offset = alignTo(offset, al);
 
         if (fld.y is field)
             break;

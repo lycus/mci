@@ -87,35 +87,35 @@ public interface GarbageCollector
     out (result)
     {
         if (result)
-            assert(isSystemAligned(result));
+            assert(isAligned(result));
     }
 
     public void free(RuntimeObject* data)
     in
     {
         if (data)
-            assert(isSystemAligned(data));
+            assert(isAligned(data));
     }
 
     public void addRoot(RuntimeObject** ptr)
     in
     {
         assert(ptr);
-        assert(isSystemAligned(ptr));
+        assert(isAligned(ptr));
     }
 
     public void removeRoot(RuntimeObject** ptr)
     in
     {
         assert(ptr);
-        assert(isSystemAligned(ptr));
+        assert(isAligned(ptr));
     }
 
     public void addRange(RuntimeObject** ptr, size_t words)
     in
     {
         assert(ptr);
-        assert(isSystemAligned(ptr));
+        assert(isAligned(ptr));
         assert(words);
     }
 
@@ -123,7 +123,7 @@ public interface GarbageCollector
     in
     {
         assert(ptr);
-        assert(isSystemAligned(ptr));
+        assert(isAligned(ptr));
         assert(words);
     }
 
@@ -131,7 +131,7 @@ public interface GarbageCollector
     in
     {
         assert(data);
-        assert(isSystemAligned(data));
+        assert(isAligned(data));
     }
 
     public void unpin(size_t handle);
@@ -152,34 +152,34 @@ public interface GarbageCollector
     in
     {
         assert(target);
-        assert(isSystemAligned(target));
+        assert(isAligned(target));
     }
     out (result)
     {
         if (result)
-            assert(isSystemAligned(result));
+            assert(isAligned(result));
     }
 
     public RuntimeObject* getWeakTarget(RuntimeObject* weak)
     in
     {
         assert(weak);
-        assert(isSystemAligned(weak));
+        assert(isAligned(weak));
     }
     out (result)
     {
         if (result)
-            assert(isSystemAligned(result));
+            assert(isAligned(result));
     }
 
     public void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
     in
     {
         assert(weak);
-        assert(isSystemAligned(weak));
+        assert(isAligned(weak));
 
         if (target)
-            assert(isSystemAligned(target));
+            assert(isAligned(target));
     }
 }
 
@@ -225,7 +225,7 @@ public interface InteractiveGarbageCollector : GarbageCollector
     in
     {
         assert(rto);
-        assert(isSystemAligned(rto));
+        assert(isAligned(rto));
         assert(engine);
     }
 

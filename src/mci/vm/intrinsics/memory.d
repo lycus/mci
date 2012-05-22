@@ -8,7 +8,7 @@ extern (C)
 {
     public size_t is_aligned(VirtualMachineContext context, ubyte* ptr)
     {
-        return isSystemAligned(ptr);
+        return isAligned(ptr);
     }
 
     public void gc_collect(VirtualMachineContext context)
