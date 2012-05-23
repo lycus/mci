@@ -6,6 +6,7 @@ import mci.core.common,
        mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.instructions,
+       mci.core.code.metadata,
        mci.core.code.modules,
        mci.core.typing.core,
        mci.core.typing.members,
@@ -91,6 +92,8 @@ public final class ModuleWriter : ModuleSaver
         if (module_.threadEntryPoint)
             writeFunctionReference(module_.threadEntryPoint);
 
+        writeMetadataSegment(module_);
+
         auto st = _writer.stream.position;
 
         writeStringTable();
@@ -99,6 +102,112 @@ public final class ModuleWriter : ModuleSaver
         _writer.stream.position = stOffset;
 
         _writer.write(st);
+    }
+
+    private void writeMetadataSegment(Module module_)
+    in
+    {
+        assert(module_);
+    }
+    body
+    {
+        auto countOffset = _writer.stream.position;
+
+        _writer.write!ulong(0); // Metadata pair count.
+
+        ulong count;
+
+        foreach (type; filter(module_.types, (Tuple!(string, StructureType) tup) => !tup.y.metadata.empty))
+        {
+            count++;
+
+            _writer.write(MetadataType.type);
+            writeStructureTypeReference(type.y);
+            writeMetadata(type.y.metadata);
+
+            foreach (field; filter(type.y.fields, (Tuple!(string, Field) tup) => !tup.y.metadata.empty))
+            {
+                count++;
+
+                _writer.write(MetadataType.field);
+                writeFieldReference(field.y);
+                writeMetadata(field.y.metadata);
+            }
+        }
+
+        foreach (func; filter(module_.functions, (Tuple!(string, Function) tup) => !tup.y.metadata.empty))
+        {
+            count++;
+
+            _writer.write(MetadataType.function_);
+            writeFunctionReference(func.y);
+            writeMetadata(func.y.metadata);
+
+            foreach (param; filter(func.y.parameters, (Parameter p) => !p.metadata.empty))
+            {
+                count++;
+
+                _writer.write(MetadataType.parameter);
+                writeFunctionReference(func.y);
+                writeParameterReference(param);
+                writeMetadata(param.metadata);
+            }
+
+            foreach (reg; filter(func.y.registers, (Tuple!(string, Register) tup) => !tup.y.metadata.empty))
+            {
+                count++;
+
+                _writer.write(MetadataType.register);
+                writeFunctionReference(func.y);
+                writeRegisterReference(reg.y);
+                writeMetadata(reg.y.metadata);
+            }
+
+            foreach (block; filter(func.y.blocks, (Tuple!(string, BasicBlock) tup) => !tup.y.metadata.empty))
+            {
+                count++;
+
+                _writer.write(MetadataType.block);
+                writeFunctionReference(func.y);
+                writeBasicBlockReference(block.y);
+                writeMetadata(block.y.metadata);
+
+                foreach (insn; filter(block.y.stream, (Instruction insn) => !insn.metadata.empty))
+                {
+                    count++;
+
+                    _writer.write(MetadataType.instruction);
+                    writeFunctionReference(func.y);
+                    writeBasicBlockReference(block.y);
+                    writeInstructionReference(insn);
+                    writeMetadata(insn.metadata);
+                }
+            }
+        }
+
+        auto pos = _writer.stream.position;
+
+        _writer.stream.position = countOffset;
+
+        _writer.write(count);
+
+        _writer.stream.position = pos;
+    }
+
+    private void writeMetadata(Countable!MetadataPair metadata)
+    in
+    {
+        assert(metadata);
+    }
+    body
+    {
+        _writer.write(cast(uint)metadata.count);
+
+        foreach (pair; metadata)
+        {
+            writeString(pair.key);
+            writeString(pair.value);
+        }
     }
 
     private void writeStringTable()
@@ -296,14 +405,6 @@ public final class ModuleWriter : ModuleSaver
             else
                 writeFFISignature(*operand.peek!FFISignature());
         }
-
-        _writer.write(cast(uint)instruction.metadata.count);
-
-        foreach (md; instruction.metadata)
-        {
-            writeString(md.key);
-            writeString(md.value);
-        }
     }
 
     private void writeRegisterReference(Register register)
@@ -426,7 +527,7 @@ public final class ModuleWriter : ModuleSaver
     }
     body
     {
-        writeTypeReference(field.declaringType);
+        writeStructureTypeReference(field.declaringType);
         writeString(field.name);
     }
 
@@ -439,6 +540,26 @@ public final class ModuleWriter : ModuleSaver
     {
         writeModuleReference(function_.module_);
         writeString(function_.name);
+    }
+
+    private void writeParameterReference(Parameter parameter)
+    in
+    {
+        assert(parameter);
+    }
+    body
+    {
+        _writer.write(cast(uint)findIndex(parameter.function_.parameters, parameter));
+    }
+
+    private void writeInstructionReference(Instruction instruction)
+    in
+    {
+        assert(instruction);
+    }
+    body
+    {
+        _writer.write(cast(uint)findIndex(instruction.block.stream, instruction));
     }
 
     private void writeFFISignature(FFISignature signature)

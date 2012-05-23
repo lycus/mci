@@ -484,7 +484,71 @@ public final class ModuleReader : ModuleLoader
         if (_reader.read!bool())
             mod.threadEntryPoint = readFunctionReference();
 
+        readMetadataSegment();
+
         return mod;
+    }
+
+    private void readMetadataSegment()
+    {
+        auto count = _reader.read!ulong();
+
+        for (ulong i = 0; i < count; i++)
+        {
+            auto mdType = _reader.read!MetadataType();
+
+            switch (mdType)
+            {
+                case MetadataType.type:
+                    auto type = toType(readTypeReference());
+
+                    if (auto struc = cast(StructureType)type)
+                        readMetadata(struc.metadata);
+                    else
+                        error("Structure type expected.");
+
+                    break;
+                case MetadataType.field:
+                    readMetadata(readFieldReference().metadata);
+
+                    break;
+                case MetadataType.function_:
+                    readMetadata(readFunctionReference().metadata);
+
+                    break;
+                case MetadataType.parameter:
+                    readMetadata(readParameterReference(readFunctionReference()).metadata);
+
+                    break;
+                case MetadataType.register:
+                    readMetadata(readRegisterReference(readFunctionReference()).metadata);
+
+                    break;
+                case MetadataType.block:
+                    readMetadata(readBasicBlockReference(readFunctionReference()).metadata);
+
+                    break;
+                case MetadataType.instruction:
+                    readMetadata(readInstructionReference(readBasicBlockReference(readFunctionReference())).metadata);
+
+                    break;
+                default:
+                    error("Unknown metadata type '%s'.", mdType);
+            }
+        }
+    }
+
+    private void readMetadata(List!MetadataPair metadata)
+    in
+    {
+        assert(metadata);
+    }
+    body
+    {
+        auto count = _reader.read!uint();
+
+        for (uint i = 0; i < count; i++)
+            metadata.add(MetadataPair(readString(), readString()));
     }
 
     private void readStringTable()
@@ -855,7 +919,7 @@ public final class ModuleReader : ModuleLoader
             return values;
         }
 
-        final switch (opCode.operandType)
+        switch (opCode.operandType)
         {
             case OperandType.none:
                 break;
@@ -948,16 +1012,11 @@ public final class ModuleReader : ModuleLoader
             case OperandType.ffi:
                 operand = readFFISignature();
                 break;
+            default:
+                error("Unknown opcode operand type '%s'.", opCode.operandType);
         }
 
-        auto instr = stream.append(opCode, operand, target, source1, source2, source3);
-
-        auto mdCount = _reader.read!uint();
-
-        for (uint i = 0; i < mdCount; i++)
-            instr.metadata.add(MetadataPair(readString(), readString()));
-
-        return instr;
+        return stream.append(opCode, operand, target, source1, source2, source3);
     }
 
     private Register readRegisterReference(Function function_)
@@ -998,6 +1057,44 @@ public final class ModuleReader : ModuleLoader
 
         error("Unknown basic block '%s'.", name);
         assert(false);
+    }
+
+    private Instruction readInstructionReference(BasicBlock block)
+    in
+    {
+        assert(block);
+    }
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto i = _reader.read!uint();
+
+        if (i >= block.stream.count)
+            error("Unknown instruction '%s'.", i);
+
+        return block.stream[i];
+    }
+
+    private Parameter readParameterReference(Function function_)
+    in
+    {
+        assert(function_);
+    }
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto i = _reader.read!uint();
+
+        if (i >= function_.parameters.count)
+            error("Unknown parameter '%s'.", i);
+
+        return function_.parameters[i];
     }
 
     private FFISignature readFFISignature()
