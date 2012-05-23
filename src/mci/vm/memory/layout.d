@@ -127,7 +127,7 @@ body
 
             if (auto structType = tryCast!StructureType(field.y.type))
                 innerCompute(structType, offset);
-            else if (!(offset % wordSize))
+            else if (isAligned(offset))
                 bits ~= isManaged(field.y.type);
         }
     }
