@@ -7,10 +7,13 @@ import std.array,
        mci.debugger.client,
        mci.debugger.protocol;
 
+/**
+ * Represents the exit status of a command line debugger session.
+ */
 public enum DebuggerExitCode : ubyte
 {
-    success = 0,
-    failure = 1,
+    success = 0, /// Execution finished successfully.
+    failure = 1, /// An error occurred.
 }
 
 public final class CommandLineDebugger

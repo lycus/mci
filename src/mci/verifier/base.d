@@ -5,8 +5,17 @@ import std.string,
        mci.core.code.instructions,
        mci.verifier.exception;
 
+/**
+ * Represents an IR verification pass.
+ */
 public abstract class CodeVerifier
 {
+    /**
+     * Verifies a specific subset of the IR in the given function.
+     *
+     * Params:
+     *  function_ = The function to verify IR in.
+     */
     public abstract void verify(Function function_);
 
     protected static void error(T ...)(Instruction instruction, string message, T args)

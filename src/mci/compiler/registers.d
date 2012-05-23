@@ -64,6 +64,15 @@ public enum RegisterSize : ubyte
     oword = 0x20, /// Thirty-two bytes (i.e. 256 bits).
 }
 
+/**
+ * Helper mixin to define a register.
+ *
+ * Params:
+ *  type = The name of the register class.
+ *  name = The name of the register.
+ *  category = The $(D RegisterCategory) of the register.
+ *  size = One or two $(D RegisterSize) values.
+ */
 mixin template RegisterBody(string type, string name, RegisterCategory category, ubyte size)
 {
     mixin("private __gshared " ~ type ~ " _instance;" ~

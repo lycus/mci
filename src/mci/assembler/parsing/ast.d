@@ -11,6 +11,16 @@ import std.conv,
        mci.core.typing.types,
        mci.assembler.parsing.location;
 
+private __gshared List!Node emptyNodes;
+
+shared static this()
+{
+    emptyNodes = new typeof(emptyNodes)();
+}
+
+/**
+ * Represents an abstract syntax tree (AST) node for IAL source code.
+ */
 public abstract class Node
 {
     private SourceLocation _location;
@@ -20,11 +30,29 @@ public abstract class Node
         _location = location;
     }
 
+    /**
+     * Gets the most meaningful location of this AST node.
+     *
+     * For some constructs, this may not necessarily be the first token
+     * in the source text. This value is generally most useful for error
+     * reporting.
+     *
+     * Returns:
+     *  The most meaningful location of this AST node.
+     */
     @property public final SourceLocation location() pure nothrow
     {
         return _location;
     }
 
+    /**
+     * Gets the child nodes of this node, if any. If there are no
+     * children, an empty container is returned.
+     *
+     * Returns:
+     *  A container with all child nodes of this node, or an empty
+     *  container if there are none.
+     */
     @property public ReadOnlyIndexable!Node children()
     out (result)
     {
@@ -32,7 +60,7 @@ public abstract class Node
     }
     body
     {
-        return new List!Node();
+        return emptyNodes;
     }
 
     public override string toString()

@@ -5,21 +5,43 @@ import std.string,
        mci.core.typing.types,
        mci.linker.exception;
 
+/**
+ * Represents the type of name clash that occurred.
+ */
 public enum NameType : ubyte
 {
-    type,
-    function_,
+    type, /// Two type names clashed.
+    function_, /// Two function names clashed.
 }
 
+/**
+ * Represents a linker name clash resolver.
+ */
 public interface NameClashResolver
 {
-    public string resolveNameClash(Module module_, NameType type, string name, string fullName1, string fullName2)
+    /**
+     * Attempts to resolve a name clash.
+     *
+     * Params:
+     *  module_ = The module being constructed as a result of the linking.
+     *  type = The type of the name clash.
+     *  name = The name that clashed.
+     *  module1 = The first module containing $(D name).
+     *  module2 = The second module containing $(D name).
+     *
+     * Returns:
+     *  The resolved name.
+     *
+     * Throws:
+     *  $(D LinkerException) if the clash could not be resolved.
+     */
+    public string resolveNameClash(Module module_, NameType type, string name, Module module1, Module module2)
     in
     {
         assert(module_);
         assert(name);
-        assert(fullName1);
-        assert(fullName2);
+        assert(module1);
+        assert(module2);
     }
     out (result)
     {
@@ -29,7 +51,7 @@ public interface NameClashResolver
 
 public final class ErrorResolver : NameClashResolver
 {
-    public string resolveNameClash(Module module_, NameType type, string name, string fullName1, string fullName2)
+    public string resolveNameClash(Module module_, NameType type, string name, Module module1, Module module2)
     {
         string typeStr;
 
@@ -43,25 +65,25 @@ public final class ErrorResolver : NameClashResolver
                 break;
         }
 
-        throw new LinkerException(format("Clash between %s names %s and %s.", typeStr, fullName1, fullName2));
+        throw new LinkerException(format("Clash between %s names '%s'/'%s' and '%s'/'%s'.", typeStr, module1.name, name, module2.name, name));
     }
 }
 
 public final class RenameResolver : NameClashResolver
 {
-    public string resolveNameClash(Module module_, NameType type, string name, string fullName1, string fullName2)
+    public string resolveNameClash(Module module_, NameType type, string name, Module module1, Module module2)
     {
         auto resolvedName = format("%s_%s", module_.name, name);
 
         final switch (type)
         {
             case NameType.type:
-                while (module_.types.get(resolvedName))
+                if (module_.types.get(resolvedName))
                     resolvedName ~= "_T";
 
                 break;
             case NameType.function_:
-                while (module_.functions.get(resolvedName))
+                if (module_.functions.get(resolvedName))
                     resolvedName ~= "_F";
 
                 break;
