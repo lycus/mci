@@ -178,14 +178,14 @@ public interface Set(T) : ReadOnlyCollection!T
     public bool add(T item)
     in
     {
-        if (isNullable!T)
+        static if (isNullable!T)
             assert(item);
     }
 
     public void remove(T item)
     in
     {
-        if (isNullable!T)
+        static if (isNullable!T)
             assert(item);
     }
 }
