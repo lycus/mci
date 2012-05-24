@@ -291,7 +291,15 @@ static if (isPOSIX)
             GC_stack_base sb;
 
             GC_get_stack_base(&sb);
-            return GC_register_my_thread(&sb) == GC_DUPLICATE;
+
+            if (GC_register_my_thread(&sb) == GC_DUPLICATE)
+                return true;
+
+            // This is quite the hack, but libgc gives us no other
+            // useful primitive for this.
+            GC_unregister_my_thread();
+
+            return false;
         }
 
         public void addPressure(size_t amount) pure nothrow
