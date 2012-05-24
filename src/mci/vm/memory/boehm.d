@@ -286,6 +286,14 @@ static if (isPOSIX)
             GC_unregister_my_thread();
         }
 
+        @property public bool isAttached()
+        {
+            GC_stack_base sb;
+
+            GC_get_stack_base(&sb);
+            return GC_register_my_thread(&sb) == GC_DUPLICATE;
+        }
+
         public void addPressure(size_t amount) pure nothrow
         {
             // Pressure notifications are not supported in libgc.

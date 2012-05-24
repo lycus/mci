@@ -154,6 +154,13 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
     {
     }
 
+    @property public bool isAttached()
+    {
+        // Threads don't need to register with this implementation,
+        // so we simply indicate that they don't need to detach.
+        return false;
+    }
+
     public void addPressure(size_t amount) pure nothrow
     {
     }

@@ -95,6 +95,12 @@ public final class DGarbageCollector : GarbageCollector
         // Threads are already implicitly detached from druntime.
     }
 
+    @property public bool isAttached()
+    {
+        // Threads don't need to detach here. See comments above.
+        return false;
+    }
+
     public void addPressure(size_t amount) pure nothrow
     {
         // D's GC doesn't support pressure notifications.

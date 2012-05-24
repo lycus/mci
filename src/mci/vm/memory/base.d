@@ -144,6 +144,8 @@ public interface GarbageCollector
 
     public void detach();
 
+    @property public bool isAttached();
+
     public void addPressure(size_t amount) pure nothrow;
 
     public void removePressure(size_t amount) pure nothrow;
