@@ -3,12 +3,14 @@ module mci.vm.memory.pinning;
 import core.stdc.stdlib,
        mci.core.container,
        mci.core.memory,
+       mci.core.sync,
        mci.core.tuple,
        mci.vm.memory.base;
 
 public final class PinnedObjectManager
 {
     private GarbageCollector _gc;
+    private Mutex _mutex;
     private Dictionary!(size_t, RuntimeObject**) _objects;
     private size_t _counter;
     private ArrayQueue!size_t _reuseQueue;
@@ -16,6 +18,7 @@ public final class PinnedObjectManager
     invariant()
     {
         assert(_gc);
+        assert(_mutex);
         assert(_objects);
         assert(_reuseQueue);
     }
@@ -28,6 +31,7 @@ public final class PinnedObjectManager
     body
     {
         _gc = gc;
+        _mutex = new typeof(_mutex)();
         _objects = new typeof(_objects)();
         _reuseQueue = new typeof(_reuseQueue)();
     }
@@ -40,6 +44,11 @@ public final class PinnedObjectManager
     }
     body
     {
+        _mutex.lock();
+
+        scope (exit)
+            _mutex.unlock();
+
         auto handle = getHandle();
         auto mem = cast(RuntimeObject**)calloc(1, (RuntimeObject*).sizeof);
 
@@ -53,6 +62,11 @@ public final class PinnedObjectManager
 
     public void unpin(size_t handle)
     {
+        _mutex.lock();
+
+        scope (exit)
+            _mutex.unlock();
+
         auto mem = _objects[handle];
 
         _objects.remove(handle);
@@ -65,6 +79,11 @@ public final class PinnedObjectManager
 
     public void unpinAll()
     {
+        _mutex.lock();
+
+        scope (exit)
+            _mutex.unlock();
+
         foreach (pair; _objects)
         {
             _gc.removeRoot(pair.y);
