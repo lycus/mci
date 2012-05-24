@@ -208,8 +208,8 @@ shared static this()
 
     isAligned = createFunction!is_aligned(NativeUIntType.instance,
                                           getPointerType(UInt8Type.instance));
-    gcCollect = createFunction!gc_collect(null);
-    gcMinimize = createFunction!gc_minimize(null);
+    gcCollect = createFunction!gc_collect_(null);
+    gcMinimize = createFunction!gc_minimize_(null);
     gcGetCollections = createFunction!gc_get_collections(UInt64Type.instance);
     gcAddPressure = createFunction!gc_add_pressure(null,
                                                    NativeUIntType.instance);

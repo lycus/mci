@@ -11,12 +11,12 @@ extern (C)
         return isAligned(ptr);
     }
 
-    public void gc_collect(VirtualMachineContext context)
+    public void gc_collect_(VirtualMachineContext context)
     {
         context.engine.gc.collect();
     }
 
-    public void gc_minimize(VirtualMachineContext context)
+    public void gc_minimize_(VirtualMachineContext context)
     {
         context.engine.gc.minimize();
     }
