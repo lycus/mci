@@ -1,6 +1,7 @@
 module mci.cli.main;
 
-import std.stdio,
+import core.memory,
+       std.stdio,
        std.getopt,
        mci.cli.tool,
        mci.core.common,
@@ -192,5 +193,8 @@ public void logf(T ...)(T args)
 
 private int main(string[] args)
 {
+    scope (exit)
+        GC.collect();
+
     return run(args);
 }
