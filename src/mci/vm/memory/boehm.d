@@ -23,7 +23,7 @@ static if (isPOSIX)
     private struct FinalizationRecord
     {
         private GarbageCollectorFinalizer _finalizer;
-        private InteractiveGarbageCollector _gc;
+        private BoehmGarbageCollector _gc;
         private ExecutionEngine _engine;
         public bool free;
 
@@ -36,7 +36,7 @@ static if (isPOSIX)
 
         //@disable this();
 
-        public this(GarbageCollectorFinalizer finalizer, InteractiveGarbageCollector gc, ExecutionEngine engine)
+        public this(GarbageCollectorFinalizer finalizer, BoehmGarbageCollector gc, ExecutionEngine engine)
         in
         {
             assert(finalizer);
@@ -60,7 +60,7 @@ static if (isPOSIX)
             return _finalizer;
         }
 
-        @property public InteractiveGarbageCollector gc() pure nothrow
+        @property public BoehmGarbageCollector gc() pure nothrow
         out (result)
         {
             assert(result);
@@ -81,22 +81,21 @@ static if (isPOSIX)
         }
     }
 
-    public final class BoehmGarbageCollector : InteractiveGarbageCollector
+    public final class BoehmGarbageCollector : GarbageCollector, InteractiveGarbageCollector
     {
         private __gshared Dictionary!(RuntimeTypeInfo, size_t) _registeredBitmaps;
         private __gshared Mutex _bitmapsLock;
         private __gshared List!size_t _gcs;
         private __gshared Mutex _gcLock;
-        private PinnedObjectManager _pinManager;
         private NoNullList!GarbageCollectorFinalizer _allocCallbacks;
         private Mutex _allocateCallbackLock;
         private GarbageCollectorExceptionHandler _exceptionHandler;
         private FinalizerThread _finalizerThread;
         private Mutex _weakRefLock;
+        private PinnedObjectManager _pinManager;
 
         invariant()
         {
-            assert(_pinManager);
             assert(_allocCallbacks);
             assert(_allocateCallbackLock);
             assert(_finalizerThread);
@@ -132,11 +131,11 @@ static if (isPOSIX)
 
         public this()
         {
-            _pinManager = new typeof(_pinManager)(this);
             _allocCallbacks = new typeof(_allocCallbacks)();
             _allocateCallbackLock = new typeof(_allocateCallbackLock)();
             _finalizerThread = new typeof(_finalizerThread)(this);
             _weakRefLock = new typeof(_weakRefLock)();
+            _pinManager = new typeof(_pinManager)(this);
 
             _gcLock.lock();
 
@@ -144,10 +143,16 @@ static if (isPOSIX)
                 _gcLock.unlock();
 
             _gcs.add(cast(size_t)cast(void*)this);
+
+            _finalizerThread.run();
         }
 
-        ~this()
+        public override void terminate()
         {
+            super.terminate();
+
+            GC_finalizer_notifier = null;
+
             _gcLock.lock();
 
             scope (exit)
@@ -158,12 +163,12 @@ static if (isPOSIX)
             _finalizerThread.exit();
         }
 
-        @property public ulong collections() nothrow
+        @property public override ulong collections() nothrow
         {
             return GC_gc_no;
         }
 
-        public RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0)
+        public override RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0)
         {
             auto size = RuntimeObject.sizeof + type.size + extraSize;
             void* mem;
@@ -213,7 +218,7 @@ static if (isPOSIX)
             return obj;
         }
 
-        public void free(RuntimeObject* data)
+        public override void free(RuntimeObject* data)
         {
             if (!data)
                 return;
@@ -233,47 +238,47 @@ static if (isPOSIX)
                 GC_free(data);
         }
 
-        public void addRoot(RuntimeObject** ptr)
+        public override void addRoot(RuntimeObject** ptr)
         {
             GC_add_roots(ptr, ptr + size_t.sizeof + 1);
         }
 
-        public void removeRoot(RuntimeObject** ptr)
+        public override void removeRoot(RuntimeObject** ptr)
         {
             GC_remove_roots(ptr, ptr + size_t.sizeof + 1);
         }
 
-        public void addRange(RuntimeObject** ptr, size_t words)
+        public override void addRange(RuntimeObject** ptr, size_t words)
         {
             GC_add_roots(ptr, ptr + size_t.sizeof * words + 1);
         }
 
-        public void removeRange(RuntimeObject** ptr, size_t words)
+        public override void removeRange(RuntimeObject** ptr, size_t words)
         {
             GC_remove_roots(ptr, ptr + size_t.sizeof * words + 1);
         }
 
-        public size_t pin(RuntimeObject* data)
+        public override size_t pin(RuntimeObject* data)
         {
             return _pinManager.pin(data);
         }
 
-        public void unpin(size_t handle)
+        public override void unpin(size_t handle)
         {
             _pinManager.unpin(handle);
         }
 
-        public void collect()
+        public override void collect()
         {
             GC_gcollect();
         }
 
-        public void minimize()
+        public override void minimize()
         {
             GC_collect_a_little();
         }
 
-        public void attach()
+        public override void attach()
         {
             GC_stack_base sb;
 
@@ -281,12 +286,12 @@ static if (isPOSIX)
             GC_register_my_thread(&sb);
         }
 
-        public void detach()
+        public override void detach()
         {
             GC_unregister_my_thread();
         }
 
-        @property public bool isAttached()
+        @property public override bool isAttached()
         {
             GC_stack_base sb;
 
@@ -302,17 +307,17 @@ static if (isPOSIX)
             return false;
         }
 
-        public void addPressure(size_t amount) pure nothrow
+        public override void addPressure(size_t amount) pure nothrow
         {
             // Pressure notifications are not supported in libgc.
         }
 
-        public void removePressure(size_t amount) pure nothrow
+        public override void removePressure(size_t amount) pure nothrow
         {
             // Pressure notifications are not supported in libgc.
         }
 
-        public RuntimeObject* createWeak(RuntimeObject* target)
+        public override RuntimeObject* createWeak(RuntimeObject* target)
         {
             auto weak = allocate(getTypeInfo(weakType, mci.core.config.is32Bit));
 
@@ -328,7 +333,7 @@ static if (isPOSIX)
             return weak;
         }
 
-        public RuntimeObject* getWeakTarget(RuntimeObject* weak)
+        public override RuntimeObject* getWeakTarget(RuntimeObject* weak)
         {
             extern (C) static void* reveal(void* ptr)
             {
@@ -345,7 +350,7 @@ static if (isPOSIX)
             return cast(RuntimeObject*)GC_call_with_alloc_lock(&reveal, addr);
         }
 
-        public void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
+        public override void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
         {
             auto addr = cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
 

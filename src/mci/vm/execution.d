@@ -17,6 +17,7 @@ public abstract class ExecutionEngine
 {
     private GarbageCollector _gc;
     private VirtualMachineContext _context;
+    private bool _terminated;
 
     invariant()
     {
@@ -32,6 +33,16 @@ public abstract class ExecutionEngine
     {
         _gc = gc;
         _context = new typeof(_context)(this);
+    }
+
+    ~this()
+    {
+        assert(_terminated);
+    }
+
+    public void terminate()
+    {
+        _terminated = true;
     }
 
     public abstract RuntimeValue execute(Function function_, NoNullList!RuntimeValue arguments);

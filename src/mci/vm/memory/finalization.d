@@ -11,10 +11,11 @@ import core.thread,
        mci.vm.intrinsics.declarations,
        mci.vm.memory.base;
 
-public void finalize(InteractiveGarbageCollector gc, RuntimeObject* rto, GarbageCollectorFinalizer finalizer, ExecutionEngine engine)
+public void finalize(GarbageCollector gc, RuntimeObject* rto, GarbageCollectorFinalizer finalizer, ExecutionEngine engine)
 in
 {
     assert(gc);
+    assert(cast(InteractiveGarbageCollector)gc);
     assert(rto);
     assert(finalizer);
     assert(engine);
@@ -31,7 +32,7 @@ body
     }
     catch (ExecutionException ex)
     {
-        auto eh = gc.exceptionHandler;
+        auto eh = (cast(InteractiveGarbageCollector)gc).exceptionHandler;
 
         if (eh)
             eh(rto, finalizer, engine, ex);
@@ -112,6 +113,8 @@ public final class FinalizerThread
 
         while (_running.value)
             _shutdownCondition.wait();
+
+        _thread = null;
     }
 
     public void notify()

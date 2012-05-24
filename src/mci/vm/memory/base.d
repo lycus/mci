@@ -75,114 +75,57 @@ public union GarbageCollectorHeader
     private size_t bits;
 }
 
-public interface GarbageCollector
+public abstract class GarbageCollector
 {
-    @property public ulong collections() nothrow;
+    private bool _terminated;
 
-    public RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0)
-    in
+    ~this()
     {
-        assert(type);
-    }
-    out (result)
-    {
-        if (result)
-            assert(isAligned(result));
+        assert(_terminated);
     }
 
-    public void free(RuntimeObject* data)
-    in
+    public void terminate()
     {
-        if (data)
-            assert(isAligned(data));
+        _terminated = true;
     }
 
-    public void addRoot(RuntimeObject** ptr)
-    in
-    {
-        assert(ptr);
-        assert(isAligned(ptr));
-    }
+    @property public abstract ulong collections() nothrow;
 
-    public void removeRoot(RuntimeObject** ptr)
-    in
-    {
-        assert(ptr);
-        assert(isAligned(ptr));
-    }
+    public abstract RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0);
 
-    public void addRange(RuntimeObject** ptr, size_t words)
-    in
-    {
-        assert(ptr);
-        assert(isAligned(ptr));
-        assert(words);
-    }
+    public abstract void free(RuntimeObject* data);
 
-    public void removeRange(RuntimeObject** ptr, size_t words)
-    in
-    {
-        assert(ptr);
-        assert(isAligned(ptr));
-        assert(words);
-    }
+    public abstract void addRoot(RuntimeObject** ptr);
 
-    public size_t pin(RuntimeObject* data)
-    in
-    {
-        assert(data);
-        assert(isAligned(data));
-    }
+    public abstract void removeRoot(RuntimeObject** ptr);
 
-    public void unpin(size_t handle);
+    public abstract void addRange(RuntimeObject** ptr, size_t words);
 
-    public void collect();
+    public abstract void removeRange(RuntimeObject** ptr, size_t words);
 
-    public void minimize();
+    public abstract size_t pin(RuntimeObject* data);
 
-    public void attach();
+    public abstract void unpin(size_t handle);
 
-    public void detach();
+    public abstract void collect();
 
-    @property public bool isAttached();
+    public abstract void minimize();
 
-    public void addPressure(size_t amount) pure nothrow;
+    public abstract void attach();
 
-    public void removePressure(size_t amount) pure nothrow;
+    public abstract void detach();
 
-    public RuntimeObject* createWeak(RuntimeObject* target)
-    in
-    {
-        assert(target);
-        assert(isAligned(target));
-    }
-    out (result)
-    {
-        if (result)
-            assert(isAligned(result));
-    }
+    @property public abstract bool isAttached();
 
-    public RuntimeObject* getWeakTarget(RuntimeObject* weak)
-    in
-    {
-        assert(weak);
-        assert(isAligned(weak));
-    }
-    out (result)
-    {
-        if (result)
-            assert(isAligned(result));
-    }
+    public abstract void addPressure(size_t amount) pure nothrow;
 
-    public void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
-    in
-    {
-        assert(weak);
-        assert(isAligned(weak));
+    public abstract void removePressure(size_t amount) pure nothrow;
 
-        if (target)
-            assert(isAligned(target));
-    }
+    public abstract RuntimeObject* createWeak(RuntimeObject* target);
+
+    public abstract RuntimeObject* getWeakTarget(RuntimeObject* weak);
+
+    public abstract void setWeakTarget(RuntimeObject* weak, RuntimeObject* target);
 }
 
 public interface GarbageCollectorGeneration
@@ -196,7 +139,7 @@ public interface GarbageCollectorGeneration
     public void minimize();
 }
 
-public interface GenerationalGarbageCollector : GarbageCollector
+public interface GenerationalGarbageCollector
 {
     @property public ReadOnlyIndexable!GarbageCollectorGeneration generations() pure nothrow
     out (result)
@@ -209,7 +152,7 @@ public alias extern (C) void function(RuntimeObject*) GarbageCollectorFinalizer;
 
 public alias void delegate(RuntimeObject*, GarbageCollectorFinalizer, ExecutionEngine, ExecutionException) GarbageCollectorExceptionHandler;
 
-public interface InteractiveGarbageCollector : GarbageCollector
+public interface InteractiveGarbageCollector
 {
     public void addAllocateCallback(GarbageCollectorFinalizer callback)
     in
@@ -240,7 +183,7 @@ public interface InteractiveGarbageCollector : GarbageCollector
     @property public void exceptionHandler(GarbageCollectorExceptionHandler exceptionHandler) pure nothrow;
 }
 
-public interface MovingGarbageCollector : GarbageCollector
+public interface MovingGarbageCollector
 {
     @property public bool canMove() pure nothrow;
 
@@ -260,7 +203,7 @@ public enum BarrierFlags : ubyte
     memorySet = 0x20,
 }
 
-public interface AtomicGarbageCollector : GarbageCollector
+public interface AtomicGarbageCollector
 {
     @property public BarrierFlags barriers() pure nothrow;
 

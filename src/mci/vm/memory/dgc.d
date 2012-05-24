@@ -18,13 +18,13 @@ public final class DGarbageCollector : GarbageCollector
         _pinManager = new typeof(_pinManager)(this);
     }
 
-    @property public ulong collections() nothrow
+    @property public override ulong collections() nothrow
     {
         // We can't query D's GC about this.
         return 0;
     }
 
-    public RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0)
+    public override RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0)
     {
         try
         {
@@ -39,90 +39,90 @@ public final class DGarbageCollector : GarbageCollector
             return null; // This might not actually work at all due to how D handles catching of Error objects.
     }
 
-    public void free(RuntimeObject* data)
+    public override void free(RuntimeObject* data)
     {
         if (data)
             GC.free(data);
     }
 
-    public void addRoot(RuntimeObject** ptr)
+    public override void addRoot(RuntimeObject** ptr)
     {
         GC.addRoot(ptr);
     }
 
-    public void removeRoot(RuntimeObject** ptr)
+    public override void removeRoot(RuntimeObject** ptr)
     {
         GC.removeRoot(ptr);
     }
 
-    public void addRange(RuntimeObject** ptr, size_t words)
+    public override void addRange(RuntimeObject** ptr, size_t words)
     {
         GC.addRange(ptr, words * size_t.sizeof);
     }
 
-    public void removeRange(RuntimeObject** ptr, size_t words)
+    public override void removeRange(RuntimeObject** ptr, size_t words)
     {
         GC.removeRange(ptr);
     }
 
-    public size_t pin(RuntimeObject* data)
+    public override size_t pin(RuntimeObject* data)
     {
         return _pinManager.pin(data);
     }
 
-    public void unpin(size_t handle)
+    public override void unpin(size_t handle)
     {
         _pinManager.unpin(handle);
     }
 
-    public void collect()
+    public override void collect()
     {
         GC.collect();
     }
 
-    public void minimize()
+    public override void minimize()
     {
         GC.minimize();
     }
 
-    public void attach()
+    public override void attach()
     {
         // Threads are already implicitly attached to druntime.
     }
 
-    public void detach()
+    public override void detach()
     {
         // Threads are already implicitly detached from druntime.
     }
 
-    @property public bool isAttached()
+    @property public override bool isAttached()
     {
         // Threads don't need to detach here. See comments above.
         return false;
     }
 
-    public void addPressure(size_t amount) pure nothrow
+    public override void addPressure(size_t amount) pure nothrow
     {
         // D's GC doesn't support pressure notifications.
     }
 
-    public void removePressure(size_t amount) pure nothrow
+    public override void removePressure(size_t amount) pure nothrow
     {
         // D's GC doesn't support pressure notifications.
     }
 
-    public RuntimeObject* createWeak(RuntimeObject* target)
+    public override RuntimeObject* createWeak(RuntimeObject* target)
     {
         // FIXME: Can't implement this until 2.060.
         assert(false);
     }
 
-    public RuntimeObject* getWeakTarget(RuntimeObject* weak)
+    public override RuntimeObject* getWeakTarget(RuntimeObject* weak)
     {
         assert(false);
     }
 
-    public void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
+    public override void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
     {
         assert(false);
     }

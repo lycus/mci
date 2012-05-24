@@ -12,7 +12,7 @@ import core.stdc.stdlib,
        mci.vm.memory.info,
        mci.vm.memory.layout;
 
-public final class LibCGarbageCollector : InteractiveGarbageCollector
+public final class LibCGarbageCollector : GarbageCollector, InteractiveGarbageCollector
 {
     private NoNullList!GarbageCollectorFinalizer _allocCallbacks;
     private Dictionary!(RuntimeObject*, Tuple!(GarbageCollectorFinalizer, ExecutionEngine)) _freeCallbacks;
@@ -44,17 +44,19 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         _finalizerThread = new typeof(_finalizerThread)(this);
     }
 
-    ~this()
+    public override void terminate()
     {
+        super.terminate();
+
         _finalizerThread.exit();
     }
 
-    @property public ulong collections() nothrow
+    @property public override ulong collections() nothrow
     {
         return 0;
     }
 
-    public RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0)
+    public override RuntimeObject* allocate(RuntimeTypeInfo type, size_t extraSize = 0)
     {
         auto mem = calloc(1, RuntimeObject.sizeof + type.size + extraSize);
 
@@ -76,7 +78,7 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         return obj;
     }
 
-    public void free(RuntimeObject* data)
+    public override void free(RuntimeObject* data)
     {
         if (!data)
             return;
@@ -110,66 +112,66 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
             .free(data);
     }
 
-    public void addRoot(RuntimeObject** ptr)
+    public override void addRoot(RuntimeObject** ptr)
     {
     }
 
-    public void removeRoot(RuntimeObject** ptr)
+    public override void removeRoot(RuntimeObject** ptr)
     {
     }
 
-    public void addRange(RuntimeObject** ptr, size_t words)
+    public override void addRange(RuntimeObject** ptr, size_t words)
     {
     }
 
-    public void removeRange(RuntimeObject** ptr, size_t words)
+    public override void removeRange(RuntimeObject** ptr, size_t words)
     {
     }
 
-    public size_t pin(RuntimeObject* data)
+    public override size_t pin(RuntimeObject* data)
     {
         // Pinning is not actually necessary since we don't reclaim objects automatically.
         return 0;
     }
 
-    public void unpin(size_t handle)
+    public override void unpin(size_t handle)
     {
     }
 
-    public void collect()
+    public override void collect()
     {
         // We do no actual collection, since this is just a plain
         // memory manager, not a garbage collector.
     }
 
-    public void minimize()
+    public override void minimize()
     {
     }
 
-    public void attach()
+    public override void attach()
     {
     }
 
-    public void detach()
+    public override void detach()
     {
     }
 
-    @property public bool isAttached()
+    @property public override bool isAttached()
     {
         // Threads don't need to register with this implementation,
         // so we simply indicate that they don't need to detach.
         return false;
     }
 
-    public void addPressure(size_t amount) pure nothrow
+    public override void addPressure(size_t amount) pure nothrow
     {
     }
 
-    public void removePressure(size_t amount) pure nothrow
+    public override void removePressure(size_t amount) pure nothrow
     {
     }
 
-    public RuntimeObject* createWeak(RuntimeObject* target)
+    public override RuntimeObject* createWeak(RuntimeObject* target)
     {
         auto weak = allocate(getTypeInfo(weakType, mci.core.config.is32Bit));
 
@@ -181,12 +183,12 @@ public final class LibCGarbageCollector : InteractiveGarbageCollector
         return weak;
     }
 
-    public RuntimeObject* getWeakTarget(RuntimeObject* weak)
+    public override RuntimeObject* getWeakTarget(RuntimeObject* weak)
     {
         return *cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
     }
 
-    public void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
+    public override void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
     {
         *cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit)) = target;
     }
