@@ -399,6 +399,10 @@ The target may also have a specified calling convention (``cdecl`` or
 ``stdcall``), in which case the given function must have a matching calling
 convention.
 
+Equality for function pointers obtained through this instruction is
+guaranteed. That is, if a function pointer to a specific function is loaded
+twice, the two pointers are guaranteed to be equal.
+
 load.null
 ---------
 
