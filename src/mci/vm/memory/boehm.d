@@ -151,7 +151,9 @@ static if (isPOSIX)
         {
             super.terminate();
 
-            GC_finalizer_notifier = null;
+            _pinManager.unpinAll();
+            GC_gcollect();
+            _finalizerThread.exit();
 
             _gcLock.lock();
 
@@ -159,8 +161,6 @@ static if (isPOSIX)
                 _gcLock.unlock();
 
             _gcs.remove(cast(size_t)cast(void*)this);
-
-            _finalizerThread.exit();
         }
 
         @property public override ulong collections() nothrow

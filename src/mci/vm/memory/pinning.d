@@ -63,6 +63,19 @@ public final class PinnedObjectManager
         _reuseQueue.enqueue(handle);
     }
 
+    public void unpinAll()
+    {
+        foreach (pair; _objects)
+        {
+            _gc.removeRoot(pair.y);
+            free(pair.y);
+        }
+
+        _objects.clear();
+        _counter = 0;
+        _reuseQueue.clear();
+    }
+
     private size_t getHandle()
     {
         if (!_reuseQueue.empty)

@@ -18,6 +18,12 @@ public final class DGarbageCollector : GarbageCollector
         _pinManager = new typeof(_pinManager)(this);
     }
 
+    public override void terminate()
+    {
+        _pinManager.unpinAll();
+        GC.collect();
+    }
+
     @property public override ulong collections() nothrow
     {
         // We can't query D's GC about this.
