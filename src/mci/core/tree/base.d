@@ -4,11 +4,11 @@ import mci.core.container,
        mci.core.code.instructions,
        mci.core.typing.types;
 
-private __gshared List!TreeNode _emptyNodes;
+private __gshared List!TreeNode emptyNodes;
 
 shared static this()
 {
-    _emptyNodes = new typeof(_emptyNodes)();
+    emptyNodes = new typeof(emptyNodes)();
 }
 
 public abstract class TreeNode
@@ -34,7 +34,7 @@ public abstract class TreeNode
     }
     body
     {
-        return _emptyNodes;
+        return emptyNodes;
     }
 
     public TreeNode reduce()

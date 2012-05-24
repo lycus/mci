@@ -115,10 +115,10 @@ shared static this()
     intrinsicModule = new typeof(intrinsicModule)(intrinsicModuleName);
     intrinsicFunctions = new NoNullDictionary!(Function, function_t)();
 
-    objectType = new StructureType(intrinsicModule, "Object");
+    objectType = new typeof(objectType)(intrinsicModule, "Object");
     objectType.close();
 
-    weakType = new StructureType(intrinsicModule, "Weak");
+    weakType = new typeof(weakType)(intrinsicModule, "Weak");
     weakType.createField("value", getReferenceType(objectType));
     weakType.close();
 

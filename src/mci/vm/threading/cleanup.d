@@ -26,7 +26,7 @@ static if (isWindows)
         onThreadDestroy.add(&threadExit);
     }
 
-    private static void threadExit()
+    private void threadExit()
     in
     {
         assert(Thread.getThis());
@@ -96,7 +96,7 @@ else
         pthread_key_create(&key, &threadExit);
     }
 
-    private static extern (C) void threadExit(void* cd)
+    private extern (C) void threadExit(void* cd)
     in
     {
         assert(cd);
