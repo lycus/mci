@@ -40,7 +40,7 @@ public interface ReadOnlyCollection(T) : Countable!T
     public T* opBinaryRight(string op : "in")(T item)
     in
     {
-        if (isNullable!T)
+        static if (isNullable!T)
             assert(item);
     }
 }
