@@ -425,19 +425,6 @@ The result is also assigned to the location pointed to by the first argument.
 Memory management
 +++++++++++++++++
 
-is_aligned
-----------
-
-**Signature**
-    ``uint is_aligned(uint8*)``
-
-Determines whether the given pointer is properly aligned for the system
-the program is currently running on. Returns 1 if the pointer is properly
-aligned; otherwise, returns 0.
-
-Here, "properly aligned" usually means being a multiple of 4 or 8 depending
-on the pointer length of the platform (32 and 64 bits, respectively).
-
 gc_collect
 ----------
 

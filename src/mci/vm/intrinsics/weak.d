@@ -5,17 +5,17 @@ import mci.vm.intrinsics.context,
 
 extern (C)
 {
-    public RuntimeObject* create_weak(VirtualMachineContext context, RuntimeObject* target)
+    public RuntimeObject* mci_create_weak(VirtualMachineContext context, RuntimeObject* target)
     {
         return context.engine.gc.createWeak(target);
     }
 
-    public RuntimeObject* get_weak_target(VirtualMachineContext context, RuntimeObject* weak)
+    public RuntimeObject* mci_get_weak_target(VirtualMachineContext context, RuntimeObject* weak)
     {
         return context.engine.gc.getWeakTarget(weak);
     }
 
-    public void set_weak_target(VirtualMachineContext context, RuntimeObject* weak, RuntimeObject* target)
+    public void mci_set_weak_target(VirtualMachineContext context, RuntimeObject* weak, RuntimeObject* target)
     {
         context.engine.gc.setWeakTarget(weak, target);
     }

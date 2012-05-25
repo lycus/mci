@@ -1,6 +1,7 @@
 module mci.vm.intrinsics.declarations;
 
-import mci.core.common,
+import std.algorithm,
+       mci.core.common,
        mci.core.container,
        mci.core.code.functions,
        mci.core.code.modules,
@@ -50,7 +51,6 @@ public __gshared
     Function atomicOrS;
     Function atomicXOrS;
 
-    Function isAligned;
     Function gcCollect;
     Function gcMinimize;
     Function gcGetCollections;
@@ -88,26 +88,34 @@ public __gshared
 
 public enum string intrinsicModuleName = "mci";
 
-template createFunction(alias function_)
+private enum string intrinsicFunctionPrefix = "mci_";
+
+Function createFunction(alias function_)(Type returnType, Type[] parameters ...)
+in
 {
-    Function createFunction(Type returnType, Type[] parameters ...)
-    out (result)
-    {
-        assert(result);
-    }
-    body
-    {
-        auto f = new Function(intrinsicModule, __traits(identifier, function_), returnType, CallingConvention.cdecl, FunctionAttributes.intrinsic);
+    static assert(startsWith(__traits(identifier, function_), intrinsicFunctionPrefix));
+    static assert(__traits(identifier, function_).length > intrinsicFunctionPrefix.length);
 
-        foreach (param; parameters)
-            f.createParameter(param);
+    foreach (param; parameters)
+        assert(param);
+}
+out (result)
+{
+    assert(result);
+}
+body
+{
+    auto ident = __traits(identifier, function_)[intrinsicFunctionPrefix.length .. $];
+    auto f = new Function(intrinsicModule, ident, returnType, CallingConvention.cdecl, FunctionAttributes.intrinsic);
 
-        f.close();
+    foreach (param; parameters)
+        f.createParameter(param);
 
-        (cast(NoNullDictionary!(Function, function_t))intrinsicFunctions)[f] = cast(function_t)&function_;
+    f.close();
 
-        return f;
-    }
+    (cast(NoNullDictionary!(Function, function_t))intrinsicFunctions)[f] = cast(function_t)&function_;
+
+    return f;
 }
 
 shared static this()
@@ -122,144 +130,142 @@ shared static this()
     weakType.createField("value", getReferenceType(objectType));
     weakType.close();
 
-    getCompiler = createFunction!get_compiler(UInt8Type.instance);
-    getArchitecture = createFunction!get_architecture(UInt8Type.instance);
-    getOperatingSystem = createFunction!get_operating_system(UInt8Type.instance);
-    getEndianness = createFunction!get_endianness(UInt8Type.instance);
-    is32Bit = createFunction!is_32_bit(NativeUIntType.instance);
+    getCompiler = createFunction!mci_get_compiler(UInt8Type.instance);
+    getArchitecture = createFunction!mci_get_architecture(UInt8Type.instance);
+    getOperatingSystem = createFunction!mci_get_operating_system(UInt8Type.instance);
+    getEndianness = createFunction!mci_get_endianness(UInt8Type.instance);
+    is32Bit = createFunction!mci_is_32_bit(NativeUIntType.instance);
 
-    atomicLoad = createFunction!atomic_load(getReferenceType(objectType),
-                                            getPointerType(getReferenceType(objectType)));
-    atomicStore = createFunction!atomic_store(null,
-                                              getPointerType(getReferenceType(objectType)),
-                                              getReferenceType(objectType));
-    atomicExchange = createFunction!atomic_exchange(NativeUIntType.instance,
-                                                    getPointerType(getReferenceType(objectType)),
-                                                    getReferenceType(objectType),
-                                                    getReferenceType(objectType));
-    atomicLoadU = createFunction!atomic_load_u(NativeUIntType.instance,
-                                               getPointerType(NativeUIntType.instance));
-    atomicStoreU = createFunction!atomic_store_u(null,
+    atomicLoad = createFunction!mci_atomic_load(getReferenceType(objectType),
+                                                getPointerType(getReferenceType(objectType)));
+    atomicStore = createFunction!mci_atomic_store(null,
+                                                  getPointerType(getReferenceType(objectType)),
+                                                  getReferenceType(objectType));
+    atomicExchange = createFunction!mci_atomic_exchange(NativeUIntType.instance,
+                                                        getPointerType(getReferenceType(objectType)),
+                                                        getReferenceType(objectType),
+                                                        getReferenceType(objectType));
+    atomicLoadU = createFunction!mci_atomic_load_u(NativeUIntType.instance,
+                                                   getPointerType(NativeUIntType.instance));
+    atomicStoreU = createFunction!mci_atomic_store_u(null,
+                                                     getPointerType(NativeUIntType.instance),
+                                                     NativeUIntType.instance);
+    atomicExchangeU = createFunction!mci_atomic_exchange_u(NativeUIntType.instance,
+                                                           getPointerType(NativeUIntType.instance),
+                                                           NativeUIntType.instance,
+                                                           NativeUIntType.instance);
+    atomicAddU = createFunction!mci_atomic_add_u(NativeUIntType.instance,
                                                  getPointerType(NativeUIntType.instance),
                                                  NativeUIntType.instance);
-    atomicExchangeU = createFunction!atomic_exchange_u(NativeUIntType.instance,
-                                                       getPointerType(NativeUIntType.instance),
-                                                       NativeUIntType.instance,
-                                                       NativeUIntType.instance);
-    atomicAddU = createFunction!atomic_add_u(NativeUIntType.instance,
-                                             getPointerType(NativeUIntType.instance),
-                                             NativeUIntType.instance);
-    atomicSubU = createFunction!atomic_sub_u(NativeUIntType.instance,
-                                             getPointerType(NativeUIntType.instance),
-                                             NativeUIntType.instance,
-                                             getPointerType(NativeUIntType.instance),
-                                             NativeUIntType.instance);
-    atomicMulU = createFunction!atomic_mul_u(NativeUIntType.instance,
-                                             getPointerType(NativeUIntType.instance),
-                                             NativeUIntType.instance);
-    atomicDivU = createFunction!atomic_div_u(NativeUIntType.instance,
-                                             getPointerType(NativeUIntType.instance),
-                                             NativeUIntType.instance);
-    atomicRemU = createFunction!atomic_rem_u(NativeUIntType.instance,
-                                             getPointerType(NativeUIntType.instance),
-                                             NativeUIntType.instance);
-    atomicAndU = createFunction!atomic_and_u(NativeUIntType.instance,
-                                             getPointerType(NativeUIntType.instance),
-                                             NativeUIntType.instance);
-    atomicOrU = createFunction!atomic_or_u(NativeUIntType.instance,
-                                           getPointerType(NativeUIntType.instance),
-                                           NativeUIntType.instance);
-    atomicXOrU = createFunction!atomic_xor_u(NativeUIntType.instance,
-                                             getPointerType(NativeUIntType.instance),
-                                             NativeUIntType.instance);
-    atomicLoadS = createFunction!atomic_load_s(NativeIntType.instance,
-                                               getPointerType(NativeIntType.instance));
-    atomicStoreS = createFunction!atomic_store_s(null,
+    atomicSubU = createFunction!mci_atomic_sub_u(NativeUIntType.instance,
+                                                 getPointerType(NativeUIntType.instance),
+                                                 NativeUIntType.instance,
+                                                 getPointerType(NativeUIntType.instance),
+                                                 NativeUIntType.instance);
+    atomicMulU = createFunction!mci_atomic_mul_u(NativeUIntType.instance,
+                                                 getPointerType(NativeUIntType.instance),
+                                                 NativeUIntType.instance);
+    atomicDivU = createFunction!mci_atomic_div_u(NativeUIntType.instance,
+                                                 getPointerType(NativeUIntType.instance),
+                                                 NativeUIntType.instance);
+    atomicRemU = createFunction!mci_atomic_rem_u(NativeUIntType.instance,
+                                                 getPointerType(NativeUIntType.instance),
+                                                 NativeUIntType.instance);
+    atomicAndU = createFunction!mci_atomic_and_u(NativeUIntType.instance,
+                                                 getPointerType(NativeUIntType.instance),
+                                                 NativeUIntType.instance);
+    atomicOrU = createFunction!mci_atomic_or_u(NativeUIntType.instance,
+                                               getPointerType(NativeUIntType.instance),
+                                               NativeUIntType.instance);
+    atomicXOrU = createFunction!mci_atomic_xor_u(NativeUIntType.instance,
+                                                 getPointerType(NativeUIntType.instance),
+                                                 NativeUIntType.instance);
+    atomicLoadS = createFunction!mci_atomic_load_s(NativeIntType.instance,
+                                                   getPointerType(NativeIntType.instance));
+    atomicStoreS = createFunction!mci_atomic_store_s(null,
+                                                     getPointerType(NativeIntType.instance),
+                                                     NativeIntType.instance);
+    atomicExchangeS = createFunction!mci_atomic_exchange_s(NativeIntType.instance,
+                                                           getPointerType(NativeIntType.instance),
+                                                           NativeIntType.instance,
+                                                           NativeIntType.instance);
+    atomicAddS = createFunction!mci_atomic_add_s(NativeIntType.instance,
                                                  getPointerType(NativeIntType.instance),
                                                  NativeIntType.instance);
-    atomicExchangeS = createFunction!atomic_exchange_s(NativeIntType.instance,
-                                                       getPointerType(NativeIntType.instance),
-                                                       NativeIntType.instance,
-                                                       NativeIntType.instance);
-    atomicAddS = createFunction!atomic_add_s(NativeIntType.instance,
-                                             getPointerType(NativeIntType.instance),
-                                             NativeIntType.instance);
-    atomicSubS = createFunction!atomic_sub_s(NativeIntType.instance,
-                                             getPointerType(NativeIntType.instance),
-                                             NativeIntType.instance);
-    atomicMulS = createFunction!atomic_mul_s(NativeIntType.instance,
-                                             getPointerType(NativeIntType.instance),
-                                             NativeIntType.instance);
-    atomicDivS = createFunction!atomic_div_s(NativeIntType.instance,
-                                             getPointerType(NativeIntType.instance),
-                                             NativeIntType.instance);
-    atomicRemS = createFunction!atomic_rem_s(NativeIntType.instance,
-                                             getPointerType(NativeIntType.instance),
-                                             NativeIntType.instance);
-    atomicAndS = createFunction!atomic_and_s(NativeIntType.instance,
-                                             getPointerType(NativeIntType.instance),
-                                             NativeIntType.instance);
-    atomicOrS = createFunction!atomic_or_s(NativeIntType.instance,
-                                           getPointerType(NativeIntType.instance),
-                                           NativeIntType.instance);
-    atomicXOrS = createFunction!atomic_xor_s(NativeIntType.instance,
-                                             getPointerType(NativeIntType.instance),
-                                             NativeIntType.instance);
+    atomicSubS = createFunction!mci_atomic_sub_s(NativeIntType.instance,
+                                                 getPointerType(NativeIntType.instance),
+                                                 NativeIntType.instance);
+    atomicMulS = createFunction!mci_atomic_mul_s(NativeIntType.instance,
+                                                 getPointerType(NativeIntType.instance),
+                                                 NativeIntType.instance);
+    atomicDivS = createFunction!mci_atomic_div_s(NativeIntType.instance,
+                                                 getPointerType(NativeIntType.instance),
+                                                 NativeIntType.instance);
+    atomicRemS = createFunction!mci_atomic_rem_s(NativeIntType.instance,
+                                                 getPointerType(NativeIntType.instance),
+                                                 NativeIntType.instance);
+    atomicAndS = createFunction!mci_atomic_and_s(NativeIntType.instance,
+                                                 getPointerType(NativeIntType.instance),
+                                                 NativeIntType.instance);
+    atomicOrS = createFunction!mci_atomic_or_s(NativeIntType.instance,
+                                               getPointerType(NativeIntType.instance),
+                                               NativeIntType.instance);
+    atomicXOrS = createFunction!mci_atomic_xor_s(NativeIntType.instance,
+                                                 getPointerType(NativeIntType.instance),
+                                                 NativeIntType.instance);
 
-    isAligned = createFunction!is_aligned(NativeUIntType.instance,
-                                          getPointerType(UInt8Type.instance));
-    gcCollect = createFunction!gc_collect_(null);
-    gcMinimize = createFunction!gc_minimize_(null);
-    gcGetCollections = createFunction!gc_get_collections(UInt64Type.instance);
-    gcAddPressure = createFunction!gc_add_pressure(null,
-                                                   NativeUIntType.instance);
-    gcRemovePressure = createFunction!gc_remove_pressure(null,
-                                                         NativeUIntType.instance);
-    gcIsGenerational = createFunction!gc_is_generational(NativeUIntType.instance);
-    gcGetGenerations = createFunction!gc_get_generations(NativeUIntType.instance);
-    gcGenerationCollect = createFunction!gc_generation_collect(null,
-                                                               NativeUIntType.instance);
-    gcGenerationMinimize = createFunction!gc_generation_minimize(null,
-                                                                 NativeUIntType.instance);
-    gcGenerationGetCollections = createFunction!gc_generation_get_collections(UInt64Type.instance,
-                                                                              NativeUIntType.instance);
-    gcIsInteractive = createFunction!gc_is_interactive(NativeUIntType.instance);
-    gcAddAllocateCallback = createFunction!gc_add_allocate_callback(null,
-                                                                    getFunctionPointerType(CallingConvention.cdecl, null,
-                                                                                           toNoNullList(toIterable!Type(getReferenceType(objectType)))));
-    gcRemoveAllocateCallback = createFunction!gc_remove_allocate_callback(null,
-                                                                          getFunctionPointerType(CallingConvention.cdecl, null,
-                                                                                                 toNoNullList(toIterable!Type(getReferenceType(objectType)))));
-    gcSetFreeCallback = createFunction!gc_set_free_callback(null,
-                                                            getReferenceType(objectType),
-                                                            getFunctionPointerType(CallingConvention.cdecl, null,
-                                                                                   toNoNullList(toIterable!Type(getReferenceType(objectType)))));
-    gcWaitForFreeCallbacks = createFunction!gc_wait_for_free_callbacks(null);
-    gcIsAtomic = createFunction!gc_is_atomic(NativeUIntType.instance);
-    gcGetBarriers = createFunction!gc_get_barriers(UInt8Type.instance);
+    gcCollect = createFunction!mci_gc_collect_(null);
+    gcMinimize = createFunction!mci_gc_minimize_(null);
+    gcGetCollections = createFunction!mci_gc_get_collections(UInt64Type.instance);
+    gcAddPressure = createFunction!mci_gc_add_pressure(null,
+                                                       NativeUIntType.instance);
+    gcRemovePressure = createFunction!mci_gc_remove_pressure(null,
+                                                             NativeUIntType.instance);
+    gcIsGenerational = createFunction!mci_gc_is_generational(NativeUIntType.instance);
+    gcGetGenerations = createFunction!mci_gc_get_generations(NativeUIntType.instance);
+    gcGenerationCollect = createFunction!mci_gc_generation_collect(null,
+                                                                   NativeUIntType.instance);
+    gcGenerationMinimize = createFunction!mci_gc_generation_minimize(null,
+                                                                     NativeUIntType.instance);
+    gcGenerationGetCollections = createFunction!mci_gc_generation_get_collections(UInt64Type.instance,
+                                                                                  NativeUIntType.instance);
+    gcIsInteractive = createFunction!mci_gc_is_interactive(NativeUIntType.instance);
+    gcAddAllocateCallback = createFunction!mci_gc_add_allocate_callback(null,
+                                                                        getFunctionPointerType(CallingConvention.cdecl, null,
+                                                                                               toNoNullList(toIterable!Type(getReferenceType(objectType)))));
+    gcRemoveAllocateCallback = createFunction!mci_gc_remove_allocate_callback(null,
+                                                                              getFunctionPointerType(CallingConvention.cdecl, null,
+                                                                                                     toNoNullList(toIterable!Type(getReferenceType(objectType)))));
+    gcSetFreeCallback = createFunction!mci_gc_set_free_callback(null,
+                                                                getReferenceType(objectType),
+                                                                getFunctionPointerType(CallingConvention.cdecl, null,
+                                                                                       toNoNullList(toIterable!Type(getReferenceType(objectType)))));
+    gcWaitForFreeCallbacks = createFunction!mci_gc_wait_for_free_callbacks(null);
+    gcIsAtomic = createFunction!mci_gc_is_atomic(NativeUIntType.instance);
+    gcGetBarriers = createFunction!mci_gc_get_barriers(UInt8Type.instance);
 
-    nanWithPayloadF32 = createFunction!nan_with_payload_f32(Float32Type.instance,
-                                                            UInt32Type.instance);
-    nanWithPayloadF64 = createFunction!nan_with_payload_f64(Float64Type.instance,
-                                                            UInt64Type.instance);
-    nanGetPayloadF32 = createFunction!nan_get_payload_f32(UInt32Type.instance,
-                                                          Float32Type.instance);
-    nanGetPayloadF64 = createFunction!nan_get_payload_f64(UInt64Type.instance,
-                                                          Float64Type.instance);
-    isNANF32 = createFunction!is_nan_f32(NativeUIntType.instance,
-                                         Float32Type.instance);
-    isNANF64 = createFunction!is_nan_f64(NativeUIntType.instance,
-                                         Float64Type.instance);
-    isInfF32 = createFunction!is_inf_f32(NativeUIntType.instance,
-                                         Float32Type.instance);
-    isInfF64 = createFunction!is_inf_f64(NativeUIntType.instance,
-                                         Float64Type.instance);
+    nanWithPayloadF32 = createFunction!mci_nan_with_payload_f32(Float32Type.instance,
+                                                                UInt32Type.instance);
+    nanWithPayloadF64 = createFunction!mci_nan_with_payload_f64(Float64Type.instance,
+                                                                UInt64Type.instance);
+    nanGetPayloadF32 = createFunction!mci_nan_get_payload_f32(UInt32Type.instance,
+                                                              Float32Type.instance);
+    nanGetPayloadF64 = createFunction!mci_nan_get_payload_f64(UInt64Type.instance,
+                                                              Float64Type.instance);
+    isNANF32 = createFunction!mci_is_nan_f32(NativeUIntType.instance,
+                                             Float32Type.instance);
+    isNANF64 = createFunction!mci_is_nan_f64(NativeUIntType.instance,
+                                             Float64Type.instance);
+    isInfF32 = createFunction!mci_is_inf_f32(NativeUIntType.instance,
+                                             Float32Type.instance);
+    isInfF64 = createFunction!mci_is_inf_f64(NativeUIntType.instance,
+                                             Float64Type.instance);
 
-    createWeak = createFunction!create_weak(getReferenceType(weakType),
-                                            getReferenceType(objectType));
-    getWeakTarget = createFunction!get_weak_target(getReferenceType(objectType),
-                                                   getReferenceType(weakType));
-    setWeakTarget = createFunction!set_weak_target(null,
-                                                   getReferenceType(weakType),
-                                                   getReferenceType(objectType));
+    createWeak = createFunction!mci_create_weak(getReferenceType(weakType),
+                                                getReferenceType(objectType));
+    getWeakTarget = createFunction!mci_get_weak_target(getReferenceType(objectType),
+                                                       getReferenceType(weakType));
+    setWeakTarget = createFunction!mci_set_weak_target(null,
+                                                       getReferenceType(weakType),
+                                                       getReferenceType(objectType));
 }
