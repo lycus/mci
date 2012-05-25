@@ -201,6 +201,7 @@
   <File path="lexer.d" />
   <File path="main.d" />
   <File path="math.d" />
+  <File path="memory.d" />
   <File path="nullable.d" />
   <File path="tokens.d" />
   <File path="types.d" />
