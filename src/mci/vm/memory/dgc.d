@@ -20,6 +20,8 @@ public final class DGarbageCollector : GarbageCollector
 
     public override void terminate()
     {
+        super.terminate();
+
         _pinManager.unpinAll();
         GC.collect();
     }
