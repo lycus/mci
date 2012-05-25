@@ -39,22 +39,30 @@ Additionally, always put a space after a block statement keyword. That is:
     * while (...)
     * for (...)
 
+It's recommended to use empty lines between statements that are not closely
+related. This helps a lot when skimming code.
+
         ++ Naming ++
 
 In general, we follow the naming conventions of Phobos, the standard
 library for D:
 
     * Module and package names should be all lower case, and should not
-      use underscores. All module names must start with "mci" followed by
-      the name of the library/executable (for example, "mci.core.tuple").
-    * Type names should be PascalCase.
+      use underscores. All module names must start with 'mci' followed by
+      the name of the library/executable (for example, 'mci.core.tuple').
+    * Type names should be PascalCase. We do use C-style naming for some
+      primitive type aliases, though.
     * Function and property names should be camelCase.
+    * Parameter names and local variable names should be camelCase.
     * Public field names should be camelCase, while private field names
-      should be _camelCase.
+      should be _camelCase. Note that all fields at module level should be
+      camelCase regardless of visibility.
     * Enum member names should be camelCase.
     * Template mixin names should be PascalCase.
     * The name of templates that resolve to types should be PascalCase.
       Otherwise, they should be camelCase.
+    * Template parameters that represent types should be PascalCase. All
+      other template parameters should be camelCase.
 
 You should have a VERY good reason if you're going to deviate from these
 naming rules. We want to keep the MCI source base consistent with standard
@@ -69,15 +77,15 @@ avoid overly verbose comments (often referred to as literate programming),
 as they make it harder to read the code. In general, don't comment on the
 obvious or on things that are considered common sense.
 
-Good comments:
-
-    * // Do some space optimizations.
-    * // Revert to the previous token.
-
 Bad comments:
 
     * // do some space opts
     * // revert to prev tok
+
+Good comments:
+
+    * // Do some space optimizations.
+    * // Revert to the previous token.
 
         ++ Contracts ++
 
@@ -140,3 +148,11 @@ This usually results in less typing and makes it easier to refactor code.
 This is, of course, only usable when the field or variable is not declared as
 an interface or abstract class, so in those cases, it is fine to use an
 explicit type.
+
+        ++ Synchronization ++
+
+Avoid using the synchronized statement. Not only does it have heavy overhead
+due to having to allocate a monitor if not already done, but it also results
+in virtual calls and in some cases memory leaks (due to bugs in the runtime).
+
+Instead, use the synchronization classes from the mci.core.sync module.
