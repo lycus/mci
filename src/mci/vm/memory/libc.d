@@ -42,6 +42,8 @@ public final class LibCGarbageCollector : GarbageCollector, InteractiveGarbageCo
         _freeCallbackLock = new typeof(_freeCallbackLock)();
         _finalizableLock = new typeof(_finalizableLock)();
         _finalizerThread = new typeof(_finalizerThread)(this);
+
+        _finalizerThread.run();
     }
 
     public override void terminate()
