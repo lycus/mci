@@ -50,6 +50,7 @@ public final class FinalizerThread
     private Condition _pendingCondition;
     private Mutex _shutdownMutex;
     private Condition _shutdownCondition;
+    private bool _finalizeDone;
     private Atomic!bool _running;
     private Thread _thread;
 
@@ -106,6 +107,8 @@ public final class FinalizerThread
     {
         _running.value = false;
 
+        internalNotify();
+
         _shutdownMutex.lock();
 
         scope (exit)
@@ -117,12 +120,7 @@ public final class FinalizerThread
         _thread = null;
     }
 
-    public void notify()
-    in
-    {
-        assert(_running.value);
-    }
-    body
+    private void internalNotify()
     {
         _finalizerMutex.lock();
 
@@ -130,6 +128,16 @@ public final class FinalizerThread
             _finalizerMutex.unlock();
 
         _finalizerCondition.notify();
+    }
+
+    public void notify()
+    in
+    {
+        assert(_running.value);
+    }
+    body
+    {
+        internalNotify();
     }
 
     public void wait()
@@ -144,6 +152,8 @@ public final class FinalizerThread
         if (Thread.getThis() is _thread)
             return;
 
+        _finalizeDone = false;
+
         notify();
 
         _pendingMutex.lock();
@@ -151,7 +161,8 @@ public final class FinalizerThread
         scope (exit)
             _pendingMutex.unlock();
 
-        _pendingCondition.wait();
+        while (!_finalizeDone)
+            _pendingCondition.wait();
     }
 
     private void loop()
@@ -179,6 +190,8 @@ public final class FinalizerThread
 
             scope (exit)
                 _pendingMutex.unlock();
+
+            _finalizeDone = true;
 
             _pendingCondition.notifyAll(); // Multiple threads can be waiting on this.
         }
