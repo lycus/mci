@@ -97,7 +97,7 @@ public T alignTo(T)(T value, T alignment = size_t.sizeof)
     if (isIntegral!T)
 {
     auto val = value + alignment - 1;
-    return val - value % alignment;
+    return val - val % alignment;
 }
 
 public bool isAligned(T)(T value, T alignment = size_t.sizeof)
