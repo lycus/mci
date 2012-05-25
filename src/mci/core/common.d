@@ -82,16 +82,14 @@ body
             else
                 cases[i]();
 
-            goto exit; // Work around a DMD closure bug.
+            static if (!is(typeof(return) == void))
+                return res;
+            else
+                return;
         }
     }
 
     assert(false);
-
-    exit:
-
-    static if (!is(typeof(return) == void))
-        return res;
 }
 
 public CommonType!(staticMap!(ReturnType, F)) match(V, F ...)(V variant, scope F cases)
@@ -137,16 +135,14 @@ body
             else
                 cases[i]();
 
-            goto exit; // Work around a DMD closure bug.
+            static if (!is(typeof(return) == void))
+                return res ? *res : typeof(return).init;
+            else
+                return;
         }
     }
 
     assert(false);
-
-    exit:
-
-    static if (!is(typeof(return) == void))
-        return res ? *res : typeof(return).init;
 }
 
 public enum Compiler : ubyte
