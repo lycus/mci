@@ -32,7 +32,7 @@ public final class CodeMemoryAllocator
     ~this()
     {
         foreach (region; _regions)
-            freeCodeMemory(region.x.ptr, region.x.length);
+            freeMemoryRegion(region.x.ptr, region.x.length);
     }
 
     /**
@@ -88,7 +88,7 @@ public final class CodeMemoryAllocator
         // memory, so we allocate a new one with the rounded-up size. This means we
         // get at least an entire page here. Note that this is what happens for the
         // first allocation too.
-        auto region = allocateCodeMemory(realLength)[0 .. realLength];
+        auto region = allocateMemoryRegion(MemoryAccess.execute, realLength)[0 .. realLength];
 
         if (!region.ptr)
             return null; // No dice; the OS is out of usable pages to give us.

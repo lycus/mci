@@ -43,7 +43,7 @@ else
     export void GetNativeSystemInfo(LPSYSTEM_INFO lpSystemInfo);
 }
 
-public __gshared size_t pageSize;
+public __gshared size_t pageSize; /// Holds the page size of the system.
 
 shared static this()
 {
@@ -59,16 +59,79 @@ shared static this()
     }
 }
 
-public ubyte* allocateCodeMemory(size_t length)
+/**
+ * Indicates the desired level of access to a memory region.
+ */
+public enum MemoryAccess : ubyte
+{
+    read, /// Memory can be read.
+    write, /// Memory can be written. Also implies $(D read).
+    execute, /// Memory can be executed. Also implies $(D read) and $(D write).
+}
+
+private Select!(isPOSIX, int, uint) accessToFlags(MemoryAccess access)
+{
+    static if (isPOSIX)
+    {
+        final switch (access)
+        {
+            case MemoryAccess.read:
+                return PROT_READ;
+            case MemoryAccess.write:
+                return PROT_READ | PROT_WRITE;
+            case MemoryAccess.execute:
+                return PROT_READ | PROT_WRITE | PROT_EXEC;
+        }
+    }
+    else
+    {
+        final switch (access)
+        {
+            case MemoryAccess.read:
+                return PAGE_READ;
+            case MemoryAccess.write:
+                return PAGE_READWRITE;
+            case MemoryAccess.execute:
+                return PAGE_EXECUTE_READWRITE;
+        }
+    }
+}
+
+/**
+ * Allocates memory directly from the operating system.
+ *
+ * If the allocation fails, $(D null) is returned; otherwise, a pointer to
+ * the allocated memory is returned. On success, the returned pointer is
+ * guaranteed to be aligned on a $(D pageSize) boundary (and therefore on
+ * a machine word boundary).
+ *
+ * Params:
+ *  access = The access level desired for the memory region.
+ *  length = The requested amount of memory, in bytes.
+ *
+ * Returns:
+ *  A pointer to the allocated memory on success; otherwise, $(D null).
+ */
+public ubyte* allocateMemoryRegion(MemoryAccess access, size_t length)
 in
 {
     assert(length);
 }
+out (result)
+{
+    if (result)
+    {
+        assert(isAligned(result, pageSize));
+        assert(isAligned(result));
+    }
+}
 body
 {
+    auto flags = accessToFlags(access);
+
     static if (isPOSIX)
     {
-         auto mem = mmap(null, length, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_ANON, -1, 0);
+         auto mem = mmap(null, length, flags, MAP_ANON, -1, 0);
 
          if (mem == MAP_FAILED)
             return null;
@@ -76,13 +139,29 @@ body
          return cast(ubyte*)mem;
     }
     else
-        return cast(ubyte*)VirtualAlloc(null, length, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+        return cast(ubyte*)VirtualAlloc(null, length, MEM_COMMIT | MEM_RESERVE, flags);
 }
 
-public bool freeCodeMemory(ubyte* memory, size_t length)
+/**
+ * Frees memory allocated from the operating system.
+ *
+ * The given pointer should be the pointer returned by a previous
+ * successful call to $(D allocateMemoryRegion). $(D length) should be
+ * the length passed to that call previous call.
+ *
+ * Params:
+ *  memory = Pointer to the memory region to free.
+ *  length = The amount of bytes originally allocated for $(D memory).
+ *
+ * Returns:
+ *  $(D true) on successful deallocation; otherwise, $(D false).
+ */
+public bool freeMemoryRegion(ubyte* memory, size_t length)
 in
 {
     assert(memory);
+    assert(isAligned(memory, pageSize));
+    assert(isAligned(memory));
     assert(length);
 }
 body
