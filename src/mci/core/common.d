@@ -89,7 +89,8 @@ body
         }
     }
 
-    assert(false);
+    // DMD workaround.
+    throw new Error("No type match found.");
 }
 
 public CommonType!(staticMap!(ReturnType, F)) match(V, F ...)(V variant, scope F cases)
@@ -142,7 +143,8 @@ body
         }
     }
 
-    assert(false);
+    // DMD workaround.
+    throw new Error("No variant match found.");
 }
 
 public enum Compiler : ubyte
