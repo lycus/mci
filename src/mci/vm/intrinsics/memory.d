@@ -6,12 +6,12 @@ import mci.core.memory,
 
 extern (C)
 {
-    public void mci_gc_collect_(VirtualMachineContext context)
+    public void mci_gc_collect(VirtualMachineContext context)
     {
         context.engine.gc.collect();
     }
 
-    public void mci_gc_minimize_(VirtualMachineContext context)
+    public void mci_gc_minimize(VirtualMachineContext context)
     {
         context.engine.gc.minimize();
     }

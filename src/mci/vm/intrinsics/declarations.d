@@ -214,8 +214,8 @@ shared static this()
                                                  getPointerType(NativeIntType.instance),
                                                  NativeIntType.instance);
 
-    gcCollect = createFunction!mci_gc_collect_(null);
-    gcMinimize = createFunction!mci_gc_minimize_(null);
+    gcCollect = createFunction!mci_gc_collect(null);
+    gcMinimize = createFunction!mci_gc_minimize(null);
     gcGetCollections = createFunction!mci_gc_get_collections(UInt64Type.instance);
     gcAddPressure = createFunction!mci_gc_add_pressure(null,
                                                        NativeUIntType.instance);
