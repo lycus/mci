@@ -15,8 +15,8 @@ static if (isPOSIX)
      */
     public enum GarbageCollectorType : ubyte
     {
-        libc, /// Uses LibCGarbageCollector.
         dgc, /// Uses DGarbageCollector.
+        libc, /// Uses LibCGarbageCollector.
         boehm, /// Uses BoehmGarbageCollector (POSIX only).
     }
 }
@@ -27,8 +27,8 @@ else
      */
     public enum GarbageCollectorType : ubyte
     {
-        libc, /// Uses LibCGarbageCollector.
         dgc, /// Uses DGarbageCollector.
+        libc, /// Uses LibCGarbageCollector.
     }
 }
 
@@ -110,8 +110,8 @@ body
         log("Available garbage collectors:");
         log();
 
-        logf("     %s\tLibC Garbage Collector\t\tUses calloc/free; performs no actual collection.", GarbageCollectorType.libc);
         logf("     %s\tD Garbage Collector\t\tUses the D runtime's garbage collector (default).", GarbageCollectorType.dgc);
+        logf("     %s\tLibC Garbage Collector\t\tUses calloc/free; performs no actual collection.", GarbageCollectorType.libc);
 
         static if (operatingSystem != OperatingSystem.windows)
             logf("     %s\tBoehm Garbage Collector\t\tUses the Boehm-Demers-Weiser garbage collector.", GarbageCollectorType.boehm);
