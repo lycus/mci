@@ -90,15 +90,14 @@ static if (isPOSIX)
         private NoNullList!GarbageCollectorFinalizer _allocCallbacks;
         private Mutex _allocateCallbackLock;
         private GarbageCollectorExceptionHandler _exceptionHandler;
-        private FinalizerThread _finalizerThread;
         private Mutex _weakRefLock;
         private PinnedObjectManager _pinManager;
+        private FinalizerThread _finalizerThread;
 
         invariant()
         {
             assert(_allocCallbacks);
             assert(_allocateCallbackLock);
-            assert(_finalizerThread);
             assert(_weakRefLock);
         }
 
@@ -133,9 +132,9 @@ static if (isPOSIX)
         {
             _allocCallbacks = new typeof(_allocCallbacks)();
             _allocateCallbackLock = new typeof(_allocateCallbackLock)();
-            _finalizerThread = new typeof(_finalizerThread)(this);
             _weakRefLock = new typeof(_weakRefLock)();
             _pinManager = new typeof(_pinManager)(this);
+            _finalizerThread = new typeof(_finalizerThread)(this);
 
             _gcLock.lock();
 

@@ -43,20 +43,26 @@ body
 
 public final class FinalizerThread
 {
-    private InteractiveGarbageCollector _gc;
+    private GarbageCollector _gc;
+    private InteractiveGarbageCollector _igc;
     private Mutex _finalizerMutex; // TODO: Kill these mutex variables when 2.060 is released.
     private Condition _finalizerCondition;
     private Mutex _pendingMutex;
     private Condition _pendingCondition;
     private Mutex _shutdownMutex;
     private Condition _shutdownCondition;
-    private bool _finalizeDone;
+    private Atomic!bool _finalizeDone;
+    private Atomic!bool _shutdownDone;
+    private Atomic!bool _notified;
     private Atomic!bool _running;
     private Thread _thread;
 
     invariant()
     {
         assert(_gc);
+        assert(cast(InteractiveGarbageCollector)_gc);
+        assert(_igc);
+        assert(cast(InteractiveGarbageCollector)_gc is _igc);
         assert(_finalizerMutex);
         assert(_finalizerCondition);
         assert(_pendingMutex);
@@ -64,14 +70,16 @@ public final class FinalizerThread
         assert((cast()_running).value ? !!_thread : !_thread);
     }
 
-    public this(InteractiveGarbageCollector gc)
+    public this(GarbageCollector gc)
     in
     {
         assert(gc);
+        assert(cast(InteractiveGarbageCollector)gc);
     }
     body
     {
         _gc = gc;
+        _igc = cast(InteractiveGarbageCollector)gc;
         _finalizerMutex = new typeof(_finalizerMutex)();
         _finalizerCondition = new typeof(_finalizerCondition)(_finalizerMutex);
         _pendingMutex = new typeof(_pendingMutex)();
@@ -80,7 +88,7 @@ public final class FinalizerThread
         _shutdownCondition = new typeof(_shutdownCondition)(_shutdownMutex);
     }
 
-    @property public bool isRunning() pure // TODO: Make this nothrow in 2.060.
+    @property public bool running() pure // TODO: Make this nothrow in 2.060.
     {
         return _running.value;
     }
@@ -93,8 +101,8 @@ public final class FinalizerThread
     body
     {
         _running.value = true;
+        _thread = new typeof(_thread)(&loop);
 
-        _thread = new Thread(&loop);
         _thread.start();
     }
 
@@ -114,10 +122,11 @@ public final class FinalizerThread
         scope (exit)
             _shutdownMutex.unlock();
 
-        while (_running.value)
+        while (!_shutdownDone.value)
             _shutdownCondition.wait();
 
         _thread = null;
+        _shutdownDone.value = false;
     }
 
     private void internalNotify()
@@ -126,6 +135,8 @@ public final class FinalizerThread
 
         scope (exit)
             _finalizerMutex.unlock();
+
+        _notified.value = true;
 
         _finalizerCondition.notify();
     }
@@ -152,7 +163,7 @@ public final class FinalizerThread
         if (Thread.getThis() is _thread)
             return;
 
-        _finalizeDone = false;
+        _finalizeDone.value = false;
 
         notify();
 
@@ -161,12 +172,14 @@ public final class FinalizerThread
         scope (exit)
             _pendingMutex.unlock();
 
-        while (!_finalizeDone)
+        while (!_finalizeDone.value)
             _pendingCondition.wait();
     }
 
     private void loop()
     {
+        _gc.attach();
+
         _shutdownMutex.lock();
 
         scope (exit)
@@ -180,22 +193,29 @@ public final class FinalizerThread
                 scope (exit)
                     _finalizerMutex.unlock();
 
-                _finalizerCondition.wait();
+                while (!_notified.value)
+                    _finalizerCondition.wait();
+
+                _notified.value = false;
             }
 
             // Invoke all registered finalizers; the GC implementation takes care of this.
-            _gc.invokeFreeCallbacks();
+            _igc.invokeFreeCallbacks();
 
             _pendingMutex.lock();
 
             scope (exit)
                 _pendingMutex.unlock();
 
-            _finalizeDone = true;
+            _finalizeDone.value = true;
 
             _pendingCondition.notifyAll(); // Multiple threads can be waiting on this.
         }
 
+        _shutdownDone.value = true;
+
         _shutdownCondition.notify();
+
+        _gc.detach();
     }
 }
