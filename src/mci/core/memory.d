@@ -114,5 +114,5 @@ public bool isAligned(T)(T* pointer, size_t alignment = size_t.sizeof)
 public T alignmentPadding(T)(T value, T alignment = size_t.sizeof)
 {
     auto al = alignment - 1;
-    return al - (value + al) % al;
+    return al - (value + al) % alignment;
 }
