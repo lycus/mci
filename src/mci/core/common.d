@@ -1,6 +1,7 @@
 module mci.core.common;
 
-import core.stdc.stdlib,
+import core.exception,
+       core.stdc.stdlib,
        core.stdc.string,
        std.traits,
        std.typetuple,
@@ -90,7 +91,7 @@ body
     }
 
     // DMD workaround.
-    throw new Error("No type match found.");
+    throw new AssertError("No type match found.");
 }
 
 public CommonType!(staticMap!(ReturnType, F)) match(V, F ...)(V variant, scope F cases)
@@ -144,7 +145,7 @@ body
     }
 
     // DMD workaround.
-    throw new Error("No variant match found.");
+    throw new AssertError("No variant match found.");
 }
 
 public enum Compiler : ubyte
