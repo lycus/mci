@@ -160,6 +160,8 @@ public interface Queue(T) : Countable!T
     public T dequeue();
 
     public T* peek();
+
+    public void clear();
 }
 
 public interface Stack(T) : ReadOnlyCollection!T
@@ -1682,6 +1684,14 @@ public class ArrayQueue(T) : Queue!T
             return null;
 
         return &_list._array[_head];
+    }
+
+    public void clear()
+    {
+        _list.clear();
+        _size = 0;
+        _tail = 0;
+        _head = 0;
     }
 }
 
