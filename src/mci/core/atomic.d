@@ -202,6 +202,7 @@ public struct Atomic(T)
  * Convenience function to construct an atomic wrapper around a value.
  *
  * Params:
+ *  T = The type of the stored value.
  *  value = The value to wrap.
  *
  * Returns:

@@ -1,5 +1,9 @@
 module mci.core.exception;
 
+/**
+ * The base exception class of the MCI. All exceptions in all
+ * MCI packages will derive from this.
+ */
 public class CompilerException : Exception
 {
     public this(string msg, string file = __FILE__, size_t line = __LINE__)
