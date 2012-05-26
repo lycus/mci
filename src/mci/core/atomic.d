@@ -110,7 +110,8 @@ public T atomicOp(string op, T, U)(T* pointer, U operand) pure // TODO: Make thi
 }
 
 /**
- * Encapsulates atomic operations on a value.
+ * Encapsulates atomic operations on a value. All operations are done with
+ * full memory barriers.
  *
  * Params:
  *  T = The type of the encapsulated value. Must be atomic.
@@ -125,16 +126,35 @@ public struct Atomic(T)
         atomicStore(&_value, value);
     }
 
+    /**
+     * Atomically retrieves the store value.
+     *
+     * Returns:
+     *  The stored value loaded atomically.
+     */
     @property public T value() pure // TODO: Make this nothrow in 2.060.
     {
         return cast(T)atomicLoad(&_value);
     }
 
+    /**
+     * Atomically sets the stored value.
+     *
+     * Params:
+     *  value = The value to store atomically.
+     */
     @property public void value(T value) pure // TODO: Make this nothrow in 2.060.
     {
         atomicStore(&_value, value);
     }
 
+    /**
+     * Returns a raw pointer to the stored value. Any accesses though this pointer
+     * will $(B not) be atomic.
+     *
+     * Returns:
+     *  A raw pointer to the stored value.
+     */
     @property public T* pointer() pure nothrow
     out (result)
     {
@@ -145,6 +165,17 @@ public struct Atomic(T)
         return &_value;
     }
 
+    /**
+     * Performs an atomic compare-and-swap operation.
+     *
+     * Params:
+     *  condition = The value the stored value must be equal to for the operation
+     *              to happen.
+     *  value = The value to store if $(D condition) was equal to the stored value.
+     *
+     * Returns:
+     *  $(D true) if the swap happened; otherwise, false.
+     */
     public bool swap(T condition, T value) pure // TODO: Make this nothrow in 2.060.
     {
         return atomicSwap(&_value, condition, value);
@@ -167,7 +198,17 @@ public struct Atomic(T)
     }
 }
 
+/**
+ * Convenience function to construct an atomic wrapper around a value.
+ *
+ * Params:
+ *  value = The value to wrap.
+ *
+ * Returns:
+ *  An $(D Atomic) struct wrapping $(D value).
+ */
 public Atomic!T atomic(T)(T value) pure nothrow
+    if (isAtomic!T)
 {
     return Atomic!T(value);
 }
