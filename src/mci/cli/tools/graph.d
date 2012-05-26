@@ -89,7 +89,7 @@ public final class GraphTool : Tool
             auto reader = new ModuleReader(manager);
             auto mod = reader.load(file);
 
-            stream = new FileStream(output, FileAccess.write, FileMode.truncate);
+            stream = new FileStream(output, FileMode.truncate);
             auto graph = new GraphWriter(stream);
 
             auto funcName = args[1];

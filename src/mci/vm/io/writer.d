@@ -40,7 +40,7 @@ public final class ModuleWriter : ModuleSaver
     body
     {
         _done = true;
-        _file = new typeof(_file)(path, FileAccess.write, FileMode.truncate);
+        _file = new typeof(_file)(path, FileMode.truncate);
         _writer = new typeof(_writer)(_file);
 
         writeModule(module_);

@@ -125,7 +125,7 @@ public final class AssemblerTool : Tool
 
             try
             {
-                stream = new FileStream(file);
+                stream = new FileStream(file, FileMode.read);
                 auto source = new Source(new BinaryReader(stream), stream.length);
                 auto lexer = new Lexer(source);
                 auto parser = new Parser(lexer.lex());
@@ -171,7 +171,7 @@ public final class AssemblerTool : Tool
 
             try
             {
-                dumpStream = new FileStream(dump, FileAccess.write, FileMode.truncate);
+                dumpStream = new FileStream(dump, FileMode.truncate);
 
                 foreach (unit; units)
                 {

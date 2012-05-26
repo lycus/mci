@@ -409,7 +409,7 @@ public final class ModuleReader : ModuleLoader
     body
     {
         _done = true;
-        _file = new typeof(_file)(path);
+        _file = new typeof(_file)(path, FileMode.read);
         _reader = new typeof(_reader)(_file);
 
         auto mod = readModule();

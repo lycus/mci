@@ -10,6 +10,9 @@ import std.ascii,
        mci.core.config,
        mci.core.meta;
 
+/**
+ * Represents a stream of bytes.
+ */
 public interface Stream
 {
     @property public ulong position();
@@ -33,20 +36,18 @@ public interface Stream
     public void close();
 }
 
-public enum FileAccess : ubyte
-{
-    write,
-    read,
-}
-
+/**
+ * Indicates what mode a $(D FileStream) should be opened in.
+ */
 public enum FileMode : ubyte
 {
-    open,
-    truncate,
-    append,
+    read, /// Opens the file for reading, and positions the cursor at the beginning.
+    write, /// Opens the file for reading and writing, and positions the cursor at the end.
+    truncate, /// Opens the file for reading and writing, truncates it, and positions the cursor at the beginning.
+    append, /// Opens the file for reading and writing, and positions the cursor at the end.
 }
 
-private char[] accessAndModeToString(FileAccess access, FileMode mode) pure nothrow
+private char[] modeToString(FileMode mode) pure nothrow
 out (result)
 {
     assert(result);
@@ -55,29 +56,36 @@ body
 {
     final switch (mode)
     {
-        case FileMode.open:
-            return access == FileAccess.write ? ['r', '+'] : ['r'];
+        case FileMode.read:
+            return ['r'];
+        case FileMode.write:
+            return ['r', '+'];
         case FileMode.truncate:
-            return access == FileAccess.read ? ['w', '+'] : ['w'];
+            return ['w', '+'];
         case FileMode.append:
-            return access == FileAccess.read ? ['a', '+'] : ['a'];
+            return ['a', '+'];
     }
 }
 
 public final class FileStream : Stream
 {
     private File _file;
-    private FileAccess _access;
+    private FileMode _mode;
 
-    public this(string fileName, FileAccess access = FileAccess.read, FileMode mode = FileMode.open)
+    public this(string fileName, FileMode mode)
     in
     {
         assert(fileName);
     }
     body
     {
-        _file = File(fileName, accessAndModeToString(access, mode));
-        _access = access;
+        _file = File(fileName, modeToString(mode));
+        _mode = mode;
+    }
+
+    @property public FileMode mode()
+    {
+        return _mode;
     }
 
     @property public ulong position()
@@ -104,12 +112,12 @@ public final class FileStream : Stream
 
     @property public bool canRead()
     {
-        return _access == FileAccess.read || _access == FileAccess.write;
+        return true;
     }
 
     @property public bool canWrite()
     {
-        return _access == FileAccess.write;
+        return _mode != FileMode.read;
     }
 
     @property public bool isClosed()

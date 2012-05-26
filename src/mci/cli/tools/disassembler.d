@@ -85,7 +85,7 @@ public final class DisassemblerTool : Tool
             auto reader = new ModuleReader(manager);
             auto mod = reader.load(file);
 
-            stream = new FileStream(output, FileAccess.write, FileMode.truncate);
+            stream = new FileStream(output, FileMode.truncate);
             auto disasm = new ModuleDisassembler(stream);
 
             disasm.disassemble(mod);
