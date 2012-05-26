@@ -177,7 +177,7 @@ public final class TypeCreationPass : GeneratorPass
             state.currentFile = unit.x;
 
             foreach (node; unit.y.nodes)
-                if (auto type = tryCast!TypeDeclarationNode(node))
+                if (auto type = cast(TypeDeclarationNode)node)
                     state.types.add(tuple(unit.x, type, generateType(type, state.module_)));
         }
     }
@@ -217,7 +217,7 @@ public final class FunctionCreationPass : GeneratorPass
             auto funcs = new List!(Tuple!(FunctionDeclarationNode, Function))();
 
             foreach (node; unit.y.nodes)
-                if (auto func = tryCast!FunctionDeclarationNode(node))
+                if (auto func = cast(FunctionDeclarationNode)node)
                     funcs.add(tuple(func, generateFunction(func, state.module_, state.manager)));
 
             foreach (func; funcs)
@@ -236,9 +236,9 @@ public final class EntryPointPass : GeneratorPass
 
             foreach (node; unit.y.nodes)
             {
-                if (auto ep = tryCast!EntryPointDeclarationNode(node))
+                if (auto ep = cast(EntryPointDeclarationNode)node)
                 {
-                    auto tep = tryCast!ThreadEntryPointDeclarationNode(ep);
+                    auto tep = cast(ThreadEntryPointDeclarationNode)ep;
                     auto loc = tep ? tep.location : ep.location;
                     auto func = resolveFunction(tep ? tep.function_ : ep.function_, state.module_, state.manager);
                     auto str = (tep ? "Thread entry point " : "Entry point ") ~ "function " ~ func.toString();

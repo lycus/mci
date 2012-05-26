@@ -746,7 +746,7 @@ public final class ModuleReader : ModuleLoader
     {
         auto declType = readTypeReference();
 
-        if (!tryCast!StructureTypeReferenceDescriptor(declType))
+        if (!cast(StructureTypeReferenceDescriptor)declType)
             error("Structure type expected.");
 
         auto type = cast(StructureType)toType(declType);

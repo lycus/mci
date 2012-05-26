@@ -89,7 +89,7 @@ private final class PrettyPrinter
         string arrayOrVector(Type type)
         in
         {
-            assert(tryCast!ArrayType(type) || tryCast!VectorType(type));
+            assert(cast(ArrayType)type || cast(VectorType)type);
         }
         out (result)
         {

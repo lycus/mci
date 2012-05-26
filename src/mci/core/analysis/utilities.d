@@ -225,11 +225,11 @@ in
 }
 body
 {
-    return tryCast!PointerType(type) ||
-           tryCast!FunctionPointerType(type) ||
-           tryCast!ReferenceType(type) ||
-           tryCast!ArrayType(type) ||
-           tryCast!VectorType(type);
+    return cast(PointerType)type ||
+           cast(FunctionPointerType)type ||
+           cast(ReferenceType)type ||
+           cast(ArrayType)type ||
+           cast(VectorType)type;
 }
 
 public bool isValidInArithmetic(Type type)
@@ -239,7 +239,7 @@ in
 }
 body
 {
-    return !!tryCast!CoreType(type);
+    return !!cast(CoreType)type;
 }
 
 public bool isValidInBitwise(Type type)
@@ -249,7 +249,7 @@ in
 }
 body
 {
-    return !!tryCast!IntegerType(type);
+    return !!cast(IntegerType)type;
 }
 
 public bool isValidInComparison(Type type)
@@ -259,7 +259,7 @@ in
 }
 body
 {
-    return isValidInArithmetic(type) || !!tryCast!PointerType(type);
+    return isValidInArithmetic(type) || !!cast(PointerType)type;
 }
 
 public bool isArrayContainerOf(Type type, Type elementType)
@@ -281,7 +281,7 @@ body
     return false;
 }
 
-public bool isArrayContainerOfT(T)(Type type)
+public bool isArrayContainerOfT(T : Type)(Type type)
 in
 {
     assert(type);
@@ -289,7 +289,7 @@ in
 body
 {
     if (isArrayOrVector(type))
-        return !!tryCast!T(getElementType(type));
+        return !!cast(T)getElementType(type);
 
     return false;
 }
@@ -326,7 +326,7 @@ body
 public Type getElementType(Type type)
 in
 {
-    assert(tryCast!PointerType(type) || tryCast!ArrayType(type) || tryCast!VectorType(type));
+    assert(cast(PointerType)type || cast(ArrayType)type || cast(VectorType)type);
 }
 body
 {
@@ -345,8 +345,8 @@ in
 }
 body
 {
-    return tryCast!ArrayType(type) ||
-           tryCast!VectorType(type);
+    return cast(ArrayType)type ||
+           cast(VectorType)type;
 }
 
 public bool isManaged(Type type) pure nothrow
@@ -356,7 +356,7 @@ in
 }
 body
 {
-    return tryCast!ReferenceType(type) || isArrayOrVector(type);
+    return cast(ReferenceType)type || isArrayOrVector(type);
 }
 
 public bool isTypeSpecification(Type type) pure nothrow
@@ -366,7 +366,7 @@ in
 }
 body
 {
-    return isManaged(type) || tryCast!PointerType(type);
+    return isManaged(type) || cast(PointerType)type;
 }
 
 public bool isConvertibleTo(Type fromType, Type toType)
@@ -377,28 +377,28 @@ in
 }
 body
 {
-    if (tryCast!CoreType(fromType) && tryCast!CoreType(toType))
+    if (cast(CoreType)fromType && cast(CoreType)toType)
         return true;
 
-    if (tryCast!PointerType(fromType) && tryCast!PointerType(toType))
+    if (cast(PointerType)fromType && cast(PointerType)toType)
         return true;
 
-    if (tryCast!PointerType(fromType) && (toType is NativeIntType.instance || toType is NativeUIntType.instance))
+    if (cast(PointerType)fromType && (toType is NativeIntType.instance || toType is NativeUIntType.instance))
         return true;
 
-    if ((fromType is NativeIntType.instance || fromType is NativeUIntType.instance) && tryCast!PointerType(toType))
+    if ((fromType is NativeIntType.instance || fromType is NativeUIntType.instance) && cast(PointerType)toType)
         return true;
 
     if (isManaged(fromType) && isManaged(toType))
         return true;
 
-    if (tryCast!FunctionPointerType(fromType) && tryCast!FunctionPointerType(toType))
+    if (cast(FunctionPointerType)fromType && cast(FunctionPointerType)toType)
         return true;
 
-    if (tryCast!FunctionPointerType(fromType) && tryCast!PointerType(toType))
+    if (cast(FunctionPointerType)fromType && cast(PointerType)toType)
         return true;
 
-    if (tryCast!PointerType(fromType) && tryCast!FunctionPointerType(toType))
+    if (cast(PointerType)fromType && cast(FunctionPointerType)toType)
         return true;
 
     return false;

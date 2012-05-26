@@ -172,7 +172,7 @@ static if (isPOSIX)
             auto size = RuntimeObject.sizeof + type.size + extraSize;
             void* mem;
 
-            if (tryCast!StructureType(type.type))
+            if (cast(StructureType)type.type)
             {
                 size_t descr;
 

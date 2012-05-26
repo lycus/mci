@@ -167,7 +167,7 @@ public final class ConstantFolder : OptimizerDefinition
                         else if (instr.opCode is opAriDiv)
                         {
                             // We can't handle division by zero in any sane fashion, so we simply stop folding.
-                            if (tryCast!IntegerType(instr.targetRegister.type) && r2.castTo!ulong() == 0)
+                            if (cast(IntegerType)instr.targetRegister.type && r2.castTo!ulong() == 0)
                                 constantOps.remove(instr);
                             else
                                 result = nullable(r1 / r2);
@@ -175,7 +175,7 @@ public final class ConstantFolder : OptimizerDefinition
                         else if (instr.opCode is opAriRem)
                         {
                             // We can't handle division by zero in any sane fashion, so we simply stop folding.
-                            if (tryCast!IntegerType(instr.targetRegister.type) && r2.castTo!ulong() == 0)
+                            if (cast(IntegerType)instr.targetRegister.type && r2.castTo!ulong() == 0)
                                 constantOps.remove(instr);
                             else
                                 result = nullable(r1 % r2);

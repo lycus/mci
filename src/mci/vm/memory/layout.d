@@ -16,24 +16,24 @@ in
 }
 body
 {
-    if (tryCast!Int8Type(type) || tryCast!UInt8Type(type))
+    if (type is Int8Type.instance || type is UInt8Type.instance)
         return 1;
 
-    if (tryCast!Int16Type(type) || tryCast!UInt16Type(type))
+    if (type is Int16Type.instance || type is UInt16Type.instance)
         return 2;
 
-    if (tryCast!Int32Type(type) || tryCast!UInt32Type(type) || tryCast!Float32Type(type))
+    if (type is Int32Type.instance || type is UInt32Type.instance || type is Float32Type.instance)
         return 4;
 
-    if (tryCast!Int64Type(type) || tryCast!UInt64Type(type) || tryCast!Float64Type(type))
+    if (type is Int64Type.instance || type is UInt64Type.instance || type is Float64Type.instance)
         return 8;
 
-    if (tryCast!NativeIntType(type) || tryCast!NativeUIntType(type))
+    if (type is NativeIntType.instance || type is NativeUIntType.instance)
         return is32Bit ? 4 : 8;
 
-    if (tryCast!PointerType(type) || tryCast!ReferenceType(type) ||
-        tryCast!ArrayType(type) || tryCast!VectorType(type) ||
-        tryCast!FunctionPointerType(type))
+    if (cast(PointerType)type || cast(ReferenceType)type ||
+        cast(ArrayType)type || cast(VectorType)type ||
+        cast(FunctionPointerType)type)
         return is32Bit ? 4 : 8;
 
     auto structType = cast(StructureType)type;
@@ -125,7 +125,7 @@ body
         {
             auto offset = baseOffset + computeOffset(field.y, is32Bit);
 
-            if (auto structType = tryCast!StructureType(field.y.type))
+            if (auto structType = cast(StructureType)field.y.type)
                 innerCompute(structType, offset);
             else if (isAligned(offset))
                 bits ~= isManaged(field.y.type);

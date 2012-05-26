@@ -9,21 +9,8 @@ import core.exception,
        mci.core.config,
        mci.core.meta;
 
-public alias Select!(is32Bit, int, long) isize_t;
-public alias void function() function_t;
-
-public U tryCast(U, T)(T obj) pure nothrow
-    if ((is(T == class) || is(T == interface)) &&
-        (is(U == class) || is(U == interface)) &&
-        is(U : T))
-in
-{
-    assert(obj);
-}
-body
-{
-    return cast(U)obj;
-}
+public alias Select!(is32Bit, int, long) isize_t; /// Aliases to $(D int) on 32-bit platforms or $(D long) on 64-bit platforms.
+public alias void function() function_t; /// Meant to indicate that any arbitrary function pointer is acceptable.
 
 public CommonType!(staticMap!(ReturnType, F)) match(T, F ...)(T obj, scope F cases)
     if (is(T == class) || is(T == interface))
@@ -62,7 +49,7 @@ body
 
                 if (!obj && is(U == typeof(null)))
                     return cases[i](null);
-                else if (auto res = tryCast!U(obj))
+                else if (auto res = cast(U)obj)
                     return cases[i](res);
             }
         }
@@ -148,14 +135,20 @@ body
     throw new AssertError("No variant match found.");
 }
 
+/**
+ * Which compiler is used to build MCI.
+ */
 public enum Compiler : ubyte
 {
-    unknown = 0,
-    dmd = 1,
-    gdc = 2,
-    ldc = 3,
+    unknown = 0, /// Compiler could not be determined.
+    dmd = 1, /// Digital Mars D.
+    gdc = 2, /// GNU D Compiler.
+    ldc = 3, /// LLVM D Compiler.
 }
 
+/**
+ * Indicates what architecture MCI is compiled for.
+ */
 public enum Architecture : ubyte
 {
     x86 = 0,
@@ -165,12 +158,18 @@ public enum Architecture : ubyte
     mips = 4,
 }
 
+/**
+ * Indicates what endianness MCI is compiled for.
+ */
 public enum Endianness : ubyte
 {
     littleEndian = 0,
     bigEndian = 1,
 }
 
+/**
+ * Indicates what operating system MCI is compiled for.
+ */
 public enum OperatingSystem : ubyte
 {
     windows = 0,
@@ -184,6 +183,9 @@ public enum OperatingSystem : ubyte
     hurd = 8,
 }
 
+/**
+ * Indicates what emulation layer, if any, MCI is compiled for.
+ */
 public enum EmulationLayer : ubyte
 {
     none = 0,

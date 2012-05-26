@@ -22,35 +22,6 @@ version (unittest)
 
 unittest
 {
-    auto a = new A();
-
-    assert(!tryCast!B(a));
-}
-
-unittest
-{
-    A b = new B();
-
-    assert(tryCast!B(b));
-}
-
-unittest
-{
-    A c = new C();
-
-    assert(tryCast!B(c));
-    assert(tryCast!C(c));
-}
-
-unittest
-{
-    auto a = new A();
-
-    assert(tryCast!A(a));
-}
-
-unittest
-{
     auto b = new B();
     bool isB;
 

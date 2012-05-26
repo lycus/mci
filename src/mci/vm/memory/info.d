@@ -20,7 +20,7 @@ public final class RuntimeTypeInfo
     {
         assert(_type);
         assert(isManaged(cast()_type));
-        assert(tryCast!StructureType(_type) ? !!_bitmap : !_bitmap);
+        assert(cast(StructureType)_type ? !!_bitmap : !_bitmap);
     }
 
     private this(Type type, size_t size, BitArray bitmap)
@@ -28,7 +28,7 @@ public final class RuntimeTypeInfo
     {
         assert(type);
         assert(isManaged(type));
-        assert(tryCast!StructureType(type) ? !!bitmap : !bitmap);
+        assert(cast(StructureType)type ? !!bitmap : !bitmap);
     }
     body
     {
@@ -56,7 +56,7 @@ public final class RuntimeTypeInfo
     @property public BitSequence bitmap() pure nothrow
     out (result)
     {
-        assert(tryCast!StructureType(_type) ? !!result : !result);
+        assert(cast(StructureType)_type ? !!result : !result);
     }
     body
     {
@@ -109,7 +109,7 @@ body
 
     BitArray bitmap;
 
-    if (auto structType = tryCast!StructureType(type))
+    if (auto structType = cast(StructureType)type)
         bitmap = computeBitmap(structType, is32Bit);
 
     return typeInfoCache[tup] = new RuntimeTypeInfo(type, computeRealSize(type, is32Bit), bitmap);
