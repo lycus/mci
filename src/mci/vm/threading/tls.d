@@ -11,9 +11,9 @@ static if (isWindows)
 {
     import core.sys.windows.windows;
 
-    public alias void function() WindowsThreadEventCallback;
+    package alias void function() WindowsThreadEventCallback;
 
-    public final class ThreadEvent
+    package final class ThreadEvent
     {
         private NoNullList!WindowsThreadEventCallback _callbacks;
         private Mutex _lock;
@@ -72,8 +72,8 @@ static if (isWindows)
         }
     }
 
-    public __gshared ThreadEvent onThreadCreate;
-    public __gshared ThreadEvent onThreadDestroy;
+    package __gshared ThreadEvent onThreadCreate;
+    package __gshared ThreadEvent onThreadDestroy;
 
     shared static this()
     {

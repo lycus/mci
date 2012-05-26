@@ -95,4 +95,3 @@ MODULES =
     $(MODULE mci.vm.memory.prettyprint)
     $(MODULE mci.vm.threading.cleanup)
     $(MODULE mci.vm.threading.identity)
-    $(MODULE mci.vm.threading.tls)
