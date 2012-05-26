@@ -4,9 +4,6 @@ Welcome to the MCI
 The MCI (Managed Compiler Infrastructure) is a modern and intuitive back end
 for compilers, runtimes, code analyzers, and other developer tools.
 
-Infrastructure guide
-++++++++++++++++++++
-
 .. toctree::
    :maxdepth: 1
    :numbered:
@@ -19,16 +16,6 @@ Infrastructure guide
    intrinsics.rst
    concurrency.rst
    garbage_collection.rst
-
-Framework reference
-+++++++++++++++++++
-
-.. toctree::
-   :maxdepth: 1
-   :numbered:
-
-Indices and tables
-==================
 
 * :ref:`genindex`
 * :ref:`search`

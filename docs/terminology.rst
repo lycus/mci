@@ -228,6 +228,12 @@ An abbreviation for RuntimeObject. Refers to the runtime format and layout of
 values in the MCI_, which generally consists of a type pointer, GC bits, and
 the user data field.
 
+RTV
++++
+
+An abbreviation for RuntimeValue. Refers to a rooted object that holds a
+reference to a managed object.
+
 SCCP
 ++++
 
