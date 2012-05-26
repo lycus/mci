@@ -4,3 +4,6 @@
 [submodule "libgc-d"]
 	path = libgc-d
 	url = git://github.com/lycus/libgc-d.git
+[submodule "bootdoc"]
+	path = bootdoc
+	url = git://github.com/JakobOvrum/bootDoc.git

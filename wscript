@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, subprocess
+import os, shutil, subprocess
 from waflib import Build, Utils
 
 APPNAME = 'MCI'
@@ -219,6 +219,44 @@ def docs(ctx):
                 'man',
                 'changes',
                 'linkcheck'])
+
+def ddoc(ctx):
+    '''builds the D source documentation'''
+
+    dir = os.path.join('docs', '_ddoc')
+
+    try:
+        os.makedirs(dir)
+    except os.error:
+        pass
+
+    doc = os.path.join('..', '..', 'bootdoc')
+    gen = os.path.join(doc, 'generate.d')
+    src = os.path.join('..', '..', 'src')
+    mods = os.path.join('..', 'modules.ddoc')
+    cfg = os.path.join('..', 'settings.ddoc')
+    idx = os.path.join('..', 'index.d')
+
+    cmd = 'rdmd {0} --parallel --verbose --modules={1} --settings={2} --extra={3} --bootdoc={4} {5}'.format(gen,
+                                                                                                            mods,
+                                                                                                            cfg,
+                                                                                                            'index.d',
+                                                                                                            doc,
+                                                                                                            src)
+
+    cmd += ' -I{0} -I{1}'.format(os.path.join('..', '..', 'libffi-d'),
+                                 os.path.join('..', '..', 'libgc-d'))
+
+    # Temporary workaround for bootDoc issue #13.
+    shutil.copyfile(os.path.join('docs', 'index.d'), os.path.join('docs', '_ddoc', 'index.d'))
+
+    _run_shell(dir, ctx, cmd)
+
+    bddir = os.path.join('docs', '_ddoc', 'bootDoc')
+
+    shutil.rmtree(bddir, True)
+    shutil.copytree('bootdoc', bddir)
+    shutil.rmtree(os.path.join(bddir, '.git'), True)
 
 def dist(dst):
     '''makes a tarball for redistributing the sources'''
