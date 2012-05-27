@@ -6,7 +6,7 @@ from waflib import Build, Utils
 APPNAME = 'MCI'
 VERSION = '1.0'
 
-TOP = '.'
+TOP = os.curdir
 OUT = 'build'
 
 def options(opt):
@@ -168,13 +168,19 @@ def unittest(ctx):
     if 'darwin' in Utils.unversioned_sys_platform():
         _run_shell(OUT, ctx, './mci.tester')
     else:
-        _run_shell(OUT, ctx, 'gdb --command=' + os.path.join('..', 'mci.gdb') + ' mci.tester')
+        _run_shell(OUT, ctx, 'gdb --command=' + os.path.join(os.pardir, 'mci.gdb') + ' mci.tester')
 
     if ctx.env.VALGRIND == 'true':
-        cmd = 'valgrind --suppressions=' + os.path.join('..', 'mci.valgrind')
-        cmd += ' --leak-check=full --track-fds=yes --num-callers=50 --show-reachable=yes'
-        cmd += ' --undef-value-errors=no --error-exitcode=1'
-        cmd += ' ./mci.tester'
+        cmd = 'valgrind'
+        cmd += ' --suppressions=' + os.path.join(os.pardir, 'mci.valgrind')
+        cmd += ' --leak-check=full'
+        cmd += ' --track-fds=yes'
+        cmd += ' --num-callers=50'
+        cmd += ' --show-reachable=yes'
+        cmd += ' --undef-value-errors=no'
+        cmd += ' --error-exitcode=1'
+        cmd += ' ' + os.path.join(os.curdir, 'mci.tester')
+
         _run_shell(OUT, ctx, cmd)
 
 class UnitTestContext(Build.BuildContext):
@@ -230,29 +236,21 @@ def ddoc(ctx):
     except os.error:
         pass
 
-    doc = os.path.join('..', '..', 'bootdoc')
-    gen = os.path.join(doc, 'generate.d')
-    src = os.path.join('..', '..', 'src')
-    mods = os.path.join('..', 'modules.ddoc')
-    cfg = os.path.join('..', 'settings.ddoc')
-    idx = os.path.join('..', 'index.d')
+    doc = os.path.join(os.pardir, 'bootdoc')
 
-    cmd = 'rdmd {0} --parallel --verbose --modules={1} --settings={2} --extra={3} --bootdoc={4} {5}'.format(gen,
-                                                                                                            mods,
-                                                                                                            cfg,
-                                                                                                            'index.d',
-                                                                                                            doc,
-                                                                                                            src)
+    cmd = 'rdmd ' + os.path.join(doc, 'generate.d')
+    cmd += ' --parallel'
+    cmd += ' --verbose'
+    cmd += ' --extra=index.d'
+    cmd += ' --bootdoc=' + doc
+    cmd += ' --output=_ddoc'
+    cmd += ' ' + os.path.join(os.pardir, 'src')
+    cmd += ' -I' + os.path.join(os.pardir, 'libffi-d')
+    cmd += ' -I' + os.path.join(os.pardir, 'libgc-d')
 
-    cmd += ' -I{0} -I{1}'.format(os.path.join('..', '..', 'libffi-d'),
-                                 os.path.join('..', '..', 'libgc-d'))
+    _run_shell('docs', ctx, cmd)
 
-    # Temporary workaround for bootDoc issue #13.
-    shutil.copyfile(os.path.join('docs', 'index.d'), os.path.join('docs', '_ddoc', 'index.d'))
-
-    _run_shell(dir, ctx, cmd)
-
-    bddir = os.path.join('docs', '_ddoc', 'bootDoc')
+    bddir = os.path.join(dir, 'bootDoc')
 
     shutil.rmtree(bddir, True)
     shutil.copytree('bootdoc', bddir)
