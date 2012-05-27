@@ -208,11 +208,6 @@
    <File path="code\opcodes.d" />
    <File path="code\stream.d" />
   </Folder>
-  <Folder name="tree">
-   <File path="tree\base.d" />
-   <File path="tree\expressions.d" />
-   <File path="tree\statements.d" />
-  </Folder>
   <Folder name="typing">
    <File path="typing\cache.d" />
    <File path="typing\core.d" />
