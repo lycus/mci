@@ -1,7 +1,7 @@
 PROJECTNAME = Managed Compiler Infrastructure
 REFERENCETOP = index.html
 REPOSRCTREE = http://github.com/lycus/mci/tree/master/src
-TITLEBARTEXT = <a href="https://github.com/lycus/mci">GitHub</a>
+TITLEBARTEXT = <a href="http://github.com/lycus/mci">GitHub</a>
 RESOURCEROOT = bootDoc/
 PACKAGESEP = .
 FAVICON =

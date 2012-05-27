@@ -75,6 +75,13 @@ to the compiler infrastructure and a framework reference:
 The documentation will be placed in 'docs/_build'. You'll probably
 be interested in 'docs/_build/html/index.html' primarily.
 
+API documentation can be generated from the MCI sources by running:
+
+    $ waf ddoc
+
+This documentation will end up in 'docs/_ddoc', and you can access
+it via 'docs/_ddoc/index.html'.
+
 Finally, you can run the test suite to ensure everything is working
 as it should:
 
@@ -88,7 +95,7 @@ compiler of choice and configure Visual D to use it.
 
 You'll need the libffi library files. You can either build libffi
 from source under Cygwin or MinGW, or you can download precompiled
-binaries here: https://github.com/lycus/libffi-d/downloads
+binaries here: http://github.com/lycus/libffi-d/downloads
 
 You need to make sure that either the Cygwin or MinGW version of the
 library can be found via your library search paths. These can be set

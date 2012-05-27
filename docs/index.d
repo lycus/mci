@@ -1,6 +1,16 @@
 /++
 
-Welcome to the API documentation for the Managed Compiler Infrastructure!
+Welcome to the API documentation for the Managed Compiler Infrastructure! This
+is where you'll find generated documentation for the entire API exposed by the
+MCI libraries.
+
+Note that it is generally assumed that you have read the full infrastructure
+documentation before coming here. A lot of API entry points assume that you are
+familiar with how the ISA, type system, virtual machine, garbage collection, and
+related parts of the infrastructure work. If you have not read the infrastructure
+documentation, please go do so now. You'll save yourself a $(B lot) of time.
+
+$(HR)
 
 A description of the various top-level packages:
 
@@ -77,6 +87,13 @@ $(B $(BIG mci.vm))
 Provides the virtual machine infrastructure used by all execution engines. This
 includes intrinsics, memory management, garbage collectors, threading, I/O utilities
 for compiled IAL files, FFI entry point resolution, etc.
+
+$(HR)
+
+If this documentation is not sufficient to help you figure out how an API works,
+feel free to send an email to either the Lycus Discuss mailing list (if you're using
+the MCI from an external project) or the Lycus Develop mailing list (if you're
+working on the MCI itself). Alternatively, drop by the IRC channel!
 
 Macros:
 REPOSRCTREE = http://github.com/lycus/mci/tree/master/docs
