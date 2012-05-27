@@ -17,6 +17,7 @@ tools that the MCI provides.
 
    introduction.rst
    terminology.rst
+   command_line.rst
    type_system.rst
    instruction_set.rst
    assembly_language.rst
