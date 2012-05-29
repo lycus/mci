@@ -121,6 +121,12 @@ public struct Atomic(T)
 {
     private T _value;
 
+    /**
+     * Constructs a new atomic value.
+     *
+     * Params:
+     *  value = The value to encapsulate atomically.
+     */
     public this(T value) pure nothrow
     {
         atomicStore(&_value, value);

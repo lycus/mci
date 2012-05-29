@@ -21,6 +21,7 @@ MODULES =
     $(MODULE mci.compiler.x86.registers)
     $(MODULE mci.core.atomic)
     $(MODULE mci.core.common)
+    $(MODULE mci.core.config)
     $(MODULE mci.core.container)
     $(MODULE mci.core.exception)
     $(MODULE mci.core.io)

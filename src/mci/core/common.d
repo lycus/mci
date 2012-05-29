@@ -227,11 +227,11 @@ public enum Compiler : ubyte
  */
 public enum Architecture : ubyte
 {
-    x86 = 0,
-    arm = 1,
-    ppc = 2,
-    ia64 = 3,
-    mips = 4,
+    x86 = 0, /// The x86 architecture (32-bit and 64-bit).
+    arm = 1, /// The ARM (Advanced RISC Machine) architecture (32-bit).
+    ppc = 2, /// The PowerPC architecture (32-bit and 64-bit).
+    ia64 = 3, /// The Itanium architecture (64-bit).
+    mips = 4, /// The MIPS architecture (32-bit and 64-bit).
 }
 
 /**
@@ -239,8 +239,8 @@ public enum Architecture : ubyte
  */
 public enum Endianness : ubyte
 {
-    littleEndian = 0,
-    bigEndian = 1,
+    littleEndian = 0, /// Least significant byte first.
+    bigEndian = 1, /// Most significant byte first.
 }
 
 /**
@@ -248,15 +248,15 @@ public enum Endianness : ubyte
  */
 public enum OperatingSystem : ubyte
 {
-    windows = 0,
-    linux = 1,
-    osx = 2,
-    bsd = 3,
-    freebsd = 4,
-    openbsd = 5,
-    solaris = 6,
-    aix = 7,
-    hurd = 8,
+    windows = 0, /// The Windows operating system (Windows 2000 and up).
+    linux = 1, /// The Linux kernel (2.6 and up).
+    osx = 2, /// Mac OS X (Leopard and up).
+    bsd = 3, /// All other BSD variants.
+    freebsd = 4, /// The FreeBSD operating system.
+    openbsd = 5, /// The OpenBSD operating system.
+    solaris = 6, /// All Solaris variants.
+    aix = 7, /// IBM's AIX operating system.
+    hurd = 8, /// The GNU Hurd operating system.
 }
 
 /**
