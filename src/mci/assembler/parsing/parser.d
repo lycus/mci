@@ -76,7 +76,7 @@ public final class Parser
         return _stream.next;
     }
 
-    private Token peekEof()
+    private Token peekEOF()
     in
     {
         assert(!_stream.done);
@@ -178,7 +178,7 @@ public final class Parser
 
         auto token = Token.init;
 
-        while ((token = peekEof()).type != TokenType.end)
+        while ((token = peekEOF()).type != TokenType.end)
         {
             switch (token.type)
             {
@@ -189,8 +189,10 @@ public final class Parser
                     ast.add(parseFunctionDeclaration());
                     break;
                 case TokenType.entry:
-                case TokenType.thread:
                     ast.add(parseEntryPointDeclaration());
+                    break;
+                case TokenType.thread:
+                    ast.add(parseThreadEntryPointDeclaration());
                     break;
                 default:
                     errorGot("'type', 'function', 'entry', or 'thread'", token.location, token.value);
@@ -207,27 +209,48 @@ public final class Parser
     }
     body
     {
-        EntryPointDeclarationNode node;
-        bool isThread;
-
-        if (peek().type == TokenType.thread)
-        {
-            next();
-            isThread = true;
-        }
-
         consume("entry");
 
         auto func = parseFunctionReference();
 
         consume(";");
 
-        if (isThread)
-            node = new ThreadEntryPointDeclarationNode(func.location, func);
-        else
-            node = new EntryPointDeclarationNode(func.location, func);
+        return new EntryPointDeclarationNode(func.location, func);
+    }
 
-        return node;
+    private EntryPointDeclarationNode parseThreadEntryPointDeclaration()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        consume("thread");
+
+        bool isEntry;
+
+        auto tok = next();
+
+        switch (tok.type)
+        {
+            case TokenType.entry:
+                isEntry = true;
+                break;
+            case TokenType.exit:
+                break;
+            default:
+                errorGot("'entry' or 'exit'", tok.location, tok.value);
+                break;
+        }
+
+        auto func = parseFunctionReference();
+
+        consume(";");
+
+        if (isEntry)
+            return new ThreadEntryPointDeclarationNode(func.location, func);
+        else
+            return new ThreadExitPointDeclarationNode(func.location, func);
     }
 
     private TypeDeclarationNode parseTypeDeclaration()

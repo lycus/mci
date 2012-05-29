@@ -257,6 +257,12 @@ TEP
 Abbreviation for thread entry point. A thread entry point of a `main module`_
 is called whenever a properly registered thread enters managed code.
 
+TXP
++++
+
+Abbreviation for thread exit point. A thread exit point of a `main module`_ is
+called whenever a properly registered thread exits managed code.
+
 TLS
 +++
 

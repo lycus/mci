@@ -8,7 +8,7 @@ source files and assembles them to a single output file (a module).
 The grammar is:
 
 .. productionlist::
-    Program : { `TypeDeclaration` | `FunctionDeclaration` | `EntryPointDeclaration` | `ThreadEntryPointDeclaration` }
+    Program : { `TypeDeclaration` | `FunctionDeclaration` | `EntryPointDeclaration` | `ThreadEntryPointDeclaration` | `ThreadExitPointDeclaration` }
 
 Module references have the grammar:
 
@@ -223,8 +223,20 @@ The grammar is:
 A thread entry point function must return ``void``, have no parameters, and
 have standard calling convention.
 
-A module can only have one entry point and one thread entry point (both are
-optional). Both must refer to functions inside the module.
+Thread exit points are also available to help tear down TLS data. They are
+guaranteed to be called just before a thread exits, and will only be called
+once the thread has stopped executing any other managed code.
+
+The grammar is:
+
+.. productionlist::
+    ThreadExitPointDeclaration : "thread" "exit" `Function` ";"
+
+As with thread entry points, these must return ``void``, have no parameters,
+and have standard calling convention.
+
+A module can only have one entry point, one thread entry point, and one thread
+exit point (all are optional). They must refer to functions inside the module.
 
 Metadata
 ++++++++

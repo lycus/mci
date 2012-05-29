@@ -1008,6 +1008,19 @@ public class ThreadEntryPointDeclarationNode : EntryPointDeclarationNode
     }
 }
 
+public class ThreadExitPointDeclarationNode : EntryPointDeclarationNode
+{
+    public this(SourceLocation location, FunctionReferenceNode function_)
+    in
+    {
+        assert(function_);
+    }
+    body
+    {
+        super(location, function_);
+    }
+}
+
 public class RegisterDeclarationNode : Node
 {
     private SimpleNameNode _name;

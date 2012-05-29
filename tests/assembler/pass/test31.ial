@@ -20,3 +20,13 @@ function void thread_main()
 }
 
 thread entry thread_main;
+
+function void thread_exit()
+{
+    block entry
+    {
+        leave;
+    }
+}
+
+thread exit thread_exit;

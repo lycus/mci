@@ -20,6 +20,7 @@ public final class Module
     private NoNullDictionary!(string, StructureType) _types;
     private Function _entryPoint;
     private Function _threadEntryPoint;
+    private Function _threadExitPoint;
 
     invariant()
     {
@@ -132,6 +133,38 @@ public final class Module
     body
     {
         _threadEntryPoint = threadEntryPoint;
+    }
+
+    @property public Function threadExitPoint()
+    out (result)
+    {
+        if (result)
+        {
+            assert((cast()result).module_ is this);
+            assert((cast()result).callingConvention == CallingConvention.standard);
+            assert(!(cast()result).returnType);
+            assert((cast()result).parameters.empty);
+        }
+    }
+    body
+    {
+        return _threadExitPoint;
+    }
+
+    @property public void threadExitPoint(Function threadExitPoint)
+    in
+    {
+        if (threadExitPoint)
+        {
+            assert((cast()threadExitPoint).module_ is this);
+            assert((cast()threadExitPoint).callingConvention == CallingConvention.standard);
+            assert(!(cast()threadExitPoint).returnType);
+            assert((cast()threadExitPoint).parameters.empty);
+        }
+    }
+    body
+    {
+        _threadExitPoint = threadExitPoint;
     }
 
     public override string toString()

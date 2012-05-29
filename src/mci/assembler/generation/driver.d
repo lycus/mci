@@ -239,9 +239,15 @@ public final class EntryPointPass : GeneratorPass
                 if (auto ep = cast(EntryPointDeclarationNode)node)
                 {
                     auto tep = cast(ThreadEntryPointDeclarationNode)ep;
-                    auto loc = tep ? tep.location : ep.location;
-                    auto func = resolveFunction(tep ? tep.function_ : ep.function_, state.module_, state.manager);
-                    auto str = (tep ? "Thread entry point " : "Entry point ") ~ "function " ~ func.toString();
+                    auto txp = cast(ThreadExitPointDeclarationNode)ep;
+
+                    auto str = match(ep,
+                                     (ThreadEntryPointDeclarationNode t) => "Thread entry point",
+                                     (ThreadExitPointDeclarationNode t) => "Thread exit point",
+                                     () => "Entry point");
+
+                    auto func = resolveFunction(ep.function_, state.module_, state.manager);
+                    auto loc = ep.location;
 
                     if (func.module_ !is state.module_)
                         throw new GenerationException(str ~ " is not within the assembled module.", loc);
@@ -249,7 +255,7 @@ public final class EntryPointPass : GeneratorPass
                     if (func.callingConvention != CallingConvention.standard)
                         throw new GenerationException(str ~ " does not have standard calling convention.", loc);
 
-                    auto retType = tep ? null : Int32Type.instance;
+                    auto retType = tep || txp ? null : Int32Type.instance;
 
                     if (func.returnType !is retType)
                         throw new GenerationException(str ~ " does not have return type " ~ (retType ? retType.toString() : "void") ~ ".", loc);
@@ -257,10 +263,10 @@ public final class EntryPointPass : GeneratorPass
                     if (!func.parameters.empty)
                         throw new GenerationException(str ~ " does not have an empty parameter list.", loc);
 
-                    if (tep)
-                        state.module_.threadEntryPoint = func;
-                    else
-                        state.module_.entryPoint = func;
+                    match(ep,
+                          (ThreadEntryPointDeclarationNode t) => state.module_.threadEntryPoint = func,
+                          (ThreadExitPointDeclarationNode t) => state.module_.threadExitPoint = func,
+                          () => state.module_.entryPoint = func);
                 }
             }
         }
