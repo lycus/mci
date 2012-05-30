@@ -6,7 +6,12 @@ import mci.core.common;
 // in and sets appropriate constants. Reliance on these constants
 // should be avoided if possible.
 
-version (DigitalMars)
+version (D_Ddoc)
+{
+    public enum Compiler compiler = Compiler.init; /// Indicates what compiler the MCI is being built with.
+    public enum string compilerName = string.init; /// Holds the name of the compiler the MCI is being built with.
+}
+else version (DigitalMars)
 {
     public enum Compiler compiler = Compiler.dmd;
     public enum string compilerName = "DMD";
@@ -54,7 +59,12 @@ else
     static assert(false, "Inline assembly not available.");
 }
 
-version (X86)
+version (D_Ddoc)
+{
+    public enum Architecture architecture = Architecture.init; /// Indicates the architecture the MCI is being built for.
+    public enum string architectureName = string.init; /// Holds the name of the architecture the MCI is being built for.
+}
+else version (X86)
 {
     public enum Architecture architecture = Architecture.x86;
     public enum string architectureName = "x86";
@@ -135,7 +145,11 @@ else
     static assert(false, "Processor architecture could not be determined.");
 }
 
-version (D_LP64)
+version (D_Ddoc)
+{
+    public enum bool is32Bit = bool.init; /// Indicates what bitness the MCI is being built for.
+}
+else version (D_LP64)
 {
     public enum bool is32Bit = false;
 }
@@ -144,7 +158,12 @@ else
     public enum bool is32Bit = true;
 }
 
-version (LittleEndian)
+version (D_Ddoc)
+{
+    public enum Endianness endianness = Endianness.init; /// Indicates what endianness the MCI is being built for.
+    public string endiannessName = string.init; /// Holds the name of the endianness the MCI is being built for.
+}
+else version (LittleEndian)
 {
     public enum Endianness endianness = Endianness.littleEndian;
     public string endiannessName = "Little Endian (LE)";
@@ -159,7 +178,15 @@ else
     static assert(false, "Endianness could not be determined.");
 }
 
-version (Windows)
+version (D_Ddoc)
+{
+    public enum OperatingSystem operatingSystem = OperatingSystem.init; /// Indicates what operating system MCI is being built for.
+    public enum string operatingSystemName = string.init; /// Holds the name of the operating system the MCI is being built for.
+
+    public enum bool isPOSIX = bool.init; /// Indicates whether the operating system the MCI is being built for is POSIX-compliant.
+    public enum bool isWindows = bool.init; /// Indicates whether the operating system the MCI is being built for is Windows.
+}
+else version (Windows)
 {
     public enum OperatingSystem operatingSystem = OperatingSystem.windows;
     public enum string operatingSystemName = "Windows";
@@ -234,7 +261,12 @@ else
     static assert(false, "Operating system could not be determined.");
 }
 
-version (Cygwin)
+version (D_Ddoc)
+{
+    public enum EmulationLayer emulationLayer = EmulationLayer.init; /// Indicates what emulation layer, if any, the MCI is being built under.
+    public enum string emulationLayerName = string.init; /// Holds the name of the emulation layer the MCI is being built under.
+}
+else version (Cygwin)
 {
     public enum EmulationLayer emulationLayer = EmulationLayer.cygwin;
     public enum string emulationLayerName = "Cygwin";
