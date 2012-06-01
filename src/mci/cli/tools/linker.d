@@ -6,6 +6,11 @@ import std.getopt,
 
 public final class LinkerTool : Tool
 {
+    @property public string name() pure nothrow
+    {
+        return "link";
+    }
+
     @property public string description() pure nothrow
     {
         return "Combine a series of assembled modules into a single module.";

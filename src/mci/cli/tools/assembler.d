@@ -28,6 +28,11 @@ public enum string inputFileExtension = ".ial";
 
 public final class AssemblerTool : Tool
 {
+    @property public string name() pure nothrow
+    {
+        return "asm";
+    }
+
     @property public string description() pure nothrow
     {
         return "Assemble IAL files into a module.";

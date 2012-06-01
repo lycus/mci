@@ -15,6 +15,11 @@ import std.exception,
 
 public final class DisassemblerTool : Tool
 {
+    @property public string name() pure nothrow
+    {
+        return "disasm";
+    }
+
     @property public string description() pure nothrow
     {
         return "Disassemble an assembled module into IAL code.";

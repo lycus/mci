@@ -20,6 +20,14 @@ import mci.core.container,
 public interface Tool
 {
     /**
+     * Gets the name of the tool. Should be used on the command line.
+     *
+     * Returns:
+     *  The name of the tool.
+     */
+    @property public string name() pure nothrow;
+
+    /**
      * Gets a one-line description for this tool.
      *
      * Returns:
@@ -60,21 +68,36 @@ public interface Tool
     }
 }
 
-public __gshared ReadOnlyIndexable!(Tuple!(string, Tool)) allTools; /// All tools currently available.
+public __gshared Lookup!(string, Tool) allTools; /// All tools currently available.
 
 shared static this()
 {
-    allTools = toReadOnlyIndexable(tuple!(string, Tool)("aot", new AOTTool()),
-                                   tuple!(string, Tool)("asm", new AssemblerTool()),
-                                   tuple!(string, Tool)("dbg", new DebuggerTool()),
-                                   tuple!(string, Tool)("disasm", new DisassemblerTool()),
-                                   tuple!(string, Tool)("graph", new GraphTool()),
-                                   tuple!(string, Tool)("interp", new InterpreterTool()),
-                                   tuple!(string, Tool)("jit", new JITTool()),
-                                   tuple!(string, Tool)("link", new LinkerTool()),
-                                   tuple!(string, Tool)("opt", new OptimizerTool()),
-                                   tuple!(string, Tool)("verify", new VerifierTool()),
-                                   tuple!(string, Tool)("stats", new StatisticsTool()));
+    auto tools = new NoNullDictionary!(string, Tool)();
+
+    void add(Tool tool)
+    in
+    {
+        assert(tool);
+        assert(tool.name !in tools);
+    }
+    body
+    {
+        tools.add(tool.name, tool);
+    }
+
+    add(new AOTTool());
+    add(new AssemblerTool());
+    add(new DebuggerTool());
+    add(new DisassemblerTool());
+    add(new GraphTool());
+    add(new InterpreterTool());
+    add(new JITTool());
+    add(new LinkerTool());
+    add(new OptimizerTool());
+    add(new VerifierTool());
+    add(new StatisticsTool());
+
+    allTools = tools;
 }
 
 /**

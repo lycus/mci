@@ -6,6 +6,11 @@ import std.getopt,
 
 public final class InterpreterTool : Tool
 {
+    @property public string name() pure nothrow
+    {
+        return "interp";
+    }
+
     @property public string description() pure nothrow
     {
         return "Run an assembled module with the interpreter.";

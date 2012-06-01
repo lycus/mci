@@ -14,6 +14,11 @@ import std.exception,
 
 public final class VerifierTool : Tool
 {
+    @property public string name() pure nothrow
+    {
+        return "verify";
+    }
+
     @property public string description() pure nothrow
     {
         return "Verify the validity of assembled modules.";

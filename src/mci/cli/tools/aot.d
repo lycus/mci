@@ -6,6 +6,11 @@ import std.getopt,
 
 public final class AOTTool : Tool
 {
+    @property public string name() pure nothrow
+    {
+        return "aot";
+    }
+
     @property public string description() pure nothrow
     {
         return "Compile assembled modules to native executables/libraries.";

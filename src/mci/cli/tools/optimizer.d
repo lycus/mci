@@ -17,6 +17,11 @@ import std.exception,
 
 public final class OptimizerTool : Tool
 {
+    @property public string name() pure nothrow
+    {
+        return "opt";
+    }
+
     @property public string description() pure nothrow
     {
         return "Pass assembled modules through the optimization pipeline.";

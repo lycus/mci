@@ -19,6 +19,11 @@ public enum string graphFileExtension = ".dot";
 
 public final class GraphTool : Tool
 {
+    @property public string name() pure nothrow
+    {
+        return "graph";
+    }
+
     @property public string description() pure nothrow
     {
         return "Outputs a Graphviz-compatible DOT specification of a function.";

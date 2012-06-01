@@ -6,6 +6,11 @@ import std.getopt,
 
 public final class JITTool : Tool
 {
+    @property public string name() pure nothrow
+    {
+        return "jit";
+    }
+
     @property public string description() pure nothrow
     {
         return "Run an assembled module with the just-in-time compiler.";

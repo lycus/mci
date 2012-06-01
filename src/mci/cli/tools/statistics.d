@@ -14,6 +14,11 @@ import std.exception,
 
 public final class StatisticsTool : Tool
 {
+    @property public string name() pure nothrow
+    {
+        return "stats";
+    }
+
     @property public string description() pure nothrow
     {
         return "Show various statistics about assembled modules.";

@@ -7,6 +7,11 @@ import std.getopt,
 
 public final class DebuggerTool : Tool
 {
+    @property public string name() pure nothrow
+    {
+        return "dbg";
+    }
+
     @property public string description() pure nothrow
     {
         return "Debug a program running under the interpreter or just-in-time compiler.";
