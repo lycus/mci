@@ -3,13 +3,26 @@ module mci.core.sync;
 import core.sync.condition,
        core.sync.mutex;
 
-// Ensure that calls are not virtual.
+/**
+ * A $(D final) version of $(D core.sync.mutex.Mutex). Its only purpose is
+ * to devirtualize all calls for performance.
+ */
 public final class Mutex : core.sync.mutex.Mutex
 {
 }
 
+/**
+ * A $(D final) version of $(D core.sync.condition.Condition). Its only
+ * purpose is to devirtualize all calls for performance.
+ */
 public final class Condition : core.sync.condition.Condition
 {
+    /**
+     * Constructs a new condition variable.
+     *
+     * Params:
+     *  mutex = The mutex to use for synchronization.
+     */
     public this(Mutex mutex)
     in
     {

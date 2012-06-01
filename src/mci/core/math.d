@@ -2,6 +2,17 @@ module mci.core.math;
 
 import std.traits;
 
+/**
+ * Checks whether a given integral value is a power of two. Zero is
+ * not considered a power of two.
+ *
+ * Params:
+ *  T = The integral type.
+ *  value = The value to check.
+ *
+ * Returns:
+ *  $(D true) if $(D value) is a power of two; otherwise, $(D false).
+ */
 public bool powerOfTwo(T)(T value) pure nothrow
     if (isIntegral!T)
 {
