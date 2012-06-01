@@ -49,6 +49,9 @@ public interface NameClashResolver
     }
 }
 
+/**
+ * Simply throws an exception on a name clash.
+ */
 public final class ErrorResolver : NameClashResolver
 {
     public string resolveNameClash(Module module_, NameType type, string name, Module module1, Module module2)
@@ -69,6 +72,9 @@ public final class ErrorResolver : NameClashResolver
     }
 }
 
+/**
+ * Attempts to resolve name clashes through simplistic renaming.
+ */
 public final class RenameResolver : NameClashResolver
 {
     public string resolveNameClash(Module module_, NameType type, string name, Module module1, Module module2)

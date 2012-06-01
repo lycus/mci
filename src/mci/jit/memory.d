@@ -14,10 +14,7 @@ import std.algorithm,
  */
 public final class CodeMemoryAllocator
 {
-    /**
-     * Holds a list of memory, position pairs.
-     */
-    private List!(Tuple!(ubyte[], size_t)) _regions;
+    private List!(Tuple!(ubyte[], size_t)) _regions; /// Holds a list of memory/position pairs.
 
     invariant()
     {
