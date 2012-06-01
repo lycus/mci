@@ -172,25 +172,25 @@ body
         return !VirtualFree(memory, 0, MEM_RELEASE);
 }
 
-public T alignTo(T)(T value, T alignment = size_t.sizeof)
+public T alignTo(T)(T value, T alignment = size_t.sizeof) pure nothrow
     if (isIntegral!T)
 {
     auto val = value + alignment - 1;
     return val - val % alignment;
 }
 
-public bool isAligned(T)(T value, T alignment = size_t.sizeof)
+public bool isAligned(T)(T value, T alignment = size_t.sizeof) pure nothrow
     if (isIntegral!T)
 {
     return !(value % alignment);
 }
 
-public bool isAligned(T)(T* pointer, size_t alignment = size_t.sizeof)
+public bool isAligned(T)(T* pointer, size_t alignment = size_t.sizeof) pure nothrow
 {
     return isAligned(cast(size_t)pointer, alignment);
 }
 
-public T alignmentPadding(T)(T value, T alignment = size_t.sizeof)
+public T alignmentPadding(T)(T value, T alignment = size_t.sizeof) pure nothrow
 {
     auto al = alignment - 1;
     return al - (value + al) % alignment;
