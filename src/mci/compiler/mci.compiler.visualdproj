@@ -198,6 +198,7 @@
    <File path="x86\opcodes.d" />
    <File path="x86\registers.d" />
   </Folder>
+  <File path="emulation.d" />
   <File path="instructions.d" />
   <File path="opcodes.d" />
   <File path="registers.d" />

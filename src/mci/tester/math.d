@@ -15,12 +15,12 @@ unittest
 
 unittest
 {
-    assert(rotate!("right", ubyte)(0b00001111, 4) == 0b11110000);
-    assert(rotate!("right", byte)(0b00001111, 4) == cast(byte)0b11110000);
+    assert(ror!ubyte(0b00001111, 4) == 0b11110000);
+    assert(ror!byte(0b00001111, 4) == cast(byte)0b11110000);
 }
 
 unittest
 {
-    assert(rotate!("left", ubyte)(0b11110000, 4) == 0b00001111);
-    assert(rotate!("left", byte)(cast(byte)0b11110000, 4) == 0b00001111);
+    assert(rol!ubyte(0b11110000, 4) == 0b00001111);
+    assert(rol!byte(cast(byte)0b11110000, 4) == 0b00001111);
 }

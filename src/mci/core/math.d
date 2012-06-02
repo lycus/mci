@@ -48,3 +48,25 @@ body
     else
         static assert(false, "Direction must be \"left\" or \"right\".");
 }
+
+public T rol(T)(T value, uint amount) pure nothrow
+    if (isIntegral!T)
+in
+{
+    assert(amount < T.sizeof * 8);
+}
+body
+{
+    return rotate!"left"(value, amount);
+}
+
+public T ror(T)(T value, uint amount) pure nothrow
+    if (isIntegral!T)
+in
+{
+    assert(amount < T.sizeof * 8);
+}
+body
+{
+    return rotate!"right"(value, amount);
+}

@@ -13,6 +13,7 @@ MODULES =
     $(MODULE mci.assembler.parsing.location)
     $(MODULE mci.assembler.parsing.parser)
     $(MODULE mci.assembler.parsing.tokens)
+    $(MODULE mci.compiler.emulation)
     $(MODULE mci.compiler.instructions)
     $(MODULE mci.compiler.opcodes)
     $(MODULE mci.compiler.registers)
