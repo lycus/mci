@@ -1,28 +1,28 @@
-module mci.cli.tools.verifier;
+module mci.cli.tools.lint;
 
 import std.exception,
        std.path,
+       mci.cli.main,
+       mci.cli.tool,
        mci.core.container,
+       mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.modules,
-       mci.verifier.exception,
-       mci.verifier.manager,
+       mci.verifier.lint,
        mci.vm.intrinsics.declarations,
        mci.vm.io.exception,
-       mci.vm.io.reader,
-       mci.cli.main,
-       mci.cli.tool;
+       mci.vm.io.reader;
 
-public final class VerifierTool : Tool
+public final class LintTool : Tool
 {
     @property public string name() pure nothrow
     {
-        return "verify";
+        return "lint";
     }
 
     @property public string description() pure nothrow
     {
-        return "Verify the validity of assembled modules.";
+        return "Perform various static correctness analyses on assembled modules.";
     }
 
     @property public string[] options() pure nothrow
@@ -68,9 +68,11 @@ public final class VerifierTool : Tool
             files ~= file;
         }
 
+        ubyte code;
+
         foreach (file; args)
         {
-            Function currentFunc;
+            Module mod;
 
             try
             {
@@ -78,15 +80,7 @@ public final class VerifierTool : Tool
                 manager.attach(intrinsicModule);
 
                 auto reader = new ModuleReader(manager);
-                auto mod = reader.load(file);
-
-                auto verifier = new VerificationManager();
-
-                foreach (func; mod.functions)
-                {
-                    currentFunc = func.y;
-                    verifier.verify(func.y);
-                }
+                mod = reader.load(file);
             }
             catch (ErrnoException ex)
             {
@@ -98,23 +92,35 @@ public final class VerifierTool : Tool
                 logf("Error: Could not load '%s': %s", file, ex.msg);
                 return 1;
             }
-            catch (VerifierException ex)
-            {
-                logf("Error: Verification failed in function %s:", currentFunc);
-                log(ex.msg);
 
-                if (ex.instruction)
+            auto linter = new Linter();
+
+            addRange(linter.passes, standardPasses);
+
+            foreach (func; filter(mod.functions, (Tuple!(string, Function) tup) => !!(tup.y.attributes & FunctionAttributes.ssa)))
+            {
+                auto msgs = linter.lint(func.y);
+
+                if (!msgs.empty)
                 {
+                    code = 1;
+
+                    logf("Messages for function %s:", func.y);
                     log();
-                    logf("The invalid instruction was (index %s in block %s):", findIndex(ex.instruction.block.stream, ex.instruction),
-                         ex.instruction.block);
-                    log(ex.instruction);
                 }
 
-                return 1;
+                foreach (msg; msgs)
+                {
+                    logf("Instruction (index %s in block %s): %s", findIndex(msg.instruction.block.stream, msg.instruction), msg.instruction.block,
+                         msg.instruction);
+                    logf("Message: %s", msg.message);
+                }
+
+                if (!msgs.empty)
+                    log();
             }
         }
 
-        return 0;
+        return code;
     }
 }

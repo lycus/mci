@@ -202,6 +202,7 @@
    <File path="tools\interpreter.d" />
    <File path="tools\jit.d" />
    <File path="tools\linker.d" />
+   <File path="tools\lint.d" />
    <File path="tools\optimizer.d" />
    <File path="tools\statistics.d" />
    <File path="tools\verifier.d" />

@@ -201,6 +201,7 @@
   </Folder>
   <File path="base.d" />
   <File path="exception.d" />
+  <File path="lint.d" />
   <File path="manager.d" />
  </Folder>
 </DProject>

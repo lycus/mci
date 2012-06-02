@@ -10,6 +10,7 @@ import mci.core.container,
        mci.cli.tools.interpreter,
        mci.cli.tools.jit,
        mci.cli.tools.linker,
+       mci.cli.tools.lint,
        mci.cli.tools.optimizer,
        mci.cli.tools.statistics,
        mci.cli.tools.verifier;
@@ -93,6 +94,7 @@ shared static this()
     add(new InterpreterTool());
     add(new JITTool());
     add(new LinkerTool());
+    add(new LintTool());
     add(new OptimizerTool());
     add(new VerifierTool());
     add(new StatisticsTool());

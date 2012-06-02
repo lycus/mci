@@ -73,7 +73,7 @@ public final class OptimizationManager
         _definitions = new typeof(_definitions)();
     }
 
-    @property public ReadOnlyCollection!OptimizerDefinition definitions()
+    @property public ReadOnlyCollection!OptimizerDefinition definitions() pure nothrow
     out (result)
     {
         assert(result);

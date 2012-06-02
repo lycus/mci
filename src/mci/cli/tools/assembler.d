@@ -222,7 +222,7 @@ public final class AssemblerTool : Tool
                 }
                 catch (VerifierException ex)
                 {
-                    logf("Error: Verification failed in function '%s':", currentFunc);
+                    logf("Error: Verification failed in function %s:", currentFunc);
                     log(ex.msg);
 
                     if (ex.instruction)

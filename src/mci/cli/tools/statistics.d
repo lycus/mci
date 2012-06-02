@@ -94,7 +94,7 @@ public final class StatisticsTool : Tool
                 auto reader = new ModuleReader(manager);
                 auto mod = reader.load(file);
 
-                logf("---------- Statistics for module '%s' ----------", mod.name);
+                logf("---------- Statistics for module %s ----------", mod);
                 log();
 
                 auto v = new StatisticsVisitor();
@@ -111,7 +111,7 @@ public final class StatisticsTool : Tool
                 if (printFuncs)
                 {
                     log();
-                    logf("---------- Functions in module '%s' ----------", mod.name);
+                    logf("---------- Functions in module %s ----------", mod);
                     log();
 
                     foreach (func; mod.functions)
@@ -121,7 +121,7 @@ public final class StatisticsTool : Tool
                 if (printTypes)
                 {
                     log();
-                    logf("---------- Types in module '%s' ----------", mod.name);
+                    logf("---------- Types in module %s ----------", mod);
                     log();
 
                     foreach (type; mod.types)

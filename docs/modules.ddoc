@@ -64,6 +64,7 @@ MODULES =
     $(MODULE mci.optimizer.ssa.folding)
     $(MODULE mci.verifier.base)
     $(MODULE mci.verifier.exception)
+    $(MODULE mci.verifier.lint)
     $(MODULE mci.verifier.manager)
     $(MODULE mci.verifier.passes.control)
     $(MODULE mci.verifier.passes.misc)
