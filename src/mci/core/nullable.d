@@ -3,6 +3,13 @@ module mci.core.nullable;
 import std.conv,
        mci.core.meta;
 
+/**
+ * A wrapper that allows having a $(D null) state for types that
+ * normally don't support this (i.e. primitives and value types).
+ *
+ * Params:
+ *  T = The type of data to encapsulate.
+ */
 public struct Nullable(T)
     if (!isNullable!T)
 {
@@ -15,11 +22,25 @@ public struct Nullable(T)
         _value = value;
     }
 
+    /**
+     * Indicates whether this wrapper holds an actual value, i.e.
+     * whether it is non-null.
+     *
+     * Returns:
+     *  $(D true) if this wrapper holds a value; otherwise, $(D false).
+     */
     @property public bool hasValue() pure nothrow
     {
         return _hasValue;
     }
 
+    /**
+     * Retrieves the wrapped value. It is a logic error if no value
+     * is stored in this wrapper.
+     *
+     * Returns:
+     *  The wrapped value.
+     */
     @property public T value() pure nothrow
     in
     {
@@ -28,11 +49,6 @@ public struct Nullable(T)
     body
     {
         return _value;
-    }
-
-    public T valueOrDefault(lazy T def)
-    {
-        return _hasValue ? _value : def;
     }
 
     public equals_t opEquals(Nullable!T rhs) const
@@ -67,13 +83,21 @@ public struct Nullable(T)
         return _hasValue ? to!string(_value) : "null";
     }
 
-    public bool opCast(T : bool)()
+    public bool opCast(T : bool)() pure nothrow
     {
         return _hasValue;
     }
 }
 
+/**
+ * Constructs a nullable wrapper around a value.
+ *
+ * Params:
+ *  T = Type of the value to wrap.
+ *  value = The value to wrap.
+ */
 public Nullable!T nullable(T)(T value) pure nothrow
+    if (!isNullable!T)
 {
     return Nullable!T(value);
 }

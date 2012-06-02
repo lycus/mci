@@ -121,7 +121,7 @@ public final class DGarbageCollector : GarbageCollector
 
     public override RuntimeObject* createWeak(RuntimeObject* target)
     {
-        // FIXME: Can't implement this until 2.060.
+        // FIXME: Can't implement this until 2.061?
         assert(false);
     }
 

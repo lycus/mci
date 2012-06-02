@@ -8,7 +8,7 @@ unittest
 {
     auto x = Nullable!int();
 
-    assert(!x.hasValue);
+    assert(!x);
     debug
         assertThrown!AssertError(x.value);
 }
@@ -17,6 +17,6 @@ unittest
 {
     auto x = Nullable!int(0xdeadbeef);
 
-    assert(x.hasValue);
+    assert(x);
     assert(x.value == 0xdeadbeef);
 }
