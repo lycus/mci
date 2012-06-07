@@ -72,7 +72,7 @@ public struct RuntimeObject
 public union GarbageCollectorHeader
 {
     // Temporary padding until we make use of this union.
-    private size_t bits;
+    public size_t bits;
 }
 
 public abstract class GarbageCollector

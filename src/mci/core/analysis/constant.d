@@ -5,10 +5,10 @@ import std.traits,
 
 private union ConstantData
 {
-    long int64;
-    ulong uint64;
-    float float32;
-    double float64;
+    public long int64;
+    public ulong uint64;
+    public float float32;
+    public double float64;
 }
 
 public enum ConstantType : ubyte
