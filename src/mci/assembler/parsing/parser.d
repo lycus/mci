@@ -102,7 +102,7 @@ public final class Parser
         return token;
     }
 
-    private Token nextEof()
+    private Token nextEOF()
     in
     {
         assert(!_stream.done);
