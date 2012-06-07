@@ -2,7 +2,6 @@ module mci.assembler.parsing.lexer;
 
 import std.ascii,
        std.conv,
-       std.uni,
        std.utf,
        mci.core.io,
        mci.core.common,
@@ -237,7 +236,7 @@ public final class Lexer
         while ((chr = _source.moveNext()) != char.init)
         {
             // Skip any white space.
-            if (std.uni.isWhite(chr))
+            if (isWhite(chr))
                 continue;
 
             if (chr == '/' && _source.next() == '/')
