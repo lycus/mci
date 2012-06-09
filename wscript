@@ -63,6 +63,22 @@ def configure(conf):
             conf.fatal('--mode must be either debug or release.')
 
         conf.env.append_value('LINKFLAGS', '-lpthread')
+    elif conf.env.COMPILER_D == 'ldc2':
+        add_option('-w')
+        add_option('-wi')
+        add_option('-ignore')
+        add_option('-property')
+        add_option('-check-printf-calls')
+        add_option('-gc')
+
+        if conf.options.mode == 'debug':
+            add_option('-d-debug')
+        elif conf.options.mode == 'release':
+            add_option('-release')
+            add_option('-O3')
+            add_option('--enable-inlining')
+        else:
+            conf.fatal('--mode must be either debug or release.')
     else:
         conf.fatal('Unsupported D compiler.')
 
