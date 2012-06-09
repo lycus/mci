@@ -52,7 +52,9 @@
           <keyword>function</keyword>
           <keyword>register</keyword>
           <keyword>block</keyword>
+          <keyword>thread</keyword>
           <keyword>entry</keyword>
+          <keyword>exit</keyword>
         </context>
 
         <context id="modifiers" style-ref="modifier">
