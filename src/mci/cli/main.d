@@ -113,7 +113,7 @@ body
         logf("     %s\tD Garbage Collector\t\tUses the D runtime's garbage collector (default).", GarbageCollectorType.dgc);
         logf("     %s\tLibC Garbage Collector\t\tUses calloc/free; performs no actual collection.", GarbageCollectorType.libc);
 
-        static if (operatingSystem != OperatingSystem.windows)
+        static if (isPOSIX)
             logf("     %s\tBoehm Garbage Collector\t\tUses the Boehm-Demers-Weiser garbage collector.", GarbageCollectorType.boehm);
 
         log();
@@ -125,13 +125,13 @@ body
             logf("     %s\t\t\t\t\t%s", pass.name, pass.description);
 
         log();
-
         log("Available name clash resolution strategies:");
         log();
+
         logf("     %s\tError\t\t\t\tError out on name clashes (default).", LinkerRenameStrategy.error);
         logf("     %s\tRename\t\t\t\tUse a simple rename strategy.", LinkerRenameStrategy.rename);
-        log();
 
+        log();
         log("System configuration:");
         log();
 
@@ -141,6 +141,7 @@ body
         logf("     Operating System:\t\t\t\t%s", operatingSystemName);
         logf("     Emulation Layer:\t\t\t\t%s", emulationLayerName);
         logf("     Compiler:\t\t\t\t\t%s", compilerName);
+
         log();
 
         return 0;
@@ -149,6 +150,7 @@ body
     if (args.length < 2)
     {
         usage(cli);
+
         return 2;
     }
 
@@ -186,12 +188,25 @@ public void log(T ...)(T args)
 }
 
 public void logf(T ...)(T args)
+in
+{
+    static assert(T.length);
+}
+body
 {
     if (!silent)
         writefln(args);
 }
 
 private int main(string[] args)
+in
+{
+    assert(args);
+
+    foreach (arg; args)
+        assert(arg);
+}
+body
 {
     scope (exit)
         GC.collect();
