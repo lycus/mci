@@ -83,7 +83,14 @@ in
 body
 {
     static if (isPOSIX)
-        return cast(EntryPoint)dlsym(library, toUTFz!(const(char)*)(name));
+    {
+        // Clear error condition.
+        dlerror();
+
+        auto fcn = dlsym(library, toUTFz!(const(char)*)(name));
+
+        return cast(EntryPoint)(dlerror() ? null : fcn);
+    }
     else
         return cast(EntryPoint)GetProcAddress(library, toUTFz!(const(char)*)(name));
 }
