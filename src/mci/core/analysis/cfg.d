@@ -8,23 +8,32 @@ import std.variant,
        mci.core.code.instructions,
        mci.core.code.opcodes;
 
+/**
+ * Indicates the kind of control flow an instruction performs.
+ */
 public enum ControlFlowType : ubyte
 {
-    exit,
-    unconditional,
-    conditional,
+    exit, /// The instruction leaves the function immediately (one way or another).
+    unconditional, /// The instruction branches to another basic block unconditionally.
+    conditional, /// The instruction performs a conditional branch to one of two basic blocks.
 }
 
+/**
+ * Represents a control flow branch.
+ *
+ * This wrapper allows access to individual target basic
+ * blocks, while also allowing convenient iteration.
+ */
 public struct ControlFlowBranch
 {
-    private BasicBlock _block;
+    private Instruction _instruction;
     private ControlFlowType _type;
     private BasicBlock _block1;
     private BasicBlock _block2;
 
     invariant()
     {
-        assert(_block);
+        assert(_instruction);
 
         final switch (_type)
         {
@@ -45,16 +54,15 @@ public struct ControlFlowBranch
 
     @disable this();
 
-    private this(BasicBlock block, Instruction instruction)
+    private this(Instruction instruction)
     in
     {
-        assert(block);
         assert(instruction);
         assert(instruction.opCode.type == OpCodeType.controlFlow);
     }
     body
     {
-        _block = block;
+        _instruction = instruction;
 
         match(instruction.operand,
               (BasicBlock bb)
@@ -113,21 +121,43 @@ public struct ControlFlowBranch
         return 0;
     }
 
-    @property public BasicBlock block() pure nothrow
+    /**
+     * Gets the instruction performing the branch.
+     *
+     * Returns:
+     *  The instruction performing the branch.
+     */
+    @property public Instruction instruction() pure nothrow
     out (result)
     {
         assert(result);
     }
     body
     {
-        return _block;
+        return _instruction;
     }
 
+    /**
+     * Gets the kind of branch this is.
+     *
+     * Returns:
+     *  A $(D ControlFlowType) value indicating what kind of
+     *  branch this is.
+     */
     @property public ControlFlowType type() pure nothrow
     {
         return _type;
     }
 
+    /**
+     * Gets the first branch target. For $(D ControlFlowType.exit),
+     * this will be $(D null). For $(D ControlFlowType.conditional),
+     * this will be the true branch. For $(D ControlFlowType.unconditional),
+     * this will be the unconditional target of the branch.
+     *
+     * Returns:
+     *  The first target branch.
+     */
     @property public BasicBlock block1() pure nothrow
     out (result)
     {
@@ -138,6 +168,15 @@ public struct ControlFlowBranch
         return _block1;
     }
 
+    /**
+     * Gets the second branch target. For $(D ControlFlowType.exit)
+     * and $(D ControlFlowType.unconditional), this will be $(D null).
+     * For $(D ControlFlowType.conditional), this will be the false
+     * branch.
+     *
+     * Returns:
+     *  The second target branch.
+     */
     @property public BasicBlock block2() pure nothrow
     out (result)
     {
@@ -149,6 +188,17 @@ public struct ControlFlowBranch
     }
 }
 
+/**
+ * Gets the branch targets of the terminator instruction
+ * in a basic block. Assumes the input is verified IAL.
+ *
+ * Params:
+ *  block = The basic block to retrieve branch targets for.
+ *
+ * Returns:
+ *  The branch targets of $(D block) as a $(D ControlFlowBranch)
+ *  instance.
+ */
 public ControlFlowBranch getBranches(BasicBlock block)
 in
 {
@@ -156,9 +206,19 @@ in
 }
 body
 {
-    return ControlFlowBranch(block, last(block.stream));
+    return ControlFlowBranch(last(block.stream));
 }
 
+/**
+ * Gets a list of all the basic blocks that can directly branch
+ * to the given basic block.
+ *
+ * Params:
+ *  block = The basic block to calculate predecessors for.
+ *
+ * Returns:
+ *  A list of all predecessors of $(D block). Can be empty.
+ */
 public ReadOnlyIndexable!BasicBlock getPredecessors(BasicBlock block)
 in
 {
@@ -179,6 +239,18 @@ body
     return list;
 }
 
+/**
+ * Indicates whether $(D toBlock) is directly reachable by a
+ * branch in $(D fromBlock).
+ *
+ * Params:
+ *  toBlock = The basic block to check branches from $(D fromBlock) against.
+ *  fromBlock = The basic block to check for branches to $(D toBlock).
+ *
+ * Returns:
+ *  $(D true) if $(D fromBlock) can directly reach $(D toBlock);
+ *  otherwise, $(D false).
+ */
 public bool isDirectlyReachableFrom(BasicBlock toBlock, BasicBlock fromBlock)
 in
 {
@@ -194,6 +266,18 @@ body
     return false;
 }
 
+/**
+ * Indicates whether $(D toBlock) is directly or indirectly
+ * reachable from $(D fromBlock).
+ *
+ * Params:
+ *  toBlock = The basic block to check for reachability from $(D fromBlock).
+ *  fromBlock = The basic block to check for reachability to $(D toBlock).
+ *
+ * Returns:
+ *  $(D true) if $(D fromBlock) can directly or indirectly reach
+ *  $(D toBlock); otherwise, $(D false).
+ */
 public bool isReachableFrom(BasicBlock toBlock, BasicBlock fromBlock)
 in
 {
@@ -218,10 +302,8 @@ body
             if (br is toBlock)
                 return true;
 
-            if (!set.add(br))
-                continue;
-
-            queue.enqueue(br);
+            if (set.add(br))
+                queue.enqueue(br);
         }
     }
 
