@@ -7,6 +7,9 @@ import std.conv,
  * A wrapper that allows having a $(D null) state for types that
  * normally don't support this (i.e. primitives and value types).
  *
+ * Instances of this wrapper are immutable, and the wrapper starts
+ * in a $(D null) state.
+ *
  * Params:
  *  T = The type of data to encapsulate.
  */
@@ -16,6 +19,14 @@ public struct Nullable(T)
     private bool _hasValue;
     private T _value;
 
+    /**
+     * Constructs a $(D Nullable) instance around $(D value).
+     *
+     * The instance will be in a non-$(D null) state.
+     *
+     * Params:
+     *  value = The value to wrap.
+     */
     public this(T value) pure nothrow
     {
         _hasValue = true;
@@ -83,6 +94,12 @@ public struct Nullable(T)
         return _hasValue ? to!string(_value) : "null";
     }
 
+    /**
+     * Allows using this wrapper in statements such as $(D if).
+     *
+     * Returns:
+     *  $(D true) if this wrapper is in a non-$(D null) state; otherwise, $(D false).
+     */
     public bool opCast(T : bool)() pure nothrow
     {
         return _hasValue;
@@ -95,6 +112,10 @@ public struct Nullable(T)
  * Params:
  *  T = Type of the value to wrap.
  *  value = The value to wrap.
+ *
+ * Returns:
+ *  A $(D Nullable) initialized to $(D value) and thus in a
+ *  non-$(D null) state.
  */
 public Nullable!T nullable(T)(T value) pure nothrow
     if (!isNullable!T)

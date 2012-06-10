@@ -6,6 +6,9 @@ import mci.core.visitor,
        mci.core.typing.members,
        mci.core.typing.types;
 
+/**
+ * Gathers various statistics about a module.
+ */
 private final class StatisticsVisitor : ModuleVisitor
 {
     private size_t _types;
@@ -51,36 +54,78 @@ private final class StatisticsVisitor : ModuleVisitor
         _instructions++;
     }
 
+    /**
+     * Gets the amount of types in the module.
+     *
+     * Returns:
+     *  The amount of types in the module.
+     */
     @property public size_t types()
     {
         return _types;
     }
 
+    /**
+     * Gets the amount of fields in the module.
+     *
+     * Returns:
+     *  The amount of fields in the module.
+     */
     @property public size_t fields()
     {
         return _fields;
     }
 
+    /**
+     * Gets the amount of functions in the module.
+     *
+     * Returns:
+     *  The amount of functions in the module.
+     */
     @property public size_t functions()
     {
         return _functions;
     }
 
+    /**
+     * gets the amount of parameters in the module.
+     *
+     * Returns:
+     *  The amount of parameters in the module.
+     */
     @property public size_t parameters()
     {
         return _parameters;
     }
 
+    /**
+     * Gets the amount of registers in the module.
+     *
+     * Returns:
+     *  The amount of registers in the module.
+     */
     @property public size_t registers()
     {
         return _registers;
     }
 
+    /**
+     * Gets the amount of basic blocks in the module.
+     *
+     * Returns:
+     *  The amount of basic blocks in the module.
+     */
     @property public size_t blocks()
     {
         return _blocks;
     }
 
+    /**
+     * Gets the amount of instructions in the module.
+     *
+     * Returns:
+     *  The amount of instructions in the module.
+     */
     @property public size_t instructions()
     {
         return _instructions;

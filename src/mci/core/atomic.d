@@ -5,21 +5,6 @@ import core.atomic,
        mci.core.meta;
 
 /**
- * Indicates whether a type can be atomically stored/loaded using the functions
- * in this module.
- *
- * Params:
- *  T = A type to test for atomicity.
- *
- * Returns:
- *  A Boolean value indicating whether $(D T) is atomic.
- */
-template isAtomic(T)
-{
-    public enum bool isAtomic = isPrimitiveType!T || isPointer!T || is(T == class);
-}
-
-/**
  * Atomically loads a value from the given memory location (that is, with full
  * memory barriers).
  *

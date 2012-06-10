@@ -6,10 +6,19 @@ import mci.core.code.functions,
        mci.core.typing.members,
        mci.core.typing.types;
 
+/**
+ * Abstract visitor class for traversing modules.
+ */
 public abstract class ModuleVisitor
 {
     private bool _run;
 
+    /**
+     * Runs the visitor on the given module.
+     *
+     * Params:
+     *  module_ = The module to traverse.
+     */
     public final void run(Module module_)
     in
     {
