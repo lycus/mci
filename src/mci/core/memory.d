@@ -172,6 +172,18 @@ body
         return !VirtualFree(memory, 0, MEM_RELEASE);
 }
 
+/**
+ * Aligns $(D value) on an $(D alignment) boundary.
+ *
+ * Params:
+ *  T = The type of $(D value). Must be an integral type.
+ *  value = The value to align.
+ *  alignment = The boundary to align $(D value) on.
+ *
+ * Returns:
+ *  The aligned value. Can be equal to $(D value) if it was
+ *  already aligned correctly.
+ */
 public T alignTo(T)(T value, T alignment = size_t.sizeof) pure nothrow
     if (isIntegral!T)
 {
@@ -179,18 +191,58 @@ public T alignTo(T)(T value, T alignment = size_t.sizeof) pure nothrow
     return val - val % alignment;
 }
 
+/**
+ * Indicates whether $(D value) is aligned on an $(D alignment)
+ * boundary.
+ *
+ * Params:
+ *  T = The type of $(D value). Must be an integral type.
+ *  value = The value to check for alignment.
+ *  alignment = The boundary to check $(D value)'s alignment against.
+ *
+ * Returns:
+ *  $(D true) if $(D value) is aligned on an $(D alignment) boundary;
+ *  otherwise, $(D false).
+ */
 public bool isAligned(T)(T value, T alignment = size_t.sizeof) pure nothrow
     if (isIntegral!T)
 {
     return !(value % alignment);
 }
 
+/**
+ * Indicates whether a given pointer is aligned on an
+ * $(D alignment) boundary.
+ *
+ * Params:
+ *  T = The type $(D pointer) points to.
+ *  pointer = The pointer to check for alignment.
+ *  alignment = The boundary to check $(D pointer)'s alignment against.
+ *
+ * Returns:
+ *  $(D true) if $(D pointer) is aligned on an $(D alignment) boundary;
+ *  otherwise, $(D false).
+ */
 public bool isAligned(T)(T* pointer, size_t alignment = size_t.sizeof) pure nothrow
 {
     return isAligned(cast(size_t)pointer, alignment);
 }
 
+/**
+ * Returns the amount of padding needed to align $(D value)
+ * on an $(D alignment) boundary.
+ *
+ * Params:
+ *  T = The type of $(D value). Must be an integral type.
+ *  value = The value that (possibly) needs alignment.
+ *  alignment = The desired alignment boundary for $(D value).
+ *
+ * Returns:
+ *  The amount of bytes needed to align $(D value) on an
+ *  $(D alignment) boundary.
+ */
 public T alignmentPadding(T)(T value, T alignment = size_t.sizeof) pure nothrow
+    if (isIntegral!T)
 {
     auto al = alignment - 1;
     return al - (value + al) % alignment;
