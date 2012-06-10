@@ -73,7 +73,7 @@ public enum RegisterSize : ubyte
  *  category = The $(D RegisterCategory) of the register.
  *  size = One or two $(D RegisterSize) values.
  */
-mixin template RegisterBody(string type, string name, RegisterCategory category, ubyte size)
+public mixin template RegisterBody(string type, string name, RegisterCategory category, ubyte size)
 {
     mixin("private __gshared " ~ type ~ " _instance;" ~
           "" ~
