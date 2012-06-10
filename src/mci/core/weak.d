@@ -4,7 +4,7 @@ import core.memory,
        mci.core.atomic,
        mci.core.container;
 
-public alias void delegate(Object) FinalizeCallback;
+public alias void delegate(Object) FinalizeCallback; /// A delegate to call when a weak reference dies.
 
 private extern (C) void rt_attachDisposeEvent(Object h, FinalizeCallback e);
 private extern (C) void rt_detachDisposeEvent(Object h, FinalizeCallback e);
@@ -16,6 +16,17 @@ private struct SMonitor
     public size_t refs;
 }
 
+/**
+ * Represents a weak, GC-managed reference.
+ *
+ * Note that this class uses a dirty trick that exploits the internal
+ * monitor field of classes. This, in short, means that you should not
+ * attach dispose events to the referenced object, use it as a monitor
+ * in $(D synchronized) statements, and so on.
+ *
+ * Params:
+ *  T = Type of the object to reference.
+ */
 public final class Weak(T : Object)
 {
     // Note: This class uses a clever trick which works fine for a conservative GC
@@ -32,6 +43,14 @@ public final class Weak(T : Object)
         assert(_ptr);
     }
 
+    /**
+     * Constructs a new weak reference referencing a given object.
+     *
+     * Params:
+     *  object = The object to reference weakly.
+     *  callbacks = Callbacks to fire when the weakly referenced
+     *              object is collected. May be $(D null).
+     */
     public this(T object, NoNullList!FinalizeCallback callbacks = null)
     in
     {
@@ -49,22 +68,21 @@ public final class Weak(T : Object)
         _ptr = ptr;
         _hash = typeid(T).getHash(&object);
 
-        FinalizeCallback dg;
+        FinalizeCallback dg; // Don't join the declaration with the assignment. Alters semantics.
         void* monitor;
 
-        dg = (Object o)
+        dg = (o)
         {
             // HACK: This is completely and utterly insane. Don't do this at home. It will
-            // kill your dog, eat your laundry, and possibly assassinate your family. This
-            // is a temporary hack to make the invariant described below (before the
-            // rt_attachDisposeEvent call) hold.
+            // kill your dog and eat your laundry. This is a temporary hack to make the
+            // invariant described below (before the rt_attachDisposeEvent call) hold.
             GC.removeRange(monitor);
 
             rt_detachDisposeEvent(o, dg);
 
             // This assignment is important. If we don't null _object when it is collected,
-            // the check in object could return false positives where the GC has reused the
-            // memory for a new object.
+            // the check in getObject could return false positives where the GC has reused
+            // the memory for a new, unrelated object.
             _object.value = 0;
 
             if (callbacks)
@@ -84,11 +102,20 @@ public final class Weak(T : Object)
         auto mon = cast(SMonitor*)object.__monitor;
         monitor = mon.devt.ptr;
 
-        // HACK: See above.
+        // HACK: See above (in dg).
         GC.addRange(monitor, mon.devt.length * FinalizeCallback.sizeof);
     }
 
-    @property public T object() nothrow // TODO: Make this pure in 2.060.
+    /**
+     * Retrieves the referenced object.
+     *
+     * This may return $(D null) if the object has been collected.
+     *
+     * Returns:
+     *  The referenced object, or $(D null) if it has been
+     *  collected.
+     */
+    public T getObject() nothrow // TODO: Make this pure in 2.060.
     {
         try
         {
@@ -131,20 +158,33 @@ public final class Weak(T : Object)
 
     @trusted public override hash_t toHash()
     {
-        auto obj = object;
+        auto obj = getObject();
 
         return obj ? typeid(T).getHash(&obj) : _hash;
     }
 
     public override string toString()
     {
-        auto obj = object;
+        auto obj = getObject();
 
-        return obj ? obj.toString() : toString();
+        return obj ? obj.toString() : super.toString();
     }
 }
 
-public Weak!T weak(T)(T object)
+/**
+ * Convenience function to construct a $(D Weak) instance from
+ * a given object.
+ *
+ * Params:
+ *  T = The type of the referenced object.
+ *  object = The object to reference.
+ *  callbacks = Callbacks to fire when the weakly referenced
+ *              object is collected. May be $(D null).
+ *
+ * Returns:
+ *  A weak reference referencing $(D object).
+ */
+public Weak!T weak(T : Object)(T object, NoNullList!FinalizeCallback callbacks = null)
 in
 {
     assert(object);
