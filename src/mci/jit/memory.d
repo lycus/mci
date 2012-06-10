@@ -14,13 +14,16 @@ import std.algorithm,
  */
 public final class CodeMemoryAllocator
 {
-    private List!(Tuple!(ubyte[], size_t)) _regions; /// Holds a list of memory/position pairs.
+    private List!(Tuple!(ubyte[], size_t)) _regions;
 
     invariant()
     {
         assert(_regions);
     }
 
+    /**
+     * Constructs a new $(D CodeMemoryAllocator) instance.
+     */
     public this()
     {
         _regions = new typeof(_regions)();
