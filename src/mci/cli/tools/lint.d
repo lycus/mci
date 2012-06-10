@@ -8,7 +8,9 @@ import std.exception,
        mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.modules,
+       mci.verifier.exception,
        mci.verifier.lint,
+       mci.verifier.manager,
        mci.vm.intrinsics.declarations,
        mci.vm.io.exception,
        mci.vm.io.reader;
@@ -73,6 +75,7 @@ public final class LintTool : Tool
         foreach (file; args)
         {
             Module mod;
+            Function currentFunc;
 
             try
             {
@@ -81,6 +84,14 @@ public final class LintTool : Tool
 
                 auto reader = new ModuleReader(manager);
                 mod = reader.load(file);
+
+                auto verifier = new VerificationManager();
+
+                foreach (func; mod.functions)
+                {
+                    currentFunc = func.y;
+                    verifier.verify(func.y);
+                }
             }
             catch (ErrnoException ex)
             {
@@ -90,6 +101,21 @@ public final class LintTool : Tool
             catch (ReaderException ex)
             {
                 logf("Error: Could not load '%s': %s", file, ex.msg);
+                return 1;
+            }
+            catch (VerifierException ex)
+            {
+                logf("Error: Verification failed in function %s:", currentFunc);
+                log(ex.msg);
+
+                if (ex.instruction)
+                {
+                    log();
+                    logf("The invalid instruction was (index %s in block %s):", findIndex(ex.instruction.block.stream, ex.instruction),
+                         ex.instruction.block);
+                    log(ex.instruction);
+                }
+
                 return 1;
             }
 
