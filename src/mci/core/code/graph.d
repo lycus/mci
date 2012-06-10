@@ -5,6 +5,10 @@ import std.string,
        mci.core.analysis.cfg,
        mci.core.code.functions;
 
+/**
+ * Dumps a Graphviz graph of a function. Useful for debugging
+ * most of the MCI's compilation pipeline.
+ */
 public final class GraphWriter
 {
     private Stream _stream;
@@ -19,6 +23,12 @@ public final class GraphWriter
         assert(_writer);
     }
 
+    /**
+     * Constructs a new $(D GraphWriter) instance.
+     *
+     * Params:
+     *  stream = The stream to write to.
+     */
     public this(Stream stream)
     in
     {
@@ -32,6 +42,12 @@ public final class GraphWriter
         _writer = new typeof(_writer)(stream);
     }
 
+    /**
+     * Dumps the graph of the specified function.
+     *
+     * Params:
+     *  function_ = The function to generate a graph for.
+     */
     public void write(Function function_)
     in
     {
