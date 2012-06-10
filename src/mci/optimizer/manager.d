@@ -7,11 +7,11 @@ import std.traits,
        mci.optimizer.code.unused,
        mci.optimizer.ssa.folding;
 
-public __gshared ReadOnlyCollection!OptimizerDefinition allOptimizers;
-public __gshared ReadOnlyCollection!OptimizerDefinition fastOptimizers;
-public __gshared ReadOnlyCollection!OptimizerDefinition moderateOptimizers;
-public __gshared ReadOnlyCollection!OptimizerDefinition slowOptimizers;
-public __gshared ReadOnlyCollection!OptimizerDefinition unsafeOptimizers;
+public __gshared ReadOnlyCollection!OptimizerDefinition allOptimizers; /// All included optimization passes.
+public __gshared ReadOnlyCollection!OptimizerDefinition fastOptimizers; /// All fast optimization passes.
+public __gshared ReadOnlyCollection!OptimizerDefinition moderateOptimizers; /// All moderate optimization passes.
+public __gshared ReadOnlyCollection!OptimizerDefinition slowOptimizers; /// All slow optimization passes.
+public __gshared ReadOnlyCollection!OptimizerDefinition unsafeOptimizers; /// All unsafe optimization passes (not present in the other collections).
 
 shared static this()
 {
@@ -50,6 +50,9 @@ shared static this()
     unsafeOptimizers = unsafe;
 }
 
+/**
+ * Manages and executes optimization passes on functions.
+ */
 public final class OptimizationManager
 {
     private NoNullList!OptimizerPass _codeOptimizers;
@@ -65,6 +68,9 @@ public final class OptimizationManager
         assert(_definitions);
     }
 
+    /**
+     * Constructs a new $(D OptimizationManager) instance.
+     */
     public this()
     {
         _codeOptimizers = new typeof(_codeOptimizers)();
@@ -73,6 +79,12 @@ public final class OptimizationManager
         _definitions = new typeof(_definitions)();
     }
 
+    /**
+     * Gets all registered optimizers.
+     *
+     * Returns:
+     *  All registered optimizers.
+     */
     @property public ReadOnlyCollection!OptimizerDefinition definitions() pure nothrow
     out (result)
     {
@@ -83,6 +95,12 @@ public final class OptimizationManager
         return _definitions;
     }
 
+    /**
+     * Adds an optimization pass.
+     *
+     * Params:
+     *  pass = The optimization pass to add.
+     */
     public void addPass(OptimizerDefinition pass)
     in
     {
@@ -108,6 +126,21 @@ public final class OptimizationManager
         _definitions.add(pass);
     }
 
+    /**
+     * Runs all registered optimization passes on a function.
+     *
+     * First runs all optimizers that operate on any IR level. Then
+     * runs all optimizers that operate on non-SSA or SSA IR depending
+     * on whether the function has $(D FunctionAttributes.ssa). Finally,
+     * invokes all optimizers that operate on any IR level (again).
+     *
+     * If the function has $(D FunctionAttributes.noOptimization), no
+     * optimization will happen. Otherwise, this will very likely
+     * mutate the IR of $(D function_).
+     *
+     * Params:
+     *  function_ = The function to optimize.
+     */
     public void optimize(Function function_)
     in
     {
