@@ -11,6 +11,10 @@ import mci.core.container,
        mci.core.typing.types,
        mci.core.utilities;
 
+/**
+ * Disassembles an in-memory IAL module into IAL source code. This
+ * can be useful for round-tripping purposes.
+ */
 public final class ModuleDisassembler
 {
     private Stream _stream;
@@ -25,6 +29,12 @@ public final class ModuleDisassembler
         assert(_writer);
     }
 
+    /**
+     * Constructs a new $(D ModuleDisassembler) instance.
+     *
+     * Params:
+     *  stream = The stream to write to.
+     */
     public this(Stream stream)
     in
     {
@@ -38,6 +48,12 @@ public final class ModuleDisassembler
         _writer = new typeof(_writer)(stream);
     }
 
+    /**
+     * Disassembles the given module.
+     *
+     * Params:
+     *  module_ = The module to disassemble.
+     */
     public void disassemble(Module module_)
     in
     {

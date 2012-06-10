@@ -5,40 +5,54 @@ import std.string,
        mci.assembler.parsing.ast,
        mci.assembler.parsing.parser;
 
+/**
+ * Dumps an AST parsed from IAL source code to a structured tree
+ * format. Useful for debugging the IAL assembler's parser.
+ */
 public final class TreeDisassembler
 {
-    private string _inputFile;
     private Stream _stream;
     private TextWriter _writer;
     private bool _done;
 
     invariant()
     {
-        assert(_inputFile);
         assert(_stream);
         assert((cast()_stream).canWrite);
         assert(!(cast()_stream).isClosed);
         assert(_writer);
     }
 
-    public this(string inputFile, Stream stream)
+    /**
+     * Constructs a new $(D TreeDisassembler) instance.
+     *
+     * Params:
+     *  stream = The stream to write to.
+     */
+    public this(Stream stream)
     in
     {
-        assert(inputFile);
         assert(stream);
         assert((cast()stream).canWrite);
         assert(!(cast()stream).isClosed);
     }
     body
     {
-        _inputFile = inputFile;
         _stream = stream;
         _writer = new typeof(_writer)(stream);
     }
 
-    public void disassemble(CompilationUnit unit)
+    /**
+     * Dumps the specified compilation unit.
+     *
+     * Params:
+     *  inputFile = Name of the input file that $(D unit) was parsed from.
+     *  unit = The compilation unit to dump.
+     */
+    public void disassemble(string inputFile, CompilationUnit unit)
     in
     {
+        assert(inputFile);
         assert(unit);
         assert(!_done);
     }
@@ -47,19 +61,20 @@ public final class TreeDisassembler
         _done = true;
 
         foreach (node; unit.nodes)
-            writeNode(node);
+            writeNode(inputFile, node);
 
         _writer.writeln();
     }
 
-    private void writeNode(Node node)
+    private void writeNode(string inputFile, Node node)
     in
     {
+        assert(inputFile);
         assert(node);
     }
     body
     {
-        _writer.writeif("[%s in %s %s", split(typeid(node).name, ".")[$ - 1][0 .. $ - 4], _inputFile, node.location);
+        _writer.writeif("[%s in %s %s", split(typeid(node).name, ".")[$ - 1][0 .. $ - 4], inputFile, node.location);
 
         auto str = node.toString();
 
@@ -72,7 +87,7 @@ public final class TreeDisassembler
 
         foreach (child; node.children)
             if (child)
-                writeNode(child);
+                writeNode(inputFile, child);
 
         _writer.dedent();
     }

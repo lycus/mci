@@ -180,8 +180,8 @@ public final class AssemblerTool : Tool
 
                 foreach (unit; units)
                 {
-                    auto disasm = new TreeDisassembler(unit.x, dumpStream);
-                    disasm.disassemble(unit.y);
+                    auto disasm = new TreeDisassembler(dumpStream);
+                    disasm.disassemble(unit.x, unit.y);
                 }
             }
             catch (ErrnoException ex)

@@ -2,6 +2,10 @@ module mci.assembler.exception;
 
 import mci.core.exception;
 
+/**
+ * The base exception class for exceptions occurring in the
+ * IAL assembler's pipeline.
+ */
 public class AssemblerException : CompilerException
 {
     public this(string msg, string file = __FILE__, size_t line = __LINE__)
