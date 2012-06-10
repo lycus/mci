@@ -8,6 +8,9 @@ import mci.core.container,
        mci.verifier.passes.typing,
        mci.verifier.base;
 
+/**
+ * Manages and executes verification passes.
+ */
 public final class VerificationManager
 {
     private NoNullList!CodeVerifier _verifiers;
@@ -17,6 +20,9 @@ public final class VerificationManager
         assert(_verifiers);
     }
 
+    /**
+     * Constructs a new $(D VerificationManager) instance.
+     */
     public this()
     {
         _verifiers = new typeof(_verifiers)();
@@ -68,6 +74,15 @@ public final class VerificationManager
                                          new TrampolineVerifier()));
     }
 
+    /**
+     * Runs all verification passes on a function.
+     *
+     * Params:
+     *  function_ = The function to verify.
+     *
+     * Throws:
+     *  $(D VerifierException) if verification fails.
+     */
     public void verify(Function function_)
     in
     {

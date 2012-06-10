@@ -3,6 +3,10 @@ module mci.verifier.exception;
 import mci.core.exception,
        mci.core.code.instructions;
 
+/**
+ * The exception thrown by the verification pipeline
+ * if some kind of verification failed.
+ */
 public class VerifierException : CompilerException
 {
     private Instruction _instruction;
@@ -36,6 +40,14 @@ public class VerifierException : CompilerException
         _instruction = instruction;
     }
 
+    /**
+     * Gets the instruction that caused the verification
+     * failure, if any.
+     *
+     * Returns:
+     *  The instruction causing the verification failure,
+     *  if any.
+     */
     @property public final Instruction instruction() pure nothrow
     {
         return _instruction;

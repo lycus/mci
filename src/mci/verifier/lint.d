@@ -6,6 +6,9 @@ import std.string,
        mci.core.code.instructions,
        mci.core.code.opcodes;
 
+/**
+ * Represents a message emitted by the linter.
+ */
 public final class LintMessage
 {
     private Instruction _instruction;
@@ -17,7 +20,7 @@ public final class LintMessage
         assert(_message);
     }
 
-    public this(Instruction instruction, string message)
+    private this(Instruction instruction, string message)
     in
     {
         assert(instruction);
@@ -29,6 +32,12 @@ public final class LintMessage
         _message = message;
     }
 
+    /**
+     * Gets the instruction that triggered the message.
+     *
+     * Returns:
+     *  The instruction that triggered the message.
+     */
     @property public Instruction instruction() pure nothrow
     out (result)
     {
@@ -39,6 +48,12 @@ public final class LintMessage
         return _instruction;
     }
 
+    /**
+     * Gets the actual message as a string.
+     *
+     * Returns:
+     *  The actual message as a string.
+     */
     @property public string message() pure nothrow
     out (result)
     {
@@ -50,8 +65,11 @@ public final class LintMessage
     }
 }
 
-public alias void delegate(Function, NoNullList!LintMessage) LintPass;
+public alias void delegate(Function, NoNullList!LintMessage) LintPass; /// Represents a lint pass.
 
+/**
+ * Manages and executes linting passes on functions.
+ */
 public final class Linter
 {
     private NoNullList!LintPass _passes;
@@ -61,11 +79,20 @@ public final class Linter
         assert(_passes);
     }
 
+    /**
+     * Constructs a new $(D Linter) instance.
+     */
     public this()
     {
         _passes = new typeof(_passes)();
     }
 
+    /**
+     * Gets the list of lint passes in this instance.
+     *
+     * Returns:
+     *  The list of lint passes in this instance.
+     */
     @property public NoNullList!LintPass passes() pure nothrow
     out (result)
     {
@@ -76,6 +103,16 @@ public final class Linter
         return _passes;
     }
 
+    /**
+     * Runs all registered lint passes on the given function.
+     *
+     * Params:
+     *  function_ = The function to lint.
+     *
+     * Returns:
+     *  A collection of messages emitted by the lint passes executed
+     *  on $(D function_). Can be empty if no problems were found.
+     */
     public ReadOnlyIndexable!LintMessage lint(Function function_)
     in
     {
@@ -93,7 +130,7 @@ public final class Linter
     }
 }
 
-public __gshared ReadOnlyCollection!LintPass standardPasses;
+public __gshared ReadOnlyCollection!LintPass standardPasses; /// Lint passes included in this module.
 
 shared static this()
 {
@@ -104,10 +141,11 @@ shared static this()
     standardPasses = passes;
 }
 
-private void message(T ...)(NoNullList!LintMessage messages, Instruction instruction, string message, T args)
+public void message(T ...)(NoNullList!LintMessage messages, Instruction instruction, string message, T args)
 in
 {
     assert(messages);
+    assert(instruction);
     assert(message);
 }
 body

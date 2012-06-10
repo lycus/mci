@@ -15,6 +15,9 @@ public abstract class CodeVerifier
      *
      * Params:
      *  function_ = The function to verify IR in.
+     *
+     * Throws:
+     *  $(D VerifierException) if verification fails.
      */
     public abstract void verify(Function function_);
 
