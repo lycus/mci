@@ -156,7 +156,7 @@ def build(bld):
     elif bld.env.COMPILER_D == 'gdc':
         unittest = '-funittest'
     elif bld.env.COMPILER_D == 'ldc2':
-        unittest = '-funittest'
+        unittest = '-unittest'
     else:
         bld.fatal('Unsupported D compiler.')
 
