@@ -432,6 +432,10 @@ public final class ModuleReader : ModuleLoader
             error("File magic '%s' doesn't match expected '%s'.", magic, fileMagic);
 
         auto ver = _reader.read!uint();
+
+        if (ver != fileVersion)
+            error("Cannot handle file format version %s.", ver);
+
         auto stOffset = _reader.read!ulong();
 
         auto pos = _reader.stream.position;
