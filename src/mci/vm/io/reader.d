@@ -484,6 +484,9 @@ public final class ModuleReader : ModuleLoader
         if (_reader.read!bool())
             mod.threadEntryPoint = readFunctionReference();
 
+        if (_reader.read!bool())
+            mod.threadExitPoint = readFunctionReference();
+
         readMetadataSegment();
 
         return mod;

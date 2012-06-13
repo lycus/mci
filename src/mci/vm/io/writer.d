@@ -92,6 +92,11 @@ public final class ModuleWriter : ModuleSaver
         if (module_.threadEntryPoint)
             writeFunctionReference(module_.threadEntryPoint);
 
+        _writer.write(!!module_.threadExitPoint);
+
+        if (module_.threadExitPoint)
+            writeFunctionReference(module_.threadExitPoint);
+
         writeMetadataSegment(module_);
 
         auto st = _writer.stream.position;
