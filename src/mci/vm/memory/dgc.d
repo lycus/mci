@@ -5,16 +5,57 @@ import core.exception,
        core.thread,
        std.conv,
        mci.core.container,
+       mci.core.sync,
+       mci.core.weak,
+       mci.vm.intrinsics.declarations,
        mci.vm.memory.base,
        mci.vm.memory.info,
+       mci.vm.memory.layout,
        mci.vm.memory.pinning;
+
+private final class WeakBox
+{
+    private RuntimeObject* _object;
+
+    invariant()
+    {
+        assert(_object);
+    }
+
+    public this(RuntimeObject* object)
+    in
+    {
+        assert(object);
+    }
+    body
+    {
+        _object = object;
+    }
+
+    @property public RuntimeObject* object()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _object;
+    }
+}
 
 public final class DGarbageCollector : GarbageCollector
 {
+    private Mutex _weakRefLock;
     private PinnedObjectManager _pinManager;
+
+    invariant()
+    {
+        assert(_weakRefLock);
+    }
 
     public this()
     {
+        _weakRefLock = new typeof(_weakRefLock)();
         _pinManager = new typeof(_pinManager)(this);
     }
 
@@ -121,17 +162,44 @@ public final class DGarbageCollector : GarbageCollector
 
     public override RuntimeObject* createWeak(RuntimeObject* target)
     {
-        // FIXME: Can't implement this until 2.061?
-        assert(false);
+        auto weak = allocate(getTypeInfo(weakType, mci.core.config.is32Bit));
+
+        if (!weak)
+            return null;
+
+        auto addr = cast(Weak!WeakBox*)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
+
+        // We currently have to box the value, since we need
+        // the GC to notify us when the contained object is
+        // collected.
+        *addr = .weak(new WeakBox(target));
+
+        return weak;
     }
 
     public override RuntimeObject* getWeakTarget(RuntimeObject* weak)
     {
-        assert(false);
+        auto weakObj = cast(Weak!WeakBox*)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
+
+        _weakRefLock.lock();
+
+        scope (exit)
+            _weakRefLock.unlock();
+
+        auto obj = weakObj.getObject();
+
+        return obj ? obj.object : null;
     }
 
     public override void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
     {
-        assert(false);
+        auto addr = cast(Weak!WeakBox*)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
+
+        _weakRefLock.lock();
+
+        scope (exit)
+            _weakRefLock.unlock();
+
+        *addr = .weak(new WeakBox(target));
     }
 }
