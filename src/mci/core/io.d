@@ -76,7 +76,7 @@ public interface Stream
      *  $(D true) if calling $(D read) is allowed; otherwise,
      *  $(D false).
      */
-    @property public bool canRead();
+    @property public bool canRead() pure nothrow;
 
     /**
      * Indicates whether this stream supports writing
@@ -88,7 +88,7 @@ public interface Stream
      *  $(D true) if calling $(D write) is allowed; otherwise,
      *  $(D false).
      */
-    @property public bool canWrite();
+    @property public bool canWrite() pure nothrow;
 
     /**
      * Indicates whether this stream is closed. If the
@@ -366,7 +366,7 @@ public final class MemoryStream : Stream
      * that allows writing, since it starts out with
      * an empty buffer.
      */
-    public this()
+    public this() pure nothrow
     {
         _canWrite = true;
     }
@@ -379,7 +379,7 @@ public final class MemoryStream : Stream
      *  data = The buffer to back the memory stream.
      *  canWrite = Indicates whether writing is allowed.
      */
-    public this(ubyte[] data, bool canWrite = true)
+    public this(ubyte[] data, bool canWrite = true) pure nothrow
     {
         _data = data;
         _canWrite = canWrite;
@@ -417,12 +417,12 @@ public final class MemoryStream : Stream
         _data.length = cast(size_t)length;
     }
 
-    @property public bool canRead()
+    @property public bool canRead() pure nothrow
     {
         return true;
     }
 
-    @property public bool canWrite()
+    @property public bool canWrite() pure nothrow
     {
         return _canWrite;
     }
@@ -438,7 +438,7 @@ public final class MemoryStream : Stream
      * Returns:
      *  The backing buffer of the memory stream.
      */
-    @property public ubyte[] data()
+    @property public ubyte[] data() pure
     {
         checkOpen();
 
@@ -471,13 +471,16 @@ public final class MemoryStream : Stream
         _isClosed = true;
     }
 
-    private void checkOpen()
+    private void checkOpen() pure
     {
         if (_isClosed)
             throw new IOException("The memory stream is closed.");
     }
 }
 
+/**
+ * Performs binary reading operations on a stream.
+ */
 public class BinaryReader
 {
     private Stream _stream;
@@ -490,12 +493,20 @@ public class BinaryReader
         assert(!(cast()_stream).isClosed);
     }
 
+    /**
+     * Constructs a new $(D BinaryReader) using the
+     * specified stream.
+     *
+     * Params:
+     *  stream = The stream to use.
+     *  endianness = The endianness of the stream.
+     */
     public this(Stream stream, Endianness endianness = Endianness.littleEndian)
     in
     {
         assert(stream);
-        assert((cast()stream).canRead);
-        assert(!(cast()stream).isClosed);
+        assert(stream.canRead);
+        assert(!stream.isClosed);
     }
     body
     {
@@ -503,6 +514,12 @@ public class BinaryReader
         _endianness = endianness;
     }
 
+    /**
+     * Retrieves the stream backing this $(D BinaryReader).
+     *
+     * Returns:
+     *  The stream backing this $(D BinaryReader).
+     */
     @property public Stream stream() pure nothrow
     out (result)
     {
@@ -513,11 +530,28 @@ public class BinaryReader
         return _stream;
     }
 
+    /**
+     * Gets the endianness that data is read with.
+     *
+     * Returns:
+     *  The endianness that data is read with.
+     */
     @property public Endianness endianness() pure nothrow
     {
         return _endianness;
     }
 
+    /**
+     * Reads a raw primitive value from the stream.
+     *
+     * If the host endianness doesn't match this instance's
+     * endianness, then the value will be read in reverse
+     * endianness.
+     *
+     * Params:
+     *  T = Type of the value to read. Must be a primitive
+     *      according to $(D isPrimitiveType).
+     */
     public final T read(T)()
         if (isPrimitiveType!T)
     {
@@ -535,6 +569,18 @@ public class BinaryReader
         return value;
     }
 
+    /**
+     * Reads an array of raw primitive values from the stream.
+     *
+     * If the host endianness doesn't match this instance's
+     * endianness, then each value will be read in reverse
+     * endianness.
+     *
+     * Params:
+     *  T = The array type. Must hold elements that are primitive
+     *      according to $(D isPrimitiveValue).
+     *  length = How many elements to read.
+     */
     public final T readArray(T)(ulong length)
         if (isArray!T && isPrimitiveType!(ElementEncodingType!T))
     {
@@ -549,6 +595,9 @@ public class BinaryReader
     }
 }
 
+/**
+ * Performs binary writing operations on a stream.
+ */
 public class BinaryWriter
 {
     private Stream _stream;
@@ -561,12 +610,20 @@ public class BinaryWriter
         assert(!(cast()_stream).isClosed);
     }
 
+    /**
+     * Constructs a new $(D BinaryWriter) using the
+     * specified stream.
+     *
+     * Params:
+     *  stream = The stream to use.
+     *  endianness = The endianness of the stream.
+     */
     public this(Stream stream, Endianness endianness = Endianness.littleEndian)
     in
     {
         assert(stream);
-        assert((cast()stream).canWrite);
-        assert(!(cast()stream).isClosed);
+        assert(stream.canWrite);
+        assert(!stream.isClosed);
     }
     body
     {
@@ -574,6 +631,12 @@ public class BinaryWriter
         _endianness = endianness;
     }
 
+    /**
+     * Retrieves the stream backing this $(D BinaryWriter).
+     *
+     * Returns:
+     *  The stream backing this $(D BinaryWriter).
+     */
     @property public Stream stream() pure nothrow
     out (result)
     {
@@ -584,11 +647,29 @@ public class BinaryWriter
         return _stream;
     }
 
+    /**
+     * Gets the endianness that data is written with.
+     *
+     * Returns:
+     *  The endianness that data is written with.
+     */
     @property public Endianness endianness() pure nothrow
     {
         return _endianness;
     }
 
+    /**
+     * Writes a raw primitive value to the stream.
+     *
+     * If the host endianness doesn't match this instance's
+     * endianness, then the value will be written in reverse
+     * endianness.
+     *
+     * Params:
+     *  T = Type of $(D value). Must be a primitive according
+     *      to $(D isPrimitiveType).
+     *  value = The value to write.
+     */
     public final void write(T)(T value)
         if (isPrimitiveType!T)
     {
@@ -602,18 +683,43 @@ public class BinaryWriter
                 _stream.write((cast(ubyte*)&value)[i]);
     }
 
-    public final void writeArray(T)(T value)
+    /**
+     * Writes an array of raw primitive values to the stream.
+     *
+     * If the host endianness doesn't match this instance's
+     * endianness, then each value will be written in reverse
+     * endianness.
+     *
+     * Params:
+     *  T = The array type. Must hold elements that are primitive
+     *      according to $(D isPrimitiveValue).
+     *  values = The values to write.
+     */
+    public final void writeArray(T)(T values)
         if (isArray!T && isPrimitiveType!(ElementEncodingType!T))
     {
-        foreach (item; value)
+        foreach (item; values)
             write(item);
     }
 }
 
+/**
+ * Convenience extension of $(D BinaryWriter) for
+ * writing structured textual files with controlled
+ * indentation.
+ */
 public class TextWriter : BinaryWriter
 {
     private ulong _indent;
 
+    /**
+     * Constructs a new $(D TextWriter) using the
+     * specified stream.
+     *
+     * Params:
+     *  stream = The stream to use.
+     *  endianness = The endianness of the stream.
+     */
     public this(Stream stream, Endianness endianness = Endianness.littleEndian)
     in
     {
@@ -626,12 +732,18 @@ public class TextWriter : BinaryWriter
         super(stream, endianness);
     }
 
+    /**
+     * Increases the indentation by 4 spaces.
+     */
     public void indent() pure nothrow
     {
         if (_indent != typeof(_indent).max)
             _indent++;
     }
 
+    /**
+     * Decreases the indentation by 4 spaces.
+     */
     public void dedent() pure nothrow
     {
         if (_indent != typeof(_indent).min)
