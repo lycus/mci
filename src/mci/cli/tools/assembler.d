@@ -1,8 +1,6 @@
 module mci.cli.tools.assembler;
 
-import std.conv,
-       std.exception,
-       std.getopt,
+import std.getopt,
        std.path,
        std.utf,
        mci.assembler.disassembly.ast,
@@ -13,6 +11,7 @@ import std.conv,
        mci.assembler.parsing.lexer,
        mci.assembler.parsing.parser,
        mci.core.container,
+       mci.core.exception,
        mci.core.io,
        mci.core.code.functions,
        mci.core.code.modules,
@@ -138,12 +137,12 @@ public final class AssemblerTool : Tool
 
                 units.add(file, unit);
             }
-            catch (ErrnoException ex)
+            catch (IOException ex)
             {
-                logf("Error: Could not read '%s': %s", file, ex.msg);
+                logf("Error: Could not access '%s': %s", file, ex.msg);
                 return 1;
             }
-            catch (UtfException ex)
+            catch (UTFException ex)
             {
                 logf("Error: UTF-8 decoding failed; file '%s' is probably not plain text.", file);
                 return 1;
@@ -156,11 +155,6 @@ public final class AssemblerTool : Tool
             catch (ParserException ex)
             {
                 logf("Error: Parsing failed in '%s' %s: %s", file, ex.location, ex.msg);
-                return 1;
-            }
-            catch (AssemblerException ex)
-            {
-                logf("Error: Internal error in '%s': %s", file, ex.msg);
                 return 1;
             }
             finally
@@ -184,9 +178,9 @@ public final class AssemblerTool : Tool
                     disasm.disassemble(unit.x, unit.y);
                 }
             }
-            catch (ErrnoException ex)
+            catch (IOException ex)
             {
-                logf("Error: Could not write '%s': %s", dump, ex.msg);
+                logf("Error: Could not access '%s': %s", dump, ex.msg);
                 return 1;
             }
             finally
@@ -237,9 +231,9 @@ public final class AssemblerTool : Tool
 
             (new ModuleWriter()).save(mod, output);
         }
-        catch (ErrnoException ex)
+        catch (IOException ex)
         {
-            logf("Error: Could not write '%s': %s", output, ex.msg);
+            logf("Error: Could not access '%s': %s", output, ex.msg);
             return 1;
         }
         catch (GenerationException ex)

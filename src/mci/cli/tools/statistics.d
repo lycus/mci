@@ -1,9 +1,9 @@
 module mci.cli.tools.statistics;
 
-import std.exception,
-       std.getopt,
+import std.getopt,
        std.path,
        mci.core.container,
+       mci.core.exception,
        mci.core.analysis.statistics,
        mci.core.code.modules,
        mci.vm.intrinsics.declarations,
@@ -128,7 +128,7 @@ public final class StatisticsTool : Tool
                         log(type.x);
                 }
             }
-            catch (ErrnoException ex)
+            catch (IOException ex)
             {
                 logf("Error: Could not access '%s': %s", file, ex.msg);
                 return 1;

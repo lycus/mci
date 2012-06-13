@@ -1,9 +1,9 @@
 module mci.cli.tools.disassembler;
 
-import std.exception,
-       std.getopt,
+import std.getopt,
        std.path,
        mci.assembler.disassembly.modules,
+       mci.core.exception,
        mci.core.io,
        mci.core.code.modules,
        mci.vm.intrinsics.declarations,
@@ -95,7 +95,7 @@ public final class DisassemblerTool : Tool
 
             disasm.disassemble(mod);
         }
-        catch (ErrnoException ex)
+        catch (IOException ex)
         {
             logf("Error: Could not access '%s': %s", file, ex.msg);
             return 1;

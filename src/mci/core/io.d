@@ -2,12 +2,14 @@ module mci.core.io;
 
 import std.ascii,
        std.conv,
+       std.exception,
        std.range,
        std.stdio,
        std.string,
        std.traits,
        mci.core.common,
        mci.core.config,
+       mci.core.exception,
        mci.core.meta;
 
 /**
@@ -15,24 +17,120 @@ import std.ascii,
  */
 public interface Stream
 {
+    /**
+     * Gets the zero-based position in the stream.
+     *
+     * Returns:
+     *  The zero-based position in the stream.
+     *
+     * Throws:
+     *  $(D IOException) if this stream doesn't support
+     *  querying its position.
+     */
     @property public ulong position();
 
+    /**
+     * Sets the zero-based position in the stream.
+     *
+     * Params:
+     *  position = The position to seek to.
+     *
+     * Throws:
+     *  $(D IOException) if this stream doesn't support
+     *  seeking to arbitrary positions, or if the the
+     *  $(D position) value is out of range.
+     */
     @property public void position(ulong position);
 
+    /**
+     * Gets the length of the stream.
+     *
+     * Returns:
+     *  The length of the stream.
+     *
+     * Throws:
+     *  $(D IOException) if the stream doesn't support
+     *  querying its length.
+     */
     @property public ulong length();
 
+    /**
+     * Sets the length of the stream.
+     *
+     * Params:
+     *  length = The length of the stream.
+     *
+     * Throws:
+     *  $(D IOException) if the stream doesn't support
+     *  settings its length.
+     */
     @property public void length(ulong length);
 
+    /**
+     * Indicates whether this stream supports reading
+     * via the $(D read) method.
+     *
+     * This value will never change during a stream's lifetime.
+     *
+     * Returns:
+     *  $(D true) if calling $(D read) is allowed; otherwise,
+     *  $(D false).
+     */
     @property public bool canRead();
 
+    /**
+     * Indicates whether this stream supports writing
+     * via the $(D write) method.
+     *
+     * This value will never change during a stream's lifetime.
+     *
+     * Returns:
+     *  $(D true) if calling $(D write) is allowed; otherwise,
+     *  $(D false).
+     */
     @property public bool canWrite();
 
-    @property public bool isClosed();
+    /**
+     * Indicates whether this stream is closed. If the
+     * stream is closed, all methods on this interface
+     * except $(D isClosed), $(D canRead), and $(D canWrite)
+     * will throw an $(D IOException).
+     *
+     * Returns:
+     *  $(D true) if this stream is closed; otherwise, $(D false).
+     */
+    @property public bool isClosed(); // TODO: Make this pure and nothrow in 2.060.
 
+    /**
+     * Reads a byte from the stream.
+     *
+     * Returns:
+     *  The byte read from the stream.
+     *
+     * Throws:
+     *  $(D IOException) if the stream doesn't support reading, or
+     *  if the end of the stream has been reached.
+     */
     public ubyte read();
 
+    /**
+     * Writes a byte to the stream.
+     *
+     * Params:
+     *  value = The byte to write.
+     *
+     * Throws:
+     *  $(D IOException) if the stream doesn't support writing.
+     */
     public void write(ubyte value);
 
+    /**
+     * Closes this stream, resulting in $(D isClosed) being
+     * $(D true). No further operations (on this interface)
+     * are allowed (they will throw an $(D IOException)).
+     *
+     * Closing a stream multiple times has no visible effect.
+     */
     public void close();
 }
 
@@ -67,11 +165,24 @@ body
     }
 }
 
+/**
+ * Represents a stream interface to a file.
+ */
 public final class FileStream : Stream
 {
-    private File _file;
     private FileMode _mode;
+    private File _file;
 
+    /**
+     * Constructs a new $(D FileStream) instance.
+     *
+     * Params:
+     *  fileName = The path to the file to open.
+     *  mode = The mode to open the file in.
+     *
+     * Throws:
+     *  $(D IOException) if the file could not be opened.
+     */
     public this(string fileName, FileMode mode)
     in
     {
@@ -79,10 +190,22 @@ public final class FileStream : Stream
     }
     body
     {
-        _file = File(fileName, modeToString(mode));
         _mode = mode;
+
+        try
+            _file = File(fileName, modeToString(mode));
+        catch (ErrnoException)
+            throw new IOException(format("Could not open file '%s' in %s mode.", fileName, mode));
     }
 
+    /**
+     * Gets the mode the file was opened in.
+     *
+     * Does not throw an exception if the file is closed.
+     *
+     * Returns:
+     *  The mode the file was opened in.
+     */
     @property public FileMode mode()
     {
         return _mode;
@@ -91,23 +214,53 @@ public final class FileStream : Stream
     @property public ulong position()
     {
         // FIXME: This only returns a 32-bit value.
-        return _file.tell;
+        try
+            return _file.tell;
+        catch (Exception) // The tell function throws Exception for some ungodly reason.
+        {
+            close();
+            throw new IOException("The file stream is closed.");
+        }
     }
 
     @property public void position(ulong position)
     {
-        _file.seek(position);
+        try
+            _file.seek(position);
+        catch (ErrnoException)
+        {
+            close();
+            throw new IOException("The file stream is closed.");
+        }
     }
 
     @property public ulong length()
     {
-        return _file.size;
+        try
+            return _file.size;
+        catch (ErrnoException)
+        {
+            close();
+            throw new IOException("The file stream is closed.");
+        }
     }
 
     @property public void length(ulong length)
     {
-        // We cannot just set the length of a file stream.
-        assert(false);
+        try
+        {
+            auto pos = _file.tell;
+
+            _file.seek(length - 1);
+            _file.rawWrite!ubyte([0]);
+
+            _file.seek(pos);
+        }
+        catch (ErrnoException)
+        {
+            close();
+            throw new IOException("The file stream is closed.");
+        }
     }
 
     @property public bool canRead()
@@ -125,11 +278,15 @@ public final class FileStream : Stream
         return !_file.isOpen;
     }
 
+    /**
+     * Gets the path to the file.
+     *
+     * Does not throw an exception if the file is closed.
+     *
+     * Returns:
+     *  The path to the file.
+     */
     @property public string name()
-    in
-    {
-        assert(_file.isOpen);
-    }
     out (result)
     {
         assert(result);
@@ -139,34 +296,62 @@ public final class FileStream : Stream
         return _file.name;
     }
 
-    @property public File handle()
-    in
-    {
-        assert(_file.isOpen);
-    }
-    body
-    {
-        return _file;
-    }
-
     public ubyte read()
     {
         ubyte[1] b;
-        _file.rawRead(b);
+
+        try
+            _file.rawRead(b);
+        catch (ErrnoException)
+        {
+            scope (exit)
+                close();
+
+            if (_file.isOpen)
+            {
+                if (_file.eof)
+                    throw new IOException("The end of the file has been reached.");
+                else
+                    throw new IOException("A physical I/O error occurred.");
+            }
+            else
+                throw new IOException("The file stream is closed.");
+        }
+
         return b[0];
     }
 
     public void write(ubyte value)
     {
-        _file.rawWrite([value]);
+        try
+            _file.rawWrite([value]);
+        catch (ErrnoException)
+        {
+            scope (exit)
+                close();
+
+            if (_file.isOpen)
+                throw new IOException("A physical I/O error occurred.");
+            else
+                throw new IOException("The file stream is closed.");
+        }
     }
 
     public void close()
     {
-        _file.close();
+        try
+            _file.close();
+        catch (ErrnoException)
+        {
+            // Just ignore it. Not much we can do anyway.
+        }
     }
 }
 
+/**
+ * Represents a stream interface to a byte buffer
+ * in memory.
+ */
 public final class MemoryStream : Stream
 {
     private ubyte[] _data;
@@ -174,11 +359,26 @@ public final class MemoryStream : Stream
     private size_t _position;
     private bool _canWrite;
 
-    public this(bool canWrite = true)
+    /**
+     * Constructs a new $(D MemoryStream) instance.
+     *
+     * This constructor always constructs a stream
+     * that allows writing, since it starts out with
+     * an empty buffer.
+     */
+    public this()
     {
-        _canWrite = canWrite;
+        _canWrite = true;
     }
 
+    /**
+     * Constructs a new $(D MemoryStream) instance with
+     * a given buffer.
+     *
+     * Params:
+     *  data = The buffer to back the memory stream.
+     *  canWrite = Indicates whether writing is allowed.
+     */
     public this(ubyte[] data, bool canWrite = true)
     {
         _data = data;
@@ -187,21 +387,33 @@ public final class MemoryStream : Stream
 
     @property public ulong position()
     {
+        checkOpen();
+
         return _position;
     }
 
     @property public void position(ulong position)
     {
+        checkOpen();
+
+        // This is neither nice nor safe, but there's not
+        // much we can do about it.
         _position = cast(size_t)position;
     }
 
     @property public ulong length()
     {
+        checkOpen();
+
         return _data.length;
     }
 
     @property public void length(ulong length)
     {
+        checkOpen();
+
+        // This is neither nice nor safe, but there's not
+        // much we can do about it.
         _data.length = cast(size_t)length;
     }
 
@@ -220,23 +432,33 @@ public final class MemoryStream : Stream
         return _isClosed;
     }
 
+    /**
+     * Retrieves the backing buffer of the memory stream.
+     *
+     * Returns:
+     *  The backing buffer of the memory stream.
+     */
     @property public ubyte[] data()
-    in
     {
-        assert(!_isClosed);
-    }
-    body
-    {
+        checkOpen();
+
         return _data.dup;
     }
 
     public ubyte read()
     {
+        checkOpen();
+
+        if (_position >= _data.length)
+            throw new IOException("The end of the memory stream has been reached.");
+
         return _data[_position++];
     }
 
     public void write(ubyte value)
     {
+        checkOpen();
+
         if (_position >= _data.length)
             _data.length = _position + 1;
 
@@ -247,6 +469,12 @@ public final class MemoryStream : Stream
     {
         _data = null;
         _isClosed = true;
+    }
+
+    private void checkOpen()
+    {
+        if (_isClosed)
+            throw new IOException("The memory stream is closed.");
     }
 }
 
@@ -301,10 +529,8 @@ public class BinaryReader
                 (cast(ubyte*)&value)[i] = _stream.read();
         }
         else
-        {
             for (size_t i = 0; i < T.sizeof; i++)
                 (cast(ubyte*)&value)[i] = _stream.read();
-        }
 
         return value;
     }
@@ -372,10 +598,8 @@ public class BinaryWriter
                 _stream.write((cast(ubyte*)&value)[i]);
         }
         else
-        {
             for (size_t i = 0; i < T.sizeof; i++)
                 _stream.write((cast(ubyte*)&value)[i]);
-        }
     }
 
     public final void writeArray(T)(T value)
@@ -427,17 +651,32 @@ public class TextWriter : BinaryWriter
     }
 
     public void writef(T ...)(T args)
+    in
+    {
+        static assert(T.length);
+    }
+    body
     {
         write(format(args));
     }
 
     public void writefln(T ...)(T args)
+    in
+    {
+        static assert(T.length);
+    }
+    body
     {
         writef(args);
         writeln();
     }
 
     public void writei(T ...)(T args)
+    in
+    {
+        static assert(T.length);
+    }
+    body
     {
         for (auto i = 0; i < _indent; i++)
             write("    ");
@@ -447,17 +686,32 @@ public class TextWriter : BinaryWriter
     }
 
     public void writeiln(T ...)(T args)
+    in
+    {
+        static assert(T.length);
+    }
+    body
     {
         writei(args);
         writeln();
     }
 
     public void writeif(T ...)(T args)
+    in
+    {
+        static assert(T.length);
+    }
+    body
     {
         writei(format(args));
     }
 
     public void writeifln(T ...)(T args)
+    in
+    {
+        static assert(T.length);
+    }
+    body
     {
         writeif(args);
         writeln();

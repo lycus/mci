@@ -31,3 +31,35 @@ public class CompilerException : Exception
         super(msg, next, file, line);
     }
 }
+
+/**
+ * This exception is thrown whenever an operation in the
+ * $(D mci.core.io) module fails.
+ */
+public class IOException : CompilerException
+{
+    public this(string msg, string file = __FILE__, size_t line = __LINE__)
+    in
+    {
+        assert(msg);
+        assert(file);
+        assert(line);
+    }
+    body
+    {
+        super(msg, file, line);
+    }
+
+    public this(string msg, Throwable next, string file = __FILE__, size_t line = __LINE__)
+    in
+    {
+        assert(msg);
+        assert(next);
+        assert(file);
+        assert(line);
+    }
+    body
+    {
+        super(msg, next, file, line);
+    }
+}

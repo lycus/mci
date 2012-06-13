@@ -1,8 +1,8 @@
 module mci.cli.tools.verifier;
 
-import std.exception,
-       std.path,
+import std.path,
        mci.core.container,
+       mci.core.exception,
        mci.core.code.functions,
        mci.core.code.modules,
        mci.verifier.exception,
@@ -88,7 +88,7 @@ public final class VerifierTool : Tool
                     verifier.verify(func.y);
                 }
             }
-            catch (ErrnoException ex)
+            catch (IOException ex)
             {
                 logf("Error: Could not access '%s': %s", file, ex.msg);
                 return 1;

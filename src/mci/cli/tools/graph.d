@@ -1,11 +1,11 @@
 module mci.cli.tools.graph;
 
-import std.exception,
-       std.getopt,
+import std.getopt,
        std.path,
        mci.cli.main,
        mci.cli.tool,
        mci.core.container,
+       mci.core.exception,
        mci.core.io,
        mci.core.tuple,
        mci.core.code.functions,
@@ -118,7 +118,7 @@ public final class GraphTool : Tool
                 return 2;
             }
         }
-        catch (ErrnoException ex)
+        catch (IOException ex)
         {
             logf("Error: Could not access '%s': %s", file, ex.msg);
             return 1;

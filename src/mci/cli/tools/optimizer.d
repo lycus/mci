@@ -1,12 +1,12 @@
 module mci.cli.tools.optimizer;
 
-import std.exception,
-       std.getopt,
+import std.getopt,
        std.path,
        mci.cli.main,
        mci.cli.tool,
        mci.cli.tools.assembler,
        mci.core.container,
+       mci.core.exception,
        mci.core.code.modules,
        mci.optimizer.base,
        mci.optimizer.manager,
@@ -149,7 +149,7 @@ public final class OptimizerTool : Tool
 
                 (new ModuleWriter()).save(mod, file);
             }
-            catch (ErrnoException ex)
+            catch (IOException ex)
             {
                 logf("Error: Could not access '%s': %s", file, ex.msg);
                 return 1;

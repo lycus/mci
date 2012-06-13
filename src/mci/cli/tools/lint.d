@@ -1,10 +1,10 @@
 module mci.cli.tools.lint;
 
-import std.exception,
-       std.path,
+import std.path,
        mci.cli.main,
        mci.cli.tool,
        mci.core.container,
+       mci.core.exception,
        mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.modules,
@@ -93,7 +93,7 @@ public final class LintTool : Tool
                     verifier.verify(func.y);
                 }
             }
-            catch (ErrnoException ex)
+            catch (IOException ex)
             {
                 logf("Error: Could not access '%s': %s", file, ex.msg);
                 return 1;

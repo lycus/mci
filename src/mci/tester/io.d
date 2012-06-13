@@ -44,6 +44,5 @@ unittest
 
     stream.close();
 
-    assert(!stream.length);
     assert(stream.isClosed);
 }
