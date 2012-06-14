@@ -87,12 +87,12 @@ body
         // Clear error condition.
         dlerror();
 
-        auto fcn = dlsym(library, toUTFz!(const(char)*)(name));
+        auto fcn = dlsym(library, toStringz(name));
 
         return cast(EntryPoint)(dlerror() ? null : fcn);
     }
     else
-        return cast(EntryPoint)GetProcAddress(library, toUTFz!(const(char)*)(name));
+        return cast(EntryPoint)GetProcAddress(library, toStringz(name));
 }
 
 /**
