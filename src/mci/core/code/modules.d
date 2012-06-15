@@ -173,7 +173,7 @@ public final class Module
     }
 }
 
-public enum string moduleFileExtension = ".mci";
+public enum string moduleFileExtension = ".mci"; /// The file extension of compiled modules.
 
 public final class ModuleManager
 {
@@ -197,7 +197,7 @@ public final class ModuleManager
         {
             static if (operatingSystem == OperatingSystem.osx)
             {
-                auto home = std.process.environment["HOME"];
+                auto home = environment["HOME"];
 
                 if (home)
                     _probePaths.add(buildPath(home, "lib"));
@@ -212,13 +212,13 @@ public final class ModuleManager
         }
         else
         {
-            auto sysRoot = std.process.environment["SystemRoot"];
+            auto sysRoot = environment["SystemRoot"];
 
             if (sysRoot)
                 _probePaths.add(buildPath(sysRoot, "System32"));
         }
 
-        auto path = std.process.environment[isPOSIX ? "PATH" : "Path"];
+        auto path = environment[isPOSIX ? "PATH" : "Path"];
 
         if (path)
             foreach (dir; split(path, pathSeparator))

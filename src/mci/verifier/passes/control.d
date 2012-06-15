@@ -60,7 +60,7 @@ public final class FFIVerifier : CodeVerifier
             if (bb.stream.count != 1 || first(bb.stream) !is inst)
                 error(inst, "FFI functions may only contain one 'ffi' instruction, terminating the 'entry' block.");
 
-            if (function_.callingConvention != CallingConvention.standard)
+            if (function_.callingConvention == CallingConvention.standard)
                 error(inst, "FFI functions must have either 'cdecl' or 'stdcall' calling convention.");
         }
     }

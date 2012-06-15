@@ -1,5 +1,8 @@
 module mci.core.code.metadata;
 
+/**
+ * Represents a metadata pair.
+ */
 public struct MetadataPair
 {
     private string _key;
@@ -13,7 +16,14 @@ public struct MetadataPair
 
     @disable this();
 
-    public this(string key, string value)
+    /**
+     * Constructs a new $(D MetadataPair) instance.
+     *
+     * Params:
+     *  key = The key.
+     *  value = The value.
+     */
+    public this(string key, string value) nothrow
     in
     {
         assert(key);
@@ -25,6 +35,12 @@ public struct MetadataPair
         _value = value;
     }
 
+    /**
+     * Gets the key of this metadata pair.
+     *
+     * Returns:
+     *  The key of this metadata pair.
+     */
     @property public string key() pure nothrow
     out (result)
     {
@@ -35,6 +51,12 @@ public struct MetadataPair
         return _key;
     }
 
+    /**
+     * Gets the value of this metadata pair.
+     *
+     * Returns:
+     *  The value of this metadata pair.
+     */
     @property public string value() pure nothrow
     out (result)
     {

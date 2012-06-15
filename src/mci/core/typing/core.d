@@ -63,6 +63,19 @@ mixin DefineCoreType!("NativeUInt", "uint", "IntegerType");
 mixin DefineCoreType!("Float32", "float32", "FloatingPointType");
 mixin DefineCoreType!("Float64", "float64", "FloatingPointType");
 
+/**
+ * Indicates whether the given name is a valid
+ * name for a core type in the MCI type system.
+ * Note that this includes $(PRE void), even
+ * though it isn't an actual type.
+ *
+ * Params:
+ *  name = The name to check.
+ *
+ * Returns:
+ *  $(D true) if $(D name) names a core type;
+ *  otherwise, $(D false).
+ */
 public bool isCoreTypeName(string name)
 in
 {
