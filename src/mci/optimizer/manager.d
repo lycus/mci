@@ -3,6 +3,7 @@ module mci.optimizer.manager;
 import std.traits,
        mci.core.container,
        mci.core.code.functions,
+       mci.core.code.opcodes,
        mci.optimizer.base,
        mci.optimizer.code.unused,
        mci.optimizer.ssa.folding;
@@ -149,6 +150,9 @@ public final class OptimizationManager
     body
     {
         if (function_.attributes & FunctionAttributes.noOptimization)
+            return;
+
+        if (first(function_.blocks[entryBlockName].stream).opCode is opRaw)
             return;
 
         foreach (opt; _codeOptimizers)
