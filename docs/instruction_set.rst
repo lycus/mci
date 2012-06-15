@@ -2009,9 +2009,10 @@ This instruction has a number of consequences:
 Of course, usage of this instruction results in unportable code.
 
 This instruction is primarily intended to allow the implementation of
-inline assembly in high-level languages. While it doesn't give a clear way
-to access IAL registers, the MCI ABI guarantees a well-defined layout of
-locals and arguments on the stack when this instruction is present.
+inline assembly in high-level languages. Arguments given to raw functions
+are passed according to the calling convention of the function.
+
+Raw functions must have ``cdecl`` or ``stdcall`` calling convention.
 
 It should be noted that this is not sufficient to implement full-blown
 inline assembly as in many C and C++ compilers. A general requirement of
@@ -2037,6 +2038,8 @@ actual function entry point in a native library.
 
 When using this instruction, a function cannot be pure and is not allowed
 to be inlined.
+
+FFI functions must have ``cdecl`` or ``stdcall`` calling convention.
 
 Note that the native function isn't linked to statically. The execution
 engine (either the interpreter or the JIT/AOT engine) will attempt to
