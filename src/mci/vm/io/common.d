@@ -1,10 +1,10 @@
 module mci.vm.io.common;
 
-public enum string fileMagic = "LAIC"; // Reverse of CIAL (Compiled Intermediate Assembly Language).
+public enum string fileMagic = "LAIC"; /// Magic number used for the file format.
 
-public enum uint fileVersion = 40;
+public enum uint fileVersion = 40; /// The current version of the file format.
 
-public enum TypeReferenceType : ubyte
+package enum TypeReferenceType : ubyte
 {
     core = 0,
     structure = 1,
@@ -15,7 +15,7 @@ public enum TypeReferenceType : ubyte
     function_ = 6,
 }
 
-public enum CoreTypeIdentifier : ubyte
+package enum CoreTypeIdentifier : ubyte
 {
     int8 = 0,
     uint8 = 1,
@@ -31,7 +31,7 @@ public enum CoreTypeIdentifier : ubyte
     float64 = 11,
 }
 
-public enum MetadataType : ubyte
+package enum MetadataType : ubyte
 {
     type = 0,
     field = 1,

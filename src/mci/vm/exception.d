@@ -5,6 +5,10 @@ import mci.core.exception,
        mci.vm.execution,
        mci.vm.trace;
 
+/**
+ * The exception that an $(D ExecutionEngine) will throw
+ * if the executed program throws an unhandled exception.
+ */
 public class ExecutionException : CompilerException
 {
     private StackTrace _trace;
@@ -51,6 +55,12 @@ public class ExecutionException : CompilerException
         _exception = exception;
     }
 
+    /**
+     * Gets the stack trace of the exception.
+     *
+     * Returns:
+     *  The stack trace of the exception.
+     */
     @property public StackTrace trace() pure nothrow
     out (result)
     {
@@ -61,6 +71,12 @@ public class ExecutionException : CompilerException
         return _trace;
     }
 
+    /**
+     * Gets the actual exception object the program threw.
+     *
+     * Returns:
+     *  The exception object the program threw.
+     */
     @property public RuntimeValue exception() pure nothrow
     out (result)
     {

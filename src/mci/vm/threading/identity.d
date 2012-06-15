@@ -45,7 +45,13 @@ static ~this()
     id2Thread.remove(id);
 }
 
-public static ulong getCurrentThreadID()
+/**
+ * Gets the ID of the current thread.
+ *
+ * Returns:
+ *  The ID of the current thread.
+ */
+public ulong getCurrentThreadID()
 in
 {
     assert(Thread.getThis());
@@ -55,7 +61,17 @@ body
     return getIDByThread(Thread.getThis()).value;
 }
 
-public static Nullable!ulong getIDByThread(Thread thread)
+/**
+ * Gets the ID of the given thread.
+ *
+ * Params:
+ *  thread = The thread to retrieve an ID for.
+ *
+ * Returns:
+ *  The ID of $(D thread), or a $(D null) value
+ *  if $(D thread) has no ID associated with it.
+ */
+public Nullable!ulong getIDByThread(Thread thread)
 in
 {
     assert(thread);
@@ -73,7 +89,17 @@ body
     return Nullable!ulong();
 }
 
-public static Thread getThreadByID(ulong id)
+/**
+ * Gets a thread by the given ID.
+ *
+ * Params:
+ *  id = The ID to look up a thread by.
+ *
+ * Returns:
+ *  The thread associated with $(D id) if
+ *  found; otherwise, $(D null).
+ */
+public Thread getThreadByID(ulong id)
 {
     lock.lock();
 

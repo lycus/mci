@@ -85,7 +85,6 @@ MODULES =
     $(MODULE mci.vm.io.exception)
     $(MODULE mci.vm.io.extended)
     $(MODULE mci.vm.io.reader)
-    $(MODULE mci.vm.io.table)
     $(MODULE mci.vm.io.writer)
     $(MODULE mci.vm.memory.base)
     $(MODULE mci.vm.memory.boehm)

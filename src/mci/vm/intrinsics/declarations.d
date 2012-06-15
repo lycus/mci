@@ -14,8 +14,8 @@ import std.algorithm,
        mci.vm.intrinsics.memory,
        mci.vm.intrinsics.weak;
 
-public __gshared Module intrinsicModule;
-public __gshared Lookup!(Function, function_t) intrinsicFunctions;
+public __gshared Module intrinsicModule; /// The module that all intrinsics are attached to.
+public __gshared Lookup!(Function, function_t) intrinsicFunctions; /// A name to pointer mapping of all intrinsics.
 
 public __gshared
 {
@@ -86,11 +86,9 @@ public __gshared
     StructureType weakType;
 }
 
-public enum string intrinsicModuleName = "mci";
-
 private enum string intrinsicFunctionPrefix = "mci_";
 
-Function createFunction(alias function_)(Type returnType, Type[] parameters ...)
+private Function createFunction(alias function_)(Type returnType, Type[] parameters ...)
 in
 {
     static assert(startsWith(__traits(identifier, function_), intrinsicFunctionPrefix));
@@ -120,7 +118,7 @@ body
 
 shared static this()
 {
-    intrinsicModule = new typeof(intrinsicModule)(intrinsicModuleName);
+    intrinsicModule = new typeof(intrinsicModule)("mci");
     intrinsicFunctions = new NoNullDictionary!(Function, function_t)();
 
     objectType = new typeof(objectType)(intrinsicModule, "Object");

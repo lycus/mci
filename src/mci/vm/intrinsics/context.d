@@ -4,6 +4,10 @@ import mci.core.container,
        mci.vm.execution,
        mci.vm.memory.base;
 
+/**
+ * Represents the internal state of the virtual
+ * machine during an intrinsic function invocation.
+ */
 public final class VirtualMachineState
 {
     private Dictionary!(string, Object) _objects;
@@ -18,6 +22,12 @@ public final class VirtualMachineState
         _objects = new typeof(_objects)();
     }
 
+    /**
+     * Gets the dictionary used to store the internal state.
+     *
+     * Returns:
+     *  The dictionary used to store the internal state.
+     */
     @property public Dictionary!(string, Object) objects()
     out (result)
     {
@@ -28,17 +38,40 @@ public final class VirtualMachineState
         return _objects;
     }
 
-    @property public Object opDispatch(string s)(Object value)
+    /**
+     * Sets a key to a given object.
+     *
+     * Params:
+     *  key = The key.
+     *  value = The value.
+     *
+     * Returns:
+     *  The $(D value).
+     */
+    @property public Object opDispatch(string key)(Object value)
     {
-        mixin("return _objects[\"" ~ s ~ "\"] = value;");
+        mixin("return _objects[\"" ~ key ~ "\"] = value;");
     }
 
-    @property public Object opDispatch(string s)()
+    /**
+     * Gets an object by a given key.
+     *
+     * Params:
+     *  key = The key.
+     *
+     * Returns:
+     *  The object associated with $(D key).
+     */
+    @property public Object opDispatch(string key)()
     {
-        mixin("return _objects[\"" ~ s ~ "\"];");
+        mixin("return _objects[\"" ~ key ~ "\"];");
     }
 }
 
+/**
+ * Represents the virtual machine that an intrinsic
+ * function is operating on.
+ */
 public final class VirtualMachineContext
 {
     private ExecutionEngine _engine;
@@ -50,6 +83,13 @@ public final class VirtualMachineContext
         assert(_state);
     }
 
+    /**
+     * Constructs a new $(D VirtualMachineContext)
+     * instance.
+     *
+     * Params:
+     *  engine = The execution engine.
+     */
     public this(ExecutionEngine engine)
     in
     {
@@ -61,6 +101,13 @@ public final class VirtualMachineContext
         _state = new typeof(_state)();
     }
 
+    /**
+     * Gets the execution engine being used to
+     * invoke the current intrinsic function.
+     *
+     * Returns:
+     *  The current execution engine.
+     */
     @property public ExecutionEngine engine()
     out (result)
     {
@@ -71,6 +118,12 @@ public final class VirtualMachineContext
         return _engine;
     }
 
+    /**
+     * Gets the internal state of the virtual machine.
+     *
+     * Returns:
+     *  The internal state of the virtual machine.
+     */
     @property public VirtualMachineState state()
     out (result)
     {
