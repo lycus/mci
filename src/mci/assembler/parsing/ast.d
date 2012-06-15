@@ -25,6 +25,12 @@ public abstract class Node
 {
     private SourceLocation _location;
 
+    /**
+     * Constructs a $(D Node) instance.
+     *
+     * Params:
+     *  location = The location of this node in the source code.
+     */
     protected this(SourceLocation location)
     {
         _location = location;

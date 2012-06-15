@@ -2,6 +2,9 @@ module mci.assembler.parsing.location;
 
 import std.conv;
 
+/**
+ * Represents a location in a source code file.
+ */
 public struct SourceLocation
 {
     private uint _line;
@@ -12,7 +15,16 @@ public struct SourceLocation
         assert(_line);
     }
 
-    public this(uint line, uint column = 0)
+    //@disable this();
+
+    /**
+     * Constructs a new $(D SourceLocation) instance.
+     *
+     * Params:
+     *  line = The line number of this location.
+     *  column = The column number of this location.
+     */
+    public this(uint line, uint column = 0) nothrow
     in
     {
         assert(line);

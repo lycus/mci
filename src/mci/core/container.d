@@ -37,6 +37,8 @@ public interface Countable(T) : Iterable!T
 
 public interface ReadOnlyCollection(T) : Countable!T
 {
+    public ReadOnlyCollection!T duplicate();
+
     public T* opBinaryRight(string op : "in")(T item)
     in
     {
@@ -47,6 +49,8 @@ public interface ReadOnlyCollection(T) : Countable!T
 
 public interface Collection(T) : ReadOnlyCollection!T
 {
+    public Collection!T duplicate();
+
     public void add(T item);
 
     public void remove(T item);
@@ -56,6 +60,8 @@ public interface Collection(T) : ReadOnlyCollection!T
 
 public interface ReadOnlyIndexable(T) : Countable!T
 {
+    public ReadOnlyIndexable!T duplicate();
+
     public T opIndex(size_t index);
 
     public ReadOnlyIndexable!T opSlice(size_t x, size_t y);
@@ -69,6 +75,8 @@ public interface ReadOnlyIndexable(T) : Countable!T
 
 public interface Indexable(T) : ReadOnlyIndexable!T
 {
+    public Indexable!T duplicate();
+
     public T opIndexAssign(T item, size_t index);
 
     public Indexable!T opCatAssign(T rhs);
@@ -80,6 +88,8 @@ public interface Indexable(T) : ReadOnlyIndexable!T
 
 public interface Lookup(K, V) : ReadOnlyCollection!(Tuple!(K, V))
 {
+    public Lookup!(K, V) duplicate();
+
     public V opIndex(K key)
     in
     {
@@ -110,6 +120,8 @@ public interface Lookup(K, V) : ReadOnlyCollection!(Tuple!(K, V))
 
 public interface Map(K, V) : Lookup!(K, V), Collection!(Tuple!(K, V))
 {
+    public Map!(K, V) duplicate();
+
     public override Tuple!(K, V)* opBinaryRight(string op : "in")(Tuple!(K, V) item)
     in
     {
@@ -155,6 +167,8 @@ public interface Map(K, V) : Lookup!(K, V), Collection!(Tuple!(K, V))
 
 public interface Queue(T) : Countable!T
 {
+    public Queue!T duplicate();
+
     public void enqueue(T item);
 
     public T dequeue();
@@ -166,6 +180,8 @@ public interface Queue(T) : Countable!T
 
 public interface Stack(T) : ReadOnlyCollection!T
 {
+    public Stack!T duplicate();
+
     public void push(T item);
 
     public T pop();
@@ -177,6 +193,8 @@ public interface Stack(T) : ReadOnlyCollection!T
 
 public interface Set(T) : ReadOnlyCollection!T
 {
+    public Set!T duplicate();
+
     public bool add(T item)
     in
     {
@@ -194,6 +212,8 @@ public interface Set(T) : ReadOnlyCollection!T
 
 public interface BitSequence : ReadOnlyIndexable!bool
 {
+    public BitSequence duplicate();
+
     public size_t[] toWordArray();
 }
 

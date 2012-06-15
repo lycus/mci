@@ -14,15 +14,24 @@ import std.conv,
        mci.assembler.parsing.location,
        mci.assembler.parsing.tokens;
 
+/**
+ * Represents a compilation unit (i.e. source file).
+ */
 public final class CompilationUnit
 {
-    private NoNullList!DeclarationNode _nodes;
+    private ReadOnlyIndexable!DeclarationNode _nodes;
 
     invariant()
     {
         assert(_nodes);
     }
 
+    /**
+     * Constructs a new $(D CompilationUnit) instance.
+     *
+     * Params:
+     *  nodes = The AST nodes of this unit.
+     */
     public this(NoNullList!DeclarationNode nodes)
     in
     {
@@ -33,6 +42,12 @@ public final class CompilationUnit
         _nodes = nodes.duplicate();
     }
 
+    /**
+     * Gets the AST units making up this compilation unit.
+     *
+     * Returns:
+     *  The AST nodes making up this compilation unit.
+     */
     @property public ReadOnlyIndexable!DeclarationNode nodes() pure nothrow
     out (result)
     {
@@ -44,6 +59,9 @@ public final class CompilationUnit
     }
 }
 
+/**
+ * The IAL (Intermediate Assembly Language) parser.
+ */
 public final class Parser
 {
     private TokenStream _stream;
@@ -53,6 +71,12 @@ public final class Parser
         assert(_stream);
     }
 
+    /**
+     * Constructs a new $(D Parser) instance.
+     *
+     * Params:
+     *  stream = The token stream to parse from.
+     */
     public this(TokenStream stream)
     in
     {
@@ -61,6 +85,22 @@ public final class Parser
     body
     {
         _stream = stream;
+    }
+
+    /**
+     * Gets the token stream associated with this parser.
+     *
+     * Returns:
+     *  The token stream associated with this parser.
+     */
+    @property public TokenStream stream()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _stream;
     }
 
     private Token peek()
@@ -162,6 +202,15 @@ public final class Parser
         throw new ParserException("Expected " ~ expected ~ ", but got " ~ s ~ ".", location);
     }
 
+    /**
+     * Parses a compilation unit from the token stream.
+     *
+     * Throws:
+     *  $(D ParserException) if the parsing failed.
+     *
+     * Returns:
+     *  The resulting parsed compilation unit.
+     */
     public CompilationUnit parse()
     out (result)
     {

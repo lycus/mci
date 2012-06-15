@@ -44,7 +44,7 @@ public enum LinkerRenameStrategy : ubyte
 private bool silent; /// Indicates whether any console output from MCI should be printed.
 
 /**
- * Runs the command line interface
+ * Runs the command line interface.
  *
  * Params:
  *  args = Arguments from the command line.

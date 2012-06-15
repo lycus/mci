@@ -130,7 +130,7 @@ public final class AssemblerTool : Tool
             try
             {
                 stream = new FileStream(file, FileMode.read);
-                auto source = new Source(new BinaryReader(stream), stream.length);
+                auto source = new Source((new BinaryReader(stream)).readArray!string(stream.length));
                 auto lexer = new Lexer(source);
                 auto parser = new Parser(lexer.lex());
                 auto unit = parser.parse();

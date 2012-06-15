@@ -13,55 +13,56 @@ public enum TokenType : ubyte
     begin, /// Indicates the beginning of a token stream.
     end, /// Indicates the end of a token stream.
     identifier, /// Any alphanumeric identifier (may also include underscores and dots).
-    openBrace,
-    closeBrace,
-    openParen,
-    closeParen,
-    openBracket,
-    closeBracket,
-    colon,
-    semicolon,
-    comma,
-    equals,
-    star,
-    and,
-    slash,
-    type,
-    align_,
-    field,
-    instance,
-    static_,
-    thread,
-    function_,
-    cdecl,
-    stdCall,
-    ssa,
-    pure_,
-    noOptimization,
-    noInlining,
-    register,
-    block,
-    unwind,
-    entry,
-    exit,
-    void_,
-    int8,
-    uint8,
-    int16,
-    uint16,
-    int32,
-    uint32,
-    int64,
-    uint64,
-    int_,
-    uint_,
-    float32,
-    float64,
-    opCode,
+    openBrace, /// The opening brace character.
+    closeBrace, /// The closing brace character.
+    openParen, /// The opening parenthesis character.
+    closeParen, /// The closing parenthesis character.
+    openBracket, /// The opening bracket character.
+    closeBracket, /// The closing bracket character.
+    colon, /// The colon character.
+    semicolon, /// The semicolon character.
+    comma, /// The comma character.
+    equals, /// The equals character.
+    star, /// The asterisk character.
+    and, /// The and character.
+    slash, /// The forward slash character.
+    type, /// The $(PRE type) keyword.
+    align_, /// The $(PRE align) keyword.
+    field, /// The $(PRE field) keyword.
+    instance, /// The $(PRE instance) keyword.
+    static_, /// The $(PRE static) keyword.
+    thread, /// The $(PRE thread) keyword.
+    function_, /// The $(PRE function) keyword.
+    cdecl, /// The $(PRE cdecl) keyword.
+    stdCall, /// The $(PRE stdcall) keyword.
+    ssa, /// The $(PRE ssa) keyword.
+    pure_, /// The $(PRE pure) keyword.
+    noOptimization, /// The $(PRE nooptimize) keyword.
+    noInlining, /// The $(PRE noinline) keyword.
+    register, /// The $(PRE register) keyword.
+    block, /// The $(PRE block) keyword.
+    unwind, /// The $(PRE unwind) keyword.
+    entry, /// The $(PRE entry) keyword.
+    exit, /// The $(PRE exit) keyword.
+    void_, /// The $(PRE void) keyword.
+    int8, /// The $(PRE int8) keyword.
+    uint8, /// The $(PRE uint8) keyword.
+    int16, /// The $(PRE int16) keyword.
+    uint16, /// The $(PRE uint16) keyword.
+    int32, /// The $(PRE int32) keyword.
+    uint32, /// The $(PRE uint32( keyword.
+    int64, /// The $(PRE int64) keyword.
+    uint64, /// The $(PRE uint64) keyword.
+    int_, /// The $(PRE int) keyword.
+    uint_, /// The $(PRE uint) keyword.
+    float32, /// The $(PRE float32) keyword.
+    float64, /// The $(PRE float64) keyword.
+    opCode, /// Any opcode name.
     literal, /// Any literal (integer, floating point, etc).
 }
 
 private __gshared TokenType[char] delimiters;
+private __gshared TokenType[string] keywordsToTypes;
 
 shared static this()
 {
@@ -78,6 +79,38 @@ shared static this()
                   '*' : TokenType.star,
                   '&' : TokenType.and,
                   '/' : TokenType.slash];
+
+    keywordsToTypes = ["type" : TokenType.type,
+                       "align" : TokenType.align_,
+                       "field" : TokenType.field,
+                       "instance" : TokenType.instance,
+                       "static" : TokenType.static_,
+                       "thread" : TokenType.thread,
+                       "function" : TokenType.function_,
+                       "cdecl" : TokenType.cdecl,
+                       "stdcall" : TokenType.stdCall,
+                       "ssa" : TokenType.ssa,
+                       "pure" : TokenType.pure_,
+                       "nooptimize" : TokenType.noOptimization,
+                       "noinline" : TokenType.noInlining,
+                       "register" : TokenType.register,
+                       "block" : TokenType.block,
+                       "unwind" : TokenType.unwind,
+                       "entry" : TokenType.entry,
+                       "exit" : TokenType.exit,
+                       "void" : TokenType.void_,
+                       "int8" : TokenType.int8,
+                       "uint8" : TokenType.uint8,
+                       "int16" : TokenType.int16,
+                       "uint16" : TokenType.uint16,
+                       "int32" : TokenType.int32,
+                       "uint32" : TokenType.uint32,
+                       "int64" : TokenType.int64,
+                       "uint64" : TokenType.uint64,
+                       "int" : TokenType.int_,
+                       "uint" : TokenType.uint_,
+                       "float32" : TokenType.float32,
+                       "float64" : TokenType.float64];
 }
 
 /**
@@ -118,38 +151,6 @@ in
 }
 body
 {
-    auto keywordsToTypes = ["type" : TokenType.type,
-                            "align" : TokenType.align_,
-                            "field" : TokenType.field,
-                            "instance" : TokenType.instance,
-                            "static" : TokenType.static_,
-                            "thread" : TokenType.thread,
-                            "function" : TokenType.function_,
-                            "cdecl" : TokenType.cdecl,
-                            "stdcall" : TokenType.stdCall,
-                            "ssa" : TokenType.ssa,
-                            "pure" : TokenType.pure_,
-                            "nooptimize" : TokenType.noOptimization,
-                            "noinline" : TokenType.noInlining,
-                            "register" : TokenType.register,
-                            "block" : TokenType.block,
-                            "unwind" : TokenType.unwind,
-                            "entry" : TokenType.entry,
-                            "exit" : TokenType.exit,
-                            "void" : TokenType.void_,
-                            "int8" : TokenType.int8,
-                            "uint8" : TokenType.uint8,
-                            "int16" : TokenType.int16,
-                            "uint16" : TokenType.uint16,
-                            "int32" : TokenType.int32,
-                            "uint32" : TokenType.uint32,
-                            "int64" : TokenType.int64,
-                            "uint64" : TokenType.uint64,
-                            "int" : TokenType.int_,
-                            "uint" : TokenType.uint_,
-                            "float32" : TokenType.float32,
-                            "float64" : TokenType.float64];
-
     if (auto type = identifier in keywordsToTypes)
         return *type;
 
@@ -176,6 +177,14 @@ public struct Token
 
     //@disable this();
 
+    /**
+     * Constructs a new $(D Token).
+     *
+     * Params:
+     *  type = The token type.
+     *  value = The string value of the token.
+     *  location = The location of the token in the source code.
+     */
     public this(TokenType type, string value, SourceLocation location)
     in
     {
@@ -228,26 +237,76 @@ public struct Token
     }
 }
 
+/**
+ * Represents a linear stream of $(D Token) instances.
+ */
 public interface TokenStream
 {
+    /**
+     * Gets the current token in the stream.
+     *
+     * Returns:
+     *  The current token in the stream.
+     */
     @property public Token current();
 
+    /**
+     * Gets the previous token in the stream.
+     *
+     * It is a logic error if the stream is in the initial state.
+     *
+     * Returns:
+     *  The previous token in the stream.
+     */
     @property public Token previous();
 
+    /**
+     * Gets the next token in the stream.
+     *
+     * It is a logic error if $(D done) is $(D true).
+     *
+     * Returns:
+     *  The next token in the stream.
+     */
     @property public Token next();
 
+    /**
+     * Indicates whether the end of the token stream
+     * has been reached.
+     *
+     * Returns:
+     *  $(D true) if the end of the token stream has
+     *  been reached; otherwise, $(D false).
+     */
     @property public bool done();
 
+    /**
+     * Moves to the previous token in the stream.
+     *
+     * It is a logic error if the stream is in the initial state.
+     */
     public Token movePrevious();
 
+    /**
+     * Moves to the next token in the stream.
+     *
+     * It is a logic error if $(D done) is $(D true).
+     */
     public Token moveNext();
 
+    /**
+     * Resets the stream to its initial state.
+     */
     public void reset() pure nothrow;
 }
 
+/**
+ * Represents a $(D TokenStream) made of a linear list
+ * of $(D Token) instances in memory.
+ */
 public final class MemoryTokenStream : TokenStream
 {
-    private List!Token _stream;
+    private ReadOnlyIndexable!Token _stream;
     private size_t _position;
 
     invariant()
@@ -258,7 +317,13 @@ public final class MemoryTokenStream : TokenStream
         assert((cast()_stream)[(cast()_stream).count - 1].type == TokenType.end);
     }
 
-    public this(List!Token stream)
+    /**
+     * Constructs a new $(D MemoryTokenStream) instance.
+     *
+     * Params:
+     *  stream = The linear stream of tokens.
+     */
+    public this(ReadOnlyIndexable!Token stream)
     in
     {
         assert(stream);
@@ -269,6 +334,25 @@ public final class MemoryTokenStream : TokenStream
     body
     {
         _stream = stream.duplicate();
+    }
+
+    /**
+     * Gets the backing list of tokens.
+     *
+     * Returns:
+     *  The backing list of tokens.
+     */
+    @property public ReadOnlyIndexable!Token tokens()
+    out (result)
+    {
+        assert(result);
+        assert((cast()result).count >= 2);
+        assert((cast()result)[0].type == TokenType.begin);
+        assert((cast()result)[(cast()result).count - 1].type == TokenType.end);
+    }
+    body
+    {
+        return _stream;
     }
 
     @property public Token current()

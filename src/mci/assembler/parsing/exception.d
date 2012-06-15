@@ -3,6 +3,10 @@ module mci.assembler.parsing.exception;
 import mci.assembler.exception,
        mci.assembler.parsing.location;
 
+/**
+ * The exception thrown by the $(D Lexer) if some input was
+ * invalid or could not be lexed.
+ */
 public class LexerException : AssemblerException
 {
     private SourceLocation _location;
@@ -36,12 +40,22 @@ public class LexerException : AssemblerException
         _location = location;
     }
 
+    /**
+     * Gets the location of this exception in the source text.
+     *
+     * Returns:
+     *  The location of this exception in the source text.
+     */
     @property public SourceLocation location() pure nothrow
     {
         return _location;
     }
 }
 
+/**
+ * The exception thrown by the $(D Parser) if invalid source
+ * code was encountered.
+ */
 public class ParserException : AssemblerException
 {
     private SourceLocation _location;
@@ -75,6 +89,12 @@ public class ParserException : AssemblerException
         _location = location;
     }
 
+    /**
+     * Gets the location of this exception in the source code.
+     *
+     * Returns:
+     *  The location of this exception in the source code.
+     */
     @property public SourceLocation location() pure nothrow
     {
         return _location;

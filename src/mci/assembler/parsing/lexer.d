@@ -12,6 +12,9 @@ import std.ascii,
        mci.assembler.parsing.location,
        mci.assembler.parsing.tokens;
 
+/**
+ * Represents the source text input to the $(D Lexer).
+ */
 public final class Source
 {
     private string _source;
@@ -19,22 +22,16 @@ public final class Source
     private char _current;
     private SourceLocation _location;
 
+    /**
+     * Constructs a new $(D Source) instance.
+     *
+     * Throws:
+     *  $(D AssemblerException) if the source text is not UTF-8.
+     *
+     * Params:
+     *  source = The source text.
+     */
     public this(string source)
-    {
-        initialize(source);
-    }
-
-    public this(BinaryReader reader, ulong length)
-    in
-    {
-        assert(reader);
-    }
-    body
-    {
-        initialize(reader.readArray!string(length));
-    }
-
-    private void initialize(string source)
     {
         source = removeByteOrderMark(source);
         validate(source);
@@ -43,16 +40,37 @@ public final class Source
         _location = typeof(_location)(1, 0);
     }
 
+    /**
+     * Gets the current input character.
+     *
+     * Returns:
+     *  The current input character. This can be $(D char.init)
+     *  if this $(D Source) object is the initial state or if
+     *  the end of the input has been reached.
+     */
     @property public char current() pure nothrow
     {
         return _current;
     }
 
+    /**
+     * Gets the current position in the source text.
+     *
+     * Returns:
+     *  The current position in the source text.
+     */
     @property public SourceLocation location() pure nothrow
     {
         return _location;
     }
 
+    /**
+     * Moves to the next source character and returns it.
+     *
+     * Returns:
+     *  The next source character, or $(D char.init) if the
+     *  end of the input text has been reached.
+     */
     public char moveNext()
     {
         if (_position == _source.length)
@@ -75,6 +93,13 @@ public final class Source
         return _current = cast(char)decode(_source, _position);
     }
 
+    /**
+     * Gets the next source character.
+     *
+     * Returns:
+     *  The next source character, or $(D char.init) if the
+     *  end of the input text has been reached.
+     */
     public char next()
     {
         if (_position == _source.length)
@@ -85,6 +110,17 @@ public final class Source
         return cast(char)decode(_source, index);
     }
 
+    /**
+     * Peeks $(D offset) characters into the input text
+     * from the current position. If $(D offset) is zero,
+     * just returns the current character.
+     *
+     * Returns:
+     *  The character at the current position plus
+     *  $(D offset), or $(D char.init) if the $(D Source)
+     *  instance is in the initial state or the end of
+     *  the input text has been reached.
+     */
     public char peek(size_t offset)
     {
         if (!offset)
@@ -106,6 +142,9 @@ public final class Source
         assert(false);
     }
 
+    /**
+     * Resets this $(D Source) instance to its initial state.
+     */
     public void reset()
     {
         _position = 0;
@@ -129,6 +168,9 @@ private string removeByteOrderMark(string text) pure
     return text;
 }
 
+/**
+ * Represents the IAL (Intermediate Assembly Language) lexer.
+ */
 public final class Lexer
 {
     private Source _source;
@@ -138,6 +180,12 @@ public final class Lexer
         assert(_source);
     }
 
+    /**
+     * Constructs a new $(D Lexer).
+     *
+     * Params:
+     *  source = The source input.
+     */
     public this(Source source)
     in
     {
@@ -148,6 +196,15 @@ public final class Lexer
         _source = source;
     }
 
+    /**
+     * Lexes the input into a token stream.
+     *
+     * Throws:
+     *  $(D LexerException) if lexing failed.
+     *
+     * Returns:
+     *  The token stream resulting from the lexing.
+     */
     public MemoryTokenStream lex()
     out (result)
     {
@@ -452,7 +509,7 @@ public final class Lexer
     }
 }
 
-private SourceLocation makeSourceLocation(string value, SourceLocation location)
+private SourceLocation makeSourceLocation(string value, SourceLocation location) nothrow
 in
 {
     assert(value);
