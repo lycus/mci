@@ -7,6 +7,9 @@ import mci.core.common,
        mci.core.code.instructions,
        mci.optimizer.base;
 
+/**
+ * Performs simple removal of unused registers.
+ */
 public final class UnusedRegisterRemover : OptimizerDefinition
 {
     @property public override string name() pure nothrow
@@ -44,6 +47,9 @@ public final class UnusedRegisterRemover : OptimizerDefinition
     }
 }
 
+/**
+ * Performs simple removal of unused basic blocks.
+ */
 public final class UnusedBasicBlockRemover : OptimizerDefinition
 {
     @property public override string name() pure nothrow

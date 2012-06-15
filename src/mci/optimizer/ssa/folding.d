@@ -103,6 +103,13 @@ body
            opCode is opNot;
 }
 
+/**
+ * Performs folding of operations on constant values.
+ *
+ * Only simple ALU operations are folded; that is, constants are
+ * not propagated in comparisons and no abstract interpretation
+ * is done.
+ */
 public final class ConstantFolder : OptimizerDefinition
 {
     @property public override string name() pure nothrow
