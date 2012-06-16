@@ -87,6 +87,13 @@ Good comments:
     * // Do some space optimizations.
     * // Revert to the previous token.
 
+        ++ Documentation ++
+
+Every externally accessible element in the API surface should have a Ddoc
+documentation comment. Since we generate documentation for the API, this
+is important so that users of the libraries can easily look up a function
+or type in the documentation, rather than having to read the source.
+
         ++ Contracts ++
 
 One of the most important goals of the MCI is to provide a clear and easy
