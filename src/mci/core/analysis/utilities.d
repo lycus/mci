@@ -481,19 +481,36 @@ public bool hasSideEffect(OpCode opCode)
 in
 {
     assert(opCode);
+    assert(opCode.hasTarget);
 }
 body
 {
-    return opCode is opMemAlloc ||
+    return opCode is opLoadI8A ||
+           opCode is opLoadUI8A ||
+           opCode is opLoadI16A ||
+           opCode is opLoadUI16A ||
+           opCode is opLoadI32A ||
+           opCode is opLoadUI32A ||
+           opCode is opLoadI64A ||
+           opCode is opLoadUI64A ||
+           opCode is opLoadF32A ||
+           opCode is opLoadF64A ||
+           opCode is opMemAlloc ||
            opCode is opMemNew ||
            opCode is opMemSAlloc ||
            opCode is opMemSNew ||
            opCode is opMemPin ||
+           opCode is opMemAddr ||
+           opCode is opArrayAddr ||
+           opCode is opFieldAddr ||
+           opCode is opFieldUserAddr ||
            opCode is opArgPop ||
            opCode is opCall ||
            opCode is opCallTail ||
            opCode is opCallIndirect ||
-           opCode is opPhi;
+           opCode is opPhi ||
+           opCode is opEHCatch ||
+           opCode is opTramp;
 }
 
 public bool containsManagedCode(BasicBlock block)
