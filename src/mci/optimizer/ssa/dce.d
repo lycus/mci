@@ -46,6 +46,10 @@ public final class DeadCodeEliminator : OptimizerDefinition
                 auto live = new HashSet!Instruction();
                 auto queue = new ArrayQueue!Instruction();
 
+                // Collect all the instructions that we know are live
+                // initially. All terminators are live, for instance.
+                // Note that we conservatively assume that instructions
+                // with no target are live.
                 foreach (block; function_.blocks)
                 {
                     foreach (insn; block.y.stream)
@@ -58,6 +62,9 @@ public final class DeadCodeEliminator : OptimizerDefinition
                     }
                 }
 
+                // Walk the use-def chain backwards, ensuring that
+                // all instructions that define registers used by
+                // live instructions are considered live.
                 while (!queue.empty)
                 {
                     auto insn = queue.dequeue();
