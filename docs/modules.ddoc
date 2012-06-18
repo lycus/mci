@@ -61,6 +61,7 @@ MODULES =
     $(MODULE mci.optimizer.base)
     $(MODULE mci.optimizer.manager)
     $(MODULE mci.optimizer.code.unused)
+    $(MODULE mci.optimizer.ssa.dce)
     $(MODULE mci.optimizer.ssa.folding)
     $(MODULE mci.verifier.base)
     $(MODULE mci.verifier.exception)

@@ -6,6 +6,7 @@ import std.traits,
        mci.core.code.opcodes,
        mci.optimizer.base,
        mci.optimizer.code.unused,
+       mci.optimizer.ssa.dce,
        mci.optimizer.ssa.folding;
 
 public __gshared ReadOnlyCollection!OptimizerDefinition allOptimizers; /// All included optimization passes.
@@ -43,6 +44,7 @@ shared static this()
     addOptimizer(new UnusedBasicBlockRemover(), fast);
     addOptimizer(new UnusedRegisterRemover(), fast);
     addOptimizer(new ConstantFolder(), fast);
+    addOptimizer(new DeadCodeEliminator(), fast);
 
     allOptimizers = all;
     fastOptimizers = fast;

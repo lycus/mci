@@ -197,6 +197,7 @@
    <File path="code\unused.d" />
   </Folder>
   <Folder name="ssa">
+   <File path="ssa\dce.d" />
    <File path="ssa\folding.d" />
   </Folder>
   <File path="base.d" />
