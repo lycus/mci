@@ -169,6 +169,9 @@ public final class DGarbageCollector : GarbageCollector
 
         auto addr = cast(Weak!WeakBox*)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
 
+        // Ensure that the GC doesn't pick up the weak reference.
+        GC.setAttr(addr, GC.BlkAttr.NO_SCAN);
+
         // We currently have to box the value, since we need
         // the GC to notify us when the contained object is
         // collected.
