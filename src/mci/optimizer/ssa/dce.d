@@ -1,14 +1,9 @@
 module mci.optimizer.ssa.dce;
 
-import mci.core.common,
-       mci.core.container,
-       mci.core.nullable,
-       mci.core.analysis.constant,
+import mci.core.container,
        mci.core.analysis.utilities,
        mci.core.code.functions,
        mci.core.code.instructions,
-       mci.core.code.opcodes,
-       mci.core.typing.core,
        mci.optimizer.base;
 
 /**
