@@ -108,6 +108,10 @@ removed from release builds, so performance is not extremely important.
 That being said, try not to assert the obvious. Too many redundant asserts
 can also clutter code. Strike a right balance.
 
+If a method implements an abstract method in a class or a method in an
+interface, don't copy the contracts from those into the implementation.
+Contracts belong to the declaring type, not the implementing type.
+
         ++ Storage ++
 
 One problem with global state is that it may be hard to decide whether it
