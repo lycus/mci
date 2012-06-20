@@ -125,7 +125,7 @@ allowed.
 The ``pure`` attribute indicates that calls to the function can safely be
 reordered as the optimizer and code generator see fit. In other words, the
 function is referentially transparent: Calling it with the same arguments at
-any point in time will always yield the same results. This attribute should be
+any point in time will always yield the same result. This attribute should be
 used carefully, as incorrect use can result in wrong code generation.
 
 The ``nooptimize`` flag indicates that a function must not be optimized. It

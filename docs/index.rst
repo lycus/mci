@@ -17,10 +17,10 @@ tools that the MCI provides.
 
    introduction.rst
    terminology.rst
-   command_line.rst
+   command_line_tools.rst
+   assembly_language.rst
    type_system.rst
    instruction_set.rst
-   assembly_language.rst
    intrinsics.rst
    concurrency.rst
    garbage_collection.rst
