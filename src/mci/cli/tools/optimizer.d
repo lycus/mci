@@ -7,9 +7,12 @@ import std.getopt,
        mci.cli.tools.assembler,
        mci.core.container,
        mci.core.exception,
+       mci.core.code.functions,
        mci.core.code.modules,
        mci.optimizer.base,
        mci.optimizer.manager,
+       mci.verifier.exception,
+       mci.verifier.manager,
        mci.vm.intrinsics.declarations,
        mci.vm.io.exception,
        mci.vm.io.reader,
@@ -114,6 +117,9 @@ public final class OptimizerTool : Tool
 
         foreach (file; args)
         {
+            Function currentFunc;
+            bool after;
+
             try
             {
                 auto manager = new ModuleManager();
@@ -121,6 +127,14 @@ public final class OptimizerTool : Tool
 
                 auto reader = new ModuleReader(manager);
                 auto mod = reader.load(file);
+
+                auto verifier = new VerificationManager();
+
+                foreach (func; mod.functions)
+                {
+                    currentFunc = func.y;
+                    verifier.verify(func.y);
+                }
 
                 auto optimizer = new OptimizationManager();
 
@@ -147,6 +161,14 @@ public final class OptimizerTool : Tool
                 foreach (func; mod.functions)
                     optimizer.optimize(func.y);
 
+                after = true;
+
+                foreach (func; mod.functions)
+                {
+                    currentFunc = func.y;
+                    verifier.verify(func.y);
+                }
+
                 (new ModuleWriter()).save(mod, file);
             }
             catch (IOException ex)
@@ -157,6 +179,21 @@ public final class OptimizerTool : Tool
             catch (ReaderException ex)
             {
                 logf("Error: Could not load '%s': %s", file, ex.msg);
+                return 1;
+            }
+            catch (VerifierException ex)
+            {
+                logf("Error: Verification failed in function %s (%s optimization):", currentFunc, after ? "after" : "before");
+                log(ex.msg);
+
+                if (ex.instruction)
+                {
+                    log();
+                    logf("The invalid instruction was (index %s in block %s):", findIndex(ex.instruction.block.stream, ex.instruction),
+                         ex.instruction.block);
+                    log(ex.instruction);
+                }
+
                 return 1;
             }
         }
