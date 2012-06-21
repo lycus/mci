@@ -1,6 +1,7 @@
 module mci.vm.memory.boehm;
 
-import core.stdc.stdlib,
+import core.thread,
+       core.stdc.stdlib,
        std.conv,
        mci.core.common,
        mci.core.config,
@@ -279,6 +280,9 @@ static if (isPOSIX)
 
         public override void attach()
         {
+            if (thread_isMainThread())
+                return;
+
             GC_stack_base sb;
 
             GC_get_stack_base(&sb);
@@ -287,11 +291,17 @@ static if (isPOSIX)
 
         public override void detach()
         {
+            if (thread_isMainThread())
+                return;
+
             GC_unregister_my_thread();
         }
 
         @property public override bool isAttached()
         {
+            if (thread_isMainThread())
+                return false;
+
             GC_stack_base sb;
 
             GC_get_stack_base(&sb);
