@@ -121,6 +121,10 @@ public final class StructureType : Type
         assert(name);
         assert(type);
         assert(name !in _fields);
+
+        if (auto struc = cast(StructureType)type)
+            assert(!hasCycle(struc));
+
         assert(!_isClosed);
     }
     out (result)
@@ -130,6 +134,19 @@ public final class StructureType : Type
     body
     {
         return _fields[name] = new Field(this, name, type, storage);
+    }
+
+    private bool hasCycle(StructureType fieldType)
+    {
+        if (fieldType is this)
+            return true;
+
+        foreach (field; fieldType.fields)
+            if (auto struc = cast(StructureType)field.y.type)
+                if (hasCycle(struc))
+                    return true;
+
+        return false;
     }
 
     public void close() pure nothrow
