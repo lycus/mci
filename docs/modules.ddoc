@@ -19,6 +19,7 @@ MODULES =
     $(MODULE mci.compiler.opcodes)
     $(MODULE mci.compiler.registers)
     $(MODULE mci.compiler.clang.compiler)
+    $(MODULE mci.compiler.clang.driver)
     $(MODULE mci.compiler.x86.instructions)
     $(MODULE mci.compiler.x86.opcodes)
     $(MODULE mci.compiler.x86.registers)
