@@ -15,8 +15,6 @@ import std.getopt,
        mci.core.io,
        mci.core.code.functions,
        mci.core.code.modules,
-       mci.verifier.exception,
-       mci.verifier.manager,
        mci.vm.intrinsics.declarations,
        mci.vm.io.writer,
        mci.cli.main,
@@ -41,8 +39,6 @@ public final class AssemblerTool : Tool
     {
         return ["\t--output=<file>\t\t-o <file>\tSpecify module output file.",
                 "\t--dump=<file>\t\t-d <file>\tDump parsed ASTs to the given file.",
-                "\t--verify\t\t-v\t\tRun the IAL verifier on the resulting module.",
-                "\t--optimize\t\t-p\t\tPass the module through the optimization pipeline.",
                 "\t--interpret\t\t-i\t\tRun the module with the IAL interpreter (no output will be generated).",
                 "\t--collector=<type>\t-c <type>\tSpecify which garbage collector to use if running the module."];
     }
@@ -51,8 +47,6 @@ public final class AssemblerTool : Tool
     {
         string output = "out.mci";
         string dump;
-        bool verify;
-        bool optimize;
         bool interpret;
         GarbageCollectorType gcType;
 
@@ -63,8 +57,6 @@ public final class AssemblerTool : Tool
                    config.bundling,
                    "output|o", &output,
                    "dump|d", &dump,
-                   "verify|v", &verify,
-                   "optimize|p", &optimize,
                    "interpret|i", &interpret,
                    "collector|c", &gcType);
             args = args[1 .. $];
@@ -199,35 +191,6 @@ public final class AssemblerTool : Tool
 
             driver = new GeneratorDriver(baseName(output[0 .. $ - moduleFileExtension.length]), manager, units);
             auto mod = driver.run();
-
-            if (verify)
-            {
-                Function currentFunc;
-
-                try
-                {
-                    auto verifier = new VerificationManager();
-
-                    foreach (func; mod.functions)
-                    {
-                        currentFunc = func.y;
-                        verifier.verify(func.y);
-                    }
-                }
-                catch (VerifierException ex)
-                {
-                    logf("Error: Verification failed in function %s:", currentFunc);
-                    log(ex.msg);
-
-                    if (ex.instruction)
-                    {
-                        log("The invalid instruction was:");
-                        log(ex.instruction);
-                    }
-
-                    return 1;
-                }
-            }
 
             (new ModuleWriter()).save(mod, output);
         }
