@@ -190,12 +190,21 @@ public final class FileStream : Stream
     }
     body
     {
-        _mode = mode;
-
         try
-            _file = File(fileName, modeToString(mode));
+            this(File(fileName, modeToString(mode)), mode);
         catch (ErrnoException)
             throw new IOException(format("Could not open file '%s' in %s mode.", fileName, mode));
+    }
+
+    private this(File file, FileMode mode)
+    in
+    {
+        assert(file.isOpen);
+    }
+    body
+    {
+        _file = file;
+        _mode = mode;
     }
 
     /**
@@ -345,6 +354,26 @@ public final class FileStream : Stream
         {
             // Just ignore it. Not much we can do anyway.
         }
+    }
+
+    /**
+     * Returns a temporary file created by the operating
+     * system. The file is guaranteed to be empty and will
+     * be opened in $(D FileMode.write) mode.
+     *
+     * The file will be closed automatically once the process
+     * exits, but can also be closed manually. Once closed,
+     * the file will be deleted.
+     *
+     * Returns:
+     *  A temporary file stream.
+     */
+    public static FileStream temporary()
+    {
+        try
+            return new FileStream(File.tmpfile(), FileMode.write);
+        catch (ErrnoException)
+            throw new IOException("The temporary file could not be created.");
     }
 }
 
