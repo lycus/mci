@@ -193,6 +193,9 @@
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="mci.compiler">
+  <Folder name="clang">
+   <File path="clang\compiler.d" />
+  </Folder>
   <Folder name="x86">
    <File path="x86\instructions.d" />
    <File path="x86\opcodes.d" />
