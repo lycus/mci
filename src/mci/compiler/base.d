@@ -23,7 +23,7 @@ public abstract class Compiler
         _engine = engine;
     }
 
-    @property public ExecutionEngine engine()
+    @property public final ExecutionEngine engine() pure nothrow
     out (result)
     {
         assert(result);
@@ -33,5 +33,5 @@ public abstract class Compiler
         return _engine;
     }
 
-    public function_t compile(Function function_);
+    public abstract function_t compile(Function function_);
 }
