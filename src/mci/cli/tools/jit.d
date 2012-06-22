@@ -117,8 +117,7 @@ public final class JITTool : Tool
 
             try
             {
-                // FIXME: Should be int*.
-                return *cast(ubyte*)engine.execute(main, new NoNullList!RuntimeValue()).data;
+                return *cast(int*)engine.execute(main, new NoNullList!RuntimeValue()).data;
             }
             catch (ExecutionException ex)
             {
