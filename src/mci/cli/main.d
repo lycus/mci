@@ -49,7 +49,7 @@ private bool silent; /// Indicates whether any console output from MCI should be
  * Params:
  *  args = Arguments from the command line.
  */
-private ubyte run(string[] args)
+private int run(string[] args)
 in
 {
     assert(args);

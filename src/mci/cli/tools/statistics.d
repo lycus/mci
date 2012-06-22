@@ -30,7 +30,7 @@ public final class StatisticsTool : Tool
                 "\t--types\t\t\t-t\t\tPrint a type list."];
     }
 
-    public ubyte run(string[] args)
+    public int run(string[] args)
     {
         bool printFuncs;
         bool printTypes;

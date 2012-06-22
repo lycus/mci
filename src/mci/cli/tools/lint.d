@@ -32,7 +32,7 @@ public final class LintTool : Tool
         return null;
     }
 
-    public ubyte run(string[] args)
+    public int run(string[] args)
     {
         args = args[1 .. $];
 

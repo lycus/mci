@@ -22,7 +22,7 @@ public final class DebuggerTool : Tool
         return null;
     }
 
-    public ubyte run(string[] args)
+    public int run(string[] args)
     {
         return (new CommandLineDebugger()).run();
     }
