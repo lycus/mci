@@ -116,9 +116,7 @@ public final class JITTool : Tool
             auto engine = new JITEngine(backEnd, gc);
 
             try
-            {
                 return *cast(int*)engine.execute(main, new NoNullList!RuntimeValue()).data;
-            }
             catch (ExecutionException ex)
             {
                 // TODO: Print a stack trace.
