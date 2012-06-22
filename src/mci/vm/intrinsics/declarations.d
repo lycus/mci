@@ -111,7 +111,7 @@ body
 
     f.close();
 
-    (cast(NoNullDictionary!(Function, function_t))intrinsicFunctions)[f] = cast(function_t)&function_;
+    (cast(NoNullDictionary!(Function, function_t, false))intrinsicFunctions)[f] = cast(function_t)&function_;
 
     return f;
 }
@@ -119,7 +119,7 @@ body
 shared static this()
 {
     intrinsicModule = new typeof(intrinsicModule)("mci");
-    intrinsicFunctions = new NoNullDictionary!(Function, function_t)();
+    intrinsicFunctions = new NoNullDictionary!(Function, function_t, false)();
 
     objectType = new typeof(objectType)(intrinsicModule, "Object");
     objectType.close();

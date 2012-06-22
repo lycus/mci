@@ -1250,7 +1250,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
         {
             foreach (k, v; _aa)
             {
-                auto tup = tuple(k, v);
+                auto tup = tuple(cast(K)k, v);
                 auto status = dg(tup);
 
                 if (status)
@@ -1279,7 +1279,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
 
             foreach (k, v; _aa)
             {
-                auto tup = tuple(k, v);
+                auto tup = tuple(cast(K)k, v);
                 auto status = dg(i, tup);
 
                 if (status)
@@ -1389,7 +1389,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
 
             foreach (k, v; _aa)
             {
-                arr[i] = tuple(k, v);
+                arr[i] = tuple(cast(K)k, v);
                 i++;
             }
         }
@@ -1472,7 +1472,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
         else
         {
             foreach (k, v; _aa)
-                arr.add(k);
+                arr.add(cast(K)k);
         }
 
         return arr;

@@ -177,7 +177,7 @@ public enum string moduleFileExtension = ".mci"; /// The file extension of compi
 
 public final class ModuleManager
 {
-    private NoNullDictionary!(string, Module) _modules;
+    private NoNullDictionary!(string, Module, false) _modules;
     private NoNullList!string _probePaths;
 
     invariant()

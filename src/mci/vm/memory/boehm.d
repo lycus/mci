@@ -84,7 +84,7 @@ static if (isPOSIX)
 
     public final class BoehmGarbageCollector : GarbageCollector, InteractiveGarbageCollector
     {
-        private __gshared Dictionary!(RuntimeTypeInfo, size_t) _registeredBitmaps;
+        private __gshared Dictionary!(RuntimeTypeInfo, size_t, false) _registeredBitmaps;
         private __gshared Mutex _bitmapsLock;
         private __gshared List!size_t _gcs;
         private __gshared Mutex _gcLock;
