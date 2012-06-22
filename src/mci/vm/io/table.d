@@ -4,8 +4,8 @@ import mci.core.container;
 
 package final class StringTable
 {
-    private Dictionary!(string, uint) _stringToID;
-    private NoNullDictionary!(uint, string) _idToString;
+    private Dictionary!(string, uint, false) _stringToID;
+    private NoNullDictionary!(uint, string, false) _idToString;
     private uint _lastID;
 
     invariant()

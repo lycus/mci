@@ -15,7 +15,7 @@ static if (isWindows)
 {
     import mci.vm.threading.tls;
 
-    private __gshared NoNullDictionary!(Thread, ThreadEventCallback) callbacks;
+    private __gshared NoNullDictionary!(Thread, ThreadEventCallback, false) callbacks;
     private __gshared Mutex lock;
 
     shared static this()

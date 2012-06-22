@@ -11,7 +11,7 @@ public final class PinnedObjectManager
 {
     private GarbageCollector _gc;
     private Mutex _mutex;
-    private Dictionary!(size_t, RuntimeObject**) _objects;
+    private Dictionary!(size_t, RuntimeObject**, false) _objects;
     private size_t _counter;
     private ArrayQueue!size_t _reuseQueue;
 

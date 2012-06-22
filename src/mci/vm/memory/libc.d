@@ -15,7 +15,7 @@ import core.stdc.stdlib,
 public final class LibCGarbageCollector : GarbageCollector, InteractiveGarbageCollector
 {
     private NoNullList!GarbageCollectorFinalizer _allocCallbacks;
-    private Dictionary!(RuntimeObject*, Tuple!(GarbageCollectorFinalizer, ExecutionEngine)) _freeCallbacks;
+    private Dictionary!(RuntimeObject*, Tuple!(GarbageCollectorFinalizer, ExecutionEngine), false) _freeCallbacks;
     private ArrayQueue!(Tuple!(RuntimeObject*, GarbageCollectorFinalizer, ExecutionEngine)) _finalizables;
     private Mutex _allocateCallbackLock;
     private Mutex _freeCallbackLock;

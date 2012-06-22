@@ -10,7 +10,7 @@ import mci.core.container,
  */
 public final class VirtualMachineState
 {
-    private Dictionary!(string, Object) _objects;
+    private Dictionary!(string, Object, false) _objects;
 
     invariant()
     {
@@ -28,7 +28,7 @@ public final class VirtualMachineState
      * Returns:
      *  The dictionary used to store the internal state.
      */
-    @property public Dictionary!(string, Object) objects()
+    @property public Dictionary!(string, Object, false) objects()
     out (result)
     {
         assert(result);

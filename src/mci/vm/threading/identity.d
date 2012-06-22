@@ -5,8 +5,8 @@ import core.thread,
        mci.core.nullable,
        mci.core.sync;
 
-private __gshared Dictionary!(Thread, ulong) thread2ID;
-private __gshared Dictionary!(ulong, Thread) id2Thread;
+private __gshared Dictionary!(Thread, ulong, false) thread2ID;
+private __gshared Dictionary!(ulong, Thread, false) id2Thread;
 private __gshared Mutex lock;
 private __gshared ulong currentID;
 
