@@ -198,7 +198,7 @@
    <File path="clang\arrays.d" />
    <File path="clang\compiler.d" />
    <File path="clang\control.d" />
-   <File path="clang\driver.d" />
+   <File path="clang\generator.d" />
    <File path="clang\memory.d" />
    <File path="clang\misc.d" />
    <File path="clang\structures.d" />
