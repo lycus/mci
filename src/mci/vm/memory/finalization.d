@@ -26,7 +26,7 @@ body
     {
         auto arg = new RuntimeValue(gc, objectType);
 
-        *cast(RuntimeObject**)rto.data = rto;
+        *cast(RuntimeObject**)arg.data = rto;
 
         engine.execute(cast(function_t)finalizer, CallingConvention.cdecl, null, toNoNullList(arg));
     }
