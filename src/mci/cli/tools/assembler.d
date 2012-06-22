@@ -43,7 +43,7 @@ public final class AssemblerTool : Tool
                 "\t--collector=<type>\t-c <type>\tSpecify which garbage collector to use if running the module."];
     }
 
-    public ubyte run(string[] args)
+    public int run(string[] args)
     {
         string output = "out.mci";
         string dump;

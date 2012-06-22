@@ -59,7 +59,7 @@ public interface Tool
      * Returns:
      *  The exit code of the tool. A value of 0 indicates success.
      */
-    public ubyte run(string[] args)
+    public int run(string[] args)
     in
     {
         assert(args);

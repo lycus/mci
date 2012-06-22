@@ -38,7 +38,7 @@ public final class JITTool : Tool
         return null;
     }
 
-    public ubyte run(string[] args)
+    public int run(string[] args)
     {
         JITBackEnd backEnd;
         GarbageCollectorType gcType;

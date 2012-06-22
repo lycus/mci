@@ -40,7 +40,7 @@ public final class OptimizerTool : Tool
                 "\t--all\t\t\t-a\t\tRun all safe optimization passes on the input modules."];
     }
 
-    public ubyte run(string[] args)
+    public int run(string[] args)
     {
         bool fast;
         bool moderate;

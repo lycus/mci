@@ -36,7 +36,7 @@ public final class GraphTool : Tool
         return ["\t--output=<file>\t\t-o <file>\tSpecify module output file."];
     }
 
-    public ubyte run(string[] args)
+    public int run(string[] args)
     {
         string output = "out.dot";
 

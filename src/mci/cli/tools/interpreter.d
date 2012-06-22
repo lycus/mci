@@ -21,7 +21,7 @@ public final class InterpreterTool : Tool
         return ["\t--collector=<type>\t-c <type>\tSpecify which garbage collector to use."];
     }
 
-    public ubyte run(string[] args)
+    public int run(string[] args)
     {
         GarbageCollectorType gcType;
 

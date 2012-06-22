@@ -21,7 +21,7 @@ public final class AOTTool : Tool
         return null;
     }
 
-    public ubyte run(string[] args)
+    public int run(string[] args)
     {
         return 0;
     }

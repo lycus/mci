@@ -21,7 +21,7 @@ public final class LinkerTool : Tool
         return ["\t--strategy=<type>\t-r <type>\tSpecifies which name clash resolution strategy to use."];
     }
 
-    public ubyte run(string[] args)
+    public int run(string[] args)
     {
         LinkerRenameStrategy strategy;
 
