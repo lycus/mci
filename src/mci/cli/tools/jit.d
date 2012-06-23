@@ -91,7 +91,7 @@ public final class JITTool : Tool
 
             if (!main)
             {
-                logf("Error: Module %s has no entry point.");
+                logf("Error: Module %s has no entry point.", mod);
                 return 1;
             }
 
