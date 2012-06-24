@@ -22,7 +22,12 @@ public final class ClangCompiler : mci.compiler.base.Compiler
     public override function_t compile(Function function_)
     {
         auto generator = new ClangCGenerator(this, FileStream.temporary());
-        auto functionNames = generator.write(function_);
+        auto mappings = generator.write(function_);
+
+        // FIXME: Temporary debugging code.
+        generator.stream.position = 0;
+        auto source = (new BinaryReader(generator.stream)).readArray!string(generator.stream.length);
+        import std.stdio; writeln(source);
 
         assert(false);
     }

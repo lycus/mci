@@ -1,19 +1,13 @@
 module mci.compiler.clang.generator;
 
-import mci.compiler.clang.alu,
-       mci.compiler.clang.arrays,
-       mci.compiler.clang.compiler,
-       mci.compiler.clang.control,
+import mci.compiler.clang.compiler,
        mci.compiler.clang.functions,
-       mci.compiler.clang.memory,
-       mci.compiler.clang.misc,
-       mci.compiler.clang.structures,
-       mci.compiler.clang.types,
        mci.core.container,
        mci.core.io,
        mci.core.tuple,
        mci.core.code.functions,
-       mci.core.typing.members;
+       mci.core.typing.members,
+       mci.core.typing.types;
 
 /**
  * Generates Clang-compatible C99 code from IAL. The emitted code
@@ -25,6 +19,8 @@ public final class ClangCGenerator
     private ClangCompiler _compiler;
     private Stream _stream;
     private TextWriter _writer;
+    private ArrayQueue!Function _functionQueue;
+    private ArrayQueue!StructureType _typeQueue;
     private NoNullDictionary!(Function, string, false) _functionNames;
     private NoNullDictionary!(Field, string, false) _fieldNames;
     private bool _done;
@@ -36,6 +32,8 @@ public final class ClangCGenerator
         assert((cast()_stream).canWrite);
         assert(!(cast()_stream).isClosed);
         assert(_writer);
+        assert(_functionQueue);
+        assert(_typeQueue);
         assert(_functionNames);
         assert(_fieldNames);
     }
@@ -60,6 +58,8 @@ public final class ClangCGenerator
         _compiler = compiler;
         _stream = stream;
         _writer = new typeof(_writer)(stream);
+        _functionQueue = new typeof(_functionQueue)();
+        _typeQueue = new typeof(_typeQueue)();
         _functionNames = new typeof(_functionNames)();
         _fieldNames = new typeof(_fieldNames)();
     }
@@ -94,6 +94,26 @@ public final class ClangCGenerator
         return _writer;
     }
 
+    @property package ArrayQueue!Function functionQueue() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _functionQueue;
+    }
+
+    @property package ArrayQueue!StructureType typeQueue() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _typeQueue;
+    }
+
     @property package NoNullDictionary!(Function, string, false) functionNames() pure nothrow
     out (result)
     {
@@ -124,7 +144,7 @@ public final class ClangCGenerator
      *  function_ = The function to generate C99 code for.
      *
      * Returns:
-     *  A tuple containing field and function name mappings.
+     *  A tuple containing static field and function name mappings.
      */
     public Tuple!(Lookup!(Field, string), Lookup!(Function, string)) write(Function function_)
     in
@@ -135,6 +155,13 @@ public final class ClangCGenerator
     body
     {
         _done = true;
+
+        _functionQueue.enqueue(function_);
+
+        while (!_functionQueue.empty)
+            writeFunction(this, _functionQueue.dequeue());
+
+        // TODO: Reset to position 0 and emit types and function declarations.
 
         return tuple!(Lookup!(Field, string), Lookup!(Function, string))(_fieldNames, _functionNames);
     }

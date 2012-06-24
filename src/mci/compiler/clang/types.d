@@ -48,7 +48,7 @@ body
                          if (!f)
                              break;
 
-                         s ~= '(';
+                         s ~= "(*";
 
                          static if (architecture == Architecture.x86 && is32Bit)
                          {
@@ -65,28 +65,25 @@ body
                              }
                          }
 
-                         s ~= '*';
                          retType = f.returnType;
                      }
 
-                     s = typeToString(retType) ~ ' ' ~ s;
+                     s = typeToString(retType) ~ ' ' ~ s ~ "(*";
 
                      static if (architecture == Architecture.x86 && is32Bit)
                      {
                          switch (t.callingConvention)
                          {
                              case CallingConvention.cdecl:
-                                 s = "__attribute__((cdecl)) " ~ s;
+                                 s ~= "__attribute__((cdecl)) ";
                                  break;
                              case CallingConvention.stdCall:
-                                 s = "__attribute__((stdcall)) " ~ s;
+                                 s ~= "__attribute__((stdcall)) ";
                                  break;
                              default:
                                  break;
                          }
                      }
-
-                     s ~= "(*";
 
                      if (identifier)
                          s ~= '_' ~ identifier;

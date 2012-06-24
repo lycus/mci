@@ -202,7 +202,6 @@
    <File path="clang\generator.d" />
    <File path="clang\memory.d" />
    <File path="clang\misc.d" />
-   <File path="clang\structures.d" />
    <File path="clang\types.d" />
   </Folder>
   <Folder name="x86">

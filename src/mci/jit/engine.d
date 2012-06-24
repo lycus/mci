@@ -69,6 +69,9 @@ public final class JITEngine : ExecutionEngine
 
     public override RuntimeValue execute(Function function_, NoNullList!RuntimeValue arguments)
     {
+        // FIXME: Temporary debugging code.
+        _compiler.compile(function_);
+
         // TODO: Implement.
         assert(false);
     }
