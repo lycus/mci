@@ -1,8 +1,6 @@
 module mci.core.common;
 
 import core.exception,
-       core.stdc.stdlib,
-       core.stdc.string,
        std.traits,
        std.typetuple,
        std.variant,

@@ -197,7 +197,7 @@ public final class ModuleManager
         {
             static if (operatingSystem == OperatingSystem.osx)
             {
-                auto home = environment["HOME"];
+                auto home = std.process.environment["HOME"];
 
                 if (home)
                     _probePaths.add(buildPath(home, "lib"));
@@ -212,13 +212,13 @@ public final class ModuleManager
         }
         else
         {
-            auto sysRoot = environment["SystemRoot"];
+            auto sysRoot = std.process.environment["SystemRoot"];
 
             if (sysRoot)
                 _probePaths.add(buildPath(sysRoot, "System32"));
         }
 
-        auto path = environment[isPOSIX ? "PATH" : "Path"];
+        auto path = std.process.environment[isPOSIX ? "PATH" : "Path"];
 
         if (path)
             foreach (dir; split(path, pathSeparator))
