@@ -6,10 +6,6 @@ import mci.core.common,
        mci.core.typing.types;
 
 package string typeToString(Type type, string identifier = null)
-in
-{
-    assert(type);
-}
 out (result)
 {
     assert(result);
@@ -73,7 +69,7 @@ body
                          retType = f.returnType;
                      }
 
-                     s = (retType ? typeToString(retType) : "void") ~ ' ' ~ s;
+                     s = typeToString(retType) ~ ' ' ~ s;
 
                      static if (architecture == Architecture.x86 && is32Bit)
                      {
@@ -132,5 +128,6 @@ body
                      }
 
                      return s;
-                 });
+                 },
+                 (typeof(null) n) => "void");
 }
