@@ -287,7 +287,7 @@ public enum FunctionAttributes : ubyte
     none = 0x00, /// No attributes.
     intrinsic = 0x01, /// The function is an intrinsic.
     ssa = 0x02, /// The function is in SSA form.
-    pure_ = 0x04, /// The function alters no state visible outside of it.
+    pure_ = 0x04, /// The function alters no state visible outside of it and doesn't depend on any global state.
     noOptimization = 0x08, /// The function must not be optimized.
     noInlining = 0x10, /// The function must not be inlined.
 }
