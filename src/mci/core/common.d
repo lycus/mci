@@ -65,30 +65,56 @@ in
         {
             alias FArgs[0] U;
 
-            static assert((is(U == class) && is(U : T)) || is(U == interface));
+            static assert((is(U == class) && is(U : T)) || is(U == interface) || is(U == typeof(null)));
         }
     }
 }
 body
 {
+    static if (!is(typeof(return) == void))
+        typeof(return) res;
+
     alias TypeTuple!F TFuncs;
 
     if (!obj)
+    {
         foreach (i, f; TFuncs)
+        {
             static if (is(U == typeof(null)))
-                return cases[i](null);
+            {
+                static if (!is(typeof(return) == void))
+                    res = cases[i](null);
+                else
+                    cases[i](null);
+
+                static if (!is(typeof(return) == void))
+                    return res;
+                else
+                    return;
+            }
+        }
+    }
 
     foreach (i, f; TFuncs)
     {
         alias ParameterTypeTuple!f FArgs;
 
-        static if (FArgs.length)
-            if (auto res = cast(FArgs[0])obj)
-                return cases[i](res);
-    }
+        static if (FArgs.length && !is(FArgs[0] == typeof(null)))
+        {
+            if (auto r = cast(FArgs[0])obj)
+            {
+                static if (!is(typeof(return) == void))
+                    res = cases[i](r);
+                else
+                    cases[i](r);
 
-    static if (!is(typeof(return) == void))
-        typeof(return) res;
+                static if (!is(typeof(return) == void))
+                    return res;
+                else
+                    return;
+            }
+        }
+    }
 
     foreach (i, f; TFuncs)
     {
@@ -164,24 +190,56 @@ in
 }
 body
 {
+    static if (!is(typeof(return) == void))
+        typeof(return)* res;
+
     alias TypeTuple!F TFuncs;
 
     if (!variant.hasValue)
+    {
         foreach (i, f; TFuncs)
+        {
             static if (is(U == typeof(null)))
-                return cases[i](null);
+            {
+                static if (!is(typeof(return) == void))
+                {
+                    auto r = cases[i](null);
+                    res = &r;
+                }
+                else
+                    cases[i](null);
+
+                static if (!is(typeof(return) == void))
+                    return res ? *res : typeof(return).init;
+                else
+                    return;
+            }
+        }
+    }
 
     foreach (i, f; TFuncs)
     {
         alias ParameterTypeTuple!f FArgs;
 
-        static if (FArgs.length)
-            if (auto ptr = variant.peek!FArgs())
-                return cases[i](*ptr);
-    }
+        static if (FArgs.length && !is(FArgs[0] == typeof(null)))
+        {
+            if (auto ptr = variant.peek!(FArgs[0])())
+            {
+                static if (!is(typeof(return) == void))
+                {
+                    auto r = cases[i](*ptr);
+                    res = &r;
+                }
+                else
+                    cases[i](*ptr);
 
-    static if (!is(typeof(return) == void))
-        typeof(return)* res;
+                static if (!is(typeof(return) == void))
+                    return res ? *res : typeof(return).init;
+                else
+                    return;
+            }
+        }
+    }
 
     foreach (i, f; TFuncs)
     {
