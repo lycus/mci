@@ -5,14 +5,23 @@ import core.thread,
        std.socket,
        mci.core.atomic,
        mci.core.io,
+       mci.core.nullable,
+       mci.core.sync,
        mci.debugger.protocol,
        mci.debugger.utilities;
+
+public alias void delegate() InterruptCallback;
 
 public abstract class DebuggerClient
 {
     private Atomic!TcpSocket _socket;
     private Atomic!Thread _thread;
     private Address _address;
+    private InterruptCallback _callback;
+    private Atomic!bool _interrupt;
+    private Mutex _interruptLock;
+    private Mutex _interruptMutex;
+    private Condition _interruptCondition;
 
     invariant()
     {
@@ -20,6 +29,11 @@ public abstract class DebuggerClient
             assert(!(cast()_thread).value);
 
         assert(_address);
+
+        assert((cast()_interrupt).value ? !!_callback : !_callback);
+        assert(_interruptLock);
+        assert(_interruptMutex);
+        assert(_interruptCondition);
     }
 
     protected this(Address address)
@@ -32,6 +46,9 @@ public abstract class DebuggerClient
     {
         _address = address;
         _socket.value = new TcpSocket(address.addressFamily);
+        _interruptLock = new typeof(_interruptLock)();
+        _interruptMutex = new typeof(_interruptMutex)();
+        _interruptCondition = new typeof(_interruptCondition)(_interruptMutex);
     }
 
     public final void start()
@@ -70,12 +87,14 @@ public abstract class DebuggerClient
 
         handleConnect(_socket.value);
 
+        _socket.value.blocking = false;
+
         while (_thread.value)
         {
             auto buf = new ubyte[packetHeaderSize];
 
             // Read the header. This contains opcode, protocol version, and length.
-            if (!receive(_socket.value, buf))
+            if (!receive(buf))
                 break;
 
             auto br = new BinaryReader(new MemoryStream(buf, false));
@@ -86,7 +105,7 @@ public abstract class DebuggerClient
             buf = new ubyte[header.z];
 
             // Next up, we fetch the body of the packet.
-            if (header.z && !receive(_socket.value, buf))
+            if (header.z && !receive(buf))
                 break;
 
             br = new BinaryReader(new MemoryStream(buf, false));
@@ -196,13 +215,87 @@ public abstract class DebuggerClient
 
         writeHeader(bw, packet.opCode, protocolVersion, cast(uint)(stream.length - packetHeaderSize));
 
-        if (!.send(_socket.value, stream.data))
+        while (true)
         {
-            kill();
-            return;
+            auto result = .send(_socket.value, stream.data);
+
+            if (!result.hasValue)
+            {
+                kill();
+                return;
+            }
+
+            if (result.value == true)
+                break;
         }
 
         stream.close();
+    }
+
+    private bool receive(ubyte[] buf)
+    in
+    {
+        assert(buf);
+        assert(_socket.value);
+        assert(_thread.value);
+    }
+    body
+    {
+        while (true)
+        {
+            handleInterrupt();
+
+            auto result = .receive(_socket.value, buf);
+
+            if (!result.hasValue)
+                return false;
+
+            if (result.value == true)
+                return true;
+
+            Thread.sleep(dur!("msecs")(20));
+        }
+    }
+
+    private void handleInterrupt()
+    {
+        if (!_interrupt.value)
+            return;
+
+        _callback();
+
+        _interrupt.value = false;
+        _callback = null;
+
+        _interruptMutex.lock();
+
+        scope (exit)
+            _interruptMutex.unlock();
+
+        _interruptCondition.notifyAll();
+    }
+
+    public final void interrupt(InterruptCallback callback)
+    in
+    {
+        assert(callback);
+    }
+    body
+    {
+        _interruptLock.lock();
+
+        scope (exit)
+            _interruptLock.unlock();
+
+        _callback = callback;
+        _interrupt.value = true;
+
+        _interruptMutex.lock();
+
+        scope (exit)
+            _interruptMutex.unlock();
+
+        _interruptCondition.wait();
     }
 
     protected void handleConnect(Socket socket)

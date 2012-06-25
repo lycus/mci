@@ -5,14 +5,23 @@ import core.thread,
        std.socket,
        mci.core.atomic,
        mci.core.io,
+       mci.core.nullable,
+       mci.core.sync,
        mci.debugger.protocol,
        mci.debugger.utilities;
+
+public alias void delegate() InterruptCallback;
 
 public abstract class DebuggerServer
 {
     private Atomic!TcpSocket _socket;
     private Atomic!Thread _thread;
     private Atomic!Socket _client;
+    private InterruptCallback _callback;
+    private Atomic!bool _interrupt;
+    private Mutex _interruptLock;
+    private Mutex _interruptMutex;
+    private Condition _interruptCondition;
 
     invariant()
     {
@@ -21,6 +30,11 @@ public abstract class DebuggerServer
             assert(!(cast()_thread).value);
             assert(!(cast()_client).value);
         }
+
+        assert((cast()_interrupt).value ? !!_callback : !_callback);
+        assert(_interruptLock);
+        assert(_interruptMutex);
+        assert(_interruptCondition);
     }
 
     protected this(Address address)
@@ -32,6 +46,9 @@ public abstract class DebuggerServer
     body
     {
         _socket.value = new TcpSocket(address.addressFamily);
+        _interruptLock = new typeof(_interruptLock)();
+        _interruptMutex = new typeof(_interruptMutex)();
+        _interruptCondition = new typeof(_interruptCondition)(_interruptMutex);
 
         _socket.value.bind(address);
     }
@@ -78,6 +95,8 @@ public abstract class DebuggerServer
             return;
         }
 
+        _client.value.blocking = false;
+
         handleConnect(_client.value);
 
         while (_thread.value)
@@ -85,7 +104,7 @@ public abstract class DebuggerServer
             auto buf = new ubyte[packetHeaderSize];
 
             // Read the header. This contains opcode, protocol version, and length.
-            if (!receive(_client.value, buf))
+            if (!receive(buf))
                 break;
 
             auto br = new BinaryReader(new MemoryStream(buf, false));
@@ -96,7 +115,7 @@ public abstract class DebuggerServer
             buf = new ubyte[header.z];
 
             // Next up, we fetch the body of the packet.
-            if (header.z && !receive(_client.value, buf))
+            if (header.z && !receive(buf))
                 break;
 
             br = new BinaryReader(new MemoryStream(buf, false));
@@ -209,13 +228,88 @@ public abstract class DebuggerServer
 
         writeHeader(bw, packet.opCode, protocolVersion, cast(uint)(stream.length - packetHeaderSize));
 
-        if (!.send(_client.value, stream.data))
+        while (true)
         {
-            kill();
-            return;
+            auto result = .send(_client.value, stream.data);
+
+            if (!result.hasValue)
+            {
+                kill();
+                return;
+            }
+
+            if (result.value == true)
+                break;
         }
 
         stream.close();
+    }
+
+    private bool receive(ubyte[] buf)
+    in
+    {
+        assert(buf);
+        assert(_socket.value);
+        assert(_thread.value);
+        assert(_client.value);
+    }
+    body
+    {
+        while (true)
+        {
+            handleInterrupt();
+
+            auto result = .receive(_client.value, buf);
+
+            if (!result.hasValue)
+                return false;
+
+            if (result.value == true)
+                return true;
+
+            Thread.sleep(dur!("msecs")(20));
+        }
+    }
+
+    private void handleInterrupt()
+    {
+        if (!_interrupt.value)
+            return;
+
+        _callback();
+
+        _interrupt.value = false;
+        _callback = null;
+
+        _interruptMutex.lock();
+
+        scope (exit)
+            _interruptMutex.unlock();
+
+        _interruptCondition.notifyAll();
+    }
+
+    public final void interrupt(InterruptCallback callback)
+    in
+    {
+        assert(callback);
+    }
+    body
+    {
+        _interruptLock.lock();
+
+        scope (exit)
+            _interruptLock.unlock();
+
+        _callback = callback;
+        _interrupt.value = true;
+
+        _interruptMutex.lock();
+
+        scope (exit)
+            _interruptMutex.unlock();
+
+        _interruptCondition.wait();
     }
 
     protected void handleConnect(Socket socket)
