@@ -99,8 +99,13 @@ Reachability
 An object is considered garbage when it is no longer reachable, directly or
 indirectly, from any GC roots (this includes stacks and registers). In the
 heap (that is, inside allocated objects), only direct pointers to other
-objects are considered. In stacks, interior pointers are allowed (this is to
+objects are considered. In roots, interior pointers are allowed (this is to
 facilitate passing object fields by reference).
+
+Note that some garbage collectors may support interior pointers in the heap.
+However, this is a special case and is not a guaranteed feature of garbage
+collectors. It typically requires the collector to be completely conservative,
+which is highly undesirable.
 
 Roots and ranges
 ----------------
@@ -230,6 +235,8 @@ D runtime garbage collector
     ``dgc``
 **Type precision**
     Conservative
+**Supports interior pointers**
+    Yes
 **Supports finalization**
     No
 **Is generational**
@@ -241,13 +248,15 @@ D runtime garbage collector
 **Uses barriers**
     No
 
-This GC uses druntime's built-in garbage collector implementation. It is
+This GC uses the D runtime library's built-in garbage collector. It is
 entirely conservative and makes no use of type information. It has no support
-for finalization due to limitations in druntime.
+for finalization due to limitations in D's runtime library.
 
 This GC is reasonably fast, but is geared towards native languages running in
 an uncooperative environment, and therefore doesn't make use of any of the
 information available for free in the MCI.
+
+This GC supports interior pointers in the heap.
 
 This is a stop-the-world collector with no support for parallel/concurrent GC.
 
@@ -258,6 +267,8 @@ Boehm-Demers-Weiser garbage collector
     ``boehm``
 **Type precision**
     Partially conservative
+**Supports interior pointers**
+    Partially
 **Supports finalization**
     Yes
 **Is generational**
@@ -271,6 +282,10 @@ Boehm-Demers-Weiser garbage collector
 
 This GC uses the Boehm-Demers-Weiser garbage collector (libgc). It has partial
 support for precise scanning using type bitmaps (only for structure types).
+
+This GC supports interior pointers in the heap. However, in structure types
+(which use type bitmaps), they are only picked up when assigned to fields that
+are considered GC-managed (i.e. fields of reference, array, or vector types).
 
 This GC is highly tuned through more than two centuries of development. It
 supports parallel marking and incremental collection.

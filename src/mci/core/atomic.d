@@ -141,7 +141,9 @@ public struct Atomic(T)
 
     /**
      * Returns a raw pointer to the stored value. Any accesses though this pointer
-     * will $(B not) be atomic.
+     * will $(B not) be atomic. Be careful with this pointer as it points directly
+     * to the value type instance of this $(D struct). The pointer can easily be
+     * invalidated when leaving a stack frame, for example.
      *
      * Returns:
      *  A raw pointer to the stored value.
