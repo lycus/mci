@@ -6,6 +6,7 @@ import std.conv,
        mci.compiler.clang.types,
        mci.core.common,
        mci.core.config,
+       mci.core.utilities,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.typing.types;
@@ -18,6 +19,50 @@ in
 }
 body
 {
+
+    debug
+    {
+        generator.writer.write("// function ");
+
+        if (function_.attributes & FunctionAttributes.ssa)
+            generator.writer.write("ssa ");
+
+        if (function_.attributes & FunctionAttributes.pure_)
+            generator.writer.write("pure ");
+
+        if (function_.attributes & FunctionAttributes.noOptimization)
+            generator.writer.write("nooptimize ");
+
+        if (function_.attributes & FunctionAttributes.noInlining)
+            generator.writer.write("noinline ");
+
+        generator.writer.writef("%s %s(", function_.returnType ? function_.returnType.toString() : "void", escapeIdentifier(function_.name));
+
+        foreach (i, param; function_.parameters)
+        {
+            generator.writer.write(param.type);
+
+            if (i < function_.parameters.count - 1)
+                generator.writer.write(", ");
+        }
+
+        generator.writer.write(")");
+
+        final switch (function_.callingConvention)
+        {
+            case CallingConvention.standard:
+                break;
+            case CallingConvention.cdecl:
+                generator.writer.write(" cdecl");
+                break;
+            case CallingConvention.stdCall:
+                generator.writer.write(" stdcall");
+                break;
+        }
+
+        generator.writer.writeln();
+    }
+
     // Clang's const attribute means what our pure attribute does.
     if (function_.attributes & FunctionAttributes.pure_)
         generator.writer.writeln("__attribute__((const))");
@@ -76,14 +121,16 @@ body
         writeRegister(generator, reg.y);
 
     generator.writer.writeln();
+    generator.writer.writeifln("goto block__%s;", entryBlockName);
+    generator.writer.writeln();
 
     foreach (i, block; function_.blocks)
     {
         writeBasicBlock(generator, block.y);
-
-        if (i < function_.blocks.count - 1)
-            generator.writer.writeln();
+        generator.writer.writeln();
     }
+
+    generator.writer.writeiln("__builtin_unreachable();");
 
     generator.writer.dedent();
 
@@ -107,7 +154,12 @@ body
     if (!cast(FunctionPointerType)register.type)
         generator.writer.writef(" %s", name);
 
-    generator.writer.writeln(";");
+    generator.writer.write(";");
+
+    debug
+        generator.writer.writef(" // register %s %s;", register.type, register.name);
+
+    generator.writer.writeln();
 }
 
 private void writeBasicBlock(ClangCGenerator generator, BasicBlock block)
@@ -118,13 +170,25 @@ in
 }
 body
 {
-    generator.writer.writeifln("block__%s:", block.name);
+    generator.writer.writeif("block__%s:", block.name);
+
+    debug
+        generator.writer.writef(" // block %s", block.name);
+
     generator.writer.writeln();
+    generator.writer.writeiln("{");
 
     generator.writer.indent();
 
-    foreach (insn; block.stream)
+    foreach (i, insn; block.stream)
+    {
         writeInstruction(generator, insn);
 
+        if (i < block.stream.count - 1)
+            generator.writer.writeln();
+    }
+
     generator.writer.dedent();
+
+    generator.writer.writeiln("}");
 }
