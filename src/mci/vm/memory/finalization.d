@@ -45,14 +45,11 @@ public final class FinalizerThread
 {
     private GarbageCollector _gc;
     private InteractiveGarbageCollector _igc;
-    private Mutex _finalizerMutex; // TODO: Kill these mutex variables when 2.060 is released.
+    private Mutex _finalizerMutex;
     private Condition _finalizerCondition;
     private Mutex _pendingMutex;
     private Condition _pendingCondition;
-    private Mutex _shutdownMutex;
-    private Condition _shutdownCondition;
     private Atomic!bool _finalizeDone;
-    private Atomic!bool _shutdownDone;
     private Atomic!bool _notified;
     private Atomic!bool _running;
     private Thread _thread;
@@ -84,8 +81,6 @@ public final class FinalizerThread
         _finalizerCondition = new typeof(_finalizerCondition)(_finalizerMutex);
         _pendingMutex = new typeof(_pendingMutex)();
         _pendingCondition = new typeof(_pendingCondition)(_pendingMutex);
-        _shutdownMutex = new typeof(_shutdownMutex)();
-        _shutdownCondition = new typeof(_shutdownCondition)(_shutdownMutex);
     }
 
     @property public bool running() pure // TODO: Make this nothrow in 2.060.
@@ -117,16 +112,8 @@ public final class FinalizerThread
 
         internalNotify();
 
-        _shutdownMutex.lock();
-
-        scope (exit)
-            _shutdownMutex.unlock();
-
-        while (!_shutdownDone.value)
-            _shutdownCondition.wait();
-
+        _thread.join();
         _thread = null;
-        _shutdownDone.value = false;
     }
 
     private void internalNotify()
@@ -180,11 +167,6 @@ public final class FinalizerThread
     {
         _gc.attach();
 
-        _shutdownMutex.lock();
-
-        scope (exit)
-            _shutdownMutex.unlock();
-
         while (_running.value)
         {
             {
@@ -211,10 +193,6 @@ public final class FinalizerThread
 
             _pendingCondition.notifyAll(); // Multiple threads can be waiting on this.
         }
-
-        _shutdownDone.value = true;
-
-        _shutdownCondition.notify();
 
         _gc.detach();
     }
