@@ -7,8 +7,10 @@ import std.conv,
        mci.core.common,
        mci.core.config,
        mci.core.utilities,
+       mci.core.analysis.utilities,
        mci.core.code.functions,
        mci.core.code.instructions,
+       mci.core.code.opcodes,
        mci.core.typing.types;
 
 package void writeFunction(ClangCGenerator generator, Function function_)
@@ -72,6 +74,10 @@ body
 
     if (function_.attributes & FunctionAttributes.noInlining)
         generator.writer.writeln("__attribute__((noinline))");
+
+    // A bit of a dirty hack for raw functions.
+    if (getFirstInstruction(function_, opRaw))
+        generator.writer.writeln("__attribute__((naked))");
 
     static if (architecture == Architecture.x86 && is32Bit)
     {
