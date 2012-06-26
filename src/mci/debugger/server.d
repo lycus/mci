@@ -18,11 +18,12 @@ public abstract class DebuggerServer
     private Atomic!TcpSocket _socket;
     private Atomic!Thread _thread;
     private Atomic!Socket _client;
-    private InterruptCallback _callback;
-    private Atomic!bool _interrupt;
+    private Mutex _killMutex;
     private Mutex _interruptLock;
     private Mutex _interruptMutex;
     private Condition _interruptCondition;
+    private InterruptCallback _callback;
+    private Atomic!bool _interrupt;
 
     invariant()
     {
@@ -38,10 +39,11 @@ public abstract class DebuggerServer
             assert(!(cast()_client).value);
         }
 
-        assert((cast()_interrupt).value ? !!_callback : !_callback);
+        assert(_killMutex);
         assert(_interruptLock);
         assert(_interruptMutex);
         assert(_interruptCondition);
+        assert((cast()_interrupt).value ? !!_callback : !_callback);
     }
 
     protected this(Address address)
@@ -53,6 +55,7 @@ public abstract class DebuggerServer
     body
     {
         _socket.value = new TcpSocket(address.addressFamily);
+        _killMutex = new typeof(_killMutex)();
         _interruptLock = new typeof(_interruptLock)();
         _interruptMutex = new typeof(_interruptMutex)();
         _interruptCondition = new typeof(_interruptCondition)(_interruptMutex);
@@ -87,52 +90,54 @@ public abstract class DebuggerServer
     {
         _running.value = false;
 
+        kill();
         _thread.value.join();
+
         _thread.value = null;
     }
 
     private void run()
     {
+        scope (exit)
+            kill();
+
         try
             _socket.value.listen(1);
         catch (SocketOSException)
-        {
-            kill();
             return;
-        }
 
         try
             _client.value = _socket.value.accept();
         catch (SocketAcceptException)
-        {
-            kill();
             return;
-        }
 
         _client.value.blocking = false;
 
         handleConnect(_client.value);
 
+        scope (exit)
+            handleDisconnect(_client.value);
+
         while (_running.value)
         {
-            auto buf = new ubyte[packetHeaderSize];
+            auto headerBuf = new ubyte[packetHeaderSize];
 
             // Read the header. This contains opcode, protocol version, and length.
-            if (!receive(buf))
+            if (!receive(headerBuf))
                 break;
 
-            auto br = new BinaryReader(new MemoryStream(buf, false));
-            auto header = readHeader(br);
+            auto headerReader = new BinaryReader(new MemoryStream(headerBuf, false));
+            auto header = readHeader(headerReader);
 
-            br.stream.close();
+            headerReader.stream.close();
 
-            buf = new ubyte[header.z];
+            auto packetBuf = new ubyte[header.z];
 
             // Next up, we fetch the body of the packet.
-            if (header.z && !receive(buf))
+            if (header.z && !receive(packetBuf))
                 break;
 
-            br = new BinaryReader(new MemoryStream(buf, false));
+            auto packetReader = new BinaryReader(new MemoryStream(packetBuf, false));
 
             // We can't use final switch. The thing is, the client could send a bad
             // opcode, so we need to handle that case gracefully.
@@ -140,81 +145,81 @@ public abstract class DebuggerServer
             {
                 case DebuggerClientOpCode.query:
                     auto pkt = new ClientQueryPacket();
-                    pkt.read(br);
+                    pkt.read(packetReader);
                     handle(_client.value, pkt);
                     break;
                 case DebuggerClientOpCode.start:
                     auto pkt = new ClientStartPacket();
-                    pkt.read(br);
+                    pkt.read(packetReader);
                     handle(_client.value, pkt);
                     break;
                 case DebuggerClientOpCode.pause:
                     auto pkt = new ClientPausePacket();
-                    pkt.read(br);
+                    pkt.read(packetReader);
                     handle(_client.value, pkt);
                     break;
                 case DebuggerClientOpCode.continue_:
                     auto pkt = new ClientContinuePacket();
-                    pkt.read(br);
+                    pkt.read(packetReader);
                     handle(_client.value, pkt);
                     break;
                 case DebuggerClientOpCode.exit:
                     auto pkt = new ClientExitPacket();
-                    pkt.read(br);
+                    pkt.read(packetReader);
                     handle(_client.value, pkt);
                     break;
                 case DebuggerClientOpCode.thread:
                     auto pkt = new ClientThreadPacket();
-                    pkt.read(br);
+                    pkt.read(packetReader);
                     handle(_client.value, pkt);
                     break;
                 case DebuggerClientOpCode.frame:
                     auto pkt = new ClientFramePacket();
-                    pkt.read(br);
+                    pkt.read(packetReader);
                     handle(_client.value, pkt);
                     break;
                 case DebuggerClientOpCode.breakpoint:
                     auto pkt = new ClientBreakpointPacket();
-                    pkt.read(br);
+                    pkt.read(packetReader);
                     handle(_client.value, pkt);
                     break;
                 case DebuggerClientOpCode.catchpoint:
                     auto pkt = new ClientCatchpointPacket();
-                    pkt.read(br);
+                    pkt.read(packetReader);
                     handle(_client.value, pkt);
                     break;
                 case DebuggerClientOpCode.disassemble:
                     auto pkt = new ClientDisassemblePacket();
-                    pkt.read(br);
+                    pkt.read(packetReader);
                     handle(_client.value, pkt);
                     break;
                 case DebuggerClientOpCode.inspect:
                     auto pkt = new ClientInspectPacket();
-                    pkt.read(br);
+                    pkt.read(packetReader);
                     handle(_client.value, pkt);
                     break;
                 default:
-                    br.stream.close();
-                    kill();
                     return;
             }
-
-            br.stream.close();
         }
-
-        kill();
     }
 
     private void kill()
     {
-        _socket.value.shutdown(SocketShutdown.BOTH);
-        _socket.value.close();
-        _socket.value = null;
+        _killMutex.lock();
+
+        scope (exit)
+            _killMutex.unlock();
+
+        if (_socket.value)
+        {
+            _socket.value.shutdown(SocketShutdown.BOTH);
+            _socket.value.close();
+            _socket.value = null;
+        }
 
         if (_client.value)
         {
-            handleDisconnect(_client.value);
-
             _client.value.shutdown(SocketShutdown.BOTH);
             _client.value.close();
             _client.value = null;
@@ -230,6 +235,10 @@ public abstract class DebuggerServer
     body
     {
         auto stream = new MemoryStream(new ubyte[packetHeaderSize]);
+
+        scope (exit)
+            stream.close();
+
         auto bw = new BinaryWriter(stream);
 
         stream.position = packetHeaderSize;
@@ -252,9 +261,9 @@ public abstract class DebuggerServer
 
             if (result.value == true)
                 break;
-        }
 
-        stream.close();
+            Thread.yield();
+        }
     }
 
     private bool receive(ubyte[] buf)
@@ -276,7 +285,7 @@ public abstract class DebuggerServer
             if (result.value == true)
                 return true;
 
-            Thread.sleep(dur!("msecs")(20));
+            Thread.sleep(dur!("msecs")(10));
         }
     }
 
