@@ -1,12 +1,17 @@
 module mci.core.memory;
 
 import std.traits,
+       mci.core.common,
        mci.core.config;
 
 static if (isPOSIX)
 {
     import core.sys.posix.sys.mman,
            core.sys.posix.unistd;
+
+    // TODO: Move to druntime.
+    static if (operatingSystem == OperatingSystem.osx)
+        public enum int _SC_PAGESIZE = 29;
 }
 else
 {

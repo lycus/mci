@@ -52,7 +52,7 @@ public final class FinalizerThread
     private Atomic!bool _finalizeDone;
     private Atomic!bool _notified;
     private Atomic!bool _running;
-    private Thread _thread;
+    private Atomic!Thread _thread;
 
     invariant()
     {
@@ -64,7 +64,7 @@ public final class FinalizerThread
         assert(_finalizerCondition);
         assert(_pendingMutex);
         assert(_pendingCondition);
-        assert((cast()_running).value ? !!_thread : !_thread);
+        assert((cast()_running).value ? !!(cast()_thread).value : !(cast()_thread).value);
     }
 
     public this(GarbageCollector gc)
@@ -88,7 +88,7 @@ public final class FinalizerThread
         return _running.value;
     }
 
-    public void run()
+    public void start()
     in
     {
         assert(!_running.value);
@@ -96,12 +96,12 @@ public final class FinalizerThread
     body
     {
         _running.value = true;
-        _thread = new typeof(_thread)(&loop);
+        _thread.value = new Thread(&loop);
 
-        _thread.start();
+        _thread.value.start();
     }
 
-    public void exit()
+    public void stop()
     in
     {
         assert(_running.value);
@@ -112,8 +112,8 @@ public final class FinalizerThread
 
         internalNotify();
 
-        _thread.join();
-        _thread = null;
+        _thread.value.join();
+        _thread.value = null;
     }
 
     private void internalNotify()
@@ -147,7 +147,7 @@ public final class FinalizerThread
     {
         // It can happen that a finalizer calls the wait_for_free_callbacks intrinsic, which
         // would result in a deadlock here.
-        if (Thread.getThis() is _thread)
+        if (Thread.getThis() is _thread.value)
             return;
 
         _finalizeDone.value = false;

@@ -43,14 +43,14 @@ public final class LibCGarbageCollector : GarbageCollector, InteractiveGarbageCo
         _finalizableLock = new typeof(_finalizableLock)();
         _finalizerThread = new typeof(_finalizerThread)(this);
 
-        _finalizerThread.run();
+        _finalizerThread.start();
     }
 
     public override void terminate()
     {
         super.terminate();
 
-        _finalizerThread.exit();
+        _finalizerThread.stop();
     }
 
     @property public override ulong collections() nothrow

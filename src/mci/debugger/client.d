@@ -14,6 +14,7 @@ public alias void delegate() InterruptCallback;
 
 public abstract class DebuggerClient
 {
+    private Atomic!bool _running;
     private Atomic!TcpSocket _socket;
     private Atomic!Thread _thread;
     private Address _address;
@@ -25,11 +26,18 @@ public abstract class DebuggerClient
 
     invariant()
     {
-        if (!(cast()_socket).value)
+        if ((cast()_running).value)
+        {
+            assert((cast()_socket).value);
+            assert((cast()_thread).value);
+        }
+        else
+        {
+            assert(!(cast()_socket).value);
             assert(!(cast()_thread).value);
+        }
 
         assert(_address);
-
         assert((cast()_interrupt).value ? !!_callback : !_callback);
         assert(_interruptLock);
         assert(_interruptMutex);
@@ -51,26 +59,33 @@ public abstract class DebuggerClient
         _interruptCondition = new typeof(_interruptCondition)(_interruptMutex);
     }
 
+    @property public bool running() pure // TODO: Make this nothrow in 2.060.
+    {
+        return _running.value;
+    }
+
     public final void start()
     in
     {
-        assert(_socket.value);
-        assert(!_thread.value);
+        assert(!_running.value);
     }
     body
     {
+        _running.value = true;
         _thread.value = new Thread(&run);
+
         _thread.value.start();
     }
 
     public final void stop()
     in
     {
-        assert(_socket.value);
-        assert(_thread.value);
+        assert(_running.value);
     }
     body
     {
+        _running.value = false;
+
         _thread.value.join();
         _thread.value = null;
     }
@@ -89,7 +104,7 @@ public abstract class DebuggerClient
 
         _socket.value.blocking = false;
 
-        while (_thread.value)
+        while (_running.value)
         {
             auto buf = new ubyte[packetHeaderSize];
 
@@ -199,8 +214,7 @@ public abstract class DebuggerClient
     in
     {
         assert(packet);
-        assert(_socket.value);
-        assert(_thread.value);
+        assert(_running.value);
     }
     body
     {
@@ -236,8 +250,6 @@ public abstract class DebuggerClient
     in
     {
         assert(buf);
-        assert(_socket.value);
-        assert(_thread.value);
     }
     body
     {
