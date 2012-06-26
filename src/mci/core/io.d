@@ -471,7 +471,7 @@ public final class MemoryStream : Stream
     {
         checkOpen();
 
-        return _data.dup;
+        return _data;
     }
 
     public ubyte read()
