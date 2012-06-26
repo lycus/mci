@@ -226,6 +226,7 @@
    <File path="threading\identity.d" />
    <File path="threading\tls.d" />
   </Folder>
+  <File path="code.d" />
   <File path="exception.d" />
   <File path="execution.d" />
   <File path="ffi.d" />

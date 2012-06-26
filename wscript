@@ -127,11 +127,15 @@ def build(bld):
     stlib('linker', 'mci.linker')
     stlib('debugger', 'mci.debugger')
     stlib('vm', 'mci.vm')
+    stlib('interpreter', 'mci.interpreter')
     stlib('compiler', 'mci.compiler')
     stlib('jit', 'mci.jit')
+    stlib('aot', 'mci.aot')
 
-    deps = ['mci.jit',
+    deps = ['mci.aot',
+            'mci.jit',
             'mci.compiler',
+            'mci.interpreter',
             'mci.vm',
             'mci.debugger',
             'mci.linker',
