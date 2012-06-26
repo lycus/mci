@@ -60,6 +60,11 @@ public abstract class DebuggerServer
         _socket.value.bind(address);
     }
 
+    @property public bool running() pure // TODO: Make this nothrow in 2.060.
+    {
+        return _running.value;
+    }
+
     public final void start()
     in
     {
