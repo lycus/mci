@@ -1998,19 +1998,18 @@ This instruction tells the code generator to insert raw machine code (which
 is given as the byte array operand) in the generated machine code stream.
 This must be the only instruction in a raw function.
 
-This instruction has a number of consequences:
+This instruction has a few consequences:
 
-* The function cannot be pure.
-* The function cannot be inlined.
 * All optimizations that would affect the layout of the stack cannot happen.
-* Execution of the function within the interpreter becomes impossible.
 * It must be the only instruction in the function.
 
 Of course, usage of this instruction results in unportable code.
 
 This instruction is primarily intended to allow the implementation of
 inline assembly in high-level languages. Arguments given to raw functions
-are passed according to the calling convention of the function.
+are passed according to the calling convention of the function and the
+return value (if any) should be passed according to the calling convention
+too.
 
 Raw functions must have ``cdecl`` or ``stdcall`` calling convention.
 
