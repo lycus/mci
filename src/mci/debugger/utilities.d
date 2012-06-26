@@ -2,9 +2,10 @@ module mci.debugger.utilities;
 
 import std.socket,
        mci.core.io,
+       mci.core.nullable,
        mci.core.tuple;
 
-package bool receive(Socket socket, ubyte[] buffer)
+package Nullable!bool receive(Socket socket, ubyte[] buffer)
 in
 {
     assert(socket);
@@ -18,16 +19,16 @@ body
     {
         auto ret = socket.receive(buffer[len .. $ - len]);
 
-        if (!ret || ret == Socket.ERROR)
-            return false;
+        if (ret == Socket.ERROR)
+            return wouldHaveBlocked() ? nullable(false) : Nullable!bool();
 
         len += ret;
     }
 
-    return true;
+    return nullable(true);
 }
 
-package bool send(Socket socket, ubyte[] data)
+package Nullable!bool send(Socket socket, ubyte[] data)
 in
 {
     assert(socket);
@@ -42,12 +43,12 @@ body
         auto ret = socket.send(data[len .. $ - len]);
 
         if (ret == Socket.ERROR)
-            return false;
+            return wouldHaveBlocked() ? nullable(false) : Nullable!bool();
 
         len += ret;
     }
 
-    return true;
+    return nullable(true);
 }
 
 package Tuple!(ubyte, uint, uint) readHeader(BinaryReader reader)
