@@ -1,4 +1,4 @@
-module mci.jit.memory;
+module mci.vm.code;
 
 import std.algorithm,
        mci.core.config,
