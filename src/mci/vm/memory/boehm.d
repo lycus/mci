@@ -144,7 +144,7 @@ static if (isPOSIX)
 
             _gcs.add(cast(size_t)cast(void*)this);
 
-            _finalizerThread.run();
+            _finalizerThread.start();
         }
 
         public override void terminate()
@@ -153,7 +153,7 @@ static if (isPOSIX)
 
             _pinManager.unpinAll();
             GC_gcollect();
-            _finalizerThread.exit();
+            _finalizerThread.stop();
 
             _gcLock.lock();
 
