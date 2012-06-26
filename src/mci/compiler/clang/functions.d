@@ -123,8 +123,9 @@ body
 
     generator.writer.indent();
 
-    foreach (reg; function_.registers)
-        writeRegister(generator, reg.y);
+    if (!getFirstInstruction(function_, opFFI) && !getFirstInstruction(function_, opRaw))
+        foreach (reg; function_.registers)
+            writeRegister(generator, reg.y);
 
     generator.writer.writeln();
     generator.writer.writeifln("goto block__%s;", entryBlockName);
