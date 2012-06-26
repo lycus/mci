@@ -14,6 +14,7 @@ public alias void delegate() InterruptCallback;
 
 public abstract class DebuggerServer
 {
+    private Atomic!bool _running;
     private Atomic!TcpSocket _socket;
     private Atomic!Thread _thread;
     private Atomic!Socket _client;
@@ -25,8 +26,14 @@ public abstract class DebuggerServer
 
     invariant()
     {
-        if (!(cast()_socket).value)
+        if ((cast()_running).value)
         {
+            assert((cast()_socket).value);
+            assert((cast()_thread).value);
+        }
+        else
+        {
+            assert(!(cast()_socket).value);
             assert(!(cast()_thread).value);
             assert(!(cast()_client).value);
         }
@@ -56,23 +63,25 @@ public abstract class DebuggerServer
     public final void start()
     in
     {
-        assert(_socket.value);
-        assert(!_thread.value);
+        assert(!_running.value);
     }
     body
     {
+        _running.value = true;
         _thread.value = new Thread(&run);
+
         _thread.value.start();
     }
 
     public final void stop()
     in
     {
-        assert(_socket.value);
-        assert(_thread.value);
+        assert(_running.value);
     }
     body
     {
+        _running.value = false;
+
         _thread.value.join();
         _thread.value = null;
     }
@@ -99,7 +108,7 @@ public abstract class DebuggerServer
 
         handleConnect(_client.value);
 
-        while (_thread.value)
+        while (_running.value)
         {
             auto buf = new ubyte[packetHeaderSize];
 
@@ -211,9 +220,7 @@ public abstract class DebuggerServer
     in
     {
         assert(packet);
-        assert(_socket.value);
-        assert(_thread.value);
-        assert(_client.value);
+        assert(_running.value);
     }
     body
     {
@@ -249,9 +256,6 @@ public abstract class DebuggerServer
     in
     {
         assert(buf);
-        assert(_socket.value);
-        assert(_thread.value);
-        assert(_client.value);
     }
     body
     {
