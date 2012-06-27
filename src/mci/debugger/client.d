@@ -337,11 +337,6 @@ public abstract class DebuggerClient
     }
 
     protected void handleDisconnect(Socket socket)
-    in
-    {
-        assert(socket);
-    }
-    body
     {
     }
 

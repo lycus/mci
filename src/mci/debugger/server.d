@@ -343,11 +343,6 @@ public abstract class DebuggerServer
     }
 
     protected void handleDisconnect(Socket socket)
-    in
-    {
-        assert(socket);
-    }
-    body
     {
     }
 
