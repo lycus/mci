@@ -88,12 +88,13 @@ public abstract class DebuggerClient
     }
     body
     {
+        auto thr = _thread.value;
+
         _running.value = false;
+        _thread.value = null;
 
         kill();
-        _thread.value.join();
-
-        _thread.value = null;
+        thr.join();
     }
 
     private void run()
