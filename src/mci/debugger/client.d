@@ -15,9 +15,9 @@ public alias void delegate() InterruptCallback;
 public abstract class DebuggerClient
 {
     private Atomic!bool _running;
+    private Address _address;
     private Atomic!TcpSocket _socket;
     private Atomic!Thread _thread;
-    private Address _address;
     private Mutex _killMutex;
     private Mutex _interruptLock;
     private Mutex _interruptMutex;
@@ -55,7 +55,6 @@ public abstract class DebuggerClient
     body
     {
         _address = address;
-        _socket.value = new TcpSocket(address.addressFamily);
         _killMutex = new typeof(_killMutex)();
         _interruptLock = new typeof(_interruptLock)();
         _interruptMutex = new typeof(_interruptMutex)();
@@ -75,6 +74,8 @@ public abstract class DebuggerClient
     body
     {
         _running.value = true;
+
+        _socket.value = new TcpSocket(_address.addressFamily);
         _thread.value = new Thread(&run);
 
         _thread.value.start();
@@ -87,12 +88,13 @@ public abstract class DebuggerClient
     }
     body
     {
+        auto thr = _thread.value;
+
         _running.value = false;
+        _thread.value = null;
 
         kill();
-        _thread.value.join();
-
-        _thread.value = null;
+        thr.join();
     }
 
     private void run()
@@ -335,11 +337,6 @@ public abstract class DebuggerClient
     }
 
     protected void handleDisconnect(Socket socket)
-    in
-    {
-        assert(socket);
-    }
-    body
     {
     }
 

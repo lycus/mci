@@ -8,11 +8,16 @@ import std.socket,
 package Nullable!bool receive(Socket socket, ubyte[] buffer)
 in
 {
-    assert(socket);
+    if (socket)
+        assert(!socket.blocking);
+
     assert(buffer);
 }
 body
 {
+    if (!socket)
+        return Nullable!bool();
+
     ptrdiff_t len;
 
     while (len < buffer.length)
@@ -31,11 +36,16 @@ body
 package Nullable!bool send(Socket socket, ubyte[] data)
 in
 {
-    assert(socket);
+    if (socket)
+        assert(!socket.blocking);
+
     assert(data);
 }
 body
 {
+    if (!socket)
+        return Nullable!bool();
+
     ptrdiff_t len;
 
     while (len < data.length)
