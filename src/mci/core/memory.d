@@ -136,7 +136,7 @@ body
 
     static if (isPOSIX)
     {
-         auto mem = mmap(null, length, flags, MAP_ANON, -1, 0);
+         auto mem = mmap(null, length, flags, MAP_PRIVATE | MAP_ANON, -1, 0);
 
          if (mem == MAP_FAILED)
             return null;
