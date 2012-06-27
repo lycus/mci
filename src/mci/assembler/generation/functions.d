@@ -1,6 +1,8 @@
 module mci.assembler.generation.functions;
 
-import std.conv,
+import std.algorithm,
+       std.conv,
+       std.traits,
        mci.core.container,
        mci.core.tuple,
        mci.core.code.functions,
@@ -108,12 +110,35 @@ body
             {
                 auto instrOperand = instrNode.operand.operand;
 
+                T parse(T)(LiteralValueNode literal = null)
+                {
+                    auto node = literal ? literal : *instrOperand.peek!LiteralValueNode();
+                    string value;
+                    uint radix;
+
+                    if (startsWith(node.value, "0x"))
+                    {
+                        value = node.value[2 .. $];
+                        radix = 16;
+                    }
+                    else
+                    {
+                        value = node.value;
+                        radix = 10;
+                    }
+
+                    static if (!isFloatingPoint!T)
+                        return .parse!T(value, radix);
+                    else
+                        return .parse!T(value);
+                }
+
                 ReadOnlyIndexable!T generateArray(T)()
                 {
                     auto values = new List!T();
 
                     foreach (literal; instrOperand.peek!ArrayLiteralNode().values)
-                        values.add(to!T(literal.value));
+                        values.add(parse!T(literal));
 
                     return values;
                 }
@@ -123,34 +148,34 @@ body
                     case OperandType.none:
                         assert(false);
                     case OperandType.int8:
-                        operand = to!byte(instrOperand.peek!LiteralValueNode().value);
+                        operand = parse!byte();
                         break;
                     case OperandType.uint8:
-                        operand = to!ubyte(instrOperand.peek!LiteralValueNode().value);
+                        operand = parse!ubyte();
                         break;
                     case OperandType.int16:
-                        operand = to!short(instrOperand.peek!LiteralValueNode().value);
+                        operand = parse!short();
                         break;
                     case OperandType.uint16:
-                        operand = to!ushort(instrOperand.peek!LiteralValueNode().value);
+                        operand = parse!ushort();
                         break;
                     case OperandType.int32:
-                        operand = to!int(instrOperand.peek!LiteralValueNode().value);
+                        operand = parse!int();
                         break;
                     case OperandType.uint32:
-                        operand = to!uint(instrOperand.peek!LiteralValueNode().value);
+                        operand = parse!uint();
                         break;
                     case OperandType.int64:
-                        operand = to!long(instrOperand.peek!LiteralValueNode().value);
+                        operand = parse!long();
                         break;
                     case OperandType.uint64:
-                        operand = to!ulong(instrOperand.peek!LiteralValueNode().value);
+                        operand = parse!ulong();
                         break;
                     case OperandType.float32:
-                        operand = to!float(instrOperand.peek!LiteralValueNode().value);
+                        operand = parse!float();
                         break;
                     case OperandType.float64:
-                        operand = to!double(instrOperand.peek!LiteralValueNode().value);
+                        operand = parse!double();
                         break;
                     case OperandType.int8Array:
                         operand = generateArray!byte();

@@ -1,7 +1,9 @@
 module mci.assembler.parsing.parser;
 
-import std.conv,
+import std.algorithm,
+       std.conv,
        std.string,
+       std.traits,
        mci.core.container,
        mci.core.nullable,
        mci.core.code.functions,
@@ -635,13 +637,32 @@ public final class Parser
     body
     {
         auto literal = parseAnyLiteralValue();
+        string value;
+        uint radix;
+
+        if (startsWith(literal.value, "0x"))
+        {
+            value = literal.value[2 .. $];
+            radix = 16;
+        }
+        else
+        {
+            value = literal.value;
+            radix = 10;
+        }
 
         try
-            to!T(literal.value);
-        catch (ConvOverflowException)
-            error(T.stringof ~ " literal overflow", literal.location);
+        {
+            static if (!isFloatingPoint!T)
+                .parse!T(value, radix);
+            else
+                .parse!T(value);
+        }
         catch (ConvException)
             error("invalid " ~ T.stringof ~ " literal", literal.location);
+
+        if (value.length)
+            error("could not lex literal completely as " ~ T.stringof, literal.location);
 
         return literal;
     }

@@ -1,0 +1,9 @@
+function void test()
+{
+    register uint8 reg;
+
+    block entry
+    {
+        reg = load.ui8 (0xb8);
+    }
+}
