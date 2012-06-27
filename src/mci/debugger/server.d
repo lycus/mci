@@ -15,6 +15,7 @@ public alias void delegate() InterruptCallback;
 public abstract class DebuggerServer
 {
     private Atomic!bool _running;
+    private Address _address;
     private Atomic!TcpSocket _socket;
     private Atomic!Thread _thread;
     private Atomic!Socket _client;
@@ -34,11 +35,11 @@ public abstract class DebuggerServer
         }
         else
         {
-            assert(!(cast()_socket).value);
             assert(!(cast()_thread).value);
             assert(!(cast()_client).value);
         }
 
+        assert(_address);
         assert(_killMutex);
         assert(_interruptLock);
         assert(_interruptMutex);
@@ -54,13 +55,11 @@ public abstract class DebuggerServer
     }
     body
     {
-        _socket.value = new TcpSocket(address.addressFamily);
+        _address = address;
         _killMutex = new typeof(_killMutex)();
         _interruptLock = new typeof(_interruptLock)();
         _interruptMutex = new typeof(_interruptMutex)();
         _interruptCondition = new typeof(_interruptCondition)(_interruptMutex);
-
-        _socket.value.bind(address);
     }
 
     @property public bool running() pure // TODO: Make this nothrow in 2.060.
@@ -76,8 +75,11 @@ public abstract class DebuggerServer
     body
     {
         _running.value = true;
+
+        _socket.value = new TcpSocket(_address.addressFamily);
         _thread.value = new Thread(&run);
 
+        _socket.value.bind(_address);
         _thread.value.start();
     }
 
