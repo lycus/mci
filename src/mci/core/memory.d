@@ -12,6 +12,10 @@ static if (isPOSIX)
     // TODO: Move to druntime.
     static if (operatingSystem == OperatingSystem.osx)
         public enum int _SC_PAGESIZE = 29;
+    else static if (operatingSystem == OperatingSystem.freebsd)
+        public enum int _SC_PAGESIZE = 47;
+    else static if (operatingSystem == OperatingSystem.openbsd)
+        public enum int _SC_PAGESIZE = 28;
 }
 else
 {
@@ -136,7 +140,7 @@ body
 
     static if (isPOSIX)
     {
-         auto mem = mmap(null, length, flags, MAP_ANON, -1, 0);
+         auto mem = mmap(null, length, flags, MAP_PRIVATE | MAP_ANON, -1, 0);
 
          if (mem == MAP_FAILED)
             return null;
