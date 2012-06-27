@@ -12,6 +12,8 @@ static if (isPOSIX)
     // TODO: Move to druntime.
     static if (operatingSystem == OperatingSystem.osx)
         public enum int _SC_PAGESIZE = 29;
+    else static if (operatingSystem == OperatingSystem.freebsd)
+        public enum int _SC_PAGESIZE = 47;
 }
 else
 {
