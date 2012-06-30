@@ -182,6 +182,18 @@ def _run_shell(dir, ctx, args):
 
     os.chdir(cwd)
 
+def _run_rdmd(dir, ctx, args):
+    if ctx.env.COMPILER_D == 'dmd':
+        compiler = 'dmd'
+    elif ctx.env.COMPILER_D == 'gdc':
+        compiler = 'gdmd'
+    elif ctx.env.COMPILER_D == 'ldc2':
+        compiler = 'ldmd2'
+    else:
+        ctx.fatal('Unsupported D compiler.')
+
+    _run_shell(dir, ctx, 'rdmd --compiler={0} {1}'.format(compiler, args))
+
 def unittest(ctx):
     '''runs the unit test suite'''
 
@@ -211,7 +223,7 @@ def test(ctx):
     '''runs the infrastructure tests'''
 
     def run_test(parent, sub):
-        _run_shell('tests', ctx, 'rdmd tester.d {0}'.format(os.path.join(parent, sub)))
+        _run_rdmd('tests', ctx, 'tester.d {0}'.format(os.path.join(parent, sub)))
 
     run_test('assembler', 'pass')
     run_test('assembler', 'fail')
@@ -251,7 +263,7 @@ def ddoc(ctx):
 
     doc = os.path.join(os.pardir, 'bootdoc')
 
-    cmd = 'rdmd ' + os.path.join(doc, 'generate.d')
+    cmd = os.path.join(doc, 'generate.d')
     cmd += ' --parallel'
     cmd += ' --verbose'
     cmd += ' --extra=index.d'
@@ -261,13 +273,17 @@ def ddoc(ctx):
     cmd += ' -I' + os.path.join(os.pardir, 'libffi-d')
     cmd += ' -I' + os.path.join(os.pardir, 'libgc-d')
 
-    _run_shell('docs', ctx, cmd)
+    _run_rdmd('docs', ctx, cmd)
 
     bddir = os.path.join(dir, 'bootDoc')
 
     shutil.rmtree(bddir, True)
     shutil.copytree('bootdoc', bddir)
     shutil.rmtree(os.path.join(bddir, '.git'), True)
+
+class DdocContext(Build.BuildContext):
+    cmd = 'ddoc'
+    fun = 'ddoc'
 
 def dist(dst):
     '''makes a tarball for redistributing the sources'''
