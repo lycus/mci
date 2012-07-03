@@ -5,7 +5,9 @@ import std.algorithm,
        std.path,
        std.process,
        std.stdio,
-       std.string;
+       std.string,
+       mci.core.common,
+       mci.core.config;
 
 private enum string windowsPath = buildPath("..", "src", "mci", "cli", "Test", "mci.exe");
 private enum string posixPath = buildPath("..", "build", "mci");
@@ -15,6 +17,8 @@ private struct TestPass
     public string command;
     public int expected;
     public bool error;
+    public Architecture[] excludedArchitectures;
+    public OperatingSystem[] excludedOperatingSystems;
 }
 
 private int main(string[] args)
@@ -53,6 +57,10 @@ private int main(string[] args)
                 pass.expected = to!int(line[3 .. $]);
             else if (startsWith(line, "E: "))
                 pass.error = to!bool(line[3 .. $]);
+            else if (startsWith(line, "!A: "))
+                pass.excludedArchitectures = array(map!(x => to!Architecture(x))(split(line)));
+            else if (startsWith(line, "!O: "))
+                pass.excludedOperatingSystems = array(map!(x => to!OperatingSystem(x))(split(line)));
         }
 
         passes ~= pass;
@@ -67,6 +75,9 @@ private int main(string[] args)
 
 private bool test(string directory, string cli, TestPass pass)
 {
+    if (canFind(pass.excludedArchitectures, architecture) || canFind(pass.excludedOperatingSystems, operatingSystem))
+        return true;
+
     writefln("---------- Testing '%s' (Expecting '%s') ----------", directory, pass.expected);
     writeln();
 

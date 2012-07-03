@@ -223,7 +223,8 @@ def test(ctx):
     '''runs the infrastructure tests'''
 
     def run_test(parent, sub):
-        _run_rdmd('tests', ctx, 'tester.d {0}'.format(os.path.join(parent, sub)))
+        _run_rdmd('tests', ctx, '-I{0} tester.d {1}'.format(os.path.join('..', 'src'),
+                                                            os.path.join(parent, sub)))
 
     run_test('assembler', 'pass')
     run_test('assembler', 'fail')
