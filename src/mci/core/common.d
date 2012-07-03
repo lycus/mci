@@ -307,7 +307,6 @@ public enum OperatingSystem : ubyte
     windows = 0, /// The Windows operating system (Windows 2000 and up).
     linux = 1, /// The Linux kernel (2.6 and up).
     osx = 2, /// Mac OS X (Leopard and up).
-    bsd = 3, /// All other BSD variants.
     freebsd = 4, /// The FreeBSD operating system.
     openbsd = 5, /// The OpenBSD operating system.
     solaris = 6, /// All Solaris variants.
