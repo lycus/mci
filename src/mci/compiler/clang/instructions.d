@@ -47,6 +47,11 @@ body
         case OperationCode.loadUI64A:
         case OperationCode.loadF32A:
         case OperationCode.loadF64A:
+        case OperationCode.loadFunc:
+        case OperationCode.loadNull:
+        case OperationCode.loadSize:
+        case OperationCode.loadAlign:
+        case OperationCode.loadOffset:
             writeConstantLoadInstruction(generator, instruction);
             break;
         case OperationCode.nop:

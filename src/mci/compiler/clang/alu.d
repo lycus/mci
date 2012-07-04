@@ -1,8 +1,13 @@
 module mci.compiler.clang.alu;
 
 import mci.compiler.clang.generator,
+       mci.core.config,
        mci.core.code.instructions,
-       mci.core.code.opcodes;
+       mci.core.code.functions,
+       mci.core.code.opcodes,
+       mci.core.typing.members,
+       mci.core.typing.types,
+       mci.vm.memory.layout;
 
 package void writeConstantLoadInstruction(ClangCGenerator generator, Instruction instruction)
 in
@@ -39,6 +44,24 @@ body
         case OperationCode.loadUI64A:
         case OperationCode.loadF32A:
         case OperationCode.loadF64A:
+            assert(false);
+        case OperationCode.loadFunc:
+            auto func = instruction.operand.peek!Function();
+
+            generator.writer.writeifln("reg__%s = &%s;", instruction.targetRegister.name, func.module_.name ~ "__" ~ func.name);
+            break;
+        case OperationCode.loadNull:
+            generator.writer.writeiln("reg__%s = 0;", instruction.targetRegister.name);
+            break;
+        case OperationCode.loadSize:
+            generator.writer.writeifln("reg__%s = %s;", instruction.targetRegister.name, computeSize(*instruction.operand.peek!Type(), is32Bit));
+            break;
+        case OperationCode.loadAlign:
+            generator.writer.writeifln("reg__%s = %s;", instruction.targetRegister.name, computeAlignment(*instruction.operand.peek!Type(), is32Bit));
+            break;
+        case OperationCode.loadOffset:
+            generator.writer.writeifln("reg__%s = %s;", instruction.targetRegister.name, computeOffset(*instruction.operand.peek!Field(), is32Bit));
+            break;
         default:
             assert(false);
     }
