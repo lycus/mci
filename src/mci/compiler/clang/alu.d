@@ -14,6 +14,9 @@ body
 {
     switch (instruction.opCode.code)
     {
+        case OperationCode.copy:
+            generator.writer.writeifln("reg__%s = reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name);
+            break;
         case OperationCode.loadI8:
         case OperationCode.loadUI8:
         case OperationCode.loadI16:

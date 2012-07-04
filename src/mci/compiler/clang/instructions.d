@@ -49,8 +49,11 @@ body
         case OperationCode.loadF64A:
             writeConstantLoadInstruction(generator, instruction);
             break;
+        case OperationCode.nop:
+        case OperationCode.comment:
         case OperationCode.fence:
             writeMiscellaneousInstruction(generator, instruction);
+            break;
         default:
             generator.writer.writeifln("/* Unhandled opcode: %s */;", instruction.opCode.name);
             break;
