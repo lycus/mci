@@ -130,6 +130,26 @@ JIT compiler
 **Tool name**
     ``jit``
 
+Executes a given module with the JIT (just-in-time) compiler. Accepts exactly
+one module file name (must end in ``.mci``). The module must have a valid
+entry point function.
+
+The ``-c`` parameter specifies which garbage collector should be used. See
+``mci -h`` for possible values.
+
+The ``-b`` parameter specifies which compilation back end should be used. See
+``mci -h`` for possible values.
+
+The native JIT back end will perform true JIT compilation; that is, functions
+will be compiled as they are encountered. The Clang-based back end, however,
+has to compile the entire program and all of its dependencies immediately.
+This is because recompiling C source code whenever a new function is
+encountered is way too slow and wasteful (in terms of space) and also highly
+unsafe when loading the new code into memory.
+
+If the hosted program is started correctly, returns whatever exit code that
+program specified.
+
 IAL linker
 ----------
 

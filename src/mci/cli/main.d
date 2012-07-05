@@ -6,6 +6,7 @@ import core.memory,
        mci.cli.tool,
        mci.core.common,
        mci.core.config,
+       mci.jit.engine,
        mci.optimizer.manager;
 
 static if (isPOSIX)
@@ -110,14 +111,20 @@ body
         log("Available garbage collectors:");
         log();
 
-        logf("     %s\tD Garbage Collector\t\tUses the D runtime's garbage collector (default).", GarbageCollectorType.dgc);
-        logf("     %s\tLibC Garbage Collector\t\tUses calloc/free; performs no actual collection.", GarbageCollectorType.libc);
+        logf("     %s\t\t\t\t\tUses the D runtime's garbage collector (default).", GarbageCollectorType.dgc);
+        logf("     %s\t\t\t\t\tUses calloc/free; performs no actual collection.", GarbageCollectorType.libc);
 
         static if (isPOSIX)
-            logf("     %s\tBoehm Garbage Collector\t\tUses the Boehm-Demers-Weiser garbage collector.", GarbageCollectorType.boehm);
+            logf("     %s\t\t\t\t\tUses the Boehm-Demers-Weiser garbage collector.", GarbageCollectorType.boehm);
 
         log();
+        log("Available JIT back ends:");
+        log();
 
+        logf("     %s\t\t\t\t\tUses the native JIT back end (default).", JITBackEnd.native);
+        logf("     %s\t\t\t\t\tUses the statically compiling Clang back end.", JITBackEnd.clang);
+
+        log();
         log("Available optimization passes:");
         log();
 
@@ -128,8 +135,8 @@ body
         log("Available name clash resolution strategies:");
         log();
 
-        logf("     %s\tError\t\t\t\tError out on name clashes (default).", LinkerRenameStrategy.error);
-        logf("     %s\tRename\t\t\t\tUse a simple rename strategy.", LinkerRenameStrategy.rename);
+        logf("     %s\t\t\t\t\tError out on name clashes (default).", LinkerRenameStrategy.error);
+        logf("     %s\t\t\t\t\tUse a simple rename strategy.", LinkerRenameStrategy.rename);
 
         log();
         log("System configuration:");

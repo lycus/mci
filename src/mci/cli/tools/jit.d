@@ -35,7 +35,8 @@ public final class JITTool : Tool
 
     @property public string[] options() pure nothrow
     {
-        return null;
+        return ["\t--back-end=<type>\t-b <type>\tSpecify which JIT back end to use.",
+                "\t--collector=<type>\t-c <type>\tSpecify which garbage collector to use."];
     }
 
     public int run(string[] args)
@@ -48,7 +49,7 @@ public final class JITTool : Tool
             getopt(args,
                    config.caseSensitive,
                    config.bundling,
-                   "backend|b", &backEnd,
+                   "back-end|b", &backEnd,
                    "collector|c", &gcType);
             args = args[1 .. $];
         }
