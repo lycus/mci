@@ -5,6 +5,7 @@ import std.traits,
        mci.core.code.functions,
        mci.core.code.opcodes,
        mci.optimizer.base,
+       mci.optimizer.code.noop,
        mci.optimizer.code.unused,
        mci.optimizer.ssa.dce,
        mci.optimizer.ssa.folding;
@@ -41,6 +42,8 @@ shared static this()
         all.add(optimizer);
     }
 
+    addOptimizer(new NopRemover(), fast);
+    addOptimizer(new CommentRemover(), fast);
     addOptimizer(new UnusedBasicBlockRemover(), fast);
     addOptimizer(new UnusedRegisterRemover(), fast);
     addOptimizer(new ConstantFolder(), fast);

@@ -19,7 +19,7 @@ public final class UnusedRegisterRemover : OptimizerDefinition
 
     @property public override string description() pure nothrow
     {
-        return "Eliminates unused registers.";
+        return "Removes unused registers.";
     }
 
     @property public override PassType type() pure nothrow
@@ -59,7 +59,7 @@ public final class UnusedBasicBlockRemover : OptimizerDefinition
 
     @property public override string description() pure nothrow
     {
-        return "Eliminates unused basic blocks.";
+        return "Removes unused basic blocks.";
     }
 
     @property public override PassType type() pure nothrow
