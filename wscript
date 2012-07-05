@@ -182,17 +182,18 @@ def _run_shell(dir, ctx, args):
 
     os.chdir(cwd)
 
-def _run_rdmd(dir, ctx, args):
+def _get_rdmd(ctx):
     if ctx.env.COMPILER_D == 'dmd':
-        compiler = 'dmd'
+        return 'dmd'
     elif ctx.env.COMPILER_D == 'gdc':
-        compiler = 'gdmd'
+        return 'gdmd'
     elif ctx.env.COMPILER_D == 'ldc2':
-        compiler = 'ldmd2'
+        return 'ldmd2'
     else:
         ctx.fatal('Unsupported D compiler.')
 
-    _run_shell(dir, ctx, 'rdmd --compiler={0} {1}'.format(compiler, args))
+def _run_rdmd(dir, ctx, args):
+    _run_shell(dir, ctx, 'rdmd --compiler={0} {1}'.format(_get_rdmd(ctx), args))
 
 def unittest(ctx):
     '''runs the unit test suite'''
@@ -265,6 +266,7 @@ def ddoc(ctx):
     doc = os.path.join(os.pardir, 'bootdoc')
 
     cmd = os.path.join(doc, 'generate.d')
+    cmd += ' --dmd=' + _get_rdmd(ctx)
     cmd += ' --parallel'
     cmd += ' --verbose'
     cmd += ' --extra=index.d'
