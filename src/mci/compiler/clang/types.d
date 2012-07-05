@@ -6,7 +6,7 @@ import mci.compiler.clang.generator,
        mci.core.typing.core,
        mci.core.typing.types;
 
-package string typeToString(ClangCGenerator generator, Type type, string identifier = null)
+package string typeToString(ClangCGenerator generator, Type type, string identifier = null, string pointers = null)
 in
 {
     assert(generator);
@@ -30,6 +30,25 @@ body
                  (NativeUIntType t) => is32Bit ? "unsigned int" : "unsigned long long",
                  (Float32Type t) => "float",
                  (Float64Type t) => "double",
+                 (PointerType t)
+                 {
+                     auto elem = t.elementType;
+
+                     while (true)
+                     {
+                         auto pt = cast(PointerType)elem;
+
+                         if (!pt)
+                         {
+                            if (cast(FunctionPointerType)pt)
+                                return typeToString(generator, t.elementType, identifier, pointers ~ '*');
+                            else
+                                return typeToString(generator, t.elementType) ~ '*';
+                         }
+                         else
+                             elem = pt.elementType;
+                     }
+                 },
                  (PointerType t) => typeToString(generator, t.elementType, '*' ~ identifier) ~ '*',
                  (StructureType t)
                  {
@@ -78,17 +97,17 @@ body
                          retType = f.returnType;
                      }
 
-                     s = typeToString(generator, retType) ~ ' ' ~ s ~ "(*";
+                     s = typeToString(generator, retType) ~ ' ' ~ s ~ "(*" ~ pointers;
 
                      static if (architecture == Architecture.x86 && is32Bit)
                      {
                          switch (t.callingConvention)
                          {
                              case CallingConvention.cdecl:
-                                 s ~= "__attribute__((cdecl)) ";
+                                 s ~= " __attribute__((cdecl))";
                                  break;
                              case CallingConvention.stdCall:
-                                 s ~= "__attribute__((stdcall)) ";
+                                 s ~= " __attribute__((stdcall))";
                                  break;
                              default:
                                  break;
@@ -96,7 +115,7 @@ body
                      }
 
                      if (identifier)
-                         s ~= '_' ~ identifier;
+                         s ~= ' ' ~ identifier;
 
                      s ~= ")(";
 
