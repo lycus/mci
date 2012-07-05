@@ -95,7 +95,7 @@ body
                                        instruction.sourceRegister2.name);
             break;
         case OperationCode.ariRem:
-            generator.writer.writeifln("reg__%s = reg__%s % reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+            generator.writer.writeifln("reg__%s = reg__%s %% reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
                                        instruction.sourceRegister2.name);
             break;
         case OperationCode.ariNeg:
