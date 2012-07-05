@@ -5,6 +5,7 @@ import core.memory,
        std.path,
        mci.cli.main,
        mci.cli.tool,
+       mci.core.common,
        mci.core.config,
        mci.core.container,
        mci.core.exception,
@@ -57,6 +58,12 @@ public final class JITTool : Tool
         {
             logf("Error: Could not parse command line: %s", ex.msg);
             return 2;
+        }
+
+        if (backEnd == JITBackEnd.clang && architecture == Architecture.ia64)
+        {
+            log("Error: The Clang back end does not work on Itanium.");
+            return 1;
         }
 
         if (args.length != 1)

@@ -26,6 +26,9 @@ public final class JITEngine : ExecutionEngine
     in
     {
         assert(gc);
+
+        if (backEnd == JITBackEnd.clang)
+            assert(architecture != Architecture.ia64);
     }
     body
     {
