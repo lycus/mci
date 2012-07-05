@@ -172,7 +172,7 @@ body
                                        size, instruction.sourceRegister2.name);
             break;
         case OperationCode.conv:
-            generator.writer.write("reg__%s = (%s)reg__%s;", instruction.targetRegister.name, typeToString(instruction.targetRegister.type),
+            generator.writer.write("reg__%s = (%s)reg__%s;", instruction.targetRegister.name, typeToString(generator, instruction.targetRegister.type),
                                    instruction.sourceRegister1.name);
             break;
         default:

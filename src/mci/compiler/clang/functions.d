@@ -96,7 +96,7 @@ body
 
     auto name = function_.module_.name ~ "__" ~ function_.name;
 
-    generator.writer.write(typeToString(function_.returnType, name));
+    generator.writer.write(typeToString(generator, function_.returnType, name));
 
     // If the function returns a function pointer, the above
     // typeToString call already printed the return type and name.
@@ -109,7 +109,7 @@ body
     {
         auto paramName = "param__" ~ to!string(i);
 
-        generator.writer.write(typeToString(param.type, paramName));
+        generator.writer.write(typeToString(generator, param.type, paramName));
 
         if (!cast(FunctionPointerType)param.type)
             generator.writer.writef(" %s", paramName);
@@ -156,7 +156,7 @@ body
 {
     auto name = "reg__" ~ register.name;
 
-    generator.writer.writei(typeToString(register.type, name));
+    generator.writer.writei(typeToString(generator, register.type, name));
 
     if (!cast(FunctionPointerType)register.type)
         generator.writer.writef(" %s", name);

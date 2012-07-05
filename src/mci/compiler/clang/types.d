@@ -1,11 +1,16 @@
 module mci.compiler.clang.types;
 
-import mci.core.common,
+import mci.compiler.clang.generator,
+       mci.core.common,
        mci.core.config,
        mci.core.typing.core,
        mci.core.typing.types;
 
-package string typeToString(Type type, string identifier = null)
+package string typeToString(ClangCGenerator generator, Type type, string identifier = null)
+in
+{
+    assert(generator);
+}
 out (result)
 {
     assert(result);
@@ -25,11 +30,16 @@ body
                  (NativeUIntType t) => is32Bit ? "unsigned int" : "unsigned long long",
                  (Float32Type t) => "float",
                  (Float64Type t) => "double",
-                 (PointerType t) => typeToString(t.elementType, '*' ~ identifier) ~ '*',
-                 (StructureType t) => "struct " ~ t.module_.name ~ "__" ~ t.name,
+                 (PointerType t) => typeToString(generator, t.elementType, '*' ~ identifier) ~ '*',
+                 (StructureType t)
+                 {
+                     generator.typeQueue.enqueue(t);
+
+                     return "struct " ~ t.module_.name ~ "__" ~ t.name;
+                 },
                  (ArrayType t) => "unsigned char*",
                  (VectorType t) => "unsigned char*",
-                 (ReferenceType t) => typeToString(t.elementType) ~ '*',
+                 (ReferenceType t) => typeToString(generator, t.elementType) ~ '*',
                  (FunctionPointerType t)
                  {
                      // Welcome to the dirtiest string processing algorithm
@@ -68,7 +78,7 @@ body
                          retType = f.returnType;
                      }
 
-                     s = typeToString(retType) ~ ' ' ~ s ~ "(*";
+                     s = typeToString(generator, retType) ~ ' ' ~ s ~ "(*";
 
                      static if (architecture == Architecture.x86 && is32Bit)
                      {
@@ -92,7 +102,7 @@ body
 
                      foreach (i, pt; t.parameterTypes)
                      {
-                         s ~= typeToString(pt);
+                         s ~= typeToString(generator, pt);
 
                          if (i < t.parameterTypes.count - 1)
                              s ~= ", ";
@@ -113,7 +123,7 @@ body
 
                          foreach (i, pt; f.parameterTypes)
                          {
-                             s ~= typeToString(pt);
+                             s ~= typeToString(generator, pt);
 
                              if (i < f.parameterTypes.count - 1)
                                  s ~= ", ";
