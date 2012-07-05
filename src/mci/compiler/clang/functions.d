@@ -161,7 +161,14 @@ body
     if (!cast(FunctionPointerType)register.type)
         generator.writer.writef(" %s", name);
 
-    generator.writer.write(" __attribute__((aligned));");
+    generator.writer.write(" __attribute__((aligned)) = ");
+
+    if (cast(StructureType)register.type)
+        generator.writer.write("{ 0 }");
+    else
+        generator.writer.write("0");
+
+    generator.writer.write(";");
 
     debug
         generator.writer.writef(" // register %s %s;", register.type, register.name);
