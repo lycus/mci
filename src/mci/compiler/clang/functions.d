@@ -161,7 +161,7 @@ body
     if (!cast(FunctionPointerType)register.type)
         generator.writer.writef(" %s", name);
 
-    generator.writer.write(";");
+    generator.writer.write(" __attribute__((aligned));");
 
     debug
         generator.writer.writef(" // register %s %s;", register.type, register.name);
