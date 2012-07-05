@@ -54,6 +54,36 @@ body
         case OperationCode.loadOffset:
             writeConstantLoadInstruction(generator, instruction);
             break;
+        case OperationCode.ariAdd:
+        case OperationCode.ariSub:
+        case OperationCode.ariMul:
+        case OperationCode.ariDiv:
+        case OperationCode.ariRem:
+        case OperationCode.ariNeg:
+            writeArithmeticInstruction(generator, instruction);
+            break;
+        case OperationCode.bitOr:
+        case OperationCode.bitXOr:
+        case OperationCode.bitAnd:
+        case OperationCode.bitNeg:
+            writeBitwiseInstruction(generator, instruction);
+            break;
+        case OperationCode.not:
+        case OperationCode.shL:
+        case OperationCode.shR:
+        case OperationCode.roL:
+        case OperationCode.roR:
+        case OperationCode.conv:
+            writeALUInstruction(generator, instruction);
+            break;
+        case OperationCode.cmpEq:
+        case OperationCode.cmpNEq:
+        case OperationCode.cmpGT:
+        case OperationCode.cmpLT:
+        case OperationCode.cmpGTEq:
+        case OperationCode.cmpLTEq:
+            writeComparisonInstruction(generator, instruction);
+            break;
         case OperationCode.nop:
         case OperationCode.comment:
         case OperationCode.fence:

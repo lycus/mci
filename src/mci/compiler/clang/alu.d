@@ -1,6 +1,7 @@
 module mci.compiler.clang.alu;
 
 import mci.compiler.clang.generator,
+       mci.compiler.clang.types,
        mci.core.config,
        mci.core.code.instructions,
        mci.core.code.functions,
@@ -61,6 +62,159 @@ body
             break;
         case OperationCode.loadOffset:
             generator.writer.writeifln("reg__%s = %s;", instruction.targetRegister.name, computeOffset(*instruction.operand.peek!Field(), is32Bit));
+            break;
+        default:
+            assert(false);
+    }
+}
+
+package void writeArithmeticInstruction(ClangCGenerator generator, Instruction instruction)
+in
+{
+    assert(generator);
+    assert(instruction);
+}
+body
+{
+    switch (instruction.opCode.code)
+    {
+        case OperationCode.ariAdd:
+            generator.writer.writeifln("reg__%s = reg__%s + reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name);
+            break;
+        case OperationCode.ariSub:
+            generator.writer.writeifln("reg__%s = reg__%s - reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name);
+            break;
+        case OperationCode.ariMul:
+            generator.writer.writeifln("reg__%s = reg__%s * reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name);
+            break;
+        case OperationCode.ariDiv:
+            generator.writer.writeifln("reg__%s = reg__%s / reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name);
+            break;
+        case OperationCode.ariRem:
+            generator.writer.writeifln("reg__%s = reg__%s % reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name);
+            break;
+        case OperationCode.ariNeg:
+            generator.writer.writeifln("reg__%s = -reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name);
+            break;
+        default:
+            assert(false);
+    }
+}
+
+package void writeBitwiseInstruction(ClangCGenerator generator, Instruction instruction)
+in
+{
+    assert(generator);
+    assert(instruction);
+}
+body
+{
+    switch (instruction.opCode.code)
+    {
+        case OperationCode.bitOr:
+            generator.writer.writeifln("reg__%s = reg__%s | reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name);
+            break;
+        case OperationCode.bitXOr:
+            generator.writer.writeifln("reg__%s = reg__%s ^ reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name);
+            break;
+        case OperationCode.bitAnd:
+            generator.writer.writeifln("reg__%s = reg__%s & reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name);
+            break;
+        case OperationCode.bitNeg:
+            generator.writer.writeifln("reg__%s = ~reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name);
+            break;
+        default:
+            assert(false);
+    }
+}
+
+package void writeALUInstruction(ClangCGenerator generator, Instruction instruction)
+in
+{
+    assert(generator);
+    assert(instruction);
+}
+body
+{
+    switch (instruction.opCode.code)
+    {
+        case OperationCode.not:
+            generator.writer.writeifln("reg__%s = !reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name);
+            break;
+        case OperationCode.shL:
+            generator.writer.writeifln("reg__%s = reg__%s << (reg__%s & %s);", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name, computeSize(instruction.targetRegister.type, is32Bit) * 8 - 1);
+            break;
+        case OperationCode.shR:
+            generator.writer.writeifln("reg__%s = reg__%s >> (reg__%s & %s);", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name, computeSize(instruction.targetRegister.type, is32Bit) * 8 - 1);
+            break;
+        case OperationCode.roL:
+            auto size = computeSize(instruction.targetRegister.type, is32Bit) * 8;
+            auto max = size - 1;
+
+            generator.writer.writeifln("reg__%s = (reg__%s << (reg__%s & %s) | reg__%s >> %s - (reg__%s & %s));", instruction.targetRegister.name,
+                                       instruction.sourceRegister1.name, instruction.sourceRegister2.name, max, instruction.sourceRegister1.name,
+                                       size, instruction.sourceRegister2.name, max);
+            break;
+        case OperationCode.roR:
+            auto size = computeSize(instruction.targetRegister.type, is32Bit) * 8;
+            auto max = size - 1;
+
+            generator.writer.writeifln("reg__%s = (reg__%s >> (reg__%s & %s) | reg__%s << %s - (reg__%s & %s));", instruction.targetRegister.name,
+                                       instruction.sourceRegister1.name, instruction.sourceRegister2.name, max, instruction.sourceRegister1.name,
+                                       size, instruction.sourceRegister2.name, max);
+            break;
+        case OperationCode.conv:
+            generator.writer.write("reg__%s = (%s)reg__%s;", instruction.targetRegister.name, typeToString(instruction.targetRegister.type),
+                                   instruction.sourceRegister1.name);
+            break;
+        default:
+            assert(false);
+    }
+}
+
+package void writeComparisonInstruction(ClangCGenerator generator, Instruction instruction)
+in
+{
+    assert(generator);
+    assert(instruction);
+}
+body
+{
+    switch (instruction.opCode.code)
+    {
+        case OperationCode.cmpEq:
+            generator.writer.writeifln("reg__%s = reg__%s == reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name);
+            break;
+        case OperationCode.cmpNEq:
+            generator.writer.writeifln("reg__%s = reg__%s != reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name);
+            break;
+        case OperationCode.cmpGT:
+            generator.writer.writeifln("reg__%s = reg__%s > reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name);
+            break;
+        case OperationCode.cmpLT:
+            generator.writer.writeifln("reg__%s = reg__%s < reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name);
+            break;
+        case OperationCode.cmpGTEq:
+            generator.writer.writeifln("reg__%s = reg__%s >= reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name);
+            break;
+        case OperationCode.cmpLTEq:
+            generator.writer.writeifln("reg__%s = reg__%s <= reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name);
             break;
         default:
             assert(false);

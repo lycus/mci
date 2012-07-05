@@ -29,7 +29,7 @@ body
                  (StructureType t) => "struct " ~ t.module_.name ~ "__" ~ t.name,
                  (ArrayType t) => "unsigned char*",
                  (VectorType t) => "unsigned char*",
-                 (ReferenceType t) => "unsigned char*",
+                 (ReferenceType t) => typeToString(t.elementType) ~ '*',
                  (FunctionPointerType t)
                  {
                      // Welcome to the dirtiest string processing algorithm
