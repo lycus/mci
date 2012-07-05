@@ -150,28 +150,26 @@ body
             generator.writer.writeifln("reg__%s = !reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name);
             break;
         case OperationCode.shL:
-            generator.writer.writeifln("reg__%s = reg__%s << (reg__%s & %s);", instruction.targetRegister.name, instruction.sourceRegister1.name,
-                                       instruction.sourceRegister2.name, computeSize(instruction.targetRegister.type, is32Bit) * 8 - 1);
+            generator.writer.writeifln("reg__%s = reg__%s << reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name);
             break;
         case OperationCode.shR:
-            generator.writer.writeifln("reg__%s = reg__%s >> (reg__%s & %s);", instruction.targetRegister.name, instruction.sourceRegister1.name,
-                                       instruction.sourceRegister2.name, computeSize(instruction.targetRegister.type, is32Bit) * 8 - 1);
+            generator.writer.writeifln("reg__%s = reg__%s >> reg__%s;", instruction.targetRegister.name, instruction.sourceRegister1.name,
+                                       instruction.sourceRegister2.name);
             break;
         case OperationCode.roL:
             auto size = computeSize(instruction.targetRegister.type, is32Bit) * 8;
-            auto max = size - 1;
 
-            generator.writer.writeifln("reg__%s = (reg__%s << (reg__%s & %s) | reg__%s >> %s - (reg__%s & %s));", instruction.targetRegister.name,
-                                       instruction.sourceRegister1.name, instruction.sourceRegister2.name, max, instruction.sourceRegister1.name,
-                                       size, instruction.sourceRegister2.name, max);
+            generator.writer.writeifln("reg__%s = reg__%s << reg__%s | reg__%s >> %s - reg__%s;", instruction.targetRegister.name,
+                                       instruction.sourceRegister1.name, instruction.sourceRegister2.name, instruction.sourceRegister1.name,
+                                       size, instruction.sourceRegister2.name);
             break;
         case OperationCode.roR:
             auto size = computeSize(instruction.targetRegister.type, is32Bit) * 8;
-            auto max = size - 1;
 
-            generator.writer.writeifln("reg__%s = (reg__%s >> (reg__%s & %s) | reg__%s << %s - (reg__%s & %s));", instruction.targetRegister.name,
-                                       instruction.sourceRegister1.name, instruction.sourceRegister2.name, max, instruction.sourceRegister1.name,
-                                       size, instruction.sourceRegister2.name, max);
+            generator.writer.writeifln("reg__%s = reg__%s >> reg__%s | reg__%s << %s - reg__%s;", instruction.targetRegister.name,
+                                       instruction.sourceRegister1.name, instruction.sourceRegister2.name, instruction.sourceRegister1.name,
+                                       size, instruction.sourceRegister2.name);
             break;
         case OperationCode.conv:
             generator.writer.write("reg__%s = (%s)reg__%s;", instruction.targetRegister.name, typeToString(instruction.targetRegister.type),
