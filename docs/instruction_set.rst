@@ -32,7 +32,8 @@ comment
 **Operand type**
     8-bit unsigned integer array
 
-Similar to nop_, but allows attaching arbitrary data to it.
+Similar to nop_, but allows attaching arbitrary data to it. Note that when the
+MCI displays the data, it assumes it to be encoded as UTF-8 text.
 
 Constant load instructions
 ++++++++++++++++++++++++++
