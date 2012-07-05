@@ -685,8 +685,8 @@ shl
 Shifts the bits of the first source register to the left by the amount given
 in the second source register and assigns the result to the target register.
 
-If the second source register is larger than the amount of bits of the first
-source register's type, that amount will be used instead.
+If the second source register is larger than or equal to the amount of bits of
+the first source register's type, behavior is undefined.
 
 The first register and the target register must be of the exact same type.
 Allowed types are ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``,
@@ -711,8 +711,8 @@ If the type of the values being shifted is signed, the shift is an arithmetic
 shift (i.e. it is done with sign extension); otherwise, a logical shift is done
 (i.e. zero extension is used).
 
-If the second source register is larger than the amount of bits of the first
-source register's type, that amount will be used instead.
+If the second source register is larger than or equal to the amount of bits of
+the first source register's type, behavior is undefined.
 
 The first register and the target register must be of the exact same type.
 Allowed types are ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``,
@@ -734,6 +734,9 @@ Rotate the bits of the value in the first source register left by the amount
 given in the second source register. This is similar to shl_, but instead of
 performing zero extension, the rotated bits are inserted.
 
+If the second source register is larger than or equal to the amount of bits of
+the first source register's type, behavior is undefined.
+
 The first register and the target register must be of the exact same type.
 Allowed types are ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``,
 ``uint32``, ``int64``, ``uint64``, ``int``, and ``uint``.
@@ -753,6 +756,9 @@ ror
 Rotate the bits of the value in the first source register right by the amount
 given in the second source register. This is similar to shr_, but instead of
 performing zero/sign extension, the rotated bits are inserted.
+
+If the second source register is larger than or equal to the amount of bits of
+the first source register's type, behavior is undefined.
 
 The first register and the target register must be of the exact same type.
 Allowed types are ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``,
