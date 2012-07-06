@@ -4,6 +4,7 @@ import std.conv,
        mci.core.container,
        mci.core.math,
        mci.core.nullable,
+       mci.core.analysis.utilities,
        mci.core.code.metadata,
        mci.core.code.modules,
        mci.core.code.functions,
@@ -122,8 +123,9 @@ public final class StructureType : Type
         assert(type);
         assert(name !in _fields);
 
-        if (auto struc = cast(StructureType)type)
-            assert(!hasCycle(struc));
+        if (storage == FieldStorage.instance)
+            if (auto struc = cast(StructureType)type)
+                assert(!hasCycle(this, struc));
 
         assert(!_isClosed);
     }
@@ -134,19 +136,6 @@ public final class StructureType : Type
     body
     {
         return _fields[name] = new Field(this, name, type, storage);
-    }
-
-    private bool hasCycle(StructureType fieldType)
-    {
-        if (fieldType is this)
-            return true;
-
-        foreach (field; fieldType.fields)
-            if (auto struc = cast(StructureType)field.y.type)
-                if (hasCycle(struc))
-                    return true;
-
-        return false;
     }
 
     public void close() pure nothrow
