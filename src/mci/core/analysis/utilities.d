@@ -552,22 +552,3 @@ body
 
     assert(false);
 }
-
-public bool hasCycle(StructureType type, StructureType fieldType)
-in
-{
-    assert(type);
-    assert(fieldType);
-}
-body
-{
-    if (fieldType is type)
-        return true;
-
-    foreach (field; fieldType.fields)
-        if (auto struc = cast(StructureType)field.y.type)
-            if (hasCycle(type, struc))
-                return true;
-
-    return false;
-}
