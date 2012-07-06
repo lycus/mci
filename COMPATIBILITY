@@ -55,5 +55,5 @@ addition, on POSIX, we make use of libdl for dynamically loading shared
 object files in the VM. This library is present on virtually any POSIX
 system, except BSD (where it's included in the standard C library anyway).
 
-Further, you must have the Clang C compiler (version 2.9 and above)
+Further, you must have the Clang C compiler (version 2.8 and above)
 installed if you plan to use the C back end of the JIT and AOT engines.
