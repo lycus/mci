@@ -94,6 +94,12 @@ public T atomicOp(string op, T, U)(T* pointer, U operand) pure // TODO: Make thi
     return cast(T)core.atomic.atomicOp!op(*cast(shared)pointer, operand);
 }
 
+private union AtomicData(T)
+{
+    T value;
+    ulong padding;
+}
+
 /**
  * Encapsulates atomic operations on a value. All operations are done with
  * full memory barriers.
@@ -104,7 +110,7 @@ public T atomicOp(string op, T, U)(T* pointer, U operand) pure // TODO: Make thi
 public struct Atomic(T)
     if (isAtomic!T)
 {
-    private T _value;
+    private AtomicData!T _data;
 
     /**
      * Constructs a new atomic value.
@@ -114,7 +120,7 @@ public struct Atomic(T)
      */
     public this(T value) pure nothrow
     {
-        atomicStore(&_value, value);
+        atomicStore(&_data.value, value);
     }
 
     /**
@@ -125,7 +131,7 @@ public struct Atomic(T)
      */
     @property public T value() pure // TODO: Make this nothrow in 2.060.
     {
-        return cast(T)atomicLoad(&_value);
+        return cast(T)atomicLoad(&_data.value);
     }
 
     /**
@@ -136,7 +142,7 @@ public struct Atomic(T)
      */
     @property public void value(T value) pure // TODO: Make this nothrow in 2.060.
     {
-        atomicStore(&_value, value);
+        atomicStore(&_data.value, value);
     }
 
     /**
@@ -155,7 +161,7 @@ public struct Atomic(T)
     }
     body
     {
-        return &_value;
+        return &_data.value;
     }
 
     /**
@@ -171,13 +177,13 @@ public struct Atomic(T)
      */
     public bool swap(T condition, T value) pure // TODO: Make this nothrow in 2.060.
     {
-        return atomicSwap(&_value, condition, value);
+        return atomicSwap(&_data.value, condition, value);
     }
 
     public Atomic!T opOpAssign(string op)(T rhs) pure // TODO: Make this nothrow in 2.060.
         if (!isPointer!T && !is(T == class))
     {
-        atomicOp!(op ~ '=')(&_value, rhs);
+        atomicOp!(op ~ '=')(&_data.value, rhs);
 
         return this;
     }
@@ -185,7 +191,7 @@ public struct Atomic(T)
     public Atomic!T opOpAssign(string op, U)(U rhs) pure // TODO: Make this nothrow in 2.060.
         if (isPointer!T && isIntegral!U)
     {
-        atomicOp!(op ~ '=')(&_value, rhs);
+        atomicOp!(op ~ '=')(&_data.value, rhs);
 
         return this;
     }
