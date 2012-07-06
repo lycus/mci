@@ -18,6 +18,29 @@ work on non-SSA form. Some passes are form-agnostic.
 Fast passes
 +++++++++++
 
+Nop remover
+-----------
+
+**Pass name**
+    ``nop-rem``
+**IR type**
+    Any
+
+This pass removes all ``nop`` instructions in a function. It is mostly useful
+to conserve disk and memory space if a program has many ``nop`` instructions.
+
+Comment remover
+---------------
+
+**Pass name**
+    ``comm-rem``
+**IR type**
+    Any
+
+This pass removes all ``comment`` instructions in a function. It is mostly
+useful to conserve disk and memory space if a program has many ``comment``
+instructions.
+
 Unused register remover
 -----------------------
 

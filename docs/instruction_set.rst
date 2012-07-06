@@ -32,7 +32,8 @@ comment
 **Operand type**
     8-bit unsigned integer array
 
-Similar to nop_, but allows attaching arbitrary data to it.
+Similar to nop_, but allows attaching arbitrary data to it. Note that when the
+MCI displays the data, it assumes it to be encoded as UTF-8 text.
 
 Constant load instructions
 ++++++++++++++++++++++++++
@@ -401,7 +402,8 @@ convention.
 
 Equality for function pointers obtained through this instruction is
 guaranteed. That is, if a function pointer to a specific function is loaded
-twice, the two pointers are guaranteed to be equal.
+twice, the two pointers are guaranteed to be equal. Ordering is, however, not
+guaranteed.
 
 load.null
 ---------
@@ -546,6 +548,9 @@ ari.div
 Divides the value in the first source register by the value in the second
 source register and stores the result in the target register.
 
+If the divisor is zero and the computation involves integers, behavior is
+undefined. For floating-point types, behavior depends on the machine.
+
 All three registers must be of the exact same type. Allowed types are
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
 ``int64``, ``uint64``, ``int``, ``uint``, ``float32``, and ``float64``.
@@ -563,6 +568,9 @@ ari.rem
 Computes the remainder resulting from dividing the first source register
 with the second source register and stores the result in the target
 register.
+
+If the divisor is zero and the computation involves integers, behavior is
+undefined. For floating-point types, behavior depends on the machine.
 
 All three registers must be of the exact same type. Allowed types are
 ``int8``, ``uint8``, ``int16``, ``uint16``, ``int32``, ``uint32``,
@@ -794,7 +802,8 @@ the element count. Otherwise, it represents the amount of array elements
 to be allocated. The source register must be of type ``uint``.
 
 If the target register is a pointer and the source register holds a zero
-value, the target register is set to a null pointer.
+value, the target register is set to a null pointer. For the array case,
+a zero-sized array will be allocated.
 
 If the requested amount of memory could not be allocated, a null pointer is
 assigned to the target register; otherwise, the pointer to the allocated
@@ -850,12 +859,17 @@ is in some way invalid (e.g. it points to the interior of a block of
 allocated memory or has never been allocated in the first place), undefined
 behavior occurs.
 
+This instruction deallocates from the right heap depending on the type of the
+source register (i.e. the GC-managed heap for arrays, vectors, and references,
+and the native heap for pointers).
+
 The source register must be a pointer, a reference, an array, or a vector.
 
 When invoking this instruction on a reference, an array, or a vector, it is
 assumed that the object being freed is only live in the source register, and
 absolutely nowhere else in the program. This makes this instruction very
-dangerous to use for managed objects.
+dangerous to use for managed objects. It is undefined behavior to use memory
+that has been freed.
 
 mem.salloc
 ----------
@@ -871,6 +885,13 @@ Similar to mem.alloc_. This instruction, however, allocates the memory on the
 stack. This means that memory allocated with this instruction shall not be
 freed manually with mem.free_, as the code generator inserts cleanup code
 automatically.
+
+As with mem.alloc_, this instruction assigns a null pointer if the source
+register holds a value of zero.
+
+If a stack overflow occurs in the allocation, behavior is undefined.
+
+The source register must be of type ``uint``.
 
 The target register must be a pointer.
 
@@ -888,6 +909,10 @@ Similar to mem.new_. This instruction, however, allocates the memory on the
 stack. This means that memory allocated with this instruction shall not be
 freed manually with mem.free_, as the code generator inserts cleanup code
 automatically.
+
+If a stack overflow occurs in the allocation, behavior is undefined.
+
+The target register must be a pointer.
 
 mem.pin
 -------
@@ -931,7 +956,8 @@ a handle returned by mem.pin_. Any invalid handle value will result in
 undefined behavior (this includes handles already unpinned).
 
 Care should be taken to only unpin the memory once it is certain that the
-memory is no longer referenced outside managed code.
+memory is no longer referenced outside managed code. Failure to ensure this
+can result in undefined behavior.
 
 Memory aliasing instructions
 ++++++++++++++++++++++++++++
@@ -955,10 +981,11 @@ element value to the target register.
 If the dereference operation failed in some way (e.g. the source pointer is
 null or points to invalid memory), undefined behavior occurs.
 
+Dereferencing function pointers is not possible. Doing so by casting a
+function pointer to a regular pointer results in undefined behavior.
+
 The source register must be a pointer, while the target register must be
 the element type of the source register's pointer type.
-
-Note in particular that dereferencing function pointers is not allowed.
 
 mem.set
 -------
@@ -976,6 +1003,10 @@ register to the value of the second register.
 If the memory addressing operation failed in some way (e.g. the target
 pointer is null or points to invalid memory), undefined behavior occurs.
 
+Setting the pointed-to value of function pointers is not possible. Doing so
+by casting a function pointer to a regular pointer results in undefined
+behavior.
+
 The first register must be a pointer type, while the second register must
 be the element type of the first register's pointer type.
 
@@ -991,6 +1022,9 @@ mem.addr
 
 Takes the address of the value in the source register and assigns the
 address to the target register.
+
+Dereferencing or writing to the resulting address once the current stack frame
+is no longer valid will result in undefined behavior.
 
 The source register can be of any type, while the target register must be
 a pointer to the source register's type.
@@ -1013,8 +1047,13 @@ array.get
 
 Fetches the value at the index given in the second source register from
 the array given in the first source register and assigns it to the target
-register. The first source register must be an array or vector type, while
-the second register must be of type ``uint``.
+register.
+
+If the source array/vector is null, behavior is undefined. Indexing beyond
+the bounds of an array results in undefined behavior.
+
+The first source register must be an array or vector type, while the second
+register must be of type ``uint``.
 
 The target register must be of the first source register's element type.
 
@@ -1030,9 +1069,14 @@ array.set
 
 Sets the element at the index given in the second source register of the
 array given in the first source register to the value in the third source
-register. The first source register must be an array or vector type, while
-the second register must be of type ``uint``. The third register must be of
-the element type of the array in the first source register.
+register.
+
+If the source array/vector is null, behavior is undefined. Indexing beyond
+the bounds of an array results in undefined behavior.
+
+The first source register must be an array or vector type, while the second
+register must be of type ``uint``. The third register must be of the element
+type of the array in the first source register.
 
 array.addr
 ----------
@@ -1046,8 +1090,14 @@ array.addr
 
 Retrieves the address to the element given in the second source register
 of the array given in the first source register and assigns it to the
-target register. The first source register must be an array or vector
-type, while the second source register must be of type ``uint``.
+target register.
+
+If the source array/vector is null, behavior is undefined. Taking the address
+of an element beyond the bounds of an array is acceptable, but dereferencing
+or writing to it results in undefined behavior.
+
+The first source register must be an array or vector type, while the second
+source register must be of type ``uint``.
 
 The target register must be a pointer to the first source register's element
 type.
@@ -1063,8 +1113,11 @@ array.len
     None
 
 Loads the length of an array into the target register. For arrays, this is
-the dynamic size, while for vectors, it is the fixed size. The source
-register must be an array or a vector.
+the dynamic size, while for vectors, it is the fixed size.
+
+If the source array/vector is null, behavior is undefined.
+
+The source register must be an array or a vector.
 
 The target register must be of type ``uint``.
 
@@ -1079,6 +1132,8 @@ array.ari.add
     None
 
 Performs arithmetic addition on elements of arrays or vectors.
+
+If any of the involved arrays/vectors are null, undefined behavior occurs.
 
 The first two source registers must be arrays or vectors of the types allowed
 in ari.add_, and must have the same element type.
@@ -1101,6 +1156,8 @@ array.ari.sub
 
 Performs arithmetic subtraction on elements of arrays or vectors.
 
+If any of the involved arrays/vectors are null, undefined behavior occurs.
+
 The first two source registers must be arrays or vectors of the types allowed
 in ari.sub_, and must have the same element type.
 
@@ -1122,6 +1179,8 @@ array.ari.mul
 
 Performs arithmetic multiplication on elements of arrays or vectors.
 
+If any of the involved arrays/vectors are null, undefined behavior occurs.
+
 The first two source registers must be arrays or vectors of the types allowed
 in ari.mul_, and must have the same element type.
 
@@ -1140,6 +1199,10 @@ array.ari.div
     None
 
 Performs arithmetic division on elements of arrays or vectors.
+
+If any of the involved arrays/vectors are null, undefined behavior occurs. If
+the divisor is zero and the computation involves integers, behavior is
+undefined. For floating-point types, behavior depends on the machine.
 
 The first two source registers must be arrays or vectors of the types allowed
 in ari.div_, and must have the same element type.
@@ -1161,6 +1224,10 @@ array.ari.rem
 Computes the remainder resulting from dividing elements of arrays or vectors
 with the given value(s).
 
+If any of the involved arrays/vectors are null, undefined behavior occurs. If
+the divisor is zero and the computation involves integers, behavior is
+undefined. For floating-point types, behavior depends on the machine.
+
 The first two source registers must be arrays or vectors of the types allowed
 in ari.rem_, and must have the same element type.
 
@@ -1180,6 +1247,8 @@ array.ari.neg
 
 Negates all elements of an array or vector.
 
+If any of the involved arrays/vectors are null, undefined behavior occurs.
+
 The two source registers must be arrays or vectors of the types allowed in
 ari.neg_, and must have the same element type.
 
@@ -1194,6 +1263,8 @@ array.bit.and
     None
 
 Performs bit-wise AND on elements of arrays or vectors.
+
+If any of the involved arrays/vectors are null, undefined behavior occurs.
 
 The first two source registers must be arrays or vectors of the types allowed
 in bit.and_, and must have the same element type.
@@ -1214,6 +1285,8 @@ array.bit.or
 
 Performs bit-wise OR on elements of arrays or vectors.
 
+If any of the involved arrays/vectors are null, undefined behavior occurs.
+
 The first two source registers must be arrays or vectors of the types allowed
 in bit.or_, and must have the same element type.
 
@@ -1232,6 +1305,8 @@ array.bit.xor
     None
 
 Performs bit-wise XOR on elements of arrays or vectors.
+
+If any of the involved arrays/vectors are null, undefined behavior occurs.
 
 The first two source registers must be arrays or vectors of the types allowed
 in bit.xor_, and must have the same element type.
@@ -1253,6 +1328,8 @@ array.bit.neg
 Performs a bit-wise complement negation operation on all elements of an array
 or vector.
 
+If any of the involved arrays/vectors are null, undefined behavior occurs.
+
 The two source registers must be arrays or vectors of the types allowed in
 bit.neg_, and must have the same element type.
 
@@ -1268,6 +1345,8 @@ array.not
 
 Performs a logical negation on all elements of an array or vector.
 
+If any of the involved arrays/vectors are null, undefined behavior occurs.
+
 The first two source registers must be arrays or vectors of the types allowed
 in not_, and must have the same element type.
 
@@ -1282,6 +1361,10 @@ array.shl
     None
 
 Performs a left shift of the bits of elements in an array or vector.
+
+If any of the involved arrays/vectors are null, undefined behavior occurs. If
+the shift amount is larger than or equal to the amount of bits of the element
+types involved, behavior is undefined.
 
 The first two source registers must be arrays or vectors of the types allowed
 in shl_, and must have the same element type.
@@ -1301,6 +1384,10 @@ array.shr
 
 Performs a right shift of the bits of elements in an array or vector.
 
+If any of the involved arrays/vectors are null, undefined behavior occurs. If
+the shift amount is larger than or equal to the amount of bits of the element
+types involved, behavior is undefined.
+
 The first two source registers must be arrays or vectors of the types allowed
 in shr_, and must have the same element type.
 
@@ -1319,6 +1406,10 @@ array.rol
 
 Performs a left rotation of bits of the elements in an array or vector.
 
+If any of the involved arrays/vectors are null, undefined behavior occurs. If
+the shift amount is larger than or equal to the amount of bits of the element
+types involved, behavior is undefined.
+
 The first two source registers must be arrays or vectors of the types allowed
 in rol_, and must have the same element type.
 
@@ -1336,6 +1427,10 @@ array.ror
     None
 
 Performs a right rotation of bits of the elements in an array or vector.
+
+If any of the involved arrays/vectors are null, undefined behavior occurs. If
+the shift amount is larger than or equal to the amount of bits of the element
+types involved, behavior is undefined.
 
 The first two source registers must be arrays or vectors of the types allowed
 in ror_, and must have the same element type.
@@ -1359,8 +1454,12 @@ assigns them to the second source register's elements incrementally.
 
 The following conversions are valid:
 
+* ``T[E]`` -> ``U[]`` for any valid ``T`` -> ``U`` conversion.
 * ``T[E]`` -> ``U[E]`` for any valid ``T`` -> ``U`` conversion.
 * ``T[]`` -> ``U[]`` for any valid ``T`` -> ``U`` conversion.
+* ``T[]`` -> ``U[E]`` for any valid ``T`` -> ``U`` conversion.
+
+If any of the involved arrays/vectors are null, undefined behavior occurs.
 
 See also conv_.
 
@@ -1375,6 +1474,8 @@ array.cmp.eq
     None
 
 Performs a cmp.eq_ on all elements of arrays or vectors.
+
+If any of the involved arrays/vectors are null, undefined behavior occurs.
 
 The first source register must be an array or vector of ``uint``. The second
 and third source registers must be arrays or vectors having the same element
@@ -1392,6 +1493,8 @@ array.cmp.neq
 
 Performs a cmp.neq_ on all elements of arrays or vectors.
 
+If any of the involved arrays/vectors are null, undefined behavior occurs.
+
 The first source register must be an array or vector of ``uint``. The second
 and third source registers must be arrays or vectors having the same element
 type.
@@ -1407,6 +1510,8 @@ array.cmp.gt
     None
 
 Performs a cmp.gt_ on all elements of arrays or vectors.
+
+If any of the involved arrays/vectors are null, undefined behavior occurs.
 
 The first source register must be an array or vector of ``uint``. The second
 and third source registers must be arrays or vectors having the same element
@@ -1424,6 +1529,8 @@ array.cmp.lt
 
 Performs a cmp.lt_ on all elements of arrays or vectors.
 
+If any of the involved arrays/vectors are null, undefined behavior occurs.
+
 The first source register must be an array or vector of ``uint``. The second
 and third source registers must be arrays or vectors having the same element
 type.
@@ -1440,6 +1547,8 @@ array.cmp.gteq
 
 Performs a cmp.gteq_ on all elements of arrays or vectors.
 
+If any of the involved arrays/vectors are null, undefined behavior occurs.
+
 The first source register must be an array or vector of ``uint``. The second
 and third source registers must be arrays or vectors having the same element
 type.
@@ -1455,6 +1564,8 @@ array.cmp.lteq
     None
 
 Performs a cmp.lteq_ on all elements of arrays or vectors.
+
+If any of the involved arrays/vectors are null, undefined behavior occurs.
 
 The first source register must be an array or vector of ``uint``. The second
 and third source registers must be arrays or vectors having the same element
@@ -1477,13 +1588,17 @@ field.get
     Field reference
 
 Fetches the value of the field given as the operand on the structure
-given in the source register and assigns it to the target register. The
-source register must either be a structure or a pointer or reference to a
+given in the source register and assigns it to the target register.
+
+If the source register is a reference or a pointer, and is null, behavior
+is undefined.
+
+This instruction is only valid on ``instance`` fields.
+
+The source register must either be a structure or a pointer or reference to a
 structure with at most one indirection.
 
 The target register's type must match the field type.
-
-This instruction is only valid on instance fields.
 
 field.set
 ---------
@@ -1497,11 +1612,15 @@ field.set
 
 Sets the value of the field given in the operand on the structure given
 in the first source register to the value in the second source register.
+
+If the first source register is a reference or a pointer, and is null,
+behavior is undefined.
+
+This instruction is only valid on ``instance`` fields.
+
 The first source register must be a structure or a pointer or reference
 to a structure with a most one indirection. The second source register
 must match the field's type.
-
-This instruction is only valid on instance fields.
 
 field.addr
 ----------
@@ -1514,14 +1633,26 @@ field.addr
     Field reference
 
 Gets the address of the field given as the operand on the structure given
-in the source register and assigns it to the target register. The source
-register must be a structure or a pointer or reference to a structure with
-at most one indirection.
+in the source register and assigns it to the target register.
+
+If the source register is a reference or a pointer, and is null, behavior
+is undefined.
+
+This instruction is only valid on ``instance`` fields.
+
+Note that if the given structure is in a register with no indirection (i.e. on
+the stack), dereferencing and writing to the pointer's address when the
+current stack frame is no longer valid results in undefined behavior. Also, if
+the given structure is a reference, the resulting pointer is effectively an
+interior pointer. This means that reading and writing the memory it points to
+is only valid while the object it points into is live. Reading or writing to
+its address when the object is no longer live results in undefined behavior.
+
+The source register must be a structure or a pointer or reference to a
+structure with at most one indirection.
 
 The target register must be a pointer to the type of the field given in
 the operand.
-
-This instruction is only valid on instance fields.
 
 field.user.get
 --------------
@@ -1534,8 +1665,11 @@ field.user.get
     None
 
 Fetches the value of the source register's header user data field and assigns
-it to the target register. The source register must be a reference, an array,
-or a vector.
+it to the target register.
+
+If the source register is null, behavior is undefined.
+
+The source register must be a reference, an array, or a vector.
 
 The target register must be a reference, an array, or a vector.
 
@@ -1550,8 +1684,11 @@ field.user.set
     None
 
 Sets the value of the first source register's header user data field to the
-value given in the second source register. Both source registers must be
-references, arrays, or vectors.
+value given in the second source register.
+
+If the source register is null, behavior is undefined.
+
+Both source registers must be references, arrays, or vectors.
 
 field.user.addr
 ---------------
@@ -1564,8 +1701,17 @@ field.user.addr
     None
 
 Fetches the address of the source register's header user data field and
-assigns it to the target register. The source register must be a reference,
-an array, or a vector.
+assigns it to the target register.
+
+If the source register is null, behavior is undefined.
+
+Note that, since the resulting address is effectively an interior pointer, it
+will only be recognized by the GC in roots. Dereferencing the pointer or
+writing to its address is only legal while the object it points into is live.
+Reading or writing to its address when the object is no longer live results in
+undefined behavior.
+
+The source register must be a reference, an array, or a vector.
 
 The target register must be a pointer to either a reference, an array, or a
 vector.
@@ -1580,11 +1726,11 @@ field.static.get
 **Operand type**
     Field reference
 
-Similar to field.get_, but operates on static fields. This means that the
-instruction does not need an instance of the structure to fetch the value
-of the given field.
+Similar to field.set_, but operates on ``static`` and ``thread`` fields. This
+means that the instruction does not need an instance of the structure to get
+the value of the given field.
 
-This instruction is only valid on static fields.
+This instruction is only valid on ``static`` and ``thread`` fields.
 
 field.static.set
 ----------------
@@ -1596,11 +1742,11 @@ field.static.set
 **Operand type**
     Field reference
 
-Similar to field.set_, but operates on static fields. This means that the
-instruction does not need an instance of the structure to set the value of
-the given field.
+Similar to field.set_, but operates on ``static`` and ``thread`` fields. This
+means that the instruction does not need an instance of the structure to set
+the value of the given field.
 
-This instruction is only valid on static fields.
+This instruction is only valid on ``static`` and ``thread`` fields.
 
 field.static.addr
 -----------------
@@ -1612,11 +1758,16 @@ field.static.addr
 **Operand type**
     Field reference
 
-Similar to field.addr_, but operates on static fields. This means that the
-instruction does not need an instance of the structure to get the address
-to the given field.
+Similar to field.set_, but operates on ``static`` and ``thread`` fields. This
+means that the instruction does not need an instance of the structure to get
+the address of the given field.
 
-This instruction is only valid on static fields.
+This instruction is only valid on ``static`` and ``thread`` fields.
+
+Note that, since the fields this instruction operates on have static lifetime,
+a pointer loaded via this instruction is always valid; undefined behavior can
+never occur from reading or writing to its address. Passing pointers to fields
+marked as ``thread`` to other threads than the owning thread is allowed.
 
 Comparison instructions
 +++++++++++++++++++++++
@@ -1763,12 +1914,14 @@ arg.push
     None
 
 Enqueues the value in the source register into the functiona call argument
-queue. The type of the value must equal the type of the function parameter
-at the same index as this instruction.
+queue.
 
 This instruction must be immediately followed by another arg.push_ or any
 of call_, call.tail_, call.indirect_, invoke_, invoke.tail_, or
 invoke.indirect_.
+
+The type of the value must equal the type of the function parameter at the
+same index as this instruction.
 
 arg.pop
 -------
@@ -1781,8 +1934,8 @@ arg.pop
     None
 
 Dequeues an argument given to a function. This instruction can only appear
-in the "entry" basic block of a function, and must either be the first
-instruction or come right after a previous arg.pop.
+in the ``entry`` basic block of a function, and must either be the first
+instruction or come right after a previous arg.pop_.
 
 The target register must match the type of the function parameter at the
 same index as this instruction.
@@ -1807,6 +1960,8 @@ arg.push_ instructions.
 The result (as returned by the called function) is assigned to the target
 register.
 
+The target register's type must match the given function's return type.
+
 call.tail
 ---------
 
@@ -1818,7 +1973,10 @@ call.tail
     Function reference
 
 Works exactly like a call_, except that this instruction hints to the code
-generator that tail call optimization should be done, if possible.
+generator that tail call optimization must be done.
+
+This instruction must be immediately followed by a return_ instruction which
+must return the resulting value of this call.
 
 call.indirect
 -------------
@@ -1830,13 +1988,19 @@ call.indirect
 **Operand type**
     None
 
-Performs a function call like the call_ instruction, but indirectly. The
-source register must be a function pointer to a function returning
-non-``void``, and the this instruction must (like call_) be immediately
-preceeded by a correct arg.push_ sequence matching the function pointer's
-signature.
+Performs a function call like the call_ instruction, but indirectly.
+
+This instruction must (like call_) be immediately preceeded by a correct
+arg.push_ sequence matching the function pointer's signature.
+
+If the given function pointer is null or does not point to a valid function
+entry point, behavior is undefined.
 
 The result of the call is assigned to the target register.
+
+The source register must be a function pointer to a function returning
+non-``void``, and the target register must match the function pointer's
+return type.
 
 invoke
 ------
@@ -1865,6 +2029,8 @@ invoke.tail
 This instruction does the same thing as call.tail_, but only works for
 functions with no return type (i.e. returning ``void``), and thus has no
 target register.
+
+This instruction must be immediately followed by a leave_ instruction.
 
 invoke.indirect
 ---------------
@@ -1911,8 +2077,9 @@ jump.cond
     Branch selector
 
 Performs a jump to the first basic block if the value in the source
-register (which must be of type ``uint``) does not equal 0; otherwise,
-jumps to the second basic block.
+register does not equal 0; otherwise, jumps to the second basic block.
+
+The source register must be of type ``uint``.
 
 This is a terminator instruction.
 
@@ -1987,7 +2154,7 @@ not appear in code passed to the interpreter or JIT/AOT engines.
 The target register and selector registers must all be of the same type.
 
 Note that this instruction doesn't count as a control flow instruction.
-That is to say, multiple phi instructions are allowed in a basic block
+That is to say, multiple phi_ instructions are allowed in a basic block
 while in SSA form, and they do not act as terminators.
 
 raw
@@ -2041,13 +2208,15 @@ This instruction marks the function as an FFI function. FFI functions must
 only contain this one instruction, which points the code generator to the
 actual function entry point in a native library.
 
-When using this instruction, a function cannot be pure and is not allowed
-to be inlined.
+This instruction has a few consequences:
+
+* All optimizations that would affect the layout of the stack cannot happen.
+* It must be the only instruction in the function.
 
 FFI functions must have ``cdecl`` or ``stdcall`` calling convention.
 
 Note that the native function isn't linked to statically. The execution
-engine (either the interpreter or the JIT/AOT engine) will attempt to
+engine (either the interpreter or the JIT/AOT engines) will attempt to
 locate the native entry point when the FFI function is called.
 
 This is a terminator instruction.
@@ -2070,6 +2239,8 @@ eh.throw
 Throws an exception. This causes the runtime to unwind the stack until an
 appropriate unwind block is found. If an unwind block is found, control
 transfers to that block. If none is found, the program is terminated.
+
+If the given reference is null, behavior is undefined.
 
 The source register must be a reference.
 
@@ -2108,9 +2279,9 @@ register. Note that this is not type-safe; it's similar to casting one
 reference type to another with ``conv``. In order to determine the exact
 exception type, language/ABI-specific checks must be made.
 
-The target register must be a reference.
-
 This instruction may only appear in unwind blocks.
+
+The target register must be a reference.
 
 Miscellaneous instructions
 ++++++++++++++++++++++++++
@@ -2131,6 +2302,8 @@ This instruction copies the value in the source register into the target
 register.
 
 This instruction is not valid in SSA form.
+
+The source register's type must match the target register's type.
 
 conv
 ----
@@ -2195,4 +2368,4 @@ registered before allowing it to call into managed code.
 
 The source register must be any function pointer type. The target register
 must be a function pointer type with ``cdecl`` or ``stdcall`` calling
-convention.
+convention matching the parameters and return type of the source register.
