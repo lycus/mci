@@ -5,6 +5,7 @@ import std.conv,
        mci.core.container,
        mci.core.math,
        mci.core.nullable,
+       mci.core.analysis.utilities,
        mci.core.code.metadata,
        mci.core.code.modules,
        mci.core.typing.core,
@@ -65,6 +66,12 @@ out (result)
 body
 {
     auto fieldType = resolveType(node.type, type.module_, manager);
+
+    if (node.storage == FieldStorage.instance)
+        if (auto struc = cast(StructureType)fieldType)
+            if (hasCycle(type, struc))
+                throw new GenerationException("Field " ~ type.toString() ~ ":'" ~ node.name.name ~ "' would create an infinite cycle.", node.location);
+
     auto field = type.createField(node.name.name, fieldType, node.storage);
 
     if (node.metadata)
