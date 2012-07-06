@@ -125,7 +125,7 @@ public final class StructureType : Type
 
         if (storage == FieldStorage.instance)
             if (auto struc = cast(StructureType)type)
-                assert(!hasCycle(this, struc));
+                assert(!hasCycle(struc));
 
         assert(!_isClosed);
     }
@@ -146,6 +146,25 @@ public final class StructureType : Type
     body
     {
         _isClosed = true;
+    }
+
+    public bool hasCycle(StructureType fieldType)
+    in
+    {
+        assert(fieldType);
+    }
+    body
+    {
+        if (fieldType is this)
+            return true;
+
+        // Important that we iterate _fields and not fields.
+        foreach (field; fieldType._fields)
+            if (auto struc = cast(StructureType)field.y.type)
+                if (hasCycle(struc))
+                    return true;
+
+        return false;
     }
 }
 

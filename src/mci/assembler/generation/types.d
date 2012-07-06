@@ -69,7 +69,7 @@ body
 
     if (node.storage == FieldStorage.instance)
         if (auto struc = cast(StructureType)fieldType)
-            if (hasCycle(type, struc))
+            if (type.hasCycle(struc))
                 throw new GenerationException("Field " ~ type.toString() ~ ":'" ~ node.name.name ~ "' would create an infinite cycle.", node.location);
 
     auto field = type.createField(node.name.name, fieldType, node.storage);
