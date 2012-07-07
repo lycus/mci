@@ -44,7 +44,7 @@ body
             generator.writer.dedent();
             break;
         case OperationCode.raw:
-            generator.writer.writei("asm(\".byte ");
+            generator.writer.writei("asm volatile(\".byte ");
 
             auto bytes = *instruction.operand.peek!(ReadOnlyIndexable!ubyte)();
 
@@ -56,7 +56,7 @@ body
                     generator.writer.write(", ");
             }
 
-            generator.writer.writeln("\");");
+            generator.writer.writeln("\" : : : \"memory\");");
             break;
         default:
             assert(false);
