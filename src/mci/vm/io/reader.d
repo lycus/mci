@@ -461,7 +461,16 @@ public final class ModuleReader : ModuleLoader
         foreach (tup; _types)
         {
             foreach (field; tup.y.fields)
-                tup.x.createField(field.name, toType(field.type), field.storage);
+            {
+                auto fieldType = toType(field.type);
+
+                if (field.storage == FieldStorage.instance)
+                    if (auto struc = cast(StructureType)fieldType)
+                        if (tup.x.hasCycle(struc))
+                            error("Cyclic field %s:'%s' detected.", tup.x, field.name);
+
+                tup.x.createField(field.name, fieldType, field.storage);
+            }
 
             tup.x.close();
         }
