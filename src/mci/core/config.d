@@ -43,12 +43,19 @@ else
 
 version (D_InlineAsm_X86_64)
 {
+    public enum InlineAssembly inlineAssembly = InlineAssembly.dmd64;
 }
 else version (D_InlineAsm_X86)
 {
+    public enum InlineAssembly inlineAssembly = InlineAssembly.dmd32;
 }
 else version (GNU)
 {
+    public enum InlineAssembly inlineAssembly = InlineAssembly.gnu;
+}
+else version (LDC)
+{
+    public enum InlineAssembly inlineAssembly = InlineAssembly.llvm;
 }
 else
     static assert(false, "Inline assembly not available.");
@@ -182,11 +189,6 @@ else version (Posix)
         public enum OperatingSystem operatingSystem = OperatingSystem.solaris;
         public enum string operatingSystemName = "Solaris";
     }
-    else version (Hurd)
-    {
-        public enum OperatingSystem operatingSystem = OperatingSystem.hurd;
-        public enum string operatingSystemName = "Hurd";
-    }
     else version (linux)
     {
         public enum OperatingSystem operatingSystem = OperatingSystem.linux;
@@ -197,6 +199,8 @@ else version (Posix)
         public enum OperatingSystem operatingSystem = OperatingSystem.osx;
         public enum string operatingSystemName = "OS X";
     }
+    else version (Hurd)
+        static assert(false, "Hurd is not supported.");
     else version (SkyOS)
         static assert(false, "SkyOS is not supported.");
     else version (SysV3)

@@ -36,7 +36,6 @@ The following operating systems are supported:
     * OpenBSD
     * Solaris
     * AIX
-    * Hurd
 
 Operating system must be determinable when compiling.
 
