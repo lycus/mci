@@ -41,7 +41,11 @@ version (D_Version2)
 else
     static assert(false, "Unsupported D language version.");
 
-version (D_InlineAsm_X86_64)
+version (D_Ddoc)
+{
+    public enum InlineAssembly inlineAssembly = InlineAssembly.init; /// Indicates what kind of inline assembly the compiler provides.
+}
+else version (D_InlineAsm_X86_64)
 {
     public enum InlineAssembly inlineAssembly = InlineAssembly.dmd64;
 }
