@@ -322,3 +322,14 @@ public enum EmulationLayer : ubyte
     cygwin = 1, /// The MCI was compiled under Cygwin (tends to imply GDC or LDC).
     mingw = 2, /// The MCI was compiled under MinGW (tends to imply GDC or LDC).
 }
+
+/**
+ * Indicates the kind of inline assembly provided by a compiler.
+ */
+public enum InlineAssembly : ubyte
+{
+    dmd32, // DMD-style inline assembly for x86 (32-bit).
+    dmd64, // DMD-style inline assembly for x86 (64-bit).
+    gnu, // GNU-style inline assembly.
+    llvm, // LLVM-style inline assembly (import the $(D ldc.llvmasm) module).
+}

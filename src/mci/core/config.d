@@ -43,12 +43,19 @@ else
 
 version (D_InlineAsm_X86_64)
 {
+    public enum InlineAssembly inlineAssembly = InlineAssembly.dmd64;
 }
 else version (D_InlineAsm_X86)
 {
+    public enum InlineAssembly inlineAssembly = InlineAssembly.dmd32;
 }
 else version (GNU)
 {
+    public enum InlineAssembly inlineAssembly = InlineAssembly.gnu;
+}
+else version (LDC)
+{
+    public enum InlineAssembly inlineAssembly = InlineAssembly.llvm;
 }
 else
     static assert(false, "Inline assembly not available.");
