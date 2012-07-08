@@ -26,6 +26,7 @@ MODULES =
     $(MODULE mci.core.container)
     $(MODULE mci.core.exception)
     $(MODULE mci.core.io)
+    $(MODULE mci.core.log)
     $(MODULE mci.core.math)
     $(MODULE mci.core.memory)
     $(MODULE mci.core.meta)

@@ -220,6 +220,7 @@
   <File path="container.d" />
   <File path="exception.d" />
   <File path="io.d" />
+  <File path="log.d" />
   <File path="math.d" />
   <File path="memory.d" />
   <File path="meta.d" />
