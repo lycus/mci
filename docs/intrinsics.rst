@@ -99,12 +99,10 @@ Value Description
 0     All Windows systems.
 1     All Linux systems.
 2     Mac OS X (and other Darwin systems).
-3     All BSD systems.
-4     FreeBSD.
-5     OpenBSD.
-6     Solaris.
-7     AIX.
-8     GNU Hurd.
+3     FreeBSD.
+4     OpenBSD.
+5     Solaris.
+6     AIX.
 ===== ====================================
 
 get_endianness
