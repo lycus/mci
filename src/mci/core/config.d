@@ -182,11 +182,6 @@ else version (Posix)
         public enum OperatingSystem operatingSystem = OperatingSystem.solaris;
         public enum string operatingSystemName = "Solaris";
     }
-    else version (Hurd)
-    {
-        public enum OperatingSystem operatingSystem = OperatingSystem.hurd;
-        public enum string operatingSystemName = "Hurd";
-    }
     else version (linux)
     {
         public enum OperatingSystem operatingSystem = OperatingSystem.linux;
@@ -197,6 +192,8 @@ else version (Posix)
         public enum OperatingSystem operatingSystem = OperatingSystem.osx;
         public enum string operatingSystemName = "OS X";
     }
+    else version (Hurd)
+        static assert(false, "Hurd is not supported.");
     else version (SkyOS)
         static assert(false, "SkyOS is not supported.");
     else version (SysV3)
