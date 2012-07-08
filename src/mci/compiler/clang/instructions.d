@@ -84,6 +84,15 @@ body
         case OperationCode.cmpLTEq:
             writeComparisonInstruction(generator, instruction);
             break;
+        case OperationCode.memAlloc:
+        case OperationCode.memNew:
+        case OperationCode.memFree:
+        case OperationCode.memSAlloc:
+        case OperationCode.memSNew:
+        case OperationCode.memPin:
+        case OperationCode.memUnpin:
+            writeMemoryManagementInstruction(generator, instruction);
+            break;
         case OperationCode.memGet:
         case OperationCode.memSet:
         case OperationCode.memAddr:
