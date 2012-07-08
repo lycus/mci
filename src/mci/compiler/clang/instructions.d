@@ -84,6 +84,11 @@ body
         case OperationCode.cmpLTEq:
             writeComparisonInstruction(generator, instruction);
             break;
+        case OperationCode.memGet:
+        case OperationCode.memSet:
+        case OperationCode.memAddr:
+            writeMemoryAliasInstruction(generator, instruction);
+            break;
         case OperationCode.nop:
         case OperationCode.comment:
         case OperationCode.fence:
