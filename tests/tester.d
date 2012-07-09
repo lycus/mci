@@ -39,7 +39,7 @@ private int main(string[] args)
 
     if (!cli)
     {
-        writeln("Could not locate mci(.exe).");
+        stderr.writeln("Could not locate mci(.exe).");
         return 1;
     }
 
@@ -78,8 +78,8 @@ private bool test(string directory, string cli, TestPass pass)
     if (canFind(pass.excludedArchitectures, architecture) || canFind(pass.excludedOperatingSystems, operatingSystem))
         return true;
 
-    writefln("---------- Testing '%s' (Expecting '%s') ----------", directory, pass.expected);
-    writeln();
+    stderr.writefln("---------- Testing '%s' (Expecting '%s') ----------", directory, pass.expected);
+    stderr.writeln();
 
     chdir(directory);
 
@@ -94,9 +94,9 @@ private bool test(string directory, string cli, TestPass pass)
             failures++;
     }
 
-    writeln();
-    writefln("========== Passes: %s - Failures: %s ==========", passes, failures);
-    writeln();
+    stderr.writeln();
+    stderr.writefln("========== Passes: %s - Failures: %s ==========", passes, failures);
+    stderr.writeln();
 
     chdir(buildPath("..", ".."));
 
@@ -112,11 +112,11 @@ private bool invoke(string file, string cli, TestPass pass)
 
     if (result != pass.expected)
     {
-        writefln("%s\t\tFailed ('%s')", base, result);
+        stderr.writefln("%s\t\tFailed ('%s')", base, result);
 
         if (pass.error)
         {
-            writefln("Error was:");
+            stderr.writefln("Error was:");
             system(full);
         }
 
@@ -124,7 +124,7 @@ private bool invoke(string file, string cli, TestPass pass)
     }
     else
     {
-        writefln("%s\t\tPassed ('%s')", base, result);
+        stderr.writefln("%s\t\tPassed ('%s')", base, result);
         return true;
     }
 }
