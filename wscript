@@ -201,10 +201,7 @@ def _run_rdmd(dir, ctx, args):
 def unittest(ctx):
     '''runs the unit test suite'''
 
-    if 'darwin' in Utils.unversioned_sys_platform():
-        _run_shell(OUT, ctx, './mci.tester')
-    else:
-        _run_shell(OUT, ctx, 'gdb --command=' + os.path.join(os.pardir, 'mci.gdb') + ' mci.tester')
+    _run_shell(OUT, ctx, './mci.tester')
 
     if ctx.env.VALGRIND == 'true':
         cmd = 'valgrind'
