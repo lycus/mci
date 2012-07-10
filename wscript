@@ -201,8 +201,6 @@ def _run_rdmd(dir, ctx, args):
 def unittest(ctx):
     '''runs the unit test suite'''
 
-    _run_shell(OUT, ctx, './mci.tester')
-
     if ctx.env.VALGRIND == 'true':
         cmd = 'valgrind'
         cmd += ' --suppressions=' + os.path.join(os.pardir, 'mci.valgrind')
@@ -215,6 +213,8 @@ def unittest(ctx):
         cmd += ' ' + os.path.join(os.curdir, 'mci.tester')
 
         _run_shell(OUT, ctx, cmd)
+    else:
+        _run_shell(OUT, ctx, './mci.tester')
 
 class UnitTestContext(Build.BuildContext):
     cmd = 'unittest'
