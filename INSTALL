@@ -14,7 +14,7 @@ Once installed, you must configure the project like so:
 You can use the --prefix option to specify where to install to. This
 defaults to "/usr/local" normally. The --check-d-compiler switch can be
 used to specify which compiler to build with. This will typically be
-"dmd", "gdc", or "ldc".
+"dmd", "gdc", or "ldc2".
 
 The MCI Waf script also supports some additional options:
 
