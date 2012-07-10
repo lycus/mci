@@ -16,7 +16,7 @@ private struct TestPass
 {
     public string command;
     public int expected;
-    public bool error;
+    public bool swallowError;
     public Architecture[] excludedArchitectures;
     public OperatingSystem[] excludedOperatingSystems;
 }
@@ -56,7 +56,7 @@ private int main(string[] args)
             else if (startsWith(line, "R: "))
                 pass.expected = to!int(line[3 .. $]);
             else if (startsWith(line, "E: "))
-                pass.error = to!bool(line[3 .. $]);
+                pass.swallowError = to!bool(line[3 .. $]);
             else if (startsWith(line, "!A: "))
                 pass.excludedArchitectures = array(map!(x => to!Architecture(x))(split(line)));
             else if (startsWith(line, "!O: "))
@@ -114,7 +114,7 @@ private bool invoke(string file, string cli, TestPass pass)
     {
         stderr.writefln("%s\t\tFailed ('%s')", base, result);
 
-        if (pass.error)
+        if (!pass.swallowError)
         {
             stderr.writefln("Error was:");
             system(full);
