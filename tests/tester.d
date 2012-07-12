@@ -116,7 +116,7 @@ private bool invoke(string file, string cli, TestPass pass)
 
         if (!pass.swallowError)
         {
-            stderr.writefln("Error was:");
+            stderr.writefln("Error was (%s):", full);
             system(full);
         }
 
