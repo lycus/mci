@@ -1001,6 +1001,32 @@ public class EntryPointDeclarationNode : DeclarationNode
     }
 }
 
+public class ModuleEntryPointDeclarationNode : EntryPointDeclarationNode
+{
+    public this(SourceLocation location, FunctionReferenceNode function_)
+    in
+    {
+        assert(function_);
+    }
+    body
+    {
+        super(location, function_);
+    }
+}
+
+public class ModuleExitPointDeclarationNode : EntryPointDeclarationNode
+{
+    public this(SourceLocation location, FunctionReferenceNode function_)
+    in
+    {
+        assert(function_);
+    }
+    body
+    {
+        super(location, function_);
+    }
+}
+
 public class ThreadEntryPointDeclarationNode : EntryPointDeclarationNode
 {
     public this(SourceLocation location, FunctionReferenceNode function_)

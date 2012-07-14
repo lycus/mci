@@ -1,0 +1,19 @@
+function void module_entry()
+{
+    block entry
+    {
+        leave;
+    }
+}
+
+module entry module_entry;
+
+function void module_exit()
+{
+    block entry
+    {
+        leave;
+    }
+}
+
+module exit module_entry;

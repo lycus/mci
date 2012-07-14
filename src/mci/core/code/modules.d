@@ -19,6 +19,8 @@ public final class Module
     private NoNullDictionary!(string, Function) _functions;
     private NoNullDictionary!(string, StructureType) _types;
     private Function _entryPoint;
+    private Function _moduleEntryPoint;
+    private Function _moduleExitPoint;
     private Function _threadEntryPoint;
     private Function _threadExitPoint;
 
@@ -101,6 +103,70 @@ public final class Module
     body
     {
         _entryPoint = entryPoint;
+    }
+
+    @property public Function moduleEntryPoint()
+    out (result)
+    {
+        if (result)
+        {
+            assert((cast()result).module_ is this);
+            assert((cast()result).callingConvention == CallingConvention.standard);
+            assert(!(cast()result).returnType);
+            assert((cast()result).parameters.empty);
+        }
+    }
+    body
+    {
+        return _moduleEntryPoint;
+    }
+
+    @property public void moduleEntryPoint(Function moduleEntryPoint)
+    in
+    {
+        if (moduleEntryPoint)
+        {
+            assert((cast()moduleEntryPoint).module_ is this);
+            assert((cast()moduleEntryPoint).callingConvention == CallingConvention.standard);
+            assert(!(cast()moduleEntryPoint).returnType);
+            assert((cast()moduleEntryPoint).parameters.empty);
+        }
+    }
+    body
+    {
+        _moduleEntryPoint = moduleEntryPoint;
+    }
+
+    @property public Function moduleExitPoint()
+    out (result)
+    {
+        if (result)
+        {
+            assert((cast()result).module_ is this);
+            assert((cast()result).callingConvention == CallingConvention.standard);
+            assert(!(cast()result).returnType);
+            assert((cast()result).parameters.empty);
+        }
+    }
+    body
+    {
+        return _moduleExitPoint;
+    }
+
+    @property public void moduleExitPoint(Function moduleExitPoint)
+    in
+    {
+        if (moduleExitPoint)
+        {
+            assert((cast()moduleExitPoint).module_ is this);
+            assert((cast()moduleExitPoint).callingConvention == CallingConvention.standard);
+            assert(!(cast()moduleExitPoint).returnType);
+            assert((cast()moduleExitPoint).parameters.empty);
+        }
+    }
+    body
+    {
+        _moduleExitPoint = moduleExitPoint;
     }
 
     @property public Function threadEntryPoint()

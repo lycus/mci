@@ -244,8 +244,11 @@ public final class Parser
                 case TokenType.thread:
                     ast.add(parseThreadEntryPointDeclaration());
                     break;
+                case TokenType.module_:
+                    ast.add(parseModuleEntryPointDeclaration());
+                    break;
                 default:
-                    errorGot("'type', 'function', 'entry', or 'thread'", token.location, token.value);
+                    errorGot("'type', 'function', 'entry', 'module', or 'thread'", token.location, token.value);
             }
         }
 
@@ -266,6 +269,41 @@ public final class Parser
         consume(";");
 
         return new EntryPointDeclarationNode(func.location, func);
+    }
+
+    private EntryPointDeclarationNode parseModuleEntryPointDeclaration()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        consume("module");
+
+        bool isEntry;
+
+        auto tok = next();
+
+        switch (tok.type)
+        {
+            case TokenType.entry:
+                isEntry = true;
+                break;
+            case TokenType.exit:
+                break;
+            default:
+                errorGot("'entry' or 'exit'", tok.location, tok.value);
+                break;
+        }
+
+        auto func = parseFunctionReference();
+
+        consume(";");
+
+        if (isEntry)
+            return new ModuleEntryPointDeclarationNode(func.location, func);
+        else
+            return new ModuleExitPointDeclarationNode(func.location, func);
     }
 
     private EntryPointDeclarationNode parseThreadEntryPointDeclaration()

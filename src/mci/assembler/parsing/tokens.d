@@ -42,6 +42,7 @@ public enum TokenType : ubyte
     register, /// The $(PRE register) keyword.
     block, /// The $(PRE block) keyword.
     unwind, /// The $(PRE unwind) keyword.
+    module_, /// The $(PRE module) keyword.
     entry, /// The $(PRE entry) keyword.
     exit, /// The $(PRE exit) keyword.
     void_, /// The $(PRE void) keyword.
@@ -96,6 +97,7 @@ shared static this()
                        "register" : TokenType.register,
                        "block" : TokenType.block,
                        "unwind" : TokenType.unwind,
+                       "module" : TokenType.module_,
                        "entry" : TokenType.entry,
                        "exit" : TokenType.exit,
                        "void" : TokenType.void_,

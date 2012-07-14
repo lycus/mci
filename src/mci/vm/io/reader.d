@@ -495,6 +495,12 @@ public final class ModuleReader : ModuleLoader
             mod.entryPoint = readFunctionReference();
 
         if (_reader.read!bool())
+            mod.moduleEntryPoint = readFunctionReference();
+
+        if (_reader.read!bool())
+            mod.moduleExitPoint = readFunctionReference();
+
+        if (_reader.read!bool())
             mod.threadEntryPoint = readFunctionReference();
 
         if (_reader.read!bool())

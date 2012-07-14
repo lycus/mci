@@ -238,12 +238,16 @@ public final class EntryPointPass : GeneratorPass
             {
                 if (auto ep = cast(EntryPointDeclarationNode)node)
                 {
+                    auto mep = cast(ModuleEntryPointDeclarationNode)ep;
+                    auto mxp = cast(ModuleExitPointDeclarationNode)ep;
                     auto tep = cast(ThreadEntryPointDeclarationNode)ep;
                     auto txp = cast(ThreadExitPointDeclarationNode)ep;
 
                     auto str = match(ep,
-                                     (ThreadEntryPointDeclarationNode t) => "Thread entry point",
-                                     (ThreadExitPointDeclarationNode t) => "Thread exit point",
+                                     (ModuleEntryPointDeclarationNode n) => "Module entry point",
+                                     (ModuleExitPointDeclarationNode n) => "Module exit point",
+                                     (ThreadEntryPointDeclarationNode n) => "Thread entry point",
+                                     (ThreadExitPointDeclarationNode n) => "Thread exit point",
                                      () => "Entry point");
 
                     auto func = resolveFunction(ep.function_, state.module_, state.manager);
@@ -255,7 +259,7 @@ public final class EntryPointPass : GeneratorPass
                     if (func.callingConvention != CallingConvention.standard)
                         throw new GenerationException(str ~ " does not have standard calling convention.", loc);
 
-                    auto retType = tep || txp ? null : Int32Type.instance;
+                    auto retType = mep || mxp || tep || txp ? null : Int32Type.instance;
 
                     if (func.returnType !is retType)
                         throw new GenerationException(str ~ " does not have return type " ~ (retType ? retType.toString() : "void") ~ ".", loc);
@@ -264,8 +268,10 @@ public final class EntryPointPass : GeneratorPass
                         throw new GenerationException(str ~ " does not have an empty parameter list.", loc);
 
                     match(ep,
-                          (ThreadEntryPointDeclarationNode t) => state.module_.threadEntryPoint = func,
-                          (ThreadExitPointDeclarationNode t) => state.module_.threadExitPoint = func,
+                          (ModuleEntryPointDeclarationNode n) => state.module_.moduleEntryPoint = func,
+                          (ModuleExitPointDeclarationNode n) => state.module_.moduleExitPoint = func,
+                          (ThreadEntryPointDeclarationNode n) => state.module_.threadEntryPoint = func,
+                          (ThreadExitPointDeclarationNode n) => state.module_.threadExitPoint = func,
                           () => state.module_.entryPoint = func);
                 }
             }

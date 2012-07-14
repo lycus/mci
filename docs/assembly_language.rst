@@ -8,7 +8,7 @@ source files and assembles them to a single output file (a module).
 The grammar is:
 
 .. productionlist::
-    Program : { `TypeDeclaration` | `FunctionDeclaration` | `EntryPointDeclaration` | `ThreadEntryPointDeclaration` | `ThreadExitPointDeclaration` }
+    Program : { `TypeDeclaration` | `FunctionDeclaration` | `EntryPointDeclaration` | `ThreadEntryPointDeclaration` | `ThreadExitPointDeclaration` | `ModuleEntryPointDeclaration` | `ModuleExitPointDeclaration` }
 
 Module references have the grammar:
 
@@ -211,9 +211,37 @@ The grammar is:
 An entry point function must return ``int32``, have no parameters, and have
 standard calling convention.
 
+A module entry point can be specified. It will be called before any code
+inside the module is executed at all and/or any loads, stores, and address-of
+operations on static/TLS fields in the module.
+
+The grammar is:
+
+.. productionlist::
+    ModuleEntryPointDeclaration : "module" "entry" `Function` ";"
+
+A module exit point can also be specified. It will be called once a program
+has returned from its main entry point.
+
+The grammar is:
+
+.. productionlist::
+    ModuleExitPointDeclaration : "module" "exit" `Function` ";"
+
+Module entry and exit points must have no parameters, return ``void``, and
+have standard calling convention.
+
+Module entry and exit points will only be called once during a program's
+execution time. A module's module exit point is only guaranteed to be called
+if that module's module entry point was ever called during execution time.
+
+Module entry points are guaranteed to be called before any thread entry
+points. Module exit points are guaranteed to be called after any thread exit
+points.
+
 A thread entry point can also be specified. Such an entry point is guaranteed
 to run before a properly registered thread gets a chance to execute any other
-managed code. This is useful for initializing TLS data.
+managed code inside the module. This is useful for initializing TLS data.
 
 The grammar is:
 
@@ -222,6 +250,10 @@ The grammar is:
 
 A thread entry point function must return ``void``, have no parameters, and
 have standard calling convention.
+
+Note that thread entry points may be invoked concurrently if multiple threads
+enter the virtual machine at the same time. The same holds true for thread
+exit points when threads exit.
 
 Thread exit points are also available to help tear down TLS data. They are
 guaranteed to be called just before a thread exits, and will only be called
@@ -235,8 +267,21 @@ The grammar is:
 As with thread entry points, these must return ``void``, have no parameters,
 and have standard calling convention.
 
-A module can only have one entry point, one thread entry point, and one thread
-exit point (all are optional). They must refer to functions inside the module.
+A module can only have one entry point, one thread entry point, one thread
+exit point, one module entry point, and one module exit point (all are
+optional). They must refer to functions inside the module.
+
+Normally, thread entry and exit points and module entry and exit points will
+only be called whenever some thread attempts to access code (or fields) inside
+the module they belong to. Some execution engines may, however, choose to load
+all of a program's modules eagerly, resulting in these entry and exit points
+being executed even if no code inside their module was executed during the
+program's execution time.
+
+Code inside thread entry and exit points and module entry and exit points must
+not make any assumptions about the order they are called in. The order will
+for all practical purposes be deterministic, but this is by no means
+guaranteed.
 
 Metadata
 ++++++++
