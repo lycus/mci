@@ -51,7 +51,7 @@ private final class TypeDescriptor
         _fields = new typeof(_fields)();
     }
 
-    @property public string name()
+    @property public string name() pure nothrow
     out (result)
     {
         assert(result);
@@ -61,7 +61,7 @@ private final class TypeDescriptor
         return _name;
     }
 
-    @property public uint alignment()
+    @property public uint alignment() pure nothrow
     out (result)
     {
         assert(!result || powerOfTwo(result));
@@ -71,7 +71,7 @@ private final class TypeDescriptor
         return _alignment;
     }
 
-    @property public NoNullList!FieldDescriptor fields()
+    @property public NoNullList!FieldDescriptor fields() pure nothrow
     out (result)
     {
         assert(result);
@@ -107,7 +107,7 @@ private final class FieldDescriptor
         _type = type;
     }
 
-    @property public string name()
+    @property public string name() pure nothrow
     out (result)
     {
         assert(result);
@@ -117,12 +117,12 @@ private final class FieldDescriptor
         return _name;
     }
 
-    @property public FieldStorage storage()
+    @property public FieldStorage storage() pure nothrow
     {
         return _storage;
     }
 
-    @property public TypeReferenceDescriptor type()
+    @property public TypeReferenceDescriptor type() pure nothrow
     out (result)
     {
         assert(result);
@@ -160,7 +160,7 @@ private final class StructureTypeReferenceDescriptor : TypeReferenceDescriptor
         _moduleName = moduleName;
     }
 
-    @property public string name()
+    @property public string name() pure nothrow
     out (result)
     {
         assert(result);
@@ -170,7 +170,7 @@ private final class StructureTypeReferenceDescriptor : TypeReferenceDescriptor
         return _name;
     }
 
-    @property public string moduleName()
+    @property public string moduleName() pure nothrow
     out (result)
     {
         assert(result);
@@ -200,7 +200,7 @@ private final class CoreTypeReferenceDescriptor : TypeReferenceDescriptor
         _type = type;
     }
 
-    @property public CoreType type()
+    @property public CoreType type() pure nothrow
     out (result)
     {
         assert(result);
@@ -230,7 +230,7 @@ private final class PointerTypeReferenceDescriptor : TypeReferenceDescriptor
         _elementType = elementType;
     }
 
-    @property public TypeReferenceDescriptor elementType()
+    @property public TypeReferenceDescriptor elementType() pure nothrow
     out (result)
     {
         assert(result);
@@ -260,7 +260,7 @@ private final class ReferenceTypeReferenceDescriptor : TypeReferenceDescriptor
         _elementType = elementType;
     }
 
-    @property public StructureTypeReferenceDescriptor elementType()
+    @property public StructureTypeReferenceDescriptor elementType() pure nothrow
     out (result)
     {
         assert(result);
@@ -290,7 +290,7 @@ private final class ArrayTypeReferenceDescriptor : TypeReferenceDescriptor
         _elementType = elementType;
     }
 
-    @property public TypeReferenceDescriptor elementType()
+    @property public TypeReferenceDescriptor elementType() pure nothrow
     out (result)
     {
         assert(result);
@@ -322,7 +322,7 @@ private final class VectorTypeReferenceDescriptor : TypeReferenceDescriptor
         _elements = elements;
     }
 
-    @property public TypeReferenceDescriptor elementType()
+    @property public TypeReferenceDescriptor elementType() pure nothrow
     out (result)
     {
         assert(result);
@@ -332,7 +332,7 @@ private final class VectorTypeReferenceDescriptor : TypeReferenceDescriptor
         return _elementType;
     }
 
-    @property public uint elements()
+    @property public uint elements() pure nothrow
     {
         return _elements;
     }
@@ -356,17 +356,17 @@ private final class FunctionPointerTypeReferenceDescriptor : TypeReferenceDescri
         _parameterTypes = new typeof(_parameterTypes)();
     }
 
-    @property public CallingConvention callingConvention()
+    @property public CallingConvention callingConvention() pure nothrow
     {
         return _callingConvention;
     }
 
-    @property public TypeReferenceDescriptor returnType()
+    @property public TypeReferenceDescriptor returnType() pure nothrow
     {
         return _returnType;
     }
 
-    @property public NoNullList!TypeReferenceDescriptor parameterTypes()
+    @property public NoNullList!TypeReferenceDescriptor parameterTypes() pure nothrow
     out (result)
     {
         assert(result);
