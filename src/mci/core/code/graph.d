@@ -1,7 +1,6 @@
 module mci.core.code.graph;
 
-import std.string,
-       mci.core.io,
+import mci.core.io,
        mci.core.analysis.cfg,
        mci.core.code.functions;
 

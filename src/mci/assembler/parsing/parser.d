@@ -2,7 +2,6 @@ module mci.assembler.parsing.parser;
 
 import std.algorithm,
        std.conv,
-       std.string,
        std.traits,
        mci.core.container,
        mci.core.nullable,
