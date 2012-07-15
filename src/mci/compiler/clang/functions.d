@@ -21,7 +21,6 @@ in
 }
 body
 {
-
     debug
     {
         generator.writer.write("// function ");
