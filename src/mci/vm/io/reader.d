@@ -492,19 +492,19 @@ public final class ModuleReader : ModuleLoader
         }
 
         if (_reader.read!bool())
-            mod.entryPoint = readFunctionReference();
+            mod.entryPoint = readEntryPointFunctionReference(mod, Int32Type.instance);
 
         if (_reader.read!bool())
-            mod.moduleEntryPoint = readFunctionReference();
+            mod.moduleEntryPoint = readEntryPointFunctionReference(mod, null);
 
         if (_reader.read!bool())
-            mod.moduleExitPoint = readFunctionReference();
+            mod.moduleExitPoint = readEntryPointFunctionReference(mod, null);
 
         if (_reader.read!bool())
-            mod.threadEntryPoint = readFunctionReference();
+            mod.threadEntryPoint = readEntryPointFunctionReference(mod, null);
 
         if (_reader.read!bool())
-            mod.threadExitPoint = readFunctionReference();
+            mod.threadExitPoint = readEntryPointFunctionReference(mod, null);
 
         readMetadataSegment();
 
@@ -796,6 +796,34 @@ public final class ModuleReader : ModuleLoader
 
         error("Unknown function '%s'/'%s'.", mod.name, name);
         assert(false);
+    }
+
+    private Function readEntryPointFunctionReference(Module module_, Type returnType)
+    in
+    {
+        assert(module_);
+    }
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto func = readFunctionReference();
+
+        if (func.module_ !is module_)
+            error("Function %s is not within module %s.", func, module_);
+
+        if (func.callingConvention != CallingConvention.standard)
+            error("Function %s does not have standard calling convention.", func);
+
+        if (func.returnType !is returnType)
+            error("Function %s does not have return type %s.", func, returnType ? returnType.toString() : "void");
+
+        if (!func.parameters.empty)
+            error("Function %s does not have an empty parameter list.");
+
+        return func;
     }
 
     private Function readFunction(Module module_)
