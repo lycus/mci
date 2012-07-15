@@ -73,8 +73,17 @@ public final class ModuleDisassembler
         if (module_.entryPoint)
             writeEntryPoint(module_.entryPoint);
 
+        if (module_.moduleEntryPoint)
+            writeModuleEntryPoint(module_.moduleEntryPoint);
+
+        if (module_.moduleExitPoint)
+            writeModuleExitPoint(module_.moduleExitPoint);
+
         if (module_.threadEntryPoint)
             writeThreadEntryPoint(module_.threadEntryPoint);
+
+        if (module_.threadExitPoint)
+            writeThreadExitPoint(module_.threadExitPoint);
     }
 
     private void writeType(StructureType type)
@@ -220,6 +229,26 @@ public final class ModuleDisassembler
         _writer.writefln("entry %s;", function_);
     }
 
+    private void writeModuleEntryPoint(Function function_)
+    in
+    {
+        assert(function_);
+    }
+    body
+    {
+        _writer.writefln("module entry %s;", function_);
+    }
+
+    private void writeModuleExitPoint(Function function_)
+    in
+    {
+        assert(function_);
+    }
+    body
+    {
+        _writer.writefln("module exit %s;", function_);
+    }
+
     private void writeThreadEntryPoint(Function function_)
     in
     {
@@ -228,5 +257,15 @@ public final class ModuleDisassembler
     body
     {
         _writer.writefln("thread entry %s;", function_);
+    }
+
+    private void writeThreadExitPoint(Function function_)
+    in
+    {
+        assert(function_);
+    }
+    body
+    {
+        _writer.writefln("thread exit %s;", function_);
     }
 }
