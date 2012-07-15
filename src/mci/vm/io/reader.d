@@ -652,6 +652,10 @@ public final class ModuleReader : ModuleLoader
     {
         auto name = readString();
         auto alignment = _reader.read!uint();
+
+        if (alignment && !powerOfTwo(alignment))
+            error("Alignment %s is not a power of two.", alignment);
+
         auto type = new TypeDescriptor(name, alignment);
         auto fieldCount = _reader.read!uint();
 
@@ -717,9 +721,8 @@ public final class ModuleReader : ModuleLoader
                         return new CoreTypeReferenceDescriptor(Float64Type.instance);
                     default:
                         error("Unknown core type identifier '%s'.", id);
+                        assert(false);
                 }
-
-                assert(false);
             case TypeReferenceType.structure:
                 auto mod = readString();
                 auto type = readString();
@@ -762,9 +765,8 @@ public final class ModuleReader : ModuleLoader
                 return fpType;
             default:
                 error("Unknown type reference type '%s'.", t);
+                assert(false);
         }
-
-        assert(false);
     }
 
     private Field readFieldReference()
@@ -945,7 +947,7 @@ public final class ModuleReader : ModuleLoader
         auto opCode = find(allOpCodes, (OpCode op) => op.code == code);
 
         if (!opCode)
-            error("Unknown opcode '%s'.", code);
+            error("Unknown opcode %s.", cast(ubyte)code);
 
         Register target;
         Register source1;
@@ -1131,7 +1133,7 @@ public final class ModuleReader : ModuleLoader
         auto i = _reader.read!uint();
 
         if (i >= block.stream.count)
-            error("Unknown instruction '%s'.", i);
+            error("Unknown instruction %s.", i);
 
         return block.stream[i];
     }
@@ -1150,7 +1152,7 @@ public final class ModuleReader : ModuleLoader
         auto i = _reader.read!uint();
 
         if (i >= function_.parameters.count)
-            error("Unknown parameter '%s'.", i);
+            error("Unknown parameter %s.", i);
 
         return function_.parameters[i];
     }
