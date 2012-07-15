@@ -63,6 +63,11 @@ public final class StructureType : Type
     }
 
     @property public uint alignment() pure nothrow
+    out (result)
+    {
+        assert(!result || powerOfTwo(result));
+    }
+    body
     {
         return _alignment;
     }

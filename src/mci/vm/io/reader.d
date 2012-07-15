@@ -6,6 +6,7 @@ import std.exception,
        mci.core.common,
        mci.core.container,
        mci.core.io,
+       mci.core.math,
        mci.core.nullable,
        mci.core.tuple,
        mci.core.utilities,
@@ -33,6 +34,7 @@ private final class TypeDescriptor
     invariant()
     {
         assert(_name);
+        assert(!_alignment || powerOfTwo(_alignment));
         assert(_fields);
     }
 
@@ -40,6 +42,7 @@ private final class TypeDescriptor
     in
     {
         assert(name);
+        assert(!alignment || powerOfTwo(alignment));
     }
     body
     {
@@ -59,6 +62,11 @@ private final class TypeDescriptor
     }
 
     @property public uint alignment()
+    out (result)
+    {
+        assert(!result || powerOfTwo(result));
+    }
+    body
     {
         return _alignment;
     }
