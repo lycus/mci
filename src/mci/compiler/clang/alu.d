@@ -1,7 +1,9 @@
 module mci.compiler.clang.alu;
 
-import mci.compiler.clang.generator,
+import std.math,
+       mci.compiler.clang.generator,
        mci.compiler.clang.types,
+       mci.core.common,
        mci.core.config,
        mci.core.code.instructions,
        mci.core.code.functions,
@@ -9,6 +11,41 @@ import mci.compiler.clang.generator,
        mci.core.typing.members,
        mci.core.typing.types,
        mci.vm.memory.layout;
+
+private string stringifyConstant(InstructionOperand operand)
+in
+{
+    assert(operand.hasValue);
+}
+body
+{
+    if (auto f = operand.peek!float())
+    {
+        if (isInfinity(*f))
+        {
+            if (signbit(*f))
+                return "-__builtin_inff()";
+            else
+                return "__builtin_inff()";
+        }
+        else if (isNaN(*f))
+            return "__builtin_nanf(\"\")";
+    }
+    else if (auto d = operand.peek!double())
+    {
+        if (isInfinity(*d))
+        {
+            if (signbit(*d))
+                return "-__builtin_inf()";
+            else
+                return "__builtin_inf()";
+        }
+        else if (isNaN(*d))
+            return "__builtin_nan(\"\")";
+    }
+
+    return operand.toString();
+}
 
 package void writeConstantLoadInstruction(ClangCGenerator generator, Instruction instruction)
 in
@@ -33,7 +70,7 @@ body
         case OperationCode.loadUI64:
         case OperationCode.loadF32:
         case OperationCode.loadF64:
-            generator.writer.writeifln("reg__%s = %s;", instruction.targetRegister.name, instruction.operand);
+            generator.writer.writeifln("reg__%s = %s;", instruction.targetRegister.name, stringifyConstant(instruction.operand));
             break;
         case OperationCode.loadI8A:
         case OperationCode.loadUI8A:
