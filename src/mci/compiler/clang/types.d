@@ -3,6 +3,7 @@ module mci.compiler.clang.types;
 import mci.compiler.clang.generator,
        mci.core.common,
        mci.core.config,
+       mci.core.code.functions,
        mci.core.typing.core,
        mci.core.typing.types;
 
