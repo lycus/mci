@@ -93,7 +93,11 @@ def configure(conf):
         conf.fatal('--lp64 must be either true or false.')
 
     conf.env.LIB_FFI = ['ffi']
-    conf.env.LIB_GC = ['gc']
+
+    if Utils.unversioned_sys_platform().lower() == 'freebsd':
+        conf.env.LIB_GC = ['gc-threaded']
+    else:
+        conf.env.LIB_GC = ['gc']
 
     if not Utils.unversioned_sys_platform().lower().endswith('bsd'):
         conf.env.LIB_DL = ['dl']
