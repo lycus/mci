@@ -1,0 +1,12 @@
+function int32 module_entry()
+{
+    register int32 x;
+
+    block entry
+    {
+        x = load.i32 (0);
+        return x;
+    }
+}
+
+module entry module_entry;

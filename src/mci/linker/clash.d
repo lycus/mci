@@ -1,6 +1,6 @@
 module mci.linker.clash;
 
-import std.string,
+import mci.core.utilities,
        mci.core.code.modules,
        mci.core.typing.types,
        mci.linker.exception;

@@ -247,7 +247,6 @@ def docs(ctx):
     build_docs(['html',
                 'dirhtml',
                 'singlehtml',
-                'latexpdf',
                 'text',
                 'man',
                 'changes',

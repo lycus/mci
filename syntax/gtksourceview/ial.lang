@@ -52,6 +52,7 @@
           <keyword>function</keyword>
           <keyword>register</keyword>
           <keyword>block</keyword>
+          <keyword>module</keyword>
           <keyword>thread</keyword>
           <keyword>entry</keyword>
           <keyword>exit</keyword>

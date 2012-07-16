@@ -1,7 +1,7 @@
 module mci.verifier.lint;
 
-import std.string,
-       mci.core.container,
+import mci.core.container,
+       mci.core.utilities,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.opcodes;

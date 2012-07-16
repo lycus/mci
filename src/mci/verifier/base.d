@@ -1,6 +1,6 @@
 module mci.verifier.base;
 
-import std.string,
+import mci.core.utilities,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.verifier.exception;

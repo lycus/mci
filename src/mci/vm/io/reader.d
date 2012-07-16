@@ -3,12 +3,13 @@ module mci.vm.io.reader;
 import std.exception,
        std.file,
        std.path,
-       std.string,
        mci.core.common,
        mci.core.container,
        mci.core.io,
+       mci.core.math,
        mci.core.nullable,
        mci.core.tuple,
+       mci.core.utilities,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.metadata,
@@ -33,6 +34,7 @@ private final class TypeDescriptor
     invariant()
     {
         assert(_name);
+        assert(!_alignment || powerOfTwo(_alignment));
         assert(_fields);
     }
 
@@ -40,6 +42,7 @@ private final class TypeDescriptor
     in
     {
         assert(name);
+        assert(!alignment || powerOfTwo(alignment));
     }
     body
     {
@@ -48,7 +51,7 @@ private final class TypeDescriptor
         _fields = new typeof(_fields)();
     }
 
-    @property public string name()
+    @property public string name() pure nothrow
     out (result)
     {
         assert(result);
@@ -58,12 +61,17 @@ private final class TypeDescriptor
         return _name;
     }
 
-    @property public uint alignment()
+    @property public uint alignment() pure nothrow
+    out (result)
+    {
+        assert(!result || powerOfTwo(result));
+    }
+    body
     {
         return _alignment;
     }
 
-    @property public NoNullList!FieldDescriptor fields()
+    @property public NoNullList!FieldDescriptor fields() pure nothrow
     out (result)
     {
         assert(result);
@@ -99,7 +107,7 @@ private final class FieldDescriptor
         _type = type;
     }
 
-    @property public string name()
+    @property public string name() pure nothrow
     out (result)
     {
         assert(result);
@@ -109,12 +117,12 @@ private final class FieldDescriptor
         return _name;
     }
 
-    @property public FieldStorage storage()
+    @property public FieldStorage storage() pure nothrow
     {
         return _storage;
     }
 
-    @property public TypeReferenceDescriptor type()
+    @property public TypeReferenceDescriptor type() pure nothrow
     out (result)
     {
         assert(result);
@@ -152,7 +160,7 @@ private final class StructureTypeReferenceDescriptor : TypeReferenceDescriptor
         _moduleName = moduleName;
     }
 
-    @property public string name()
+    @property public string name() pure nothrow
     out (result)
     {
         assert(result);
@@ -162,7 +170,7 @@ private final class StructureTypeReferenceDescriptor : TypeReferenceDescriptor
         return _name;
     }
 
-    @property public string moduleName()
+    @property public string moduleName() pure nothrow
     out (result)
     {
         assert(result);
@@ -192,7 +200,7 @@ private final class CoreTypeReferenceDescriptor : TypeReferenceDescriptor
         _type = type;
     }
 
-    @property public CoreType type()
+    @property public CoreType type() pure nothrow
     out (result)
     {
         assert(result);
@@ -222,7 +230,7 @@ private final class PointerTypeReferenceDescriptor : TypeReferenceDescriptor
         _elementType = elementType;
     }
 
-    @property public TypeReferenceDescriptor elementType()
+    @property public TypeReferenceDescriptor elementType() pure nothrow
     out (result)
     {
         assert(result);
@@ -252,7 +260,7 @@ private final class ReferenceTypeReferenceDescriptor : TypeReferenceDescriptor
         _elementType = elementType;
     }
 
-    @property public StructureTypeReferenceDescriptor elementType()
+    @property public StructureTypeReferenceDescriptor elementType() pure nothrow
     out (result)
     {
         assert(result);
@@ -282,7 +290,7 @@ private final class ArrayTypeReferenceDescriptor : TypeReferenceDescriptor
         _elementType = elementType;
     }
 
-    @property public TypeReferenceDescriptor elementType()
+    @property public TypeReferenceDescriptor elementType() pure nothrow
     out (result)
     {
         assert(result);
@@ -314,7 +322,7 @@ private final class VectorTypeReferenceDescriptor : TypeReferenceDescriptor
         _elements = elements;
     }
 
-    @property public TypeReferenceDescriptor elementType()
+    @property public TypeReferenceDescriptor elementType() pure nothrow
     out (result)
     {
         assert(result);
@@ -324,7 +332,7 @@ private final class VectorTypeReferenceDescriptor : TypeReferenceDescriptor
         return _elementType;
     }
 
-    @property public uint elements()
+    @property public uint elements() pure nothrow
     {
         return _elements;
     }
@@ -348,17 +356,17 @@ private final class FunctionPointerTypeReferenceDescriptor : TypeReferenceDescri
         _parameterTypes = new typeof(_parameterTypes)();
     }
 
-    @property public CallingConvention callingConvention()
+    @property public CallingConvention callingConvention() pure nothrow
     {
         return _callingConvention;
     }
 
-    @property public TypeReferenceDescriptor returnType()
+    @property public TypeReferenceDescriptor returnType() pure nothrow
     {
         return _returnType;
     }
 
-    @property public NoNullList!TypeReferenceDescriptor parameterTypes()
+    @property public NoNullList!TypeReferenceDescriptor parameterTypes() pure nothrow
     out (result)
     {
         assert(result);
@@ -492,13 +500,19 @@ public final class ModuleReader : ModuleLoader
         }
 
         if (_reader.read!bool())
-            mod.entryPoint = readFunctionReference();
+            mod.entryPoint = readEntryPointFunctionReference(mod, Int32Type.instance);
 
         if (_reader.read!bool())
-            mod.threadEntryPoint = readFunctionReference();
+            mod.moduleEntryPoint = readEntryPointFunctionReference(mod, null);
 
         if (_reader.read!bool())
-            mod.threadExitPoint = readFunctionReference();
+            mod.moduleExitPoint = readEntryPointFunctionReference(mod, null);
+
+        if (_reader.read!bool())
+            mod.threadEntryPoint = readEntryPointFunctionReference(mod, null);
+
+        if (_reader.read!bool())
+            mod.threadExitPoint = readEntryPointFunctionReference(mod, null);
 
         readMetadataSegment();
 
@@ -638,6 +652,10 @@ public final class ModuleReader : ModuleLoader
     {
         auto name = readString();
         auto alignment = _reader.read!uint();
+
+        if (alignment && !powerOfTwo(alignment))
+            error("Alignment %s is not a power of two.", alignment);
+
         auto type = new TypeDescriptor(name, alignment);
         auto fieldCount = _reader.read!uint();
 
@@ -703,9 +721,8 @@ public final class ModuleReader : ModuleLoader
                         return new CoreTypeReferenceDescriptor(Float64Type.instance);
                     default:
                         error("Unknown core type identifier '%s'.", id);
+                        assert(false);
                 }
-
-                assert(false);
             case TypeReferenceType.structure:
                 auto mod = readString();
                 auto type = readString();
@@ -748,9 +765,8 @@ public final class ModuleReader : ModuleLoader
                 return fpType;
             default:
                 error("Unknown type reference type '%s'.", t);
+                assert(false);
         }
-
-        assert(false);
     }
 
     private Field readFieldReference()
@@ -790,6 +806,34 @@ public final class ModuleReader : ModuleLoader
 
         error("Unknown function '%s'/'%s'.", mod.name, name);
         assert(false);
+    }
+
+    private Function readEntryPointFunctionReference(Module module_, Type returnType)
+    in
+    {
+        assert(module_);
+    }
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto func = readFunctionReference();
+
+        if (func.module_ !is module_)
+            error("Function %s is not within module %s.", func, module_);
+
+        if (func.callingConvention != CallingConvention.standard)
+            error("Function %s does not have standard calling convention.", func);
+
+        if (func.returnType !is returnType)
+            error("Function %s does not have return type %s.", func, returnType ? returnType.toString() : "void");
+
+        if (!func.parameters.empty)
+            error("Function %s does not have an empty parameter list.");
+
+        return func;
     }
 
     private Function readFunction(Module module_)
@@ -903,7 +947,7 @@ public final class ModuleReader : ModuleLoader
         auto opCode = find(allOpCodes, (OpCode op) => op.code == code);
 
         if (!opCode)
-            error("Unknown opcode '%s'.", code);
+            error("Unknown opcode %s.", cast(ubyte)code);
 
         Register target;
         Register source1;
@@ -1089,7 +1133,7 @@ public final class ModuleReader : ModuleLoader
         auto i = _reader.read!uint();
 
         if (i >= block.stream.count)
-            error("Unknown instruction '%s'.", i);
+            error("Unknown instruction %s.", i);
 
         return block.stream[i];
     }
@@ -1108,7 +1152,7 @@ public final class ModuleReader : ModuleLoader
         auto i = _reader.read!uint();
 
         if (i >= function_.parameters.count)
-            error("Unknown parameter '%s'.", i);
+            error("Unknown parameter %s.", i);
 
         return function_.parameters[i];
     }

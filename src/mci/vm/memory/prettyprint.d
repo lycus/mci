@@ -2,9 +2,9 @@ module mci.vm.memory.prettyprint;
 
 import std.ascii,
        std.conv,
-       std.string,
        mci.core.common,
        mci.core.container,
+       mci.core.utilities,
        mci.core.typing.core,
        mci.core.typing.members,
        mci.core.typing.types,

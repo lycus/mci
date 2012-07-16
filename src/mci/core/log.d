@@ -4,8 +4,8 @@ import std.algorithm,
        std.datetime,
        std.process,
        std.stdio,
-       std.string,
-       mci.core.sync;
+       mci.core.sync,
+       mci.core.utilities;
 
 private __gshared Mutex mutex;
 

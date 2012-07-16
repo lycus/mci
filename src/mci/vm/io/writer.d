@@ -87,6 +87,16 @@ public final class ModuleWriter : ModuleSaver
         if (module_.entryPoint)
             writeFunctionReference(module_.entryPoint);
 
+        _writer.write(!!module_.moduleEntryPoint);
+
+        if (module_.moduleEntryPoint)
+            writeFunctionReference(module_.moduleEntryPoint);
+
+        _writer.write(!!module_.moduleExitPoint);
+
+        if (module_.moduleExitPoint)
+            writeFunctionReference(module_.moduleExitPoint);
+
         _writer.write(!!module_.threadEntryPoint);
 
         if (module_.threadEntryPoint)

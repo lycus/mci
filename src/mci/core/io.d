@@ -5,12 +5,12 @@ import std.ascii,
        std.exception,
        std.range,
        std.stdio,
-       std.string,
        std.traits,
        mci.core.common,
        mci.core.config,
        mci.core.exception,
-       mci.core.meta;
+       mci.core.meta,
+       mci.core.utilities;
 
 /**
  * Represents a stream of bytes.
