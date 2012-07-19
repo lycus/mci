@@ -163,6 +163,8 @@ atomic_load
 Atomically loads the reference from the memory location pointed to by the
 first argument.
 
+Full sequential consistency is guaranteed.
+
 atomic_store
 ------------
 
@@ -171,6 +173,8 @@ atomic_store
 
 Atomically sets the location pointed to by the first argument to the reference
 in the second argument.
+
+Full sequential consistency is guaranteed.
 
 atomic_exchange
 ---------------
@@ -184,6 +188,8 @@ equal to the second argument. All of this happens atomically.
 
 Returns 1 if the store happened; otherwise, returns 0.
 
+Full sequential consistency is guaranteed.
+
 atomic_load_u
 -------------
 
@@ -193,6 +199,8 @@ atomic_load_u
 Atomically loads the value from the memory location pointed to by the first
 argument.
 
+Full sequential consistency is guaranteed.
+
 atomic_store_u
 --------------
 
@@ -201,6 +209,8 @@ atomic_store_u
 
 Atomically sets the location pointed to by the first argument to the value in
 the second argument.
+
+Full sequential consistency is guaranteed.
 
 atomic_exchange_u
 -----------------
@@ -214,6 +224,8 @@ the second argument. All of this happens atomically.
 
 Returns 1 if the store happened; otherwise, returns 0.
 
+Full sequential consistency is guaranteed.
+
 atomic_add_u
 ------------
 
@@ -224,6 +236,8 @@ Atomically adds the value in the second argument to the value pointed to by
 the first argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
+
+Full sequential consistency is guaranteed.
 
 atomic_sub_u
 ------------
@@ -236,6 +250,8 @@ to by the first argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
+Full sequential consistency is guaranteed.
+
 atomic_mul_u
 ------------
 
@@ -246,6 +262,8 @@ Atomically multiplies the value pointed to by the first argument with the
 value in the second argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
+
+Full sequential consistency is guaranteed.
 
 atomic_div_u
 ------------
@@ -258,6 +276,8 @@ in the second argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
+Full sequential consistency is guaranteed.
+
 atomic_rem_u
 ------------
 
@@ -269,6 +289,8 @@ first argument by the value in the second argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
+Full sequential consistency is guaranteed.
+
 atomic_and_u
 ------------
 
@@ -279,6 +301,8 @@ Aotmically computes bit-wise AND between the value pointed to by the first
 argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
+
+Full sequential consistency is guaranteed.
 
 atomic_or_u
 -----------
@@ -302,6 +326,8 @@ argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
+Full sequential consistency is guaranteed.
+
 atomic_load_s
 -------------
 
@@ -311,6 +337,8 @@ atomic_load_s
 Atomically loads the value from the memory location pointed to by the first
 argument.
 
+Full sequential consistency is guaranteed.
+
 atomic_store_s
 --------------
 
@@ -319,6 +347,8 @@ atomic_store_s
 
 Atomically sets the location pointed to by the first argument to the value in
 the second argument.
+
+Full sequential consistency is guaranteed.
 
 atomic_exchange_s
 -----------------
@@ -332,6 +362,8 @@ the second argument. All of this happens atomically.
 
 Returns 1 if the store happened; otherwise, returns 0.
 
+Full sequential consistency is guaranteed.
+
 atomic_add_s
 ------------
 
@@ -342,6 +374,8 @@ Atomically adds the value in the second argument to the value pointed to by
 the first argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
+
+Full sequential consistency is guaranteed.
 
 atomic_sub_s
 ------------
@@ -354,6 +388,8 @@ to by the first argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
+Full sequential consistency is guaranteed.
+
 atomic_mul_s
 ------------
 
@@ -364,6 +400,8 @@ Atomically multiplies the value pointed to by the first argument with the
 value in the second argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
+
+Full sequential consistency is guaranteed.
 
 atomic_div_s
 ------------
@@ -376,6 +414,8 @@ in the second argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
+Full sequential consistency is guaranteed.
+
 atomic_rem_s
 ------------
 
@@ -386,6 +426,8 @@ Atomically computes the remainder from dividing the value pointed to by the
 first argument by the value in the second argument and returns the result.
 
 The result is also assigned to the location pointed to by the first argument.
+
+Full sequential consistency is guaranteed.
 
 atomic_and_s
 ------------
@@ -398,6 +440,8 @@ argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
+Full sequential consistency is guaranteed.
+
 atomic_or_s
 -----------
 
@@ -409,6 +453,8 @@ argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
 
+Full sequential consistency is guaranteed.
+
 atomic_xor_s
 ------------
 
@@ -419,6 +465,8 @@ Aotmically computes bit-wise XOR between the value pointed to by the first
 argument and the value in the second argument and return the result.
 
 The result is also assigned to the location pointed to by the first argument.
+
+Full sequential consistency is guaranteed.
 
 Memory management
 +++++++++++++++++
