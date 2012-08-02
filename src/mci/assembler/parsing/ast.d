@@ -1495,7 +1495,7 @@ public class InstructionOperandNode : Node
         _operand = operand;
     }
 
-    @property public final InstructionOperand operand() nothrow // TODO: Make this pure.
+    @property public final InstructionOperand operand() pure nothrow
     out (result)
     {
         assert(result.hasValue);
