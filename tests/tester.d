@@ -9,8 +9,8 @@ import std.algorithm,
        mci.core.common,
        mci.core.config;
 
-private enum string windowsPath = buildPath("..", "src", "mci", "cli", "Test", "mci.exe");
-private enum string posixPath = buildPath("..", "build", "mci");
+private __gshared string windowsPath;
+private __gshared string posixPath;
 
 private struct TestPass
 {
@@ -23,6 +23,11 @@ private struct TestPass
 
 private int main(string[] args)
 {
+    version (Windows)
+        windowsPath = buildPath("..", "src", "mci", "cli", "Test", "mci.exe");
+    else
+        posixPath = buildPath("..", "build", "mci");
+
     auto dir = args[1];
     string cli;
 

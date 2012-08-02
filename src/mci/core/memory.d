@@ -6,16 +6,16 @@ import std.traits,
 
 static if (isPOSIX)
 {
-    import core.sys.posix.sys.mman,
-           core.sys.posix.unistd;
+    import core.sys.posix.unistd,
+           core.sys.posix.sys.mman;
 
     // TODO: Move to druntime.
     static if (operatingSystem == OperatingSystem.osx)
-        public enum int _SC_PAGESIZE = 29;
+        private enum int _SC_PAGESIZE = 29;
     else static if (operatingSystem == OperatingSystem.freebsd)
-        public enum int _SC_PAGESIZE = 47;
+        private enum int _SC_PAGESIZE = 47;
     else static if (operatingSystem == OperatingSystem.openbsd)
-        public enum int _SC_PAGESIZE = 28;
+        private enum int _SC_PAGESIZE = 28;
 }
 else
 {
@@ -156,7 +156,7 @@ body
  *
  * The given pointer should be the pointer returned by a previous
  * successful call to $(D allocateMemoryRegion). $(D length) should be
- * the length passed to that call previous call.
+ * the length passed to that previous call.
  *
  * Params:
  *  memory = Pointer to the memory region to free.
@@ -179,6 +179,90 @@ body
         return !munmap(memory, length);
     else
         return !VirtualFree(memory, 0, MEM_RELEASE);
+}
+
+static if (isPOSIX)
+{
+    static if (architecture == Architecture.arm)
+    {
+        static if (compiler == Compiler.gdc)
+            import gcc.builtins;
+        else
+            static assert(false);
+    }
+    else static if (architecture == Architecture.mips)
+    {
+        static if (operatingSystem == OperatingSystem.linux)
+        {
+            private extern (C) int cacheflush(ubyte* addr, int size, CacheLevel level);
+
+            private enum CacheLevel : ubyte
+            {
+                instruction = 0x1,
+                data = 0x2,
+            }
+        }
+        else
+            static assert(false);
+    }
+}
+
+/**
+ * Flushes the instruction cache.
+ *
+ * This function must be called before code that is emitted to memory
+ * dynamically is executed. Note that this function does not have to
+ * be called for code loaded dynamically via shared library loading
+ * routines.
+ *
+ * The $(D ptr) argument should be the result of a successful call to
+ * $(D allocateMemoryRegion) with $(D MemoryAccess.execute) access.
+ *
+ * Params:
+ *  ptr = Pointer to the beginning of the memory region containing code.
+ *  size = The size of the memory region containing code.
+ */
+public void flushInstructionCache(ubyte* ptr, size_t size)
+in
+{
+    assert(ptr);
+    assert(size);
+}
+body
+{
+    static if (compiler == Compiler.dmd)
+    {
+        // No action required.
+    }
+    else static if (compiler == Compiler.gdc)
+        __builtin___clear_cache(ptr, ptr + size);
+    else static if (compiler == Compiler.ldc)
+    {
+        static if (isWindows)
+            FlushInstructionCache(GetCurrentProcess(), ptr, size);
+        else static if (architecture == Architecture.x86)
+        {
+            // No action required.
+        }
+        else static if (architecture == Architecture.arm)
+            static assert(false); // TODO: Figure this out.
+        else static if (architecture == Architecture.ppc)
+            static assert(false); // TODO: Figure this out.
+        else static if (architecture == Architecture.mips)
+        {
+            static if (operatingSystem == OperatingSystem.linux)
+                cacheflush(ptr, size, CacheLevel.instruction | CacheLevel.data);
+            else static if (operatingSystem == OperatingSystem.freebsd || operatingSystem == OperatingSystem.openbsd)
+            {
+                // TODO: Figure out what to do on these platforms.
+                static assert(false);
+            }
+            else
+                static assert(false);
+        }
+        else
+            static assert(false);
+    }
 }
 
 /**

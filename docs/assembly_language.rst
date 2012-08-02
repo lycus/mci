@@ -267,6 +267,9 @@ The grammar is:
 As with thread entry points, these must return ``void``, have no parameters,
 and have standard calling convention.
 
+A module's thread exit point is only guaranteed to be called if that module's
+thread entry point has been called.
+
 A module can only have one entry point, one thread entry point, one thread
 exit point, one module entry point, and one module exit point (all are
 optional). They must refer to functions inside the module.

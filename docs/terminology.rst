@@ -8,7 +8,9 @@ ALU
 +++
 
 Abbreviation for arithmetic logic unit. This refers to the unit in a processor
-which performs basic arithmetic and bit-wise operations.
+which performs basic arithmetic and bit-wise operations. It usually includes
+operations such as addition, subtraction, multiplication, and division, but
+also several bit-wise operations such as the bit-wise AND, OR, XOR, etc.
 
 AOT
 +++
@@ -76,8 +78,8 @@ Further optimization would remove ``x`` entirely.
 EP
 ++
 
-Abbreviation for entry point. An entry point of `main module`_ is called upon
-startup and returns the exit code of the program.
+Abbreviation for entry point. An entry point of a `main module`_ is called
+upon startup and returns the exit code of the program.
 
 FFI
 +++
@@ -98,7 +100,7 @@ GC root
 
 A GC_ root is a pointer which does not lie within the heap, and is used by the
 GC_ to start its reachability analysis from. This usually includes (but is not
-necessarily limited to) global fields, local registers, etc.
+necessarily limited to) global fields, local registers, the program stack etc.
 
 Heap
 ++++
@@ -185,6 +187,18 @@ MCI
 
 Abbreviation for Managed Compiler Infrastructure.
 
+MEP
++++
+
+Abbreviation for module entry point. A module entry point is called once
+before any of the module's code is executed.
+
+MXP
++++
+
+Abbreviation for module exit point. A module's exit point is called once
+when the program exits.
+
 Main module
 +++++++++++
 
@@ -211,15 +225,16 @@ instance, consider this high-level code::
 If ``foo`` is true, ``y - 8`` is evaluated twice. This is clearly wasteful, so
 this code can be optimized to::
 
+    z = y - 8;
     if (foo)
     {
-        x = y - 8;
+        x = z;
     }
     else
     {
         // ...
     }
-    w = y - 8;
+    w = z;
 
 RTO
 +++
@@ -254,14 +269,14 @@ SSA is mostly useful in analysis and optimization.
 TEP
 +++
 
-Abbreviation for thread entry point. A thread entry point of a `main module`_
-is called whenever a properly registered thread enters managed code.
+Abbreviation for thread entry point. A thread entry point of a module is
+called before a properly registered thread executes any code within it.
 
 TXP
 +++
 
-Abbreviation for thread exit point. A thread exit point of a `main module`_ is
-called whenever a properly registered thread exits managed code.
+Abbreviation for thread exit point. A thread exit point of a module is called
+whenever a properly registered thread is exited.
 
 TLS
 +++
@@ -273,12 +288,11 @@ Target
 ++++++
 
 Refers to a processor architecture that the MCI_ can compile code for
-(therefore, a *target* for code generation).
+(therefore, a *target* for code generation). Examples include x86, ARM, etc.
 
 Terminator
 ++++++++++
 
 A terminator is an instruction which, while code is in SSA_ form, indicates
 the end of a `basic block`_. Only one terminator is allowed in a
-`basic block`_, and it must appear as the last instruction. All basic blocks
-must end with a terminator.
+`basic block`_, and it must appear as the last instruction.

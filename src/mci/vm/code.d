@@ -56,11 +56,11 @@ public final class CodeMemoryAllocator
     {
         assert(length);
     }
-    out (result)
-    {
-        if (result)
-            assert(isAligned(result));
-    }
+//    out (result)
+//    {
+//        if (result)
+//            assert(isAligned(result));
+//    }
     body
     {
         // First, align length to the machine word size. This is so we're sure

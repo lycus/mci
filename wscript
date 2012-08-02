@@ -214,6 +214,7 @@ def unittest(ctx):
         cmd += ' --show-reachable=yes'
         cmd += ' --undef-value-errors=no'
         cmd += ' --error-exitcode=1'
+        cmd += ' --gen-suppressions=all'
         cmd += ' ' + os.path.join(os.curdir, 'mci.tester')
 
         _run_shell(OUT, ctx, cmd)

@@ -13,12 +13,12 @@ contents.
 All objects start with an object header. After the header comes the contents
 of the object. If the object is an array, the first thing after the header
 will be the size field, which is exactly one machine word long. After that
-comes whatever padding is needed to align elements to the native SSE boundary.
-Following the padding are elements of the array, laid out contiguously. For
-vectors, the layout is exactly the same, except for the lack of a size field
-since the size is statically known (in other words, the padding space will
-likely be larger for vectors on some platforms). For plain structure objects,
-the fields follow immediately after the header.
+comes whatever padding is needed to align elements to the native SIMD
+boundary. Following the padding are elements of the array, laid out
+contiguously. For vectors, the layout is exactly the same, except for the
+lack of a size field since the size is statically known (in other words, the
+padding space will likely be larger for vectors on some platforms). For plain
+structure objects, the fields follow immediately after the header.
 
 Object headers
 --------------
