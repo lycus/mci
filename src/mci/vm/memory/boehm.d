@@ -116,7 +116,8 @@ static if (isPOSIX)
             GC_init();
 
             GC_finalize_on_demand = true; // Actually an integer, but this is prettier.
-            GC_finalizer_notifier = ()
+
+            extern (C) static void notificationHandler()
             {
                 _gcLock.lock();
 
@@ -126,7 +127,9 @@ static if (isPOSIX)
                 // A bit of an ugly attempt to map libgc's global design to our OO design.
                 foreach (gc; _gcs)
                     (cast(BoehmGarbageCollector)cast(void*)gc)._finalizerThread.notify();
-            };
+            }
+
+            GC_finalizer_notifier = &notificationHandler;
         }
 
         public this()
