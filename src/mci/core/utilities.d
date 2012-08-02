@@ -19,7 +19,7 @@ public string escapeIdentifier(string identifier) // TODO: Make this pure nothro
     return "'" ~ replace(identifier, "'", "\\'") ~ "'";
 }
 
-// TODO: Replace this with xformat in 2.060.
+// TODO: Replace this with format in 2.061.
 public string format(Args ...)(string fmt, Args args)
 in
 {

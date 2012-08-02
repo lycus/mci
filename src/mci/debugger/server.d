@@ -62,7 +62,7 @@ public abstract class DebuggerServer
         _interruptCondition = new typeof(_interruptCondition)(_interruptMutex);
     }
 
-    @property public bool running() pure // TODO: Make this nothrow in 2.060.
+    @property public bool running() pure nothrow
     {
         return _running.value;
     }

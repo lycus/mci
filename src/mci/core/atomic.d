@@ -15,7 +15,7 @@ import core.atomic,
  * Returns:
  *  The value loaded from the location pointed to by $(D pointer).
  */
-public T atomicLoad(T)(T* pointer) pure // TODO: Make this nothrow in 2.060.
+public T atomicLoad(T)(T* pointer) pure nothrow
     if (isAtomic!T)
 {
     return cast(T)core.atomic.atomicLoad(*cast(shared)pointer);
@@ -30,7 +30,7 @@ public T atomicLoad(T)(T* pointer) pure // TODO: Make this nothrow in 2.060.
  *  pointer = The location to write to atomically.
  *  value = The value to write to the location pointed to by $(D pointer).
  */
-public void atomicStore(T)(T* pointer, T value) pure // TODO: Make this nothrow in 2.060.
+public void atomicStore(T)(T* pointer, T value) pure nothrow
     if (isAtomic!T)
 {
     core.atomic.atomicStore(*cast(shared)pointer, cast(shared)value);
@@ -51,7 +51,7 @@ public void atomicStore(T)(T* pointer, T value) pure // TODO: Make this nothrow 
  * Returns:
  *  $(D true) if the swap happened; otherwise, $(D false).
  */
-public bool atomicSwap(T)(T* pointer, T condition, T value) pure // TODO: Make this nothrow in 2.060.
+public bool atomicSwap(T)(T* pointer, T condition, T value) pure nothrow
     if (isAtomic!T)
 {
     return cas(cast(shared)pointer, cast(shared)condition, cast(shared)value);
@@ -69,7 +69,7 @@ public bool atomicSwap(T)(T* pointer, T condition, T value) pure // TODO: Make t
  * Returns:
  *  The result of applying the binary operation atomically.
  */
-public T atomicOp(string op, T)(T* pointer, T operand) pure // TODO: Make this nothrow in 2.060.
+public T atomicOp(string op, T)(T* pointer, T operand) pure nothrow
     if (!isPointer!T && !is(T == class))
 {
     return core.atomic.atomicOp!op(*cast(shared)pointer, operand);
@@ -88,7 +88,7 @@ public T atomicOp(string op, T)(T* pointer, T operand) pure // TODO: Make this n
  * Returns:
  *  The result of applying the binary operation atomically.
  */
-public T atomicOp(string op, T, U)(T* pointer, U operand) pure // TODO: Make this nothrow in 2.060.
+public T atomicOp(string op, T, U)(T* pointer, U operand) pure nothrow
     if (isPointer!T && isIntegral!U)
 {
     return cast(T)core.atomic.atomicOp!op(*cast(shared)pointer, operand);
@@ -129,7 +129,7 @@ public struct Atomic(T)
      * Returns:
      *  The stored value loaded atomically.
      */
-    @property public T value() pure // TODO: Make this nothrow in 2.060.
+    @property public T value() pure nothrow
     {
         return cast(T)atomicLoad(&_data.value);
     }
@@ -140,7 +140,7 @@ public struct Atomic(T)
      * Params:
      *  value = The value to store atomically.
      */
-    @property public void value(T value) pure // TODO: Make this nothrow in 2.060.
+    @property public void value(T value) pure nothrow
     {
         atomicStore(&_data.value, value);
     }
@@ -175,12 +175,12 @@ public struct Atomic(T)
      * Returns:
      *  $(D true) if the swap happened; otherwise, false.
      */
-    public bool swap(T condition, T value) pure // TODO: Make this nothrow in 2.060.
+    public bool swap(T condition, T value) pure nothrow
     {
         return atomicSwap(&_data.value, condition, value);
     }
 
-    public Atomic!T opOpAssign(string op)(T rhs) pure // TODO: Make this nothrow in 2.060.
+    public Atomic!T opOpAssign(string op)(T rhs) pure nothrow
         if (!isPointer!T && !is(T == class))
     {
         atomicOp!(op ~ '=')(&_data.value, rhs);
@@ -188,7 +188,7 @@ public struct Atomic(T)
         return this;
     }
 
-    public Atomic!T opOpAssign(string op, U)(U rhs) pure // TODO: Make this nothrow in 2.060.
+    public Atomic!T opOpAssign(string op, U)(U rhs) pure nothrow
         if (isPointer!T && isIntegral!U)
     {
         atomicOp!(op ~ '=')(&_data.value, rhs);

@@ -115,26 +115,18 @@ public final class Weak(T : Object)
      *  The referenced object, or $(D null) if it has been
      *  collected.
      */
-    public T getObject() nothrow // TODO: Make this pure in 2.060.
+    public T getObject() pure nothrow
     {
-        try
-        {
-            auto obj = cast(T)cast(void*)_object.value;
+        auto obj = cast(T)cast(void*)_object.value;
 
-            // We've moved it into the GC-scanned stack space, so it's now safe to ask
-            // the GC whether the object is still alive. Note that even if the cast and
-            // assignment of the obj local doesn't put the object on the stack, this
-            // call will. So, either way, this is safe.
-            if (GC.addrOf(cast(void*)obj))
-                return obj;
+        // We've moved it into the GC-scanned stack space, so it's now safe to ask
+        // the GC whether the object is still alive. Note that even if the cast and
+        // assignment of the obj local doesn't put the object on the stack, this
+        // call will. So, either way, this is safe.
+        if (GC.addrOf(cast(void*)obj))
+            return obj;
 
-            return null;
-        }
-        catch
-        {
-            // A little hack so we can be nothrow.
-            assert(false);
-        }
+        return null;
     }
 
     public override equals_t opEquals(Object o)

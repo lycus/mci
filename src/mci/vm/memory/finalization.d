@@ -83,7 +83,7 @@ public final class FinalizerThread
         _pendingCondition = new typeof(_pendingCondition)(_pendingMutex);
     }
 
-    @property public bool running() pure // TODO: Make this nothrow in 2.060.
+    @property public bool running() pure nothrow
     {
         return _running.value;
     }
