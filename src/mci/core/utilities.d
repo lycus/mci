@@ -2,7 +2,7 @@ module mci.core.utilities;
 
 import std.array,
        std.conv,
-       std.format;
+       std.string;
 
 /**
  * Escapes an identifier so it can be safely used in
@@ -31,9 +31,5 @@ out (result)
 }
 body
 {
-    auto w = appender!string();
-
-    formattedWrite(w, fmt, args);
-
-    return w.data;
+    return xformat(fmt, args);
 }
