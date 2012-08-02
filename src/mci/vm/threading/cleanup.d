@@ -62,10 +62,12 @@ else
     private struct CallbackData
     {
         private ThreadEventCallback _callback;
+        private Thread _thisThread;
 
         invariant()
         {
             assert(_callback);
+            assert(_thisThread);
         }
 
         //@disable this();
@@ -78,6 +80,7 @@ else
         body
         {
             _callback = callback;
+            _thisThread = Thread.getThis();
         }
 
         @property public ThreadEventCallback callback()
@@ -88,6 +91,16 @@ else
         body
         {
             return _callback;
+        }
+
+        @property public Thread thread()
+        out (result)
+        {
+            assert(result);
+        }
+        body
+        {
+            return _thisThread;
         }
     }
 
@@ -100,14 +113,13 @@ else
     in
     {
         assert(cd);
-        assert(Thread.getThis());
     }
     body
     {
         pthread_setspecific(key, null);
-
         auto cbd = cast(CallbackData*)cd;
 
+        thread_setThis(cbd.thread);
         cbd.callback()();
 
         GC.removeRange(cbd);
