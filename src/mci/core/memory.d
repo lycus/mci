@@ -20,36 +20,6 @@ static if (isPOSIX)
 else
 {
     import core.sys.windows.windows;
-
-    // TODO: Kill this mess in 2.060 where it's moved to druntime.
-    private struct SYSTEM_INFO
-    {
-        union
-        {
-            DWORD dwOemId;
-
-            struct
-            {
-                WORD wProcessorArchitecture;
-                WORD wReserved;
-            }
-        }
-
-        DWORD dwPageSize;
-        LPVOID lpMinimumApplicationAddress;
-        LPVOID lpMaximumApplicationAddress;
-        ULONG_PTR dwActiveProcessorMask;
-        DWORD dwNumberOfProcessors;
-        DWORD dwProcessorType;
-        DWORD dwAllocationGranularity;
-        WORD wProcessorLevel;
-        WORD wProcessorRevision;
-    }
-
-    private alias SYSTEM_INFO* LPSYSTEM_INFO;
-
-    export void GetSystemInfo(LPSYSTEM_INFO lpSystemInfo);
-    export void GetNativeSystemInfo(LPSYSTEM_INFO lpSystemInfo);
 }
 
 public __gshared size_t pageSize; /// Holds the page size of the system.

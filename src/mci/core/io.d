@@ -99,7 +99,7 @@ public interface Stream
      * Returns:
      *  $(D true) if this stream is closed; otherwise, $(D false).
      */
-    @property public bool isClosed(); // TODO: Make this pure and nothrow in 2.060.
+    @property public bool isClosed() pure nothrow;
 
     /**
      * Reads a byte from the stream.
@@ -282,7 +282,7 @@ public final class FileStream : Stream
         return _mode != FileMode.read;
     }
 
-    @property public bool isClosed()
+    @property public bool isClosed() pure nothrow
     {
         return !_file.isOpen;
     }
@@ -456,7 +456,7 @@ public final class MemoryStream : Stream
         return _canWrite;
     }
 
-    @property public bool isClosed()
+    @property public bool isClosed() pure nothrow
     {
         return _isClosed;
     }
