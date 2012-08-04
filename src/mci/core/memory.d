@@ -48,7 +48,7 @@ public enum MemoryAccess : ubyte
     execute, /// Memory can be executed. Also implies $(D read) and $(D write).
 }
 
-private Select!(isPOSIX, int, uint) accessToFlags(MemoryAccess access)
+private Select!(isPOSIX, int, uint) accessToFlags(MemoryAccess access) pure nothrow
 {
     static if (isPOSIX)
     {

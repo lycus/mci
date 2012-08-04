@@ -14,13 +14,13 @@ public final class LintMessage
     private Instruction _instruction;
     private string _message;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_instruction);
         assert(_message);
     }
 
-    private this(Instruction instruction, string message)
+    private this(Instruction instruction, string message) pure nothrow
     in
     {
         assert(instruction);
@@ -74,7 +74,7 @@ public final class Linter
 {
     private NoNullList!LintPass _passes;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_passes);
     }

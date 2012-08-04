@@ -66,7 +66,7 @@ public final class OptimizationManager
     private NoNullList!OptimizerPass _ssaOptimizers;
     private NoNullList!OptimizerDefinition _definitions;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_codeOptimizers);
         assert(_irOptimizers);

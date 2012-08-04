@@ -19,37 +19,37 @@ private final class StatisticsVisitor : ModuleVisitor
     private size_t _blocks;
     private size_t _instructions;
 
-    protected override void visit(StructureType type)
+    protected override void visit(StructureType type) pure nothrow
     {
         _types++;
     }
 
-    protected override void visit(Field field)
+    protected override void visit(Field field) pure nothrow
     {
         _fields++;
     }
 
-    protected override void visit(Function function_)
+    protected override void visit(Function function_) pure nothrow
     {
         _functions++;
     }
 
-    protected override void visit(Parameter parameter)
+    protected override void visit(Parameter parameter) pure nothrow
     {
         _parameters++;
     }
 
-    protected override void visit(Register register)
+    protected override void visit(Register register) pure nothrow
     {
         _registers++;
     }
 
-    protected override void visit(BasicBlock block)
+    protected override void visit(BasicBlock block) pure nothrow
     {
         _blocks++;
     }
 
-    protected override void visit(Instruction instruction)
+    protected override void visit(Instruction instruction) pure nothrow
     {
         _instructions++;
     }
@@ -60,7 +60,7 @@ private final class StatisticsVisitor : ModuleVisitor
      * Returns:
      *  The amount of types in the module.
      */
-    @property public size_t types()
+    @property public size_t types() pure nothrow
     {
         return _types;
     }
@@ -71,7 +71,7 @@ private final class StatisticsVisitor : ModuleVisitor
      * Returns:
      *  The amount of fields in the module.
      */
-    @property public size_t fields()
+    @property public size_t fields() pure nothrow
     {
         return _fields;
     }
@@ -82,7 +82,7 @@ private final class StatisticsVisitor : ModuleVisitor
      * Returns:
      *  The amount of functions in the module.
      */
-    @property public size_t functions()
+    @property public size_t functions() pure nothrow
     {
         return _functions;
     }
@@ -93,7 +93,7 @@ private final class StatisticsVisitor : ModuleVisitor
      * Returns:
      *  The amount of parameters in the module.
      */
-    @property public size_t parameters()
+    @property public size_t parameters() pure nothrow
     {
         return _parameters;
     }
@@ -104,7 +104,7 @@ private final class StatisticsVisitor : ModuleVisitor
      * Returns:
      *  The amount of registers in the module.
      */
-    @property public size_t registers()
+    @property public size_t registers() pure nothrow
     {
         return _registers;
     }
@@ -115,7 +115,7 @@ private final class StatisticsVisitor : ModuleVisitor
      * Returns:
      *  The amount of basic blocks in the module.
      */
-    @property public size_t blocks()
+    @property public size_t blocks() pure nothrow
     {
         return _blocks;
     }
@@ -126,7 +126,7 @@ private final class StatisticsVisitor : ModuleVisitor
      * Returns:
      *  The amount of instructions in the module.
      */
-    @property public size_t instructions()
+    @property public size_t instructions() pure nothrow
     {
         return _instructions;
     }

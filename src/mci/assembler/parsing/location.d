@@ -10,7 +10,7 @@ public struct SourceLocation
     private uint _line;
     private uint _column;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_line);
     }
@@ -24,7 +24,7 @@ public struct SourceLocation
      *  line = The line number of this location.
      *  column = The column number of this location.
      */
-    public this(uint line, uint column = 0) nothrow
+    public this(uint line, uint column = 0) pure nothrow
     in
     {
         assert(line);

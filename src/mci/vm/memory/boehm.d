@@ -28,7 +28,7 @@ static if (isPOSIX)
         private ExecutionEngine _engine;
         public bool free;
 
-        invariant()
+        pure nothrow invariant()
         {
             assert(_finalizer);
             assert(_gc);
@@ -37,7 +37,7 @@ static if (isPOSIX)
 
         //@disable this();
 
-        public this(GarbageCollectorFinalizer finalizer, BoehmGarbageCollector gc, ExecutionEngine engine)
+        public this(GarbageCollectorFinalizer finalizer, BoehmGarbageCollector gc, ExecutionEngine engine) pure nothrow
         in
         {
             assert(finalizer);
@@ -95,7 +95,7 @@ static if (isPOSIX)
         private PinnedObjectManager _pinManager;
         private FinalizerThread _finalizerThread;
 
-        invariant()
+        pure nothrow invariant()
         {
             assert(_allocCallbacks);
             assert(_allocateCallbackLock);

@@ -14,7 +14,7 @@ public class ExecutionException : CompilerException
     private StackTrace _trace;
     private RuntimeValue _exception;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_trace);
         assert(_exception);

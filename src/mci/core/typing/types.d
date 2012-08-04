@@ -34,7 +34,7 @@ public final class StructureType : Type
     private bool _isClosed;
     private List!MetadataPair _metadata;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_module);
         assert(_name);
@@ -177,12 +177,12 @@ public final class PointerType : Type
 {
     private Type _elementType;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_elementType);
     }
 
-    package this(Type elementType)
+    package this(Type elementType) pure nothrow
     in
     {
         assert(elementType);
@@ -212,12 +212,12 @@ public final class ReferenceType : Type
 {
     private StructureType _elementType;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_elementType);
     }
 
-    package this(StructureType elementType)
+    package this(StructureType elementType) pure nothrow
     in
     {
         assert(elementType);
@@ -249,7 +249,7 @@ public final class FunctionPointerType : Type
     private Type _returnType;
     private NoNullList!Type _parameterTypes;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_parameterTypes);
     }
@@ -322,12 +322,12 @@ public final class ArrayType : Type
 {
     private Type _elementType;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_elementType);
     }
 
-    package this(Type elementType)
+    package this(Type elementType) pure nothrow
     in
     {
         assert(elementType);
@@ -358,12 +358,12 @@ public final class VectorType : Type
     private Type _elementType;
     private uint _elements;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_elementType);
     }
 
-    package this(Type elementType, uint elements)
+    package this(Type elementType, uint elements) pure nothrow
     in
     {
         assert(elementType);

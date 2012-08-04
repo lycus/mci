@@ -22,7 +22,7 @@ private final class GeneratorState
     private List!(Tuple!(string, TypeDeclarationNode, StructureType)) _types;
     private string _currentFile;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_module);
         assert(_manager);
@@ -108,7 +108,7 @@ public final class GeneratorDriver
     private NoNullList!GeneratorPass _passes;
     private bool _run;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_module);
         assert(_state);

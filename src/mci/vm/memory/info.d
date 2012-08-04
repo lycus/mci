@@ -16,14 +16,14 @@ public final class RuntimeTypeInfo
     private size_t _size;
     private BitArray _bitmap;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_type);
         assert(isManaged(cast()_type));
         assert(cast(StructureType)_type ? !!_bitmap : !_bitmap);
     }
 
-    private this(Type type, size_t size, BitArray bitmap)
+    private this(Type type, size_t size, BitArray bitmap) pure nothrow
     in
     {
         assert(type);

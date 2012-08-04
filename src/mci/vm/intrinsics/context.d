@@ -12,7 +12,7 @@ public final class VirtualMachineState
 {
     private Dictionary!(string, Object, false) _objects;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_objects);
     }
@@ -28,7 +28,7 @@ public final class VirtualMachineState
      * Returns:
      *  The dictionary used to store the internal state.
      */
-    @property public Dictionary!(string, Object, false) objects()
+    @property public Dictionary!(string, Object, false) objects() pure nothrow
     out (result)
     {
         assert(result);
@@ -77,7 +77,7 @@ public final class VirtualMachineContext
     private ExecutionEngine _engine;
     private VirtualMachineState _state;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_engine);
         assert(_state);
@@ -90,7 +90,7 @@ public final class VirtualMachineContext
      * Params:
      *  engine = The execution engine.
      */
-    public this(ExecutionEngine engine)
+    public this(ExecutionEngine engine) pure nothrow
     in
     {
         assert(engine);
@@ -108,7 +108,7 @@ public final class VirtualMachineContext
      * Returns:
      *  The current execution engine.
      */
-    @property public ExecutionEngine engine()
+    @property public ExecutionEngine engine() pure nothrow
     out (result)
     {
         assert(result);
@@ -124,7 +124,7 @@ public final class VirtualMachineContext
      * Returns:
      *  The internal state of the virtual machine.
      */
-    @property public VirtualMachineState state()
+    @property public VirtualMachineState state() pure nothrow
     out (result)
     {
         assert(result);

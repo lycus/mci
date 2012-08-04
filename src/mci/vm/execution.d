@@ -19,12 +19,12 @@ public abstract class ExecutionEngine
     private VirtualMachineContext _context;
     private bool _terminated;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_gc);
     }
 
-    protected this(GarbageCollector gc)
+    protected this(GarbageCollector gc) pure nothrow
     in
     {
         assert(gc);
@@ -80,14 +80,14 @@ public final class RuntimeValue
     private GarbageCollector _gc;
     private ubyte* _data;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_type);
         assert(_gc);
         assert(_data);
     }
 
-    public this(GarbageCollector gc, Type type)
+    public this(GarbageCollector gc, Type type) nothrow
     in
     {
         assert(gc);

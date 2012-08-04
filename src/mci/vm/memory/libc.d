@@ -23,7 +23,7 @@ public final class LibCGarbageCollector : GarbageCollector, InteractiveGarbageCo
     private GarbageCollectorExceptionHandler _exceptionHandler;
     private FinalizerThread _finalizerThread;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_allocCallbacks);
         assert(_freeCallbacks);

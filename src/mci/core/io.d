@@ -131,7 +131,7 @@ public interface Stream
      *
      * Closing a stream multiple times has no visible effect.
      */
-    public void close();
+    public void close() nothrow;
 }
 
 /**
@@ -215,7 +215,7 @@ public final class FileStream : Stream
      * Returns:
      *  The mode the file was opened in.
      */
-    @property public FileMode mode()
+    @property public FileMode mode() pure nothrow
     {
         return _mode;
     }
@@ -272,12 +272,12 @@ public final class FileStream : Stream
         }
     }
 
-    @property public bool canRead()
+    @property public bool canRead() pure nothrow
     {
         return true;
     }
 
-    @property public bool canWrite()
+    @property public bool canWrite() pure nothrow
     {
         return _mode != FileMode.read;
     }
@@ -295,7 +295,7 @@ public final class FileStream : Stream
      * Returns:
      *  The path to the file.
      */
-    @property public string name()
+    @property public string name() pure nothrow
     out (result)
     {
         assert(result);
@@ -346,11 +346,11 @@ public final class FileStream : Stream
         }
     }
 
-    public void close()
+    public void close() nothrow
     {
         try
             _file.close();
-        catch (ErrnoException)
+        catch (Exception)
         {
             // Just ignore it. Not much we can do anyway.
         }
@@ -494,7 +494,7 @@ public final class MemoryStream : Stream
         _data[_position++] = value;
     }
 
-    public void close()
+    public void close() nothrow
     {
         _data = null;
         _isClosed = true;
@@ -515,7 +515,7 @@ public class BinaryReader
     private Stream _stream;
     private Endianness _endianness;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_stream);
         assert((cast()_stream).canRead);
@@ -530,7 +530,7 @@ public class BinaryReader
      *  stream = The stream to use.
      *  endianness = The endianness of the stream.
      */
-    public this(Stream stream, Endianness endianness = Endianness.littleEndian)
+    public this(Stream stream, Endianness endianness = Endianness.littleEndian) pure nothrow
     in
     {
         assert(stream);
@@ -632,7 +632,7 @@ public class BinaryWriter
     private Stream _stream;
     private Endianness _endianness;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_stream);
         assert((cast()_stream).canWrite);
@@ -647,7 +647,7 @@ public class BinaryWriter
      *  stream = The stream to use.
      *  endianness = The endianness of the stream.
      */
-    public this(Stream stream, Endianness endianness = Endianness.littleEndian)
+    public this(Stream stream, Endianness endianness = Endianness.littleEndian) pure nothrow
     in
     {
         assert(stream);
@@ -749,7 +749,7 @@ public class TextWriter : BinaryWriter
      *  stream = The stream to use.
      *  endianness = The endianness of the stream.
      */
-    public this(Stream stream, Endianness endianness = Endianness.littleEndian)
+    public this(Stream stream, Endianness endianness = Endianness.littleEndian) pure nothrow
     in
     {
         assert(stream);

@@ -28,7 +28,7 @@ public final class BasicBlock
     private bool _isClosed;
     private List!MetadataPair _metadata;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_function);
         assert(_name);
@@ -205,7 +205,7 @@ public final class Parameter
     private Type _type;
     private List!MetadataPair _metadata;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_function);
         assert(_type);
@@ -308,7 +308,7 @@ public final class Function
     private bool _isClosed;
     private List!MetadataPair _metadata;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_module);
         assert(_name);
@@ -671,7 +671,7 @@ public final class FFISignature
     private string _library;
     private string _entryPoint;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_library);
         assert(_entryPoint);
@@ -684,7 +684,7 @@ public final class FFISignature
      *  library = The library to search in.
      *  entryPoint = The procedure to search for.
      */
-    public this(string library, string entryPoint)
+    public this(string library, string entryPoint) pure nothrow
     in
     {
         assert(library);

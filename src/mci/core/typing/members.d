@@ -21,7 +21,7 @@ public final class Field
     private FieldStorage _storage;
     private List!MetadataPair _metadata;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_declaringType);
         assert(_name);

@@ -15,7 +15,7 @@ public final class PinnedObjectManager
     private size_t _counter;
     private ArrayQueue!size_t _reuseQueue;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_gc);
         assert(_mutex);

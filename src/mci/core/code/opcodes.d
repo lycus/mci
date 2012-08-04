@@ -138,14 +138,13 @@ public final class OpCode
     private uint _registers;
     private bool _hasTarget;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_name);
         assert(_registers <= maxSourceRegisters);
     }
 
-    private this(string name, OperationCode code, OpCodeType type, OperandType operandType,
-                 uint registers, bool hasTarget)
+    private this(string name, OperationCode code, OpCodeType type, OperandType operandType, uint registers, bool hasTarget) pure nothrow
     in
     {
         assert(name);
@@ -463,6 +462,7 @@ shared static this()
     body
     {
         auto op = new OpCode(name, code, type, operandType, registers, hasTarget);
+
         opCodes.add(op);
 
         return op;

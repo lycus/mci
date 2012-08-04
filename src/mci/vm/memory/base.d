@@ -19,12 +19,12 @@ public struct RuntimeObject
     public GarbageCollectorHeader header;
     public RuntimeObject* userData;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_typeInfo);
     }
 
-    public this(RuntimeTypeInfo typeInfo)
+    public this(RuntimeTypeInfo typeInfo) pure nothrow
     in
     {
         assert(typeInfo);
@@ -132,7 +132,7 @@ public interface GarbageCollectorGeneration
 {
     @property public size_t id() pure nothrow;
 
-    @property public ulong collections() pure nothrow;
+    @property public ulong collections() nothrow;
 
     public void collect();
 
