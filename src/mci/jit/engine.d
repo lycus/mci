@@ -22,7 +22,7 @@ public final class JITEngine : ExecutionEngine
     private JITBackEnd _backEnd;
     private mci.compiler.base.Compiler _compiler;
 
-    public this(JITBackEnd backEnd, GarbageCollector gc)
+    public this(JITBackEnd backEnd, GarbageCollector gc) pure nothrow
     in
     {
         assert(gc);

@@ -8,12 +8,12 @@ public abstract class Compiler
 {
     private ExecutionEngine _engine;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_engine);
     }
 
-    protected this(ExecutionEngine engine)
+    protected this(ExecutionEngine engine) pure nothrow
     in
     {
         assert(engine);
