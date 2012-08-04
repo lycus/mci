@@ -157,6 +157,9 @@ public final class OptimizationManager
         if (function_.attributes & FunctionAttributes.noOptimization)
             return;
 
+        if (first(function_.blocks[entryBlockName].stream).opCode is opFFI)
+            return;
+
         if (first(function_.blocks[entryBlockName].stream).opCode is opRaw)
             return;
 
