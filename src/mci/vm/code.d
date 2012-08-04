@@ -16,7 +16,7 @@ public final class CodeMemoryAllocator
 {
     private List!(Tuple!(ubyte[], size_t)) _regions;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_regions);
     }

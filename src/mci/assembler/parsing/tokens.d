@@ -65,7 +65,7 @@ public enum TokenType : ubyte
 private __gshared TokenType[char] delimiters;
 private __gshared TokenType[string] keywordsToTypes;
 
-shared static this()
+nothrow shared static this()
 {
     delimiters = ['{' : TokenType.openBrace,
                   '}' : TokenType.closeBrace,
@@ -125,7 +125,7 @@ shared static this()
  *  A non-null token type for the character if it could be mapped
  *  to a delimiter; otherwise, a null value.
  */
-public Nullable!TokenType delimiterCharToType(char chr)
+public Nullable!TokenType delimiterCharToType(char chr) nothrow
 {
     if (auto type = chr in delimiters)
         return nullable(*type);
@@ -172,7 +172,7 @@ public struct Token
     private string _value;
     private SourceLocation _location;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_type != TokenType.begin && _type != TokenType.end ? !!_value : !_value);
     }
@@ -187,7 +187,7 @@ public struct Token
      *  value = The string value of the token.
      *  location = The location of the token in the source code.
      */
-    public this(TokenType type, string value, SourceLocation location)
+    public this(TokenType type, string value, SourceLocation location) pure nothrow
     in
     {
         assert(type != TokenType.begin && type != TokenType.end ? !!value : !value);
@@ -299,11 +299,11 @@ public interface TokenStream
     /**
      * Resets the stream to its initial state.
      */
-    public void reset() pure nothrow;
+    public void reset();
 }
 
 /**
- * Represents a $(D TokenStream) made of a linear list
+ * Represents a $(D TokenStream) comprising a linear list
  * of $(D Token) instances in memory.
  */
 public final class MemoryTokenStream : TokenStream
@@ -387,7 +387,7 @@ public final class MemoryTokenStream : TokenStream
         return _stream[++_position];
     }
 
-    public void reset() pure nothrow
+    public void reset()
     {
         _position = 0;
     }

@@ -25,7 +25,7 @@ public abstract class DebuggerClient
     private InterruptCallback _callback;
     private Atomic!bool _interrupt;
 
-    invariant()
+    pure nothrow invariant()
     {
         if ((cast()_running).value)
         {

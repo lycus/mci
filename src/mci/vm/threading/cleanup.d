@@ -64,7 +64,7 @@ else
         private ThreadEventCallback _callback;
         private Thread _thisThread;
 
-        invariant()
+        pure nothrow invariant()
         {
             assert(_callback);
             assert(_thisThread);
@@ -83,7 +83,7 @@ else
             _thisThread = Thread.getThis();
         }
 
-        @property public ThreadEventCallback callback()
+        @property public ThreadEventCallback callback() pure nothrow
         out (result)
         {
             assert(result);
@@ -93,7 +93,7 @@ else
             return _callback;
         }
 
-        @property public Thread thread()
+        @property public Thread thread() pure nothrow
         out (result)
         {
             assert(result);

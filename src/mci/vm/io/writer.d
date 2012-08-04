@@ -22,7 +22,7 @@ public final class ModuleWriter : ModuleSaver
     private bool _done;
     private StringTable _table;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_table);
     }

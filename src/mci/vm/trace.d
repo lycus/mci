@@ -62,7 +62,7 @@ public final class StackFrame
 {
     private Instruction _instruction;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_instruction);
     }

@@ -18,7 +18,7 @@ static if (isWindows)
         private NoNullList!WindowsThreadEventCallback _callbacks;
         private Mutex _lock;
 
-        invariant()
+        pure nothrow invariant()
         {
             assert(_callbacks);
             assert(_lock);

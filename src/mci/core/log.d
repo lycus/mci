@@ -9,12 +9,12 @@ import std.algorithm,
 
 private __gshared Mutex mutex;
 
-shared static this()
+nothrow shared static this()
 {
     mutex = new typeof(mutex)();
 }
 
-private bool isLogLevel(string check)()
+private bool isLogLevel(string check)() nothrow
 in
 {
     assert(check);
@@ -79,14 +79,14 @@ public struct LogProxy
 {
     private string _source;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_source);
     }
 
     @disable this();
 
-    public this(string source) nothrow
+    public this(string source) pure nothrow
     in
     {
         assert(source);

@@ -9,6 +9,10 @@ import core.sync.condition,
  */
 public final class Mutex : core.sync.mutex.Mutex
 {
+    public this() nothrow
+    {
+        super();
+    }
 }
 
 /**
@@ -23,7 +27,7 @@ public final class Condition : core.sync.condition.Condition
      * Params:
      *  mutex = The mutex to use for synchronization.
      */
-    public this(Mutex mutex)
+    public this(Mutex mutex) nothrow
     in
     {
         assert(mutex);

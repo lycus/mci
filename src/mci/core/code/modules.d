@@ -24,7 +24,7 @@ public final class Module
     private Function _threadEntryPoint;
     private Function _threadExitPoint;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_name);
         assert(_functions);
@@ -246,7 +246,7 @@ public final class ModuleManager
     private NoNullDictionary!(string, Module, false) _modules;
     private NoNullList!string _probePaths;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_modules);
         assert(_probePaths);

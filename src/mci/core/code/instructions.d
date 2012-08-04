@@ -20,7 +20,7 @@ public final class Register
     private Object _definitions;
     private Object _metadata;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_function);
         assert(_type);
@@ -156,7 +156,7 @@ public final class Instruction
     private NoNullList!Register _sourceRegisters;
     private List!MetadataPair _metadata;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_block);
         assert(_opCode);

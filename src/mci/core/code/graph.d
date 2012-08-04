@@ -14,7 +14,7 @@ public final class GraphWriter
     private TextWriter _writer;
     private bool _done;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_stream);
         assert((cast()_stream).canWrite);

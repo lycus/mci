@@ -15,7 +15,7 @@ public final class TreeDisassembler
     private TextWriter _writer;
     private bool _done;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_stream);
         assert((cast()_stream).canWrite);
@@ -29,7 +29,7 @@ public final class TreeDisassembler
      * Params:
      *  stream = The stream to write to.
      */
-    public this(Stream stream)
+    public this(Stream stream) pure nothrow
     in
     {
         assert(stream);

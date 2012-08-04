@@ -54,7 +54,7 @@ public final class FinalizerThread
     private Atomic!bool _running;
     private Atomic!Thread _thread;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_gc);
         assert(cast(InteractiveGarbageCollector)_gc);

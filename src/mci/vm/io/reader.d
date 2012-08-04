@@ -31,7 +31,7 @@ private final class TypeDescriptor
     private uint _alignment;
     private NoNullList!FieldDescriptor _fields;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_name);
         assert(!_alignment || powerOfTwo(_alignment));
@@ -88,13 +88,13 @@ private final class FieldDescriptor
     private FieldStorage _storage;
     private TypeReferenceDescriptor _type;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_name);
         assert(_type);
     }
 
-    public this(string name, FieldStorage storage, TypeReferenceDescriptor type)
+    public this(string name, FieldStorage storage, TypeReferenceDescriptor type) pure nothrow
     in
     {
         assert(name);
@@ -142,13 +142,13 @@ private final class StructureTypeReferenceDescriptor : TypeReferenceDescriptor
     private string _name;
     private string _moduleName;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_name);
         assert(_moduleName);
     }
 
-    public this(string name, string moduleName)
+    public this(string name, string moduleName) pure nothrow
     in
     {
         assert(name);
@@ -185,12 +185,12 @@ private final class CoreTypeReferenceDescriptor : TypeReferenceDescriptor
 {
     private CoreType _type;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_type);
     }
 
-    public this(CoreType type)
+    public this(CoreType type) pure nothrow
     in
     {
         assert(type);
@@ -215,12 +215,12 @@ private final class PointerTypeReferenceDescriptor : TypeReferenceDescriptor
 {
     private TypeReferenceDescriptor _elementType;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_elementType);
     }
 
-    public this(TypeReferenceDescriptor elementType)
+    public this(TypeReferenceDescriptor elementType) pure nothrow
     in
     {
         assert(elementType);
@@ -245,12 +245,12 @@ private final class ReferenceTypeReferenceDescriptor : TypeReferenceDescriptor
 {
     private StructureTypeReferenceDescriptor _elementType;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_elementType);
     }
 
-    public this(StructureTypeReferenceDescriptor elementType)
+    public this(StructureTypeReferenceDescriptor elementType) pure nothrow
     in
     {
         assert(elementType);
@@ -275,12 +275,12 @@ private final class ArrayTypeReferenceDescriptor : TypeReferenceDescriptor
 {
     private TypeReferenceDescriptor _elementType;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_elementType);
     }
 
-    public this(TypeReferenceDescriptor elementType)
+    public this(TypeReferenceDescriptor elementType) pure nothrow
     in
     {
         assert(elementType);
@@ -306,12 +306,12 @@ private final class VectorTypeReferenceDescriptor : TypeReferenceDescriptor
     private TypeReferenceDescriptor _elementType;
     private uint _elements;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_elementType);
     }
 
-    public this(TypeReferenceDescriptor elementType, uint elements)
+    public this(TypeReferenceDescriptor elementType, uint elements) pure nothrow
     in
     {
         assert(elementType);
@@ -344,7 +344,7 @@ private final class FunctionPointerTypeReferenceDescriptor : TypeReferenceDescri
     private TypeReferenceDescriptor _returnType;
     private NoNullList!TypeReferenceDescriptor _parameterTypes;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_parameterTypes);
     }
@@ -386,7 +386,7 @@ public final class ModuleReader : ModuleLoader
     private NoNullDictionary!(StructureType, TypeDescriptor) _types;
     private StringTable _table;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_manager);
         assert(_types);

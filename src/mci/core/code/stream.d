@@ -10,7 +10,7 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
     private BasicBlock _block;
     private NoNullList!Instruction _instructions;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_instructions);
         assert(_block);

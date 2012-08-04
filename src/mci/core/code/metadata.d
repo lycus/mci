@@ -8,7 +8,7 @@ public struct MetadataPair
     private string _key;
     private string _value;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_key);
         assert(_value);
@@ -23,7 +23,7 @@ public struct MetadataPair
      *  key = The key.
      *  value = The value.
      */
-    public this(string key, string value) nothrow
+    public this(string key, string value) pure nothrow
     in
     {
         assert(key);

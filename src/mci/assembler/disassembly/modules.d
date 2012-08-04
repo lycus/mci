@@ -21,7 +21,7 @@ public final class ModuleDisassembler
     private TextWriter _writer;
     private bool _done;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_stream);
         assert((cast()_stream).canWrite);
@@ -35,7 +35,7 @@ public final class ModuleDisassembler
      * Params:
      *  stream = The stream to write to.
      */
-    public this(Stream stream)
+    public this(Stream stream) pure nothrow
     in
     {
         assert(stream);

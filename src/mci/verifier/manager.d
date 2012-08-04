@@ -15,7 +15,7 @@ public final class VerificationManager
 {
     private NoNullList!CodeVerifier _verifiers;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_verifiers);
     }

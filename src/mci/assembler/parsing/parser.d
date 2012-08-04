@@ -22,7 +22,7 @@ public final class CompilationUnit
 {
     private ReadOnlyIndexable!DeclarationNode _nodes;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_nodes);
     }
@@ -67,7 +67,7 @@ public final class Parser
 {
     private TokenStream _stream;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_stream);
     }
@@ -78,7 +78,7 @@ public final class Parser
      * Params:
      *  stream = The token stream to parse from.
      */
-    public this(TokenStream stream)
+    public this(TokenStream stream) pure nothrow
     in
     {
         assert(stream);
@@ -94,7 +94,7 @@ public final class Parser
      * Returns:
      *  The token stream associated with this parser.
      */
-    @property public TokenStream stream()
+    @property public TokenStream stream() pure nothrow
     out (result)
     {
         assert(result);

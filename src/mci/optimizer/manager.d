@@ -66,7 +66,7 @@ public final class OptimizationManager
     private NoNullList!OptimizerPass _ssaOptimizers;
     private NoNullList!OptimizerDefinition _definitions;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_codeOptimizers);
         assert(_irOptimizers);
@@ -155,6 +155,9 @@ public final class OptimizationManager
     body
     {
         if (function_.attributes & FunctionAttributes.noOptimization)
+            return;
+
+        if (first(function_.blocks[entryBlockName].stream).opCode is opFFI)
             return;
 
         if (first(function_.blocks[entryBlockName].stream).opCode is opRaw)

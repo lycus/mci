@@ -218,7 +218,7 @@ body
            opCode is opArrayCmpLTEq;
 }
 
-public bool isNullable(Type type)
+public bool isNullable(Type type) pure nothrow
 in
 {
     assert(type);
@@ -232,7 +232,7 @@ body
            cast(VectorType)type;
 }
 
-public bool isValidInArithmetic(Type type)
+public bool isValidInArithmetic(Type type) pure nothrow
 in
 {
     assert(type);
@@ -242,7 +242,7 @@ body
     return !!cast(CoreType)type;
 }
 
-public bool isValidInBitwise(Type type)
+public bool isValidInBitwise(Type type) pure nothrow
 in
 {
     assert(type);
@@ -252,7 +252,7 @@ body
     return !!cast(IntegerType)type;
 }
 
-public bool isValidInComparison(Type type)
+public bool isValidInComparison(Type type) pure nothrow
 in
 {
     assert(type);
@@ -262,7 +262,7 @@ body
     return isValidInArithmetic(type) || !!cast(PointerType)type;
 }
 
-public bool isArrayContainerOf(Type type, Type elementType)
+public bool isArrayContainerOf(Type type, Type elementType) pure nothrow
 in
 {
     assert(type);
@@ -281,7 +281,7 @@ body
     return false;
 }
 
-public bool isArrayContainerOfT(T : Type)(Type type)
+public bool isArrayContainerOfT(T : Type)(Type type) pure nothrow
 in
 {
     assert(type);
@@ -294,7 +294,7 @@ body
     return false;
 }
 
-public bool isContainerOf(Type type, Type elementType)
+public bool isContainerOf(Type type, Type elementType) pure nothrow
 in
 {
     assert(type);
@@ -309,7 +309,7 @@ body
     return isArrayContainerOf(type, elementType);
 }
 
-public bool isArrayContainerOfOrElement(Type type, Type elementType)
+public bool isArrayContainerOfOrElement(Type type, Type elementType) pure nothrow
 in
 {
     assert(type);
@@ -323,7 +323,7 @@ body
     return isArrayContainerOf(type, elementType);
 }
 
-public Type getElementType(Type type)
+public Type getElementType(Type type) pure nothrow
 in
 {
     assert(cast(PointerType)type || cast(ArrayType)type || cast(VectorType)type);
@@ -530,7 +530,7 @@ public ReadOnlyIndexable!Type getSignature(Function function_, ref Type returnTy
     return types;
 }
 
-public ReadOnlyIndexable!Type getSignature(FunctionPointerType type, ref Type returnType)
+public ReadOnlyIndexable!Type getSignature(FunctionPointerType type, ref Type returnType) pure nothrow
 {
     returnType = type.returnType;
 

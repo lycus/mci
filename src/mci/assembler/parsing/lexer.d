@@ -175,7 +175,7 @@ public final class Lexer
 {
     private Source _source;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_source);
     }
@@ -186,7 +186,7 @@ public final class Lexer
      * Params:
      *  source = The source input.
      */
-    public this(Source source)
+    public this(Source source) pure nothrow
     in
     {
         assert(source);
@@ -509,7 +509,7 @@ public final class Lexer
     }
 }
 
-private SourceLocation makeSourceLocation(string value, SourceLocation location) nothrow
+private SourceLocation makeSourceLocation(string value, SourceLocation location) pure nothrow
 in
 {
     assert(value);

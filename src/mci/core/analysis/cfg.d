@@ -31,7 +31,7 @@ public struct ControlFlowBranch
     private BasicBlock _block1;
     private BasicBlock _block2;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_instruction);
 

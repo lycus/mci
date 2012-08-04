@@ -38,7 +38,7 @@ public final class Weak(T : Object)
     private size_t _ptr;
     private hash_t _hash;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_ptr);
     }

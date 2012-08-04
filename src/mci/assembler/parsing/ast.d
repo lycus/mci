@@ -31,7 +31,7 @@ public abstract class Node
      * Params:
      *  location = The location of this node in the source code.
      */
-    protected this(SourceLocation location)
+    protected this(SourceLocation location) pure nothrow
     {
         _location = location;
     }
@@ -80,13 +80,13 @@ public class MetadataNode : Node
     private SimpleNameNode _key;
     private SimpleNameNode _value;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_key);
         assert(_value);
     }
 
-    public this(SourceLocation location, SimpleNameNode key, SimpleNameNode value)
+    public this(SourceLocation location, SimpleNameNode key, SimpleNameNode value) pure nothrow
     in
     {
         assert(key);
@@ -130,7 +130,7 @@ public class MetadataListNode : Node
 {
     private NoNullList!MetadataNode _metadata;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_metadata);
     }
@@ -165,7 +165,7 @@ public class MetadataListNode : Node
 
 public abstract class DeclarationNode : Node
 {
-    protected this(SourceLocation location)
+    protected this(SourceLocation location) pure nothrow
     {
         super(location);
     }
@@ -175,12 +175,12 @@ public class SimpleNameNode : Node
 {
     private string _name;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_name);
     }
 
-    public this(SourceLocation location, string name)
+    public this(SourceLocation location, string name) pure nothrow
     in
     {
         assert(name);
@@ -212,12 +212,12 @@ public class ModuleReferenceNode : Node
 {
     private SimpleNameNode _name;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_name);
     }
 
-    public this(SourceLocation location, SimpleNameNode name)
+    public this(SourceLocation location, SimpleNameNode name) pure nothrow
     in
     {
         assert(name);
@@ -247,7 +247,7 @@ public class ModuleReferenceNode : Node
 
 public abstract class TypeReferenceNode : Node
 {
-    protected this(SourceLocation location)
+    protected this(SourceLocation location) pure nothrow
     {
         super(location);
     }
@@ -258,12 +258,12 @@ public class StructureTypeReferenceNode : TypeReferenceNode
     private ModuleReferenceNode _moduleName;
     private SimpleNameNode _name;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_name);
     }
 
-    public this(SourceLocation location, ModuleReferenceNode moduleName, SimpleNameNode name)
+    public this(SourceLocation location, ModuleReferenceNode moduleName, SimpleNameNode name) pure nothrow
     in
     {
         assert(name);
@@ -301,12 +301,12 @@ public class PointerTypeReferenceNode : TypeReferenceNode
 {
     private TypeReferenceNode _elementType;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_elementType);
     }
 
-    public this(SourceLocation location, TypeReferenceNode elementType)
+    public this(SourceLocation location, TypeReferenceNode elementType) pure nothrow
     in
     {
         assert(elementType);
@@ -338,12 +338,12 @@ public class ReferenceTypeReferenceNode : TypeReferenceNode
 {
     private StructureTypeReferenceNode _elementType;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_elementType);
     }
 
-    public this(SourceLocation location, StructureTypeReferenceNode elementType)
+    public this(SourceLocation location, StructureTypeReferenceNode elementType) pure nothrow
     in
     {
         assert(elementType);
@@ -375,12 +375,12 @@ public class ArrayTypeReferenceNode : TypeReferenceNode
 {
     private TypeReferenceNode _elementType;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_elementType);
     }
 
-    public this(SourceLocation location, TypeReferenceNode elementType)
+    public this(SourceLocation location, TypeReferenceNode elementType) pure nothrow
     in
     {
         assert(elementType);
@@ -413,13 +413,13 @@ public class VectorTypeReferenceNode : TypeReferenceNode
     private TypeReferenceNode _elementType;
     private LiteralValueNode _elements;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_elementType);
         assert(_elements);
     }
 
-    public this(SourceLocation location, TypeReferenceNode elementType, LiteralValueNode elements)
+    public this(SourceLocation location, TypeReferenceNode elementType, LiteralValueNode elements) pure nothrow
     in
     {
         assert(elementType);
@@ -465,7 +465,7 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
     private TypeReferenceNode _returnType;
     private NoNullList!TypeReferenceNode _parameterTypes;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_parameterTypes);
     }
@@ -518,7 +518,7 @@ public class FunctionPointerTypeReferenceNode : TypeReferenceNode
 
 public abstract class CoreTypeReferenceNode : TypeReferenceNode
 {
-    protected this(SourceLocation location)
+    protected this(SourceLocation location) pure nothrow
     {
         super(location);
     }
@@ -532,12 +532,12 @@ private mixin template DefineCoreTypeNode(string type, string name)
           "{" ~
           "    private SimpleNameNode _name;" ~
           "" ~
-          "    invariant()" ~
+          "    pure nothrow invariant()" ~
           "    {" ~
           "        assert(_name);" ~
           "    }" ~
           "" ~
-          "    public this(SourceLocation location)" ~
+          "    public this(SourceLocation location) pure nothrow" ~
           "    {" ~
           "        super(location);" ~
           "" ~
@@ -574,13 +574,13 @@ public class FieldReferenceNode : Node
     private StructureTypeReferenceNode _typeName;
     private SimpleNameNode _name;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_typeName);
         assert(_name);
     }
 
-    public this(SourceLocation location, StructureTypeReferenceNode typeName, SimpleNameNode name)
+    public this(SourceLocation location, StructureTypeReferenceNode typeName, SimpleNameNode name) pure nothrow
     in
     {
         assert(typeName);
@@ -625,12 +625,12 @@ public class FunctionReferenceNode : Node
     private ModuleReferenceNode _moduleName;
     private SimpleNameNode _name;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_name);
     }
 
-    public this(SourceLocation location, ModuleReferenceNode moduleName, SimpleNameNode name)
+    public this(SourceLocation location, ModuleReferenceNode moduleName, SimpleNameNode name) pure nothrow
     in
     {
         assert(name);
@@ -671,7 +671,7 @@ public class TypeDeclarationNode : DeclarationNode
     private NoNullList!FieldDeclarationNode _fields;
     private MetadataListNode _metadata;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_name);
         assert(_fields);
@@ -737,14 +737,14 @@ public class FieldDeclarationNode : Node
     private FieldStorage _storage;
     private MetadataListNode _metadata;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_type);
         assert(_name);
     }
 
     public this(SourceLocation location, TypeReferenceNode type, SimpleNameNode name, FieldStorage storage,
-                MetadataListNode metadata)
+                MetadataListNode metadata) pure nothrow
     in
     {
         assert(type);
@@ -806,12 +806,12 @@ public class ParameterNode : Node
     private TypeReferenceNode _type;
     private MetadataListNode _metadata;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_type);
     }
 
-    public this(SourceLocation location, TypeReferenceNode type, MetadataListNode metadata)
+    public this(SourceLocation location, TypeReferenceNode type, MetadataListNode metadata) pure nothrow
     in
     {
         assert(type);
@@ -856,7 +856,7 @@ public class FunctionDeclarationNode : DeclarationNode
     private NoNullList!BasicBlockDeclarationNode _blocks;
     private MetadataListNode _metadata;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_name);
         assert(_parameters);
@@ -968,12 +968,12 @@ public class EntryPointDeclarationNode : DeclarationNode
 {
     private FunctionReferenceNode _function;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_function);
     }
 
-    public this(SourceLocation location, FunctionReferenceNode function_)
+    public this(SourceLocation location, FunctionReferenceNode function_) pure nothrow
     in
     {
         assert(function_);
@@ -1003,7 +1003,7 @@ public class EntryPointDeclarationNode : DeclarationNode
 
 public class ModuleEntryPointDeclarationNode : EntryPointDeclarationNode
 {
-    public this(SourceLocation location, FunctionReferenceNode function_)
+    public this(SourceLocation location, FunctionReferenceNode function_) pure nothrow
     in
     {
         assert(function_);
@@ -1016,7 +1016,7 @@ public class ModuleEntryPointDeclarationNode : EntryPointDeclarationNode
 
 public class ModuleExitPointDeclarationNode : EntryPointDeclarationNode
 {
-    public this(SourceLocation location, FunctionReferenceNode function_)
+    public this(SourceLocation location, FunctionReferenceNode function_) pure nothrow
     in
     {
         assert(function_);
@@ -1029,7 +1029,7 @@ public class ModuleExitPointDeclarationNode : EntryPointDeclarationNode
 
 public class ThreadEntryPointDeclarationNode : EntryPointDeclarationNode
 {
-    public this(SourceLocation location, FunctionReferenceNode function_)
+    public this(SourceLocation location, FunctionReferenceNode function_) pure nothrow
     in
     {
         assert(function_);
@@ -1042,7 +1042,7 @@ public class ThreadEntryPointDeclarationNode : EntryPointDeclarationNode
 
 public class ThreadExitPointDeclarationNode : EntryPointDeclarationNode
 {
-    public this(SourceLocation location, FunctionReferenceNode function_)
+    public this(SourceLocation location, FunctionReferenceNode function_) pure nothrow
     in
     {
         assert(function_);
@@ -1059,13 +1059,13 @@ public class RegisterDeclarationNode : Node
     private TypeReferenceNode _type;
     private MetadataListNode _metadata;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_name);
         assert(_type);
     }
 
-    public this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type, MetadataListNode metadata)
+    public this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type, MetadataListNode metadata) pure nothrow
     in
     {
         assert(name);
@@ -1118,7 +1118,7 @@ public class BasicBlockDeclarationNode : Node
     private NoNullList!InstructionNode _instructions;
     private MetadataListNode _metadata;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_name);
         assert(_instructions);
@@ -1181,12 +1181,12 @@ public class RegisterReferenceNode : Node
 {
     private SimpleNameNode _name;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_name);
     }
 
-    public this(SourceLocation location, SimpleNameNode name)
+    public this(SourceLocation location, SimpleNameNode name) pure nothrow
     in
     {
         assert(name);
@@ -1218,12 +1218,12 @@ public class BasicBlockReferenceNode : Node
 {
     private SimpleNameNode _name;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_name);
     }
 
-    public this(SourceLocation location, SimpleNameNode name)
+    public this(SourceLocation location, SimpleNameNode name) pure nothrow
     in
     {
         assert(name);
@@ -1256,13 +1256,13 @@ public class BranchSelectorNode : Node
     private BasicBlockReferenceNode _trueBlock;
     private BasicBlockReferenceNode _falseBlock;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_trueBlock);
         assert(_falseBlock);
     }
 
-    public this(SourceLocation location, BasicBlockReferenceNode trueBlock, BasicBlockReferenceNode falseBlock)
+    public this(SourceLocation location, BasicBlockReferenceNode trueBlock, BasicBlockReferenceNode falseBlock) pure nothrow
     in
     {
         assert(trueBlock);
@@ -1306,7 +1306,7 @@ public class RegisterSelectorNode : Node
 {
     private NoNullList!RegisterReferenceNode _registers;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_registers);
     }
@@ -1343,12 +1343,12 @@ public class LiteralValueNode : Node
 {
     private string _value;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_value);
     }
 
-    public this(SourceLocation location, string value)
+    public this(SourceLocation location, string value) pure nothrow
     in
     {
         assert(value);
@@ -1380,7 +1380,7 @@ public class ArrayLiteralNode : Node
 {
     private NoNullList!LiteralValueNode _values;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_values);
     }
@@ -1418,13 +1418,13 @@ public class FFISignatureNode : Node
     private SimpleNameNode _library;
     private SimpleNameNode _entryPoint;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_library);
         assert(_entryPoint);
     }
 
-    public this(SourceLocation location, SimpleNameNode library, SimpleNameNode entryPoint)
+    public this(SourceLocation location, SimpleNameNode library, SimpleNameNode entryPoint) pure nothrow
     in
     {
         assert(library);
@@ -1478,7 +1478,7 @@ public class InstructionOperandNode : Node
 {
     private InstructionOperand _operand;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_operand.hasValue);
     }
@@ -1521,14 +1521,14 @@ public class InstructionNode : Node
     private InstructionOperandNode _operand;
     private MetadataListNode _metadata;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_opCode);
     }
 
     public this(SourceLocation location, OpCode opCode, RegisterReferenceNode target,
                 RegisterReferenceNode source1, RegisterReferenceNode source2, RegisterReferenceNode source3,
-                InstructionOperandNode operand, MetadataListNode metadata)
+                InstructionOperandNode operand, MetadataListNode metadata) pure nothrow
     in
     {
         assert(opCode);

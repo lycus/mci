@@ -8,7 +8,7 @@ package final class StringTable
     private NoNullDictionary!(uint, string, false) _idToString;
     private uint _lastID;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_stringToID);
         assert(_idToString);

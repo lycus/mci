@@ -17,12 +17,12 @@ private final class WeakBox
 {
     private RuntimeObject* _object;
 
-    invariant()
+    pure nothrow invariant()
     {
         assert(_object);
     }
 
-    public this(RuntimeObject* object)
+    public this(RuntimeObject* object) pure nothrow
     in
     {
         assert(object);
@@ -32,7 +32,7 @@ private final class WeakBox
         _object = object;
     }
 
-    @property public RuntimeObject* object()
+    @property public RuntimeObject* object() pure nothrow
     out (result)
     {
         assert(result);
