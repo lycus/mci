@@ -110,7 +110,6 @@ def build(bld):
         return [os.path.join(path, '*.d'), os.path.join(path, '**', '*.d')]
 
     includes = ['src', 'libffi-d', 'libgc-d']
-    src = os.path.join('src', 'mci')
 
     def stlib(path, target, dflags = [], install = '${PREFIX}/lib'):
         bld.stlib(source = bld.path.ant_glob(search_paths(path)),
@@ -128,7 +127,7 @@ def build(bld):
                     dflags = dflags)
 
     def src_path(dir):
-        return os.path.join(src, dir)
+        return os.path.join('src', 'mci', dir)
 
     stlib(src_path('core'), 'mci.core')
     stlib(src_path('assembler'), 'mci.assembler')
