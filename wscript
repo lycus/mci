@@ -107,9 +107,12 @@ def build(bld):
     bld.recurse('libgc-d')
 
     def search_paths(path):
-        return [os.path.join(path, '*.d'), os.path.join(path, '**', '*.d')]
+        return [os.path.join(path, '*.d'),
+                os.path.join(path, '**', '*.d')]
 
-    includes = ['src', 'libffi-d', 'libgc-d']
+    includes = ['src',
+                'libffi-d',
+                'libgc-d']
 
     def stlib(path, target, dflags = [], install = '${PREFIX}/lib'):
         bld.stlib(source = bld.path.ant_glob(search_paths(path)),
