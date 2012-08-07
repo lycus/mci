@@ -113,31 +113,34 @@ def build(bld):
     src = os.path.join('src', 'mci')
 
     def stlib(path, target, dflags = [], install = '${PREFIX}/lib'):
-        bld.stlib(source = bld.path.ant_glob(search_paths(os.path.join(src, path))),
+        bld.stlib(source = bld.path.ant_glob(search_paths(path)),
                   target = target,
                   includes = includes,
                   install_path = install,
                   dflags = dflags)
 
     def program(path, target, deps, dflags = [], install = '${PREFIX}/bin'):
-        bld.program(source = bld.path.ant_glob(search_paths(os.path.join(src, path))),
+        bld.program(source = bld.path.ant_glob(search_paths(path)),
                     target = target,
                     use = deps,
                     includes = includes,
                     install_path = install,
                     dflags = dflags)
 
-    stlib('core', 'mci.core')
-    stlib('assembler', 'mci.assembler')
-    stlib('verifier', 'mci.verifier')
-    stlib('optimizer', 'mci.optimizer')
-    stlib('linker', 'mci.linker')
-    stlib('debugger', 'mci.debugger')
-    stlib('vm', 'mci.vm')
-    stlib('interpreter', 'mci.interpreter')
-    stlib('compiler', 'mci.compiler')
-    stlib('jit', 'mci.jit')
-    stlib('aot', 'mci.aot')
+    def src_path(dir):
+        return os.path.join(src, dir)
+
+    stlib(src_path('core'), 'mci.core')
+    stlib(src_path('assembler'), 'mci.assembler')
+    stlib(src_path('verifier'), 'mci.verifier')
+    stlib(src_path('optimizer'), 'mci.optimizer')
+    stlib(src_path('linker'), 'mci.linker')
+    stlib(src_path('debugger'), 'mci.debugger')
+    stlib(src_path('vm'), 'mci.vm')
+    stlib(src_path('interpreter'), 'mci.interpreter')
+    stlib(src_path('compiler'), 'mci.compiler')
+    stlib(src_path('jit'), 'mci.jit')
+    stlib(src_path('aot'), 'mci.aot')
 
     deps = ['mci.aot',
             'mci.jit',
@@ -158,7 +161,7 @@ def build(bld):
     if not Utils.unversioned_sys_platform().lower().endswith('bsd'):
         deps += ['DL']
 
-    program('cli', 'mci', deps)
+    program(src_path('cli'), 'mci', deps)
 
     if bld.env.COMPILER_D == 'dmd':
         unittest = '-unittest'
@@ -169,7 +172,8 @@ def build(bld):
     else:
         bld.fatal('Unsupported D compiler.')
 
-    program('tester', 'mci.tester', deps, unittest, None)
+    program(src_path('tester'), 'mci.tester', deps, unittest, None)
+    program(os.path.join('tests'), 'tester', deps, install = None)
 
     if bld.env.VIM:
         bld.install_files(os.path.join(bld.env.VIM, 'syntax'), os.path.join('syntax', 'vim', 'syntax', 'ial.vim'))
@@ -229,8 +233,8 @@ def test(ctx):
     '''runs the infrastructure tests'''
 
     def run_test(parent, sub):
-        _run_rdmd('tests', ctx, '-I{0} tester.d {1}'.format(os.path.join('..', 'src'),
-                                                            os.path.join(parent, sub)))
+        _run_shell('tests', ctx, '{0} {1}'.format(os.path.join(os.pardir, OUT, 'tester'),
+                                                  os.path.join(parent, sub)))
 
     run_test('assembler', 'pass')
     run_test('assembler', 'fail')
