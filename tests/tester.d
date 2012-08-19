@@ -113,11 +113,14 @@ private bool invoke(string file, string cli, TestPass pass)
     auto cmd = replace(replace(pass.command, "<file>", file), "<name>", file[0 .. $ - 4]);
     auto full = cli ~ " " ~ cmd;
     auto base = baseName(cli) ~ " " ~ cmd;
+
+    stderr.writef("%s\t\t", base);
+
     auto result = system(full ~ " -s");
 
     if (result != pass.expected)
     {
-        stderr.writefln("%s\t\tFailed ('%s')", base, result);
+        stderr.writefln("Failed ('%s')", result);
 
         if (!pass.swallowError)
         {
@@ -129,7 +132,7 @@ private bool invoke(string file, string cli, TestPass pass)
     }
     else
     {
-        stderr.writefln("%s\t\tPassed ('%s')", base, result);
+        stderr.writefln("Passed ('%s')", result);
         return true;
     }
 }

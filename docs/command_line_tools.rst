@@ -17,11 +17,11 @@ two options: ``-h|--help`` and ``-s|--silent``. Generally, the short forms of
 the options are preferred, so those will be used in the rest of this document.
 The ``-h`` option simply displays the help overview and exits. The ``-s``
 option makes the command line interface silent, i.e. it won't output anything
-to ``stdout``. This is mostly useful if you're running a program in an
-execution engine and don't want the 'noise' that the command line interface
-normally outputs.
+to ``stdout`` and ``stderr``. This is mostly useful if you're running a
+program in an execution engine and don't want the 'noise' that the command
+line interface normally outputs.
 
-Now, to run a tool, you simply pass its name and arguments to ``mci``. So, for
+To run a tool, you simply pass its name and arguments to ``mci``. So, for
 example, ``mci asm foo.ial -o bar.mci``. This runs the assembler which parses
 ``foo.ial`` and generates a binary ``bar.mci`` which can be executed. In order
 to suppress output, you could also say ``mci -s asm foo.ial -o bar.mci``.
@@ -29,7 +29,7 @@ to suppress output, you could also say ``mci -s asm foo.ial -o bar.mci``.
 Exit codes
 ++++++++++
 
-The following exit codes can occur:
+The following primary exit codes can occur:
 
 ===== ============================================
 Value Description
@@ -205,7 +205,7 @@ unsafe optimizations to happen which might change the actual semantics of the
 program. You should most likely not be using this.
 
 Passes are applied in the exact order they are given on the command line
-(duplicate passes are OK).
+(duplicate passes are OK and will be run repeatedly in the given order).
 
 IAL verifier
 ------------
@@ -215,6 +215,9 @@ IAL verifier
 
 Verifies a set of modules for ISA and type system validity. Accepts as input a
 set of module file names (must end in ``.mci``).
+
+Note that a module must pass these verification passes in order for it to be
+executable in an execution engine.
 
 Statistics
 ----------
