@@ -1,6 +1,7 @@
 module mci.vm.intrinsics.declarations;
 
 import std.algorithm,
+       std.traits,
        mci.core.common,
        mci.core.container,
        mci.core.code.functions,
@@ -94,6 +95,12 @@ in
     static assert(startsWith(__traits(identifier, function_), intrinsicFunctionPrefix));
     static assert(__traits(identifier, function_).length > intrinsicFunctionPrefix.length);
 
+    alias ParameterTypeTuple!function_ P;
+
+    static assert(P.length);
+
+    assert(parameters.length == P.length - 1);
+
     foreach (param; parameters)
         assert(param);
 }
@@ -156,8 +163,6 @@ shared static this()
                                                  getPointerType(NativeUIntType.instance),
                                                  NativeUIntType.instance);
     atomicSubU = createFunction!mci_atomic_sub_u(NativeUIntType.instance,
-                                                 getPointerType(NativeUIntType.instance),
-                                                 NativeUIntType.instance,
                                                  getPointerType(NativeUIntType.instance),
                                                  NativeUIntType.instance);
     atomicMulU = createFunction!mci_atomic_mul_u(NativeUIntType.instance,
