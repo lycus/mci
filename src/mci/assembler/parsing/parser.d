@@ -485,6 +485,16 @@ public final class Parser
                     consume("]");
 
                     break;
+                case TokenType.openBrace:
+                    next();
+
+                    auto elements = parseLiteralValue!uint();
+
+                    type = new StaticArrayTypeReferenceNode(type.location, type, elements);
+
+                    consume("}");
+
+                    break;
                 case TokenType.openParen:
                     type = parseFunctionPointerTypeReference(type);
                     break;

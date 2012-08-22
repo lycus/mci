@@ -5,6 +5,7 @@ import mci.core.container,
        mci.core.code.functions,
        mci.core.code.modules,
        mci.core.typing.cache,
+       mci.core.typing.core,
        mci.core.typing.types;
 
 unittest
@@ -88,4 +89,11 @@ unittest
     auto vec = getVectorType(st, 3);
 
     assert(vec.name == "'foo'/'baz'[3]");
+}
+
+unittest
+{
+    auto sat = getStaticArrayType(NativeIntType.instance, 3);
+
+    assert(sat.name == "int{3}");
 }

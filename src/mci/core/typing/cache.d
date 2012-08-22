@@ -26,6 +26,9 @@ private __gshared Mutex arrayTypesLock;
 private __gshared NoNullDictionary!(Tuple!(Type, uint), VectorType, false) vectorTypes;
 private __gshared Mutex vectorTypesLock;
 
+private __gshared NoNullDictionary!(Tuple!(Type, uint), StaticArrayType, false) staticArrayTypes;
+private __gshared Mutex staticArrayTypesLock;
+
 shared static this()
 {
     functionPointerTypes = new typeof(functionPointerTypes)();
@@ -38,6 +41,8 @@ shared static this()
     arrayTypesLock = new typeof(arrayTypesLock)();
     vectorTypes = new typeof(vectorTypes)();
     vectorTypesLock = new typeof(vectorTypesLock)();
+    staticArrayTypes = new typeof(staticArrayTypes)();
+    staticArrayTypesLock = new typeof(staticArrayTypesLock)();
 }
 
 public FunctionPointerType getFunctionPointerType(CallingConvention callingConvention, Type returnType,
@@ -154,4 +159,28 @@ body
         return *vecType;
 
     return vectorTypes[tup] = new VectorType(elementType, elements);
+}
+
+public StaticArrayType getStaticArrayType(Type elementType, uint elements)
+in
+{
+    assert(elementType);
+}
+out (result)
+{
+    assert(result);
+}
+body
+{
+    staticArrayTypesLock.lock();
+
+    scope (exit)
+        staticArrayTypesLock.unlock();
+
+    auto tup = tuple(elementType, elements);
+
+    if (auto saType = tup in staticArrayTypes)
+        return *saType;
+
+    return staticArrayTypes[tup] = new StaticArrayType(elementType, elements);
 }

@@ -459,6 +459,57 @@ public class VectorTypeReferenceNode : TypeReferenceNode
     }
 }
 
+public class StaticArrayTypeReferenceNode : TypeReferenceNode
+{
+    private TypeReferenceNode _elementType;
+    private LiteralValueNode _elements;
+
+    pure nothrow invariant()
+    {
+        assert(_elementType);
+        assert(_elements);
+    }
+
+    public this(SourceLocation location, TypeReferenceNode elementType, LiteralValueNode elements) pure nothrow
+    in
+    {
+        assert(elementType);
+        assert(elements);
+    }
+    body
+    {
+        super(location);
+
+        _elementType = elementType;
+        _elements = elements;
+    }
+
+    @property public final TypeReferenceNode elementType() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _elementType;
+    }
+
+    @property public final LiteralValueNode elements() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _elements;
+    }
+
+    @property public override ReadOnlyIndexable!Node children()
+    {
+        return toReadOnlyIndexable!Node(_elementType, _elements);
+    }
+}
+
 public class FunctionPointerTypeReferenceNode : TypeReferenceNode
 {
     private CallingConvention _callingConvention;

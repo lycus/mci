@@ -516,6 +516,12 @@ public final class ModuleWriter : ModuleSaver
             writeTypeReference(vecType.elementType);
             _writer.write(vecType.elements);
         }
+        else if (auto saType = cast(StaticArrayType)type)
+        {
+            _writer.write(TypeReferenceType.staticArray);
+            writeTypeReference(saType.elementType);
+            _writer.write(saType.elements);
+        }
         else
         {
             _writer.write(TypeReferenceType.core);

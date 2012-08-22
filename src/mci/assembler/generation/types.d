@@ -101,6 +101,7 @@ body
                  (ReferenceTypeReferenceNode n) => getReferenceType(cast(StructureType)resolveType(n.elementType, module_, manager)),
                  (ArrayTypeReferenceNode n) => getArrayType(resolveType(n.elementType, module_, manager)),
                  (VectorTypeReferenceNode n) => getVectorType(resolveType(n.elementType, module_, manager), to!uint(n.elements.value)),
+                 (StaticArrayTypeReferenceNode n) => getStaticArrayType(resolveType(n.elementType, module_, manager), to!uint(n.elements.value)),
                  (Int8TypeReferenceNode n) => Int8Type.instance,
                  (UInt8TypeReferenceNode n) => UInt8Type.instance,
                  (Int16TypeReferenceNode n) => Int16Type.instance,

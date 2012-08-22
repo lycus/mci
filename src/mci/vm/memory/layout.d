@@ -9,7 +9,7 @@ import mci.core.common,
        mci.core.typing.members,
        mci.core.typing.types;
 
-public size_t computeSize(Type type, bool is32Bit)
+public size_t computeSize(Type type, bool is32Bit, size_t simdAlignment)
 in
 {
     assert(type);
@@ -36,6 +36,9 @@ body
         cast(FunctionPointerType)type)
         return is32Bit ? 4 : 8;
 
+    if (auto sa = cast(StaticArrayType)type)
+        return computeSize(sa.elementType, is32Bit, simdAlignment) * sa.elements;
+
     auto structType = cast(StructureType)type;
 
     size_t size;
@@ -45,16 +48,16 @@ body
         if (field.y.storage != FieldStorage.instance)
             continue;
 
-        auto al = structType.alignment ? structType.alignment : computeAlignment(field.y.type, is32Bit);
+        auto al = structType.alignment ? structType.alignment : computeAlignment(field.y.type, is32Bit, simdAlignment);
 
         size = alignTo(size, al);
-        size += computeSize(field.y.type, is32Bit);
+        size += computeSize(field.y.type, is32Bit, simdAlignment);
     }
 
     return size;
 }
 
-public size_t computeOffset(Field field, bool is32Bit)
+public size_t computeOffset(Field field, bool is32Bit, size_t simdAlignment)
 in
 {
     assert(field);
@@ -70,20 +73,20 @@ body
         if (fld.y.storage != FieldStorage.instance)
             continue;
 
-        auto al = alignment ? alignment : computeAlignment(fld.y.type, is32Bit);
+        auto al = alignment ? alignment : computeAlignment(fld.y.type, is32Bit, simdAlignment);
 
         offset = alignTo(offset, al);
 
         if (fld.y is field)
             break;
 
-        offset += computeSize(fld.y.type, is32Bit);
+        offset += computeSize(fld.y.type, is32Bit, simdAlignment);
     }
 
     return offset;
 }
 
-public size_t computeAlignment(Type type, bool is32Bit)
+public size_t computeAlignment(Type type, bool is32Bit, size_t simdAlignment)
 {
     if (auto struc = cast(StructureType)type)
     {
@@ -93,13 +96,21 @@ public size_t computeAlignment(Type type, bool is32Bit)
         if (struc.fields.empty)
             return 1;
 
-        return computeSize(NativeUIntType.instance, is32Bit);
+        return computeSize(NativeUIntType.instance, is32Bit, simdAlignment);
     }
 
-    return computeSize(type, is32Bit);
+    if (auto sa = cast(StaticArrayType)type)
+    {
+        if (!sa.elements)
+            return 1;
+
+        return simdAlignment;
+    }
+
+    return computeSize(type, is32Bit, simdAlignment);
 }
 
-public BitArray computeBitmap(StructureType type, bool is32Bit)
+public BitArray computeBitmap(StructureType type, bool is32Bit, size_t simdAlignment)
 in
 {
     assert(type);
@@ -112,7 +123,7 @@ body
     bits ~= false; // The GC header.
     bits ~= true; // The user data field.
 
-    auto wordSize = computeSize(NativeUIntType.instance, is32Bit);
+    auto wordSize = computeSize(NativeUIntType.instance, is32Bit, simdAlignment);
 
     void innerCompute(StructureType type, size_t baseOffset)
     in
@@ -123,7 +134,7 @@ body
     {
         foreach (field; type.fields)
         {
-            auto offset = baseOffset + computeOffset(field.y, is32Bit);
+            auto offset = baseOffset + computeOffset(field.y, is32Bit, simdAlignment);
 
             if (auto structType = cast(StructureType)field.y.type)
                 innerCompute(structType, offset);

@@ -394,3 +394,45 @@ public final class VectorType : Type
         return elementType.toString() ~ "[" ~ to!string(_elements) ~ "]";
     }
 }
+
+public final class StaticArrayType : Type
+{
+    private Type _elementType;
+    private uint _elements;
+
+    pure nothrow invariant()
+    {
+        assert(_elementType);
+    }
+
+    package this(Type elementType, uint elements) pure nothrow
+    in
+    {
+        assert(elementType);
+    }
+    body
+    {
+        _elementType = elementType;
+        _elements = elements;
+    }
+
+    @property public Type elementType() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _elementType;
+    }
+
+    @property public uint elements() pure nothrow
+    {
+        return _elements;
+    }
+
+    @property public override string name()
+    {
+        return elementType.toString() ~ "{" ~ to!string(_elements) ~ "}";
+    }
+}

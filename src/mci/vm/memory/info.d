@@ -2,6 +2,7 @@ module mci.vm.memory.info;
 
 import mci.core.common,
        mci.core.container,
+       mci.core.memory,
        mci.core.nullable,
        mci.core.sync,
        mci.core.tuple,
@@ -82,11 +83,11 @@ in
 body
 {
     if (auto r = cast(ReferenceType)type)
-        return computeSize(r.elementType, is32Bit);
+        return computeSize(r.elementType, is32Bit, simdAlignment);
     else if (auto v = cast(VectorType)type)
-        return computeSize(v.elementType, is32Bit) * v.elements;
+        return computeSize(v.elementType, is32Bit, simdAlignment) * v.elements;
     else // For arrays, we just compute the size of the length field.
-        return computeSize(NativeUIntType.instance, is32Bit);
+        return computeSize(NativeUIntType.instance, is32Bit, simdAlignment);
 }
 
 public RuntimeTypeInfo getTypeInfo(Type type, bool is32Bit)
@@ -110,7 +111,7 @@ body
     BitArray bitmap;
 
     if (auto structType = cast(StructureType)type)
-        bitmap = computeBitmap(structType, is32Bit);
+        bitmap = computeBitmap(structType, is32Bit, simdAlignment);
 
     return typeInfoCache[tup] = new RuntimeTypeInfo(type, computeRealSize(type, is32Bit), bitmap);
 }
