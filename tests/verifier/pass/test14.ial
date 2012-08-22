@@ -1,0 +1,12 @@
+function void array_cmp()
+{
+    register uint{3} x;
+    register int32[] y;
+    register int32{3} z;
+
+    block entry
+    {
+        array.cmp.eq x, y, z;
+        leave;
+    }
+}

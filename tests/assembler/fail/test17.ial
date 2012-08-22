@@ -1,0 +1,8 @@
+function void main()
+{
+    register int{} ints;
+
+    block entry
+    {
+    }
+}

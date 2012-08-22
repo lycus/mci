@@ -1,0 +1,9 @@
+function void main()
+{
+    register int{64} ints;
+    register float32{3}(int, float64) fn;
+
+    block entry
+    {
+    }
+}
