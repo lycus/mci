@@ -4,6 +4,7 @@ import std.ascii,
        std.conv,
        mci.core.common,
        mci.core.container,
+       mci.core.memory,
        mci.core.utilities,
        mci.core.typing.core,
        mci.core.typing.members,
@@ -109,10 +110,10 @@ private final class PrettyPrinter
 
             auto elementCount = arr ? *cast(size_t*)p : vec.elements;
             auto elementType = arr ? arr.elementType : vec.elementType;
-            auto elementSize = computeSize(elementType, is32Bit);
+            auto elementSize = computeSize(elementType, is32Bit, simdAlignment);
 
             if (arr)
-                p += computeSize(NativeUIntType.instance, is32Bit);
+                p += computeSize(NativeUIntType.instance, is32Bit, simdAlignment);
 
             beginBlock();
 
@@ -148,7 +149,7 @@ private final class PrettyPrinter
                          {
                              newLine();
 
-                             auto offset = computeOffset(field.y, is32Bit);
+                             auto offset = computeOffset(field.y, is32Bit, simdAlignment);
                              process(field.y.type, mem + offset, is32Bit, field.x);
                          }
 

@@ -338,6 +338,43 @@ private final class VectorTypeReferenceDescriptor : TypeReferenceDescriptor
     }
 }
 
+private final class StaticArrayTypeReferenceDescriptor : TypeReferenceDescriptor
+{
+    private TypeReferenceDescriptor _elementType;
+    private uint _elements;
+
+    pure nothrow invariant()
+    {
+        assert(_elementType);
+    }
+
+    public this(TypeReferenceDescriptor elementType, uint elements) pure nothrow
+    in
+    {
+        assert(elementType);
+    }
+    body
+    {
+        _elementType = elementType;
+        _elements = elements;
+    }
+
+    @property public TypeReferenceDescriptor elementType() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _elementType;
+    }
+
+    @property public uint elements() pure nothrow
+    {
+        return _elements;
+    }
+}
+
 private final class FunctionPointerTypeReferenceDescriptor : TypeReferenceDescriptor
 {
     private CallingConvention _callingConvention;
@@ -616,6 +653,8 @@ public final class ModuleReader : ModuleLoader
             return getArrayType(toType(arrType.elementType));
         else if (auto vecType = cast(VectorTypeReferenceDescriptor)descriptor)
             return getVectorType(toType(vecType.elementType), vecType.elements);
+        else if (auto saType = cast(StaticArrayTypeReferenceDescriptor)descriptor)
+            return getStaticArrayType(toType(saType.elementType), saType.elements);
         else if (auto fpType = cast(FunctionPointerTypeReferenceDescriptor)descriptor)
         {
             auto params = new NoNullList!Type(map(fpType.parameterTypes, (TypeReferenceDescriptor desc) => toType(desc)));
@@ -749,6 +788,11 @@ public final class ModuleReader : ModuleLoader
                 auto elements = _reader.read!uint();
 
                 return new VectorTypeReferenceDescriptor(element, elements);
+            case TypeReferenceType.staticArray:
+                auto element = readTypeReference();
+                auto elements = _reader.read!uint();
+
+                return new StaticArrayTypeReferenceDescriptor(element, elements);
             case TypeReferenceType.function_:
                 TypeReferenceDescriptor returnType;
 

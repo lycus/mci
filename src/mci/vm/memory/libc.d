@@ -3,6 +3,7 @@ module mci.vm.memory.libc;
 import core.stdc.stdlib,
        std.conv,
        mci.core.container,
+       mci.core.memory,
        mci.core.sync,
        mci.core.tuple,
        mci.vm.execution,
@@ -180,19 +181,19 @@ public final class LibCGarbageCollector : GarbageCollector, InteractiveGarbageCo
         if (!weak)
             return null;
 
-        *cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit)) = target;
+        *cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit, simdAlignment)) = target;
 
         return weak;
     }
 
     public override RuntimeObject* getWeakTarget(RuntimeObject* weak)
     {
-        return *cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
+        return *cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit, simdAlignment));
     }
 
     public override void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
     {
-        *cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit)) = target;
+        *cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit, simdAlignment)) = target;
     }
 
     public void addAllocateCallback(GarbageCollectorFinalizer callback)

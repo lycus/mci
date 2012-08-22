@@ -278,6 +278,10 @@ body
         if (vec.elementType is elementType)
             return true;
 
+    if (auto sa = cast(StaticArrayType)type)
+        if (sa.elementType is elementType)
+            return true;
+
     return false;
 }
 
@@ -326,7 +330,7 @@ body
 public Type getElementType(Type type) pure nothrow
 in
 {
-    assert(cast(PointerType)type || cast(ArrayType)type || cast(VectorType)type);
+    assert(cast(PointerType)type || cast(ArrayType)type || cast(VectorType)type || cast(StaticArrayType)type);
 }
 body
 {
@@ -334,6 +338,8 @@ body
         return vec.elementType;
     else if (auto arr = cast(ArrayType)type)
         return arr.elementType;
+    else if (auto sa = cast(StaticArrayType)type)
+        return sa.elementType;
     else
         return (cast(PointerType)type).elementType;
 }
@@ -346,7 +352,8 @@ in
 body
 {
     return cast(ArrayType)type ||
-           cast(VectorType)type;
+           cast(VectorType)type ||
+           cast(StaticArrayType)type;
 }
 
 public bool isManaged(Type type) pure nothrow

@@ -6,6 +6,7 @@ import core.thread,
        mci.core.common,
        mci.core.config,
        mci.core.container,
+       mci.core.memory,
        mci.core.sync,
        mci.core.tuple,
        mci.core.typing.types,
@@ -336,7 +337,7 @@ static if (isPOSIX)
             if (!weak)
                 return null;
 
-            auto addr = cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
+            auto addr = cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit, simdAlignment));
 
             // This obscures the pointer so it doesn't look like a GC reference.
             *addr = cast(RuntimeObject*)hidePointer(target);
@@ -352,7 +353,7 @@ static if (isPOSIX)
                 return revealPointer(*cast(RuntimeObject**)ptr);
             }
 
-            auto addr = cast(void*)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
+            auto addr = cast(void*)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit, simdAlignment));
 
             _weakRefLock.lock();
 
@@ -364,7 +365,7 @@ static if (isPOSIX)
 
         public override void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
         {
-            auto addr = cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
+            auto addr = cast(RuntimeObject**)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit, simdAlignment));
 
             _weakRefLock.lock();
 

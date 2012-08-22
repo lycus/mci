@@ -5,6 +5,7 @@ import core.exception,
        core.thread,
        std.conv,
        mci.core.container,
+       mci.core.memory,
        mci.core.sync,
        mci.core.weak,
        mci.vm.intrinsics.declarations,
@@ -167,7 +168,7 @@ public final class DGarbageCollector : GarbageCollector
         if (!weak)
             return null;
 
-        auto addr = cast(Weak!WeakBox*)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
+        auto addr = cast(Weak!WeakBox*)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit, simdAlignment));
 
         // Ensure that the GC doesn't pick up the weak reference.
         GC.setAttr(addr, GC.BlkAttr.NO_SCAN);
@@ -182,7 +183,7 @@ public final class DGarbageCollector : GarbageCollector
 
     public override RuntimeObject* getWeakTarget(RuntimeObject* weak)
     {
-        auto weakObj = cast(Weak!WeakBox*)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
+        auto weakObj = cast(Weak!WeakBox*)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit, simdAlignment));
 
         _weakRefLock.lock();
 
@@ -196,7 +197,7 @@ public final class DGarbageCollector : GarbageCollector
 
     public override void setWeakTarget(RuntimeObject* weak, RuntimeObject* target)
     {
-        auto addr = cast(Weak!WeakBox*)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit));
+        auto addr = cast(Weak!WeakBox*)(cast(size_t)weak + computeOffset(first(weakType.fields).y, mci.core.config.is32Bit, simdAlignment));
 
         _weakRefLock.lock();
 

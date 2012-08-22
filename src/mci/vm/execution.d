@@ -6,6 +6,7 @@ import core.stdc.stdlib,
        mci.core.common,
        mci.core.config,
        mci.core.container,
+       mci.core.memory,
        mci.core.code.functions,
        mci.core.typing.core,
        mci.core.typing.types,
@@ -99,7 +100,7 @@ public final class RuntimeValue
         _type = type;
 
         // GC roots must be at least one machine word long.
-        _data = cast(ubyte*)calloc(1, max(computeSize(NativeUIntType.instance, is32Bit), computeSize(type, is32Bit)));
+        _data = cast(ubyte*)calloc(1, max(computeSize(NativeUIntType.instance, is32Bit, simdAlignment), computeSize(type, is32Bit, simdAlignment)));
         gc.addRoot(cast(RuntimeObject**)_data);
     }
 
