@@ -16,6 +16,8 @@ the following categories of types:
     example, ``float64[]``).
   - Vector types: Similar to arrays, but they have a fixed, static length
     (i.e. ``float64[3]``).
+  - Static array types: Similar to vectors, but live 'in place' where they
+    are used (i.e. in a structure or a register). For example, ``int{3}``.
   - Function pointer types: These point to a function which can be invoked
     indirectly. They contain a calling convention, return type and parameter
     types (for example, ``int32(float32, float64)`` would be a pointer to a
@@ -30,6 +32,7 @@ Notation             Meaning
 ``T``                Type name.
 ``T[]``              Array of ``T``.
 ``T[E]``             Vector of ``T`` with ``E`` elements.
+``T{E}``             Static array of ``T`` with ``E`` elements.
 ``T*``               Pointer to ``T``.
 ``T&``               Reference to ``T``.
 ``R(T1, ...)``       Function pointer returning ``R``, taking ``T1``, ... arguments.
@@ -238,6 +241,30 @@ Examples:
 
 Any vector-to-vector/array conversion is valid as long as the source vector's
 element type is convertible to the target vector/array's element type.
+
+Static array types
+------------------
+
+Static arrays are similar to vectors with the difference that they are stored
+'in place'. That is, if a field in a structure is typed to be a static array,
+that array's elements will be embedded directly in the structure. A register
+typed to be a static array will also result in the the entire array being on
+the stack.
+
+Static arrays are, like arrays and vectors, guaranteed to be suitably aligned
+for SIMD operations on the machine.
+
+Static arrays are passed by value. This is unlike the C calling convention
+where they are passed by reference. The same behavior can be achieved by
+simply passing pointers to static arrays.
+
+Examples:
+
+* Static array of ``int32`` with 3 elements: ``int32{3}``
+* Static array of pointers to ``int32`` with 64 elements: ``int32*{64}``
+* Static array of 3 static arrays of ``int32`` with 8 elements: ``int32{8}{3}``
+
+Static arrays cannot be converted to any other type.
 
 Function pointer types
 ----------------------

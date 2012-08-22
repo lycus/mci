@@ -70,6 +70,7 @@ The grammar for type specifications is:
     ReferenceType : `TypeSpecification` "&"
     ArrayType : `TypeSpecification` "[" "]"
     VectorType : `TypeSpecification` "[" `Literal` "]"
+    StaticArrayType : `TypeSpecification` "{" `Literal` "}"
     FunctionPointerType : `ReturnType` "(" `TypeParameterList` ")" [ `CallingConvention` ]
     TypeParameterList : "(" [ `TypeSpecification` { "," `TypeSpecification` } ] ")"
     CoreType : "int" | "uint" | "int8" | "uint8" | "int16" | "uint16" | "int32 | "uint32" | "int64" | "uint64" | "float32" | "float64"
