@@ -192,8 +192,9 @@ load.i8a
 
 Loads a constant array of 8-bit signed integers into the target register.
 
-The target register must be of type ``int8[]``, ``int8*``, or a vector of
-``int8`` with an element count matching that of the array operand.
+The target register must be of type ``int8[]``, ``int8*``, or a vector or
+static array of ``int8`` with an element count matching that of the array
+operand.
 
 When the target register is a pointer, the data must be explicitly freed with
 mem.free_. If the given array is of zero length, a null pointer is assigned
@@ -211,8 +212,9 @@ load.ui8a
 
 Loads a constant array of 8-bit unsigned integers into the target register.
 
-The target register must be of type ``uint8[]``, ``uint8*``, or a vector of
-``uint8`` with an element count matching that of the array operand.
+The target register must be of type ``uint8[]``, ``uint8*``, or a vector or
+static array of ``uint8`` with an element count matching that of the array
+operand.
 
 When the target register is a pointer, the data must be explicitly freed with
 mem.free_. If the given array is of zero length, a null pointer is assigned
@@ -230,8 +232,9 @@ load.i16a
 
 Loads a constant array of 16-bit signed integers into the target register.
 
-The target register must be of type ``int16[]``, ``int16*``, or a vector of
-``int16`` with an element count matching that of the array operand.
+The target register must be of type ``int16[]``, ``int16*``, or a vector or
+static array of ``int16`` with an element count matching that of the array
+operand.
 
 When the target register is a pointer, the data must be explicitly freed with
 mem.free_. If the given array is of zero length, a null pointer is assigned
@@ -249,8 +252,9 @@ load.ui16a
 
 Loads a constant array of 16-bit unsigned integers into the target register.
 
-The target register must be of type ``uint16[]``, ``uint16*``, or a vector of
-``uint16`` with an element count matching that of the array operand.
+The target register must be of type ``uint16[]``, ``uint16*``, or a vector or
+static array of ``uint16`` with an element count matching that of the array
+operand.
 
 When the target register is a pointer, the data must be explicitly freed with
 mem.free_. If the given array is of zero length, a null pointer is assigned
@@ -268,8 +272,9 @@ load.i32a
 
 Loads a constant array of 32-bit signed integers into the target register.
 
-The target register must be of type ``int32[]``, ``int32*``, or a vector of
-``int32`` with an element count matching that of the array operand.
+The target register must be of type ``int32[]``, ``int32*``, or a vector or
+static array of ``int32`` with an element count matching that of the array
+operand.
 
 When the target register is a pointer, the data must be explicitly freed with
 mem.free_. If the given array is of zero length, a null pointer is assigned
@@ -287,8 +292,9 @@ load.ui32a
 
 Loads a constant array of 32-bit unsigned integers into the target register.
 
-The target register must be of type ``uint32[]``, ``uint32*``, or a vector of
-``uint32`` with an element count matching that of the array operand.
+The target register must be of type ``uint32[]``, ``uint32*``, or a vector or
+static array of ``uint32`` with an element count matching that of the array
+operand.
 
 When the target register is a pointer, the data must be explicitly freed with
 mem.free_. If the given array is of zero length, a null pointer is assigned
@@ -306,8 +312,9 @@ load.i64a
 
 Loads a constant array of 64-bit signed integers into the target register.
 
-The target register must be of type ``int64[]``, ``int64*``, or a vector of
-``int64`` with an element count matching that of the array operand.
+The target register must be of type ``int64[]``, ``int64*``, or a vector or
+static array of ``int64`` with an element count matching that of the array
+operand.
 
 When the target register is a pointer, the data must be explicitly freed with
 mem.free_. If the given array is of zero length, a null pointer is assigned
@@ -325,8 +332,9 @@ load.ui64a
 
 Loads a constant array of 64-bit unsigned integers into the target register.
 
-The target register must be of type ``uint64[]``, ``uint64*``, or a vector of
-``uint64`` with an element count matching that of the array operand.
+The target register must be of type ``uint64[]``, ``uint64*``, or a vector or
+static array of ``uint64`` with an element count matching that of the array
+operand.
 
 When the target register is a pointer, the data must be explicitly freed with
 mem.free_. If the given array is of zero length, a null pointer is assigned
@@ -346,7 +354,8 @@ Loads a constant array of 32-bit floating-point values into the target
 register.
 
 The target register must be of type ``float32[]``, ``float32*``, or a vector
-of ``float32`` with an element count matching that of the array operand.
+or static array of ``float32`` with an element count matching that of the
+array operand.
 
 When the target register is a pointer, the data must be explicitly freed with
 mem.free_. If the given array is of zero length, a null pointer is assigned
@@ -366,7 +375,8 @@ Loads a constant array of 64-bit floating-point values into the target
 register.
 
 The target register must be of type ``float64[]``, ``float64*``, or a vector
-of ``float64`` with an element count matching that of the array operand.
+or static array of ``float64`` with an element count matching that of the
+array operand.
 
 When the target register is a pointer, the data must be explicitly freed with
 mem.free_. If the given array is of zero length, a null pointer is assigned
@@ -434,7 +444,8 @@ Loads the absolute size of a type specification's layout in memory into the
 target register.
 
 Note that for vectors, this is not the full size of the vector, but rather
-the size of the reference to the vector (as with arrays and pointers).
+the size of the reference to the vector (as with arrays and pointers). For
+static arrays, this is the full size of the entire array.
 
 The target register must be of type ``uint``.
 
@@ -1052,8 +1063,8 @@ register.
 If the source array/vector is null, behavior is undefined. Indexing beyond
 the bounds of an array results in undefined behavior.
 
-The first source register must be an array or vector type, while the second
-register must be of type ``uint``.
+The first source register must be an array, vector, or static array, while the
+second register must be of type ``uint``.
 
 The target register must be of the first source register's element type.
 
@@ -1074,9 +1085,9 @@ register.
 If the source array/vector is null, behavior is undefined. Indexing beyond
 the bounds of an array results in undefined behavior.
 
-The first source register must be an array or vector type, while the second
-register must be of type ``uint``. The third register must be of the element
-type of the array in the first source register.
+The first source register must be an array, vector, or static array, while the
+second register must be of type ``uint``. The third register must be of the
+element type of the array in the first source register.
 
 array.addr
 ----------
@@ -1096,8 +1107,8 @@ If the source array/vector is null, behavior is undefined. Taking the address
 of an element beyond the bounds of an array is acceptable, but dereferencing
 or writing to it results in undefined behavior.
 
-The first source register must be an array or vector type, while the second
-source register must be of type ``uint``.
+The first source register must be an array, vector, or static array, while the
+second register must be of type ``uint``.
 
 The target register must be a pointer to the first source register's element
 type.
@@ -1113,11 +1124,11 @@ array.len
     None
 
 Loads the length of an array into the target register. For arrays, this is
-the dynamic size, while for vectors, it is the fixed size.
+the dynamic size, while for vectors and static arrays, it is the fixed size.
 
 If the source array/vector is null, behavior is undefined.
 
-The source register must be an array or a vector.
+The source register must be an array, vector, or static array.
 
 The target register must be of type ``uint``.
 
@@ -1131,12 +1142,12 @@ array.ari.add
 **Operand type**
     None
 
-Performs arithmetic addition on elements of arrays or vectors.
+Performs arithmetic addition on elements of arrays, vectors, or static arrays.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs.
 
-The first two source registers must be arrays or vectors of the types allowed
-in ari.add_, and must have the same element type.
+The first two source registers must be arrays, vectors, or static arrays of
+the types allowed in ari.add_, and must have the same element type.
 
 If the first source register is an array or vector of a pointer type, the
 third source register must either be of type ``uint`` or an array or vector
@@ -1154,12 +1165,13 @@ array.ari.sub
 **Operand type**
     None
 
-Performs arithmetic subtraction on elements of arrays or vectors.
+Performs arithmetic subtraction on elements of arrays, vectors, or static
+arrays.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs.
 
-The first two source registers must be arrays or vectors of the types allowed
-in ari.sub_, and must have the same element type.
+The first two source registers must be arrays, vectors, or static arrays of
+the types allowed in ari.sub_, and must have the same element type.
 
 If the first source register is an array or vector of a pointer type, the
 third source register must either be of type ``uint`` or an array or vector
@@ -1177,12 +1189,13 @@ array.ari.mul
 **Operand type**
     None
 
-Performs arithmetic multiplication on elements of arrays or vectors.
+Performs arithmetic multiplication on elements of arrays, vectors, or static
+arrays.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs.
 
-The first two source registers must be arrays or vectors of the types allowed
-in ari.mul_, and must have the same element type.
+The first two source registers must be arrays, vectors, or static arrays of
+the types allowed in ari.mul_, and must have the same element type.
 
 The third source register must be of the element type of the first source
 register, or be an array or vector of the first source register's element
@@ -1198,14 +1211,14 @@ array.ari.div
 **Operand type**
     None
 
-Performs arithmetic division on elements of arrays or vectors.
+Performs arithmetic division on elements of arrays, vectors, or static arrays.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs. If
 the divisor is zero and the computation involves integers, behavior is
 undefined. For floating-point types, behavior depends on the machine.
 
-The first two source registers must be arrays or vectors of the types allowed
-in ari.div_, and must have the same element type.
+The first two source registers must be arrays, vectors, or static arrays of
+the types allowed in ari.div_, and must have the same element type.
 
 The third source register must be of the element type of the first source
 register, or be an array or vector of the first source register's element
@@ -1221,15 +1234,15 @@ array.ari.rem
 **Operand type**
     None
 
-Computes the remainder resulting from dividing elements of arrays or vectors
-with the given value(s).
+Computes the remainder resulting from dividing elements of arrays, vectors, or
+static arrays with the given value(s).
 
 If any of the involved arrays/vectors are null, undefined behavior occurs. If
 the divisor is zero and the computation involves integers, behavior is
 undefined. For floating-point types, behavior depends on the machine.
 
-The first two source registers must be arrays or vectors of the types allowed
-in ari.rem_, and must have the same element type.
+The first two source registers must be arrays, vectors, or static arrays of
+the types allowed in ari.rem_, and must have the same element type.
 
 The third source register must be of the element type of the first source
 register, or be an array or vector of the first source register's element
@@ -1245,12 +1258,12 @@ array.ari.neg
 **Operand type**
     None
 
-Negates all elements of an array or vector.
+Negates all elements of an array, vector, or static array.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs.
 
-The two source registers must be arrays or vectors of the types allowed in
-ari.neg_, and must have the same element type.
+The two source registers must be arrays, vectors, or static arrays of the
+types allowed in ari.neg_, and must have the same element type.
 
 array.bit.and
 -------------
@@ -1262,12 +1275,12 @@ array.bit.and
 **Operand type**
     None
 
-Performs bit-wise AND on elements of arrays or vectors.
+Performs bit-wise AND on elements of arrays, vectors, or static arrays.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs.
 
-The first two source registers must be arrays or vectors of the types allowed
-in bit.and_, and must have the same element type.
+The first two source registers must be arrays, vectors, or static arrays of
+the types allowed in bit.and_, and must have the same element type.
 
 The third source register must be of the element type of the first source
 register, or be an array or vector of the first source register's element
@@ -1283,12 +1296,12 @@ array.bit.or
 **Operand type**
     None
 
-Performs bit-wise OR on elements of arrays or vectors.
+Performs bit-wise OR on elements of arrays, vectors, or static arrays.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs.
 
-The first two source registers must be arrays or vectors of the types allowed
-in bit.or_, and must have the same element type.
+The first two source registers must be arrays, vectors, or static arrays of
+the types allowed in bit.or_, and must have the same element type.
 
 The third source register must be of the element type of the first source
 register, or be an array or vector of the first source register's element
@@ -1304,12 +1317,12 @@ array.bit.xor
 **Operand type**
     None
 
-Performs bit-wise XOR on elements of arrays or vectors.
+Performs bit-wise XOR on elements of arrays, vectors, or static arrays.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs.
 
-The first two source registers must be arrays or vectors of the types allowed
-in bit.xor_, and must have the same element type.
+The first two source registers must be arrays, vectors, or static arrays of
+the types allowed in bit.xor_, and must have the same element type.
 
 The third source register must be of the element type of the first source
 register, or be an array or vector of the first source register's element
@@ -1325,13 +1338,13 @@ array.bit.neg
 **Operand type**
     None
 
-Performs a bit-wise complement negation operation on all elements of an array
-or vector.
+Performs a bit-wise complement negation operation on all elements of an array,
+vector, or static array.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs.
 
-The two source registers must be arrays or vectors of the types allowed in
-bit.neg_, and must have the same element type.
+The two source registers must be arrays, vectors, or static arrays of the
+types allowed in bit.neg_, and must have the same element type.
 
 array.not
 ---------
@@ -1343,12 +1356,13 @@ array.not
 **Operand type**
     None
 
-Performs a logical negation on all elements of an array or vector.
+Performs a logical negation on all elements of an array, vector, or static
+array.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs.
 
-The first two source registers must be arrays or vectors of the types allowed
-in not_, and must have the same element type.
+The first two source registers must be arrays, vectors, or static arrays of
+the types allowed in not_, and must have the same element type.
 
 array.shl
 ---------
@@ -1360,17 +1374,18 @@ array.shl
 **Operand type**
     None
 
-Performs a left shift of the bits of elements in an array or vector.
+Performs a left shift of the bits of elements in an array, vector, or static
+array.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs. If
 the shift amount is larger than or equal to the amount of bits of the element
 types involved, behavior is undefined.
 
-The first two source registers must be arrays or vectors of the types allowed
-in shl_, and must have the same element type.
+The first two source registers must be arrays, vectors, or static arrays of
+the types allowed in shl_, and must have the same element type.
 
-The second source register must be of type ``uint`` or an array or vector of
-these.
+The third source register must be of type ``uint`` or an array, vector, or
+static array of these.
 
 array.shr
 ---------
@@ -1382,17 +1397,18 @@ array.shr
 **Operand type**
     None
 
-Performs a right shift of the bits of elements in an array or vector.
+Performs a right shift of the bits of elements in an array, vector, or static
+array.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs. If
 the shift amount is larger than or equal to the amount of bits of the element
 types involved, behavior is undefined.
 
-The first two source registers must be arrays or vectors of the types allowed
-in shr_, and must have the same element type.
+The first two source registers must be arrays, vectors, or static arrays of
+the types allowed in shr_, and must have the same element type.
 
-The third source register must be of type ``uint`` or an array or vector of
-these.
+The third source register must be of type ``uint`` or an array, vector, or
+static array of these.
 
 array.rol
 ---------
@@ -1404,17 +1420,18 @@ array.rol
 **Operand type**
     None
 
-Performs a left rotation of bits of the elements in an array or vector.
+Performs a left rotation of bits of the elements in an array, vector, or
+static array.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs. If
 the shift amount is larger than or equal to the amount of bits of the element
 types involved, behavior is undefined.
 
-The first two source registers must be arrays or vectors of the types allowed
-in rol_, and must have the same element type.
+The first two source registers must be arrays, vectors, or static arrays of
+the types allowed in rol_, and must have the same element type.
 
-The third source register must be of type ``uint`` or an array or vector of
-these.
+The third source register must be of type ``uint`` or an array, vector, or
+static array of these.
 
 array.ror
 ---------
@@ -1426,17 +1443,18 @@ array.ror
 **Operand type**
     None
 
-Performs a right rotation of bits of the elements in an array or vector.
+Performs a right rotation of bits of the elements in an array, vector, or
+static array.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs. If
 the shift amount is larger than or equal to the amount of bits of the element
 types involved, behavior is undefined.
 
-The first two source registers must be arrays or vectors of the types allowed
-in ror_, and must have the same element type.
+The first two source registers must be arrays, vectors, or static arrays of
+the types allowed in ror_, and must have the same element type.
 
-The third source register must be of type ``uint`` or an array or vector of
-these.
+The third source register must be of type ``uint`` or an array, vector, or
+static array of these.
 
 array.conv
 ----------
@@ -1448,16 +1466,22 @@ array.conv
 **Operand type**
     None
 
-Converts elements in the array or vector in the first source register to
-the element type of the array or vector in the second source register and
-assigns them to the second source register's elements incrementally.
+Converts elements in the array, vector, or static array in the first source
+register to the element type of the array, vector, or static array in the
+second source register and assigns them to the second source register's
+elements incrementally.
 
 The following conversions are valid:
 
-* ``T[E]`` -> ``U[]`` for any valid ``T`` -> ``U`` conversion.
-* ``T[E]`` -> ``U[E]`` for any valid ``T`` -> ``U`` conversion.
 * ``T[]`` -> ``U[]`` for any valid ``T`` -> ``U`` conversion.
-* ``T[]`` -> ``U[E]`` for any valid ``T`` -> ``U`` conversion.
+* ``T[]`` -> ``U[F]`` for any valid ``T`` -> ``U`` conversion.
+* ``T[]`` -> ``U{F}`` for any valid ``T`` -> ``U`` conversion.
+* ``T[E]`` -> ``U[]`` for any valid ``T`` -> ``U`` conversion.
+* ``T[E]`` -> ``U[F]`` for any valid ``T`` -> ``U`` conversion.
+* ``T[E]`` -> ``U{F}`` for any valid ``T`` -> ``U`` conversion.
+* ``T{E}`` -> ``U[]`` for any valid ``T`` -> ``U`` conversion.
+* ``T{E}`` -> ``U[F]`` for any valid ``T`` -> ``U`` conversion.
+* ``T{E}`` -> ``U{F}`` for any valid ``T`` -> ``U`` conversion.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs.
 
@@ -1473,13 +1497,13 @@ array.cmp.eq
 **Operand type**
     None
 
-Performs a cmp.eq_ on all elements of arrays or vectors.
+Performs a cmp.eq_ on all elements of arrays, vectors, or static arrays.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs.
 
-The first source register must be an array or vector of ``uint``. The second
-and third source registers must be arrays or vectors having the same element
-type.
+The first source register must be an array, vector, or static array of
+``uint``. The second and third source registers must be arrays, vectors, or
+static arrays having the same element type.
 
 array.cmp.neq
 -------------
@@ -1491,13 +1515,13 @@ array.cmp.neq
 **Operand type**
     None
 
-Performs a cmp.neq_ on all elements of arrays or vectors.
+Performs a cmp.neq_ on all elements of arrays, vectors, or static arrays.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs.
 
-The first source register must be an array or vector of ``uint``. The second
-and third source registers must be arrays or vectors having the same element
-type.
+The first source register must be an array, vector, or static array of
+``uint``. The second and third source registers must be arrays, vectors, or
+static arrays having the same element type.
 
 array.cmp.gt
 ------------
@@ -1509,13 +1533,13 @@ array.cmp.gt
 **Operand type**
     None
 
-Performs a cmp.gt_ on all elements of arrays or vectors.
+Performs a cmp.gt_ on all elements of arrays, vectors, or static arrays.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs.
 
-The first source register must be an array or vector of ``uint``. The second
-and third source registers must be arrays or vectors having the same element
-type.
+The first source register must be an array, vector, or static array of
+``uint``. The second and third source registers must be arrays, vectors, or
+static arrays having the same element type.
 
 array.cmp.lt
 ------------
@@ -1527,13 +1551,13 @@ array.cmp.lt
 **Operand type**
     None
 
-Performs a cmp.lt_ on all elements of arrays or vectors.
+Performs a cmp.lt_ on all elements of arrays, vectors, or static arrays.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs.
 
-The first source register must be an array or vector of ``uint``. The second
-and third source registers must be arrays or vectors having the same element
-type.
+The first source register must be an array, vector, or static array of
+``uint``. The second and third source registers must be arrays, vectors, or
+static arrays having the same element type.
 
 array.cmp.gteq
 --------------
@@ -1545,13 +1569,13 @@ array.cmp.gteq
 **Operand type**
     None
 
-Performs a cmp.gteq_ on all elements of arrays or vectors.
+Performs a cmp.gteq_ on all elements of arrays, vectors, or static arrays.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs.
 
-The first source register must be an array or vector of ``uint``. The second
-and third source registers must be arrays or vectors having the same element
-type.
+The first source register must be an array, vector, or static array of
+``uint``. The second and third source registers must be arrays, vectors, or
+static arrays having the same element type.
 
 array.cmp.lteq
 --------------
@@ -1563,13 +1587,13 @@ array.cmp.lteq
 **Operand type**
     None
 
-Performs a cmp.lteq_ on all elements of arrays or vectors.
+Performs a cmp.lteq_ on all elements of arrays, vectors, or static arrays.
 
 If any of the involved arrays/vectors are null, undefined behavior occurs.
 
-The first source register must be an array or vector of ``uint``. The second
-and third source registers must be arrays or vectors having the same element
-type.
+The first source register must be an array, vector, or static array of
+``uint``. The second and third source registers must be arrays, vectors, or
+static arrays having the same element type.
 
 Structure field instructions
 ++++++++++++++++++++++++++++
