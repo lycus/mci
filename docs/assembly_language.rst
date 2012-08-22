@@ -146,7 +146,9 @@ Registers
 
 A register consists of a type and a name. A function can have an arbitrary
 amount of registers. If a function is in SSA form, a register can only be
-assigned once.
+assigned once, and is required to be assigned explicitly before use.
+
+Registers are guaranteed to be completely zeroed out upon function entry.
 
 Register declarations have the grammar:
 
