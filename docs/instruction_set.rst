@@ -738,7 +738,7 @@ rol
 **Operand type**
     None
 
-Rotate the bits of the value in the first source register left by the amount
+Rotates the bits of the value in the first source register left by the amount
 given in the second source register. This is similar to shl_, but instead of
 performing zero extension, the rotated bits are inserted.
 
@@ -761,7 +761,7 @@ ror
 **Operand type**
     None
 
-Rotate the bits of the value in the first source register right by the amount
+Rotates the bits of the value in the first source register right by the amount
 given in the second source register. This is similar to shr_, but instead of
 performing zero/sign extension, the rotated bits are inserted.
 
@@ -2173,8 +2173,9 @@ This must be the only instruction in a raw function.
 
 This instruction has a few consequences:
 
-* All optimizations that would affect the layout of the stack cannot happen.
 * It must be the only instruction in the function.
+* The function must have ``cdecl`` or ``stdcall`` calling convention.
+* All optimizations that would affect the layout of the stack cannot happen.
 
 Of course, usage of this instruction results in unportable code.
 
@@ -2183,8 +2184,6 @@ inline assembly in high-level languages. Arguments given to raw functions
 are passed according to the calling convention of the function and the
 return value (if any) should be passed according to the calling convention
 too.
-
-Raw functions must have ``cdecl`` or ``stdcall`` calling convention.
 
 It should be noted that this is not sufficient to implement full-blown
 inline assembly as in many C and C++ compilers. A general requirement of
@@ -2210,10 +2209,8 @@ actual function entry point in a native library.
 
 This instruction has a few consequences:
 
-* All optimizations that would affect the layout of the stack cannot happen.
 * It must be the only instruction in the function.
-
-FFI functions must have ``cdecl`` or ``stdcall`` calling convention.
+* The function must have ``cdecl`` or ``stdcall`` calling convention.
 
 Note that the native function isn't linked to statically. The execution
 engine (either the interpreter or the JIT/AOT engines) will attempt to
@@ -2299,7 +2296,8 @@ copy
     None
 
 This instruction copies the value in the source register into the target
-register.
+register. This is similar to a simple assignment in most programming
+languages; it is not a deep copy.
 
 This instruction is not valid in SSA form.
 
