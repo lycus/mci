@@ -74,6 +74,12 @@ body
     if (function_.attributes & FunctionAttributes.noInlining)
         generator.writer.writeln("__attribute__((noinline))");
 
+    if (function_.attributes & FunctionAttributes.noReturn)
+        generator.writer.writeln("__attribute__((noreturn))");
+
+    if (function_.attributes & FunctionAttributes.noThrow)
+        generator.writer.writeln("__attribute__((nothrow))");
+
     // A bit of a dirty hack for raw functions.
     if (getFirstInstruction(function_, opRaw))
         generator.writer.writeln("__attribute__((naked))");
