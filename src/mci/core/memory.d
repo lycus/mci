@@ -1,6 +1,7 @@
 module mci.core.memory;
 
-import std.traits,
+import core.cpuid,
+       std.traits,
        mci.core.common,
        mci.core.config;
 
@@ -23,6 +24,7 @@ else
 }
 
 public __gshared size_t pageSize; /// Holds the page size of the system.
+public __gshared size_t simdAlignment; /// Holds the machine's native SIMD alignment (4/8 (32-bit/64-bit), 16, or 32).
 
 shared static this()
 {
@@ -35,6 +37,18 @@ shared static this()
         GetSystemInfo(&info);
 
         pageSize = info.dwAllocationGranularity;
+    }
+
+    // The machine word size is a reasonable default alignment
+    // boundary, since we just assume no SIMD is present.
+    simdAlignment = size_t.sizeof;
+
+    static if (architecture == Architecture.x86)
+    {
+        if (avx)
+            simdAlignment = 32;
+        else if (sse)
+            simdAlignment = 16;
     }
 }
 
