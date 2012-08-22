@@ -290,6 +290,8 @@ public enum FunctionAttributes : ubyte
     pure_ = 0x04, /// The function alters no state visible outside of it and doesn't depend on any global state.
     noOptimization = 0x08, /// The function must not be optimized.
     noInlining = 0x10, /// The function must not be inlined.
+    noReturn = 0x20, /// The function never returns via a terminator instruction.
+    noThrow = 0x40, /// The function cannot throw any exceptions.
 }
 
 /**

@@ -2120,6 +2120,9 @@ leave
 Leaves (i.e. returns from) the current function. This is only valid if
 the function returns ``void`` (or, in other words, has no return type).
 
+Using this instruction in a ``noreturn`` function results in undefined
+behavior.
+
 This is a terminator instruction.
 
 return
@@ -2135,6 +2138,9 @@ return
 Returns from the current function with the value in the source register
 as the return value. This is only valid in functions that don't return
 ``void`` (i.e. have a return type).
+
+Using this instruction in a ``noreturn`` function results in undefined
+behavior.
 
 The source register must be the exact same type as the function's return
 type.
@@ -2152,7 +2158,8 @@ dead
     None
 
 Informs the optimizer of a branch that can safely be assumed unreachable
-(and thus optimized out).
+(and thus optimized out). Any code following this instruction is assumed
+to be dead.
 
 This is a terminator instruction.
 
@@ -2215,6 +2222,9 @@ inline assembly using this instruction is that the raw blob must contain
 code that is neutral to relocations, as it is not in any way guaranteed
 where the code blob will be emitted in memory.
 
+If the raw machine code returns and the function is marked ``noreturn``,
+undefined behavior results.
+
 This is a terminator instruction.
 
 ffi
@@ -2239,6 +2249,9 @@ This instruction has a few consequences:
 Note that the native function isn't linked to statically. The execution
 engine (either the interpreter or the JIT/AOT engines) will attempt to
 locate the native entry point when the FFI function is called.
+
+If the native function returns and the function is marked ``noreturn``,
+undefined behavior results.
 
 This is a terminator instruction.
 

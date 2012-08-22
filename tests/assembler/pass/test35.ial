@@ -1,0 +1,12 @@
+function noreturn nothrow void main()
+{
+    block entry
+    {
+        jump (other);
+    }
+
+    block other
+    {
+        jump (entry);
+    }
+}

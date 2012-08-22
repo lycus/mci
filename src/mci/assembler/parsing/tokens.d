@@ -39,6 +39,8 @@ public enum TokenType : ubyte
     pure_, /// The $(PRE pure) keyword.
     noOptimization, /// The $(PRE nooptimize) keyword.
     noInlining, /// The $(PRE noinline) keyword.
+    noReturn, /// The $(PRE noreturn) keyword.
+    noThrow, /// The $(PRE nothrow) keyword.
     register, /// The $(PRE register) keyword.
     block, /// The $(PRE block) keyword.
     unwind, /// The $(PRE unwind) keyword.
@@ -94,6 +96,8 @@ nothrow shared static this()
                        "pure" : TokenType.pure_,
                        "nooptimize" : TokenType.noOptimization,
                        "noinline" : TokenType.noInlining,
+                       "noreturn" : TokenType.noReturn,
+                       "nothrow" : TokenType.noThrow,
                        "register" : TokenType.register,
                        "block" : TokenType.block,
                        "unwind" : TokenType.unwind,

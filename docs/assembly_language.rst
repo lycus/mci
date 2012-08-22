@@ -134,6 +134,17 @@ will be ignored entirely by the optimization pipeline.
 
 The ``noinline`` flag prevents a function from being inlined at call sites.
 
+The ``noreturn`` flag indicates that a function does not return normally (e.g.
+by using ``return`` or ``leave``). The optimization and code generation
+pipeline will assume that any code following a call to a ``noreturn`` function
+is effectively dead. Functions marked with ``noreturn`` are still allowed to
+throw exceptions, unless also marked ``nothrow``.
+
+The ``nothrow`` flag indicates that a function does not throw any exceptions.
+This property is transitive in the sense that all functions called by a
+``nothrow`` function are also assumed to be ``nothrow``. If a ``nothrow``
+function does throw, behavior is undefined.
+
 Function references have the grammar:
 
 .. productionlist::
