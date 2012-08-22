@@ -58,7 +58,7 @@ primitive types exist:
 
 The fixed-width integers and floating-point types are guaranteed to be the
 same size on all platforms. ``int`` and ``uint`` will be 32 or 64 bits wide
-depending on the pointer length on the platform.
+depending on the pointer length of the platform.
 
 All primitives are convertible to/from each other.
 
@@ -199,6 +199,12 @@ are guaranteed to be laid out contiguously. In other words, an array can
 be iterated by fetching the address of the first element and incrementing
 the pointer.
 
+The elements of an array are guaranteed to start at a boundary suitable for
+SIMD operations on the machine. This typically means on an 8-byte, 16-byte, or
+32-byte boundary, depending on the architecture (and the target machine's
+detected features). The exact alignment should, for all practical purposes, be
+considered undefined, however.
+
 Reading beyond the bounds of an array results in undefined behavior.
 
 Arrays can only be allocated as GC-tracked objects.
@@ -222,18 +228,12 @@ compiler can unroll the SIMD operations statically.
 
 Reading beyond the bounds of a vector results in undefined behavior.
 
-Vectors, unlike arrays, have certain alignment requirements due to most
-SIMD hardware. Usually, the first element will be aligned on either an
-8-byte, 16-byte, or 32-byte boundary, although the exact alignment is
-undefined. As with arrays, this means that the first element's address must
-be fetched in order to iterate a vector in memory.
-
 Vectors can only be allocated as GC-tracked objects.
 
 Examples:
 
 * Vector of ``int32`` with 3 elements: ``int32[3]``
-* Vector of pointers to ``int32`` with 64 elements: ``int32[64]``
+* Vector of pointers to ``int32`` with 64 elements: ``int32*[64]``
 * Vector of 3 vectors of ``int32`` with 8 elements: ``int32[8][3]``
 
 Any vector-to-vector/array conversion is valid as long as the source vector's
