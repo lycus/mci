@@ -2,6 +2,7 @@ module mci.compiler.clang.memory;
 
 import mci.compiler.clang.generator,
        mci.core.config,
+       mci.core.memory,
        mci.core.code.instructions,
        mci.core.code.opcodes,
        mci.core.typing.types,
@@ -49,7 +50,7 @@ body
             generator.writer.indent();
 
             generator.writer.writeifln("reg__%s = __builtin_alloca(reg__%s * %s);", instruction.targetRegister.name, instruction.sourceRegister1.name,
-                                       computeSize((cast(PointerType)instruction.targetRegister.type).elementType, is32Bit));
+                                       computeSize((cast(PointerType)instruction.targetRegister.type).elementType, is32Bit, simdAlignment));
 
             generator.writer.dedent();
             generator.writer.writeiln("else");
@@ -61,7 +62,7 @@ body
             break;
         case OperationCode.memSNew:
             generator.writer.writeifln("reg__%s = __builtin_alloca(%s);", instruction.targetRegister.name,
-                                       computeSize((cast(PointerType)instruction.targetRegister.type).elementType, is32Bit));
+                                       computeSize((cast(PointerType)instruction.targetRegister.type).elementType, is32Bit, simdAlignment));
             break;
         case OperationCode.memPin:
         case OperationCode.memUnpin:

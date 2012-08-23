@@ -3,8 +3,8 @@ module mci.compiler.clang.alu;
 import std.math,
        mci.compiler.clang.generator,
        mci.compiler.clang.types,
-       mci.core.common,
        mci.core.config,
+       mci.core.memory,
        mci.core.code.instructions,
        mci.core.code.functions,
        mci.core.code.opcodes,
@@ -92,13 +92,16 @@ body
             generator.writer.writeiln("reg__%s = 0;", instruction.targetRegister.name);
             break;
         case OperationCode.loadSize:
-            generator.writer.writeifln("reg__%s = %s;", instruction.targetRegister.name, computeSize(*instruction.operand.peek!Type(), is32Bit));
+            generator.writer.writeifln("reg__%s = %s;", instruction.targetRegister.name,
+                                       computeSize(*instruction.operand.peek!Type(), is32Bit, simdAlignment));
             break;
         case OperationCode.loadAlign:
-            generator.writer.writeifln("reg__%s = %s;", instruction.targetRegister.name, computeAlignment(*instruction.operand.peek!Type(), is32Bit));
+            generator.writer.writeifln("reg__%s = %s;", instruction.targetRegister.name,
+                                       computeAlignment(*instruction.operand.peek!Type(), is32Bit, simdAlignment));
             break;
         case OperationCode.loadOffset:
-            generator.writer.writeifln("reg__%s = %s;", instruction.targetRegister.name, computeOffset(*instruction.operand.peek!Field(), is32Bit));
+            generator.writer.writeifln("reg__%s = %s;", instruction.targetRegister.name,
+                                       computeOffset(*instruction.operand.peek!Field(), is32Bit, simdAlignment));
             break;
         default:
             assert(false);
@@ -195,14 +198,14 @@ body
                                        instruction.sourceRegister2.name);
             break;
         case OperationCode.roL:
-            auto size = computeSize(instruction.targetRegister.type, is32Bit) * 8;
+            auto size = computeSize(instruction.targetRegister.type, is32Bit, simdAlignment) * 8;
 
             generator.writer.writeifln("reg__%s = reg__%s << reg__%s | reg__%s >> %s - reg__%s;", instruction.targetRegister.name,
                                        instruction.sourceRegister1.name, instruction.sourceRegister2.name, instruction.sourceRegister1.name,
                                        size, instruction.sourceRegister2.name);
             break;
         case OperationCode.roR:
-            auto size = computeSize(instruction.targetRegister.type, is32Bit) * 8;
+            auto size = computeSize(instruction.targetRegister.type, is32Bit, simdAlignment) * 8;
 
             generator.writer.writeifln("reg__%s = reg__%s >> reg__%s | reg__%s << %s - reg__%s;", instruction.targetRegister.name,
                                        instruction.sourceRegister1.name, instruction.sourceRegister2.name, instruction.sourceRegister1.name,

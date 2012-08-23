@@ -21,6 +21,7 @@ public final class ClangCGenerator
     private TextWriter _writer;
     private ArrayQueue!Function _functionQueue;
     private ArrayQueue!StructureType _typeQueue;
+    private ArrayQueue!StaticArrayType _arrayQueue;
     private NoNullDictionary!(Function, string, false) _functionNames;
     private NoNullDictionary!(Field, string, false) _fieldNames;
     private bool _done;
@@ -34,6 +35,7 @@ public final class ClangCGenerator
         assert(_writer);
         assert(_functionQueue);
         assert(_typeQueue);
+        assert(_arrayQueue);
         assert(_functionNames);
         assert(_fieldNames);
     }
@@ -60,6 +62,7 @@ public final class ClangCGenerator
         _writer = new typeof(_writer)(stream);
         _functionQueue = new typeof(_functionQueue)();
         _typeQueue = new typeof(_typeQueue)();
+        _arrayQueue = new typeof(_arrayQueue)();
         _functionNames = new typeof(_functionNames)();
         _fieldNames = new typeof(_fieldNames)();
     }
@@ -112,6 +115,16 @@ public final class ClangCGenerator
     body
     {
         return _typeQueue;
+    }
+
+    @property package ArrayQueue!StaticArrayType arrayQueue() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _arrayQueue;
     }
 
     @property package NoNullDictionary!(Function, string, false) functionNames() pure nothrow

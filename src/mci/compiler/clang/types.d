@@ -1,11 +1,14 @@
 module mci.compiler.clang.types;
 
-import mci.compiler.clang.generator,
+import std.conv,
+       mci.compiler.clang.generator,
        mci.core.common,
        mci.core.config,
+       mci.core.memory,
        mci.core.code.functions,
        mci.core.typing.core,
-       mci.core.typing.types;
+       mci.core.typing.types,
+       mci.vm.memory.layout;
 
 package string typeToString(ClangCGenerator generator, Type type, string identifier = null, string pointers = null)
 in
@@ -59,6 +62,12 @@ body
                  },
                  (ArrayType t) => "unsigned char*",
                  (VectorType t) => "unsigned char*",
+                 (StaticArrayType t)
+                 {
+                     generator.arrayQueue.enqueue(t);
+
+                     return "struct StaticArray" ~ to!string(computeSize(t.elementType, is32Bit, simdAlignment) * t.elements);
+                 },
                  (ReferenceType t) => typeToString(generator, t.elementType) ~ '*',
                  (FunctionPointerType t)
                  {
