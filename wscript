@@ -114,15 +114,18 @@ def build(bld):
                 'libffi-d',
                 'libgc-d']
 
-    def stlib(path, target, dflags = [], install = '${PREFIX}/lib'):
-        bld.stlib(source = bld.path.ant_glob(search_paths(path)),
+    def glob(path):
+        return bld.path.ant_glob(search_paths(path))
+
+    def stlib(sources, target, dflags = [], install = '${PREFIX}/lib'):
+        bld.stlib(source = sources,
                   target = target,
                   includes = includes,
                   install_path = install,
                   dflags = dflags)
 
-    def program(path, target, deps, dflags = [], install = '${PREFIX}/bin'):
-        bld.program(source = bld.path.ant_glob(search_paths(path)),
+    def program(sources, target, deps, dflags = [], install = '${PREFIX}/bin'):
+        bld.program(source = sources,
                     target = target,
                     use = deps,
                     includes = includes,
@@ -132,17 +135,17 @@ def build(bld):
     def src_path(dir):
         return os.path.join('src', 'mci', dir)
 
-    stlib(src_path('core'), 'mci.core')
-    stlib(src_path('assembler'), 'mci.assembler')
-    stlib(src_path('verifier'), 'mci.verifier')
-    stlib(src_path('optimizer'), 'mci.optimizer')
-    stlib(src_path('linker'), 'mci.linker')
-    stlib(src_path('debugger'), 'mci.debugger')
-    stlib(src_path('vm'), 'mci.vm')
-    stlib(src_path('interpreter'), 'mci.interpreter')
-    stlib(src_path('compiler'), 'mci.compiler')
-    stlib(src_path('jit'), 'mci.jit')
-    stlib(src_path('aot'), 'mci.aot')
+    stlib(glob(src_path('core')), 'mci.core')
+    stlib(glob(src_path('assembler')), 'mci.assembler')
+    stlib(glob(src_path('verifier')), 'mci.verifier')
+    stlib(glob(src_path('optimizer')), 'mci.optimizer')
+    stlib(glob(src_path('linker')), 'mci.linker')
+    stlib(glob(src_path('debugger')), 'mci.debugger')
+    stlib(glob(src_path('vm')), 'mci.vm')
+    stlib(glob(src_path('interpreter')), 'mci.interpreter')
+    stlib(glob(src_path('compiler')), 'mci.compiler')
+    stlib(glob(src_path('jit')), 'mci.jit')
+    stlib(glob(src_path('aot')), 'mci.aot')
 
     deps = ['mci.aot',
             'mci.jit',
@@ -163,7 +166,7 @@ def build(bld):
     if not Utils.unversioned_sys_platform().lower().endswith('bsd'):
         deps += ['DL']
 
-    program(src_path('cli'), 'mci', deps)
+    program(glob(src_path('cli')), 'mci', deps)
 
     if bld.env.COMPILER_D == 'dmd':
         unittest = '-unittest'
@@ -174,8 +177,9 @@ def build(bld):
     else:
         bld.fatal('Unsupported D compiler.')
 
-    program(src_path('tester'), 'mci.tester', deps, unittest, None)
-    program(os.path.join('tests'), 'tester', deps, install = None)
+    program(glob(src_path('tester')), 'mci.tester', deps, unittest, None)
+    program(os.path.join('tests', 'tester.d'), 'tester', deps, install = None)
+    program(os.path.join('bootdoc', 'generate.d'), 'generate', [], install = None)
 
     if bld.env.VIM:
         bld.install_files(os.path.join(bld.env.VIM, 'syntax'), os.path.join('syntax', 'vim', 'syntax', 'ial.vim'))
@@ -194,19 +198,6 @@ def _run_shell(dir, ctx, args):
         ctx.fatal(str(args) + ' exited with: ' + str(code))
 
     os.chdir(cwd)
-
-def _get_rdmd(ctx):
-    if ctx.env.COMPILER_D == 'dmd':
-        return 'dmd'
-    elif ctx.env.COMPILER_D == 'gdc':
-        return 'gdmd'
-    elif ctx.env.COMPILER_D == 'ldc2':
-        return 'ldmd2'
-    else:
-        ctx.fatal('Unsupported D compiler.')
-
-def _run_rdmd(dir, ctx, args):
-    _run_shell(dir, ctx, 'rdmd --compiler={0} {1}'.format(_get_rdmd(ctx), args))
 
 def unittest(ctx):
     '''runs the unit test suite'''
@@ -273,20 +264,27 @@ def ddoc(ctx):
     except os.error:
         pass
 
-    doc = os.path.join(os.pardir, 'bootdoc')
+    def get_rdmd(ctx):
+        if ctx.env.COMPILER_D == 'dmd':
+            return 'dmd'
+        elif ctx.env.COMPILER_D == 'gdc':
+            return 'gdmd'
+        elif ctx.env.COMPILER_D == 'ldc2':
+            return 'ldmd2'
+        else:
+            ctx.fatal('Unsupported D compiler.')
 
-    cmd = os.path.join(doc, 'generate.d')
-    cmd += ' --dmd=' + _get_rdmd(ctx)
+    cmd = ' --dmd=' + get_rdmd(ctx)
     cmd += ' --parallel'
     cmd += ' --verbose'
     cmd += ' --extra=index.d'
-    cmd += ' --bootdoc=' + doc
+    cmd += ' --bootdoc=' + os.path.join(os.pardir, 'bootdoc')
     cmd += ' --output=_ddoc'
     cmd += ' ' + os.path.join(os.pardir, 'src')
     cmd += ' -I' + os.path.join(os.pardir, 'libffi-d')
     cmd += ' -I' + os.path.join(os.pardir, 'libgc-d')
 
-    _run_rdmd('docs', ctx, cmd)
+    _run_shell('docs', ctx, '{0} {1}'.format(os.path.join(os.pardir, OUT, 'generate'), cmd))
 
     bddir = os.path.join(dir, 'bootDoc')
 

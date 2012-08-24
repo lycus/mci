@@ -59,7 +59,6 @@ MODULES =
     $(MODULE mci.debugger.protocol)
     $(MODULE mci.debugger.server)
     $(MODULE mci.jit.engine)
-    $(MODULE mci.jit.memory)
     $(MODULE mci.linker.clash)
     $(MODULE mci.linker.exception)
     $(MODULE mci.linker.merge)
