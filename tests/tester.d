@@ -1,7 +1,9 @@
-import std.algorithm,
+import core.sync.mutex,
+       std.algorithm,
        std.array,
        std.conv,
        std.file,
+       std.parallelism,
        std.path,
        std.process,
        std.stdio,
@@ -11,6 +13,7 @@ import std.algorithm,
 
 private __gshared string windowsPath;
 private __gshared string posixPath;
+private __gshared Mutex outputLock;
 
 private struct TestPass
 {
@@ -19,6 +22,7 @@ private struct TestPass
     public bool swallowError;
     public Architecture[] excludedArchitectures;
     public OperatingSystem[] excludedOperatingSystems;
+    public bool noParallel;
 }
 
 private int main(string[] args)
@@ -27,6 +31,8 @@ private int main(string[] args)
         windowsPath = buildPath("..", "src", "mci", "cli", "Test", "mci.exe");
     else
         posixPath = buildPath("..", "build", "mci");
+
+    outputLock = new typeof(outputLock)();
 
     auto dir = args[1];
     string cli;
@@ -66,6 +72,8 @@ private int main(string[] args)
                 pass.excludedArchitectures = array(map!(x => to!Architecture(x))(split(line)));
             else if (startsWith(line, "!O: "))
                 pass.excludedOperatingSystems = array(map!(x => to!OperatingSystem(x))(split(line)));
+            else if (startsWith(line, "!P: "))
+                pass.noParallel = to!bool(line[3 .. $]);
         }
 
         passes ~= pass;
@@ -91,12 +99,24 @@ private bool test(string directory, string cli, TestPass pass)
     ulong passes;
     ulong failures;
 
-    foreach (file; sort(array(filter!(x => count(x, '.') == 1)(map!(x => x.name[2 .. $])(dirEntries(".", "*.ial", SpanMode.shallow, false))))))
+    auto files = sort(array(filter!(x => count(x, '.') == 1)(map!(x => x.name[2 .. $])(dirEntries(".", "*.ial", SpanMode.shallow, false)))));
+    auto func = (string file)
     {
         if (invoke(file, cli, pass))
             passes++;
         else
             failures++;
+    };
+
+    if (pass.noParallel)
+    {
+        foreach (file; files)
+            func(file);
+    }
+    else
+    {
+        foreach (file; parallel(files))
+            func(file);
     }
 
     stderr.writeln();
@@ -113,14 +133,16 @@ private bool invoke(string file, string cli, TestPass pass)
     auto cmd = replace(replace(pass.command, "<file>", file), "<name>", file[0 .. $ - 4]);
     auto full = cli ~ " " ~ cmd;
     auto base = baseName(cli) ~ " " ~ cmd;
-
-    stderr.writef("%s\t\t", base);
-
     auto result = system(full ~ " -s");
 
     if (result != pass.expected)
     {
-        stderr.writefln("Failed ('%s')", result);
+        outputLock.lock();
+
+        scope (exit)
+            outputLock.unlock();
+
+        stderr.writefln("%s\t\tFailed ('%s')", base, result);
 
         if (!pass.swallowError)
         {
@@ -132,7 +154,13 @@ private bool invoke(string file, string cli, TestPass pass)
     }
     else
     {
-        stderr.writefln("Passed ('%s')", result);
+        outputLock.lock();
+
+        scope (exit)
+            outputLock.unlock();
+
+        stderr.writefln("%s\t\tPassed ('%s')", base, result);
+
         return true;
     }
 }
