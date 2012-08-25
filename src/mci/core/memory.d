@@ -165,14 +165,15 @@ body
         return !VirtualFree(memory, 0, MEM_RELEASE);
 }
 
-static if (isPOSIX)
+static if (compiler == Compiler.gdc)
 {
-    static if (architecture == Architecture.arm)
+    import gcc.builtins;
+}
+else static if (compiler == Compiler.ldc)
+{
+    static if (architecture == Architecture.x86)
     {
-        static if (compiler == Compiler.gdc)
-            import gcc.builtins;
-        else
-            static assert(false);
+        // No action required.
     }
     else static if (architecture == Architecture.mips)
     {
@@ -186,8 +187,6 @@ static if (isPOSIX)
                 data = 0x2,
             }
         }
-        else
-            static assert(false);
     }
 }
 
