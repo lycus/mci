@@ -1,0 +1,7 @@
+function void volatile_attr()
+{
+    block entry
+    {
+        volatile;
+    }
+}

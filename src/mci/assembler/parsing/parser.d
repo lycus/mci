@@ -6,6 +6,7 @@ import std.algorithm,
        mci.core.container,
        mci.core.nullable,
        mci.core.code.functions,
+       mci.core.code.instructions,
        mci.core.code.opcodes,
        mci.core.typing.members,
        mci.core.typing.types,
@@ -1014,6 +1015,14 @@ public final class Parser
         if (peek().type == TokenType.openBracket)
             metadata = parseMetadataList();
 
+        InstructionAttributes attributes;
+
+        if (peek().type == TokenType.volatile_)
+        {
+            next();
+            attributes |= InstructionAttributes.volatile_;
+        }
+
         RegisterReferenceNode target;
 
         next();
@@ -1087,7 +1096,7 @@ public final class Parser
 
         consume(";");
 
-        return new InstructionNode(opCodeTok.location, opCode, target, source1, source2,
+        return new InstructionNode(opCodeTok.location, opCode, attributes, target, source1, source2,
                                    source3, operand, metadata);
     }
 
@@ -1098,7 +1107,7 @@ public final class Parser
     }
     body
     {
-        InstructionOperand operand;
+        mci.assembler.parsing.ast.InstructionOperand operand;
         SourceLocation location;
 
         final switch (operandType)

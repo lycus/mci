@@ -202,6 +202,7 @@ public final class ConstantFolder : OptimizerDefinition
 
                         if (result)
                             instr.block.stream.replace(instr, typeToConstantLoadOpCode(cast(CoreType)instr.targetRegister.type),
+                                                       InstructionAttributes.none,
                                                        constantToOperand(result.value, cast(CoreType)instr.targetRegister.type),
                                                        instr.targetRegister, null, null, null);
                     }

@@ -6,6 +6,7 @@ import std.conv,
        mci.core.nullable,
        mci.core.tuple,
        mci.core.code.functions,
+       mci.core.code.instructions,
        mci.core.code.opcodes,
        mci.core.typing.members,
        mci.core.typing.types,
@@ -1565,6 +1566,7 @@ public class InstructionOperandNode : Node
 public class InstructionNode : Node
 {
     private OpCode _opCode;
+    private InstructionAttributes _attributes;
     private RegisterReferenceNode _target;
     private RegisterReferenceNode _source1;
     private RegisterReferenceNode _source2;
@@ -1577,9 +1579,9 @@ public class InstructionNode : Node
         assert(_opCode);
     }
 
-    public this(SourceLocation location, OpCode opCode, RegisterReferenceNode target,
-                RegisterReferenceNode source1, RegisterReferenceNode source2, RegisterReferenceNode source3,
-                InstructionOperandNode operand, MetadataListNode metadata) pure nothrow
+    public this(SourceLocation location, OpCode opCode, InstructionAttributes attributes,
+                RegisterReferenceNode target, RegisterReferenceNode source1, RegisterReferenceNode source2,
+                RegisterReferenceNode source3, InstructionOperandNode operand, MetadataListNode metadata) pure nothrow
     in
     {
         assert(opCode);
@@ -1589,6 +1591,7 @@ public class InstructionNode : Node
         super(location);
 
         _opCode = opCode;
+        _attributes = attributes;
         _target = target;
         _source1 = source1;
         _source2 = source2;
@@ -1605,6 +1608,11 @@ public class InstructionNode : Node
     body
     {
         return _opCode;
+    }
+
+    @property public final InstructionAttributes attributes() pure nothrow
+    {
+        return _attributes;
     }
 
     @property public final RegisterReferenceNode target() pure nothrow
@@ -1644,6 +1652,6 @@ public class InstructionNode : Node
 
     public override string toString()
     {
-        return "opcode: " ~ _opCode.name ~ "/" ~ to!string(_opCode.code);
+        return "opcode: " ~ _opCode.name ~ "/" ~ to!string(cast(ubyte)_opCode.code) ~ ", attributes: " ~ to!string(_attributes);
     }
 }

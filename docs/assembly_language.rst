@@ -202,7 +202,8 @@ in basic blocks.
 Their grammar is:
 
 .. productionlist::
-    Instruction : [ `MetadataList` ] [ `Register` "=" ] ? any instruction ? [ `Register` [ "," `Register` [ "," `Register` ] ] ] [ `InstructionOperand` ] ";"
+    Instruction : [ `MetadataList` ] `InstructionAttributes` [ `Register` "=" ] ? any instruction ? [ `Register` [ "," `Register` [ "," `Register` ] ] ] [ `InstructionOperand` ] ";"
+    InstructionAttributes : [ "volatile" ]
     InstructionOperand : "(" ( `Literal` | `LiteralArray` | `BasicBlock` | `BranchTarget` | `FFISignature` | `TypeSpecification` | `Field` | `Function` ) ")"
     BranchTarget : `BasicBlock` "," `BasicBlock`
     RegisterSelector : `Register` { "," `Register` }
@@ -212,6 +213,13 @@ The full list of valid instructions (with register counts, operand types, and
 so on) can be found on the instruction set page. Note that the parser is
 driven by that information; for example, if an instruction requires a field
 reference as operand, the parser will expect to be able to parse one.
+
+The ``volatile`` attribute ensures that an instruction is not reordered (by
+the optimization pipeline and code generator) relative to other volatile
+instructions. Further, instructions that seem dead (a store followed by a
+store to the exact same location, for example) will not be optimized out. This
+is useful to model the semantics of the ``volatile`` qualifier in the C family
+of languages. Note that it has nothing to do with concurrency.
 
 Entry points
 ++++++++++++

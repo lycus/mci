@@ -143,10 +143,20 @@ public alias Algebraic!(byte,
                         ReadOnlyIndexable!Register,
                         FFISignature) InstructionOperand;
 
+/**
+ * Various attributes of an instruction.
+ */
+public enum InstructionAttributes : ubyte
+{
+    none = 0x00, /// No attributes.
+    volatile_ = 0x01, /// The instruction must not be reordered relative to other volatile instructions.
+}
+
 public final class Instruction
 {
     private BasicBlock _block;
     private OpCode _opCode;
+    private InstructionAttributes _attributes;
     private InstructionOperand _operand;
     private Register _targetRegister;
     private Register _sourceRegister1;
@@ -173,8 +183,8 @@ public final class Instruction
         assert(_metadata);
     }
 
-    package this(BasicBlock block, OpCode opCode, InstructionOperand operand, Register targetRegister,
-                 Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
+    package this(BasicBlock block, OpCode opCode, InstructionAttributes attributes, InstructionOperand operand,
+                 Register targetRegister, Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
     in
     {
         assert(block);
@@ -193,6 +203,7 @@ public final class Instruction
     {
         _block = block;
         _opCode = opCode;
+        _attributes = attributes;
         _operand = operand;
         _targetRegister = targetRegister;
         _sourceRegister1 = sourceRegister1;
@@ -219,6 +230,11 @@ public final class Instruction
     body
     {
         return _opCode;
+    }
+
+    @property public InstructionAttributes attributes() pure nothrow
+    {
+        return _attributes;
     }
 
     @property public InstructionOperand operand()

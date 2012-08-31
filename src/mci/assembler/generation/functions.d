@@ -240,7 +240,7 @@ body
                 }
             }
 
-            auto instr = bb.stream.append(instrNode.opCode, operand, target, source1, source2, source3);
+            auto instr = bb.stream.append(instrNode.opCode, instrNode.attributes, operand, target, source1, source2, source3);
 
             if (instrNode.metadata)
                 foreach (md; instrNode.metadata.metadata)
