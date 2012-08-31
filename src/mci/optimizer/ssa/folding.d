@@ -90,24 +90,29 @@ in
 }
 body
 {
+    // Don't fold volatile instructions.
     if (instruction.attributes & InstructionAttributes.volatile_)
         return false;
 
+    // Avoid folding native integers.
     foreach (reg; instruction.registers)
         if (reg.type is NativeIntType.instance || reg.type is NativeUIntType.instance)
             return false;
 
-    return instruction.opCode is opAriAdd ||
-           instruction.opCode is opAriSub ||
-           instruction.opCode is opAriMul ||
-           instruction.opCode is opAriDiv ||
-           instruction.opCode is opAriRem ||
-           instruction.opCode is opAriNeg ||
-           instruction.opCode is opBitAnd ||
-           instruction.opCode is opBitOr ||
-           instruction.opCode is opBitXOr ||
-           instruction.opCode is opBitNeg ||
-           instruction.opCode is opNot;
+    if (instruction.opCode !is opAriAdd &&
+        instruction.opCode !is opAriSub &&
+        instruction.opCode !is opAriMul &&
+        instruction.opCode !is opAriDiv &&
+        instruction.opCode !is opAriRem &&
+        instruction.opCode !is opAriNeg &&
+        instruction.opCode !is opBitAnd &&
+        instruction.opCode !is opBitOr &&
+        instruction.opCode !is opBitXOr &&
+        instruction.opCode !is opBitNeg &&
+        instruction.opCode !is opNot)
+        return false;
+
+    return all(instruction.sourceRegisters, (Register r) => isConstantLoad(first(r.definitions).opCode));
 }
 
 /**
@@ -153,8 +158,7 @@ public final class ConstantFolder : OptimizerDefinition
 
                     foreach (bb; function_.blocks)
                         foreach (instr; bb.y.stream)
-                            if (isFoldable(instr) && !instr.sourceRegisters.empty &&
-                                all(instr.sourceRegisters, (Register r) => first(r.definitions) && isConstantLoad(first(r.definitions).opCode)))
+                            if (isFoldable(instr))
                                 constantOps.add(instr);
 
                     auto insns = constantOps.duplicate();
