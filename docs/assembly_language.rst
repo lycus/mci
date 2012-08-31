@@ -209,7 +209,9 @@ Their grammar is:
     FFISignature : `Identifier` "," `Identifier`
 
 The full list of valid instructions (with register counts, operand types, and
-so on) can be found on the instruction set page.
+so on) can be found on the instruction set page. Note that the parser is
+driven by that information; for example, if an instruction requires a field
+reference as operand, the parser will expect to be able to parse one.
 
 Entry points
 ++++++++++++
