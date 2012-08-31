@@ -1,16 +1,8 @@
-_*/*
-
 docs/_build/*
 docs/_ddoc/*
 build/*
 
-src/*/*/Debug/*
-src/*/*/Release/*
-
 .lock*
-
-*.suo
-*.user
 
 *.mci
 *.ast
