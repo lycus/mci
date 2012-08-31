@@ -146,6 +146,12 @@ public final class ModuleDisassembler
         if (function_.attributes & FunctionAttributes.noInlining)
             _writer.write("noinline ");
 
+        if (function_.attributes & FunctionAttributes.noReturn)
+            _writer.write("noreturn ");
+
+        if (function_.attributes & FunctionAttributes.noThrow)
+            _writer.write("nothrow ");
+
         _writer.writef("%s %s(", function_.returnType ? function_.returnType.toString() : "void", escapeIdentifier(function_.name));
 
         foreach (i, param; function_.parameters)
@@ -206,7 +212,12 @@ public final class ModuleDisassembler
                     _writer.writeln("]");
                 }
 
-                _writer.writefln("        %s;", instr);
+                _writer.write("        ");
+
+                if (instr.attributes & InstructionAttributes.volatile_)
+                    _writer.write("volatile ");
+
+                _writer.writefln("%s;", instr);
             }
 
             _writer.writeln("    }");
