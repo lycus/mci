@@ -143,10 +143,20 @@ public alias Algebraic!(byte,
                         ReadOnlyIndexable!Register,
                         FFISignature) InstructionOperand;
 
+/**
+ * Various attributes of an instruction.
+ */
+public enum InstructionAttributes : ubyte
+{
+    none = 0x00, /// No attributes.
+    volatile_ = 0x01, /// The instruction must not be reordered relative to other volatile instructions.
+}
+
 public final class Instruction
 {
     private BasicBlock _block;
     private OpCode _opCode;
+    private InstructionAttributes _attributes;
     private InstructionOperand _operand;
     private Register _targetRegister;
     private Register _sourceRegister1;
@@ -156,31 +166,33 @@ public final class Instruction
     private NoNullList!Register _sourceRegisters;
     private List!MetadataPair _metadata;
 
-    pure nothrow invariant()
+    invariant()
     {
         assert(_block);
         assert(_opCode);
+        assert((cast()_opCode).hasTarget ? !!_targetRegister : !_targetRegister);
+        assert((cast()_opCode).registers >= 1 ? !!_sourceRegister1 : !_sourceRegister1);
+        assert((cast()_opCode).registers >= 2 ? !!_sourceRegister2 : !_sourceRegister2);
+        assert((cast()_opCode).registers >= 3 ? !!_sourceRegister3 : !_sourceRegister3);
+
+        if ((cast()_opCode).operandType == OperandType.none)
+            assert(!_operand.hasValue);
+        else
+            assert(_operand.type == operandToTypeInfo((cast()_opCode).operandType));
+
         assert(_metadata);
     }
 
-    package this(BasicBlock block, OpCode opCode, InstructionOperand operand, Register targetRegister,
-                 Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
+    package this(BasicBlock block, OpCode opCode, InstructionAttributes attributes, InstructionOperand operand,
+                 Register targetRegister, Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
     in
     {
         assert(block);
         assert(opCode);
-
-        if (opCode.hasTarget)
-            assert(targetRegister);
-
-        if (opCode.registers >= 1)
-            assert(sourceRegister1);
-
-        if (opCode.registers >= 2)
-            assert(sourceRegister2);
-
-        if (opCode.registers >= 3)
-            assert(sourceRegister3);
+        assert(opCode.hasTarget ? !!targetRegister : !targetRegister);
+        assert(opCode.registers >= 1 ? !!sourceRegister1 : !sourceRegister1);
+        assert(opCode.registers >= 2 ? !!sourceRegister2 : !sourceRegister2);
+        assert(opCode.registers >= 3 ? !!sourceRegister3 : !sourceRegister3);
 
         if (opCode.operandType == OperandType.none)
             assert(!operand.hasValue);
@@ -191,6 +203,7 @@ public final class Instruction
     {
         _block = block;
         _opCode = opCode;
+        _attributes = attributes;
         _operand = operand;
         _targetRegister = targetRegister;
         _sourceRegister1 = sourceRegister1;
@@ -219,27 +232,60 @@ public final class Instruction
         return _opCode;
     }
 
-    @property public InstructionOperand operand() pure nothrow
+    @property public InstructionAttributes attributes() pure nothrow
+    {
+        return _attributes;
+    }
+
+    @property public InstructionOperand operand()
+    out (result)
+    {
+        if (_opCode.operandType == OperandType.none)
+            assert(!result.hasValue);
+        else
+            assert(result.type == operandToTypeInfo(_opCode.operandType));
+    }
+    body
     {
         return _operand;
     }
 
     @property public Register targetRegister() pure nothrow
+    out (result)
+    {
+        assert(_opCode.hasTarget ? !!result : !result);
+    }
+    body
     {
         return _targetRegister;
     }
 
     @property public Register sourceRegister1() pure nothrow
+    out (result)
+    {
+        assert((cast()_opCode).registers >= 1 ? !!result : !result);
+    }
+    body
     {
         return _sourceRegister1;
     }
 
     @property public Register sourceRegister2() pure nothrow
+    out (result)
+    {
+        assert((cast()_opCode).registers >= 2 ? !!result : !result);
+    }
+    body
     {
         return _sourceRegister2;
     }
 
     @property public Register sourceRegister3() pure nothrow
+    out (result)
+    {
+        assert((cast()_opCode).registers >= 3 ? !!result : !result);
+    }
+    body
     {
         return _sourceRegister3;
     }
@@ -248,6 +294,7 @@ public final class Instruction
     out (result)
     {
         assert(result);
+        assert((cast()result).count == (_opCode.hasTarget ? 1 : 0) + _opCode.registers);
     }
     body
     {
@@ -262,6 +309,7 @@ public final class Instruction
     out (result)
     {
         assert(result);
+        assert((cast()result).count == _opCode.registers);
     }
     body
     {

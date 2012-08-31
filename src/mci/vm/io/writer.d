@@ -341,6 +341,7 @@ public final class ModuleWriter : ModuleSaver
     body
     {
         _writer.write(instruction.opCode.code);
+        _writer.write(instruction.attributes);
 
         foreach (reg; instruction.registers)
             writeRegisterReference(reg);

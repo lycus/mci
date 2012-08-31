@@ -168,15 +168,15 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
             (cast(NoNullList!Instruction)reg.uses).remove(instruction);
     }
 
-    public Instruction append(OpCode opCode, InstructionOperand operand, Register targetRegister, Register sourceRegister1,
-                              Register sourceRegister2, Register sourceRegister3)
+    public Instruction append(OpCode opCode, InstructionAttributes attributes, InstructionOperand operand, Register targetRegister,
+                              Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
     out (result)
     {
         assert(result);
     }
     body
     {
-        auto insn = new Instruction(_block, opCode, operand, targetRegister, sourceRegister1, sourceRegister2, sourceRegister3);
+        auto insn = new Instruction(_block, opCode, attributes, operand, targetRegister, sourceRegister1, sourceRegister2, sourceRegister3);
 
         addUseDef(insn);
 
@@ -185,8 +185,8 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
         return insn;
     }
 
-    public Instruction insertBefore(Instruction next, OpCode opCode, InstructionOperand operand, Register targetRegister,
-                                    Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
+    public Instruction insertBefore(Instruction next, OpCode opCode, InstructionAttributes attributes, InstructionOperand operand,
+                                    Register targetRegister, Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
     in
     {
         assert(next);
@@ -198,7 +198,7 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
     }
     body
     {
-        auto insn = new Instruction(_block, opCode, operand, targetRegister, sourceRegister1, sourceRegister2, sourceRegister3);
+        auto insn = new Instruction(_block, opCode, attributes, operand, targetRegister, sourceRegister1, sourceRegister2, sourceRegister3);
 
         addUseDef(insn);
 
@@ -207,8 +207,8 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
         return insn;
     }
 
-    public Instruction insertAfter(Instruction previous, OpCode opCode, InstructionOperand operand, Register targetRegister,
-                                   Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
+    public Instruction insertAfter(Instruction previous, OpCode opCode, InstructionAttributes attributes, InstructionOperand operand,
+                                   Register targetRegister, Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
     in
     {
         assert(previous);
@@ -220,7 +220,7 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
     }
     body
     {
-        auto insn = new Instruction(_block, opCode, operand, targetRegister, sourceRegister1, sourceRegister2, sourceRegister3);
+        auto insn = new Instruction(_block, opCode, attributes, operand, targetRegister, sourceRegister1, sourceRegister2, sourceRegister3);
 
         addUseDef(insn);
 
@@ -229,8 +229,8 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
         return insn;
     }
 
-    public Instruction replace(Instruction old, OpCode opCode, InstructionOperand operand, Register targetRegister,
-                               Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
+    public Instruction replace(Instruction old, OpCode opCode, InstructionAttributes attributes, InstructionOperand operand,
+                               Register targetRegister, Register sourceRegister1, Register sourceRegister2, Register sourceRegister3)
     in
     {
         assert(old);
@@ -242,7 +242,7 @@ public final class InstructionStream : ReadOnlyIndexable!Instruction
     }
     body
     {
-        auto insn = new Instruction(_block, opCode, operand, targetRegister, sourceRegister1, sourceRegister2, sourceRegister3);
+        auto insn = new Instruction(_block, opCode, attributes, operand, targetRegister, sourceRegister1, sourceRegister2, sourceRegister3);
 
         removeUseDef(old);
         addUseDef(insn);

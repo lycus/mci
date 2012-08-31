@@ -83,24 +83,36 @@ body
     return operand;
 }
 
-private bool isFoldable(OpCode opCode)
+private bool isFoldable(Instruction instruction)
 in
 {
-    assert(opCode);
+    assert(instruction);
 }
 body
 {
-    return opCode is opAriAdd ||
-           opCode is opAriSub ||
-           opCode is opAriMul ||
-           opCode is opAriDiv ||
-           opCode is opAriRem ||
-           opCode is opAriNeg ||
-           opCode is opBitAnd ||
-           opCode is opBitOr ||
-           opCode is opBitXOr ||
-           opCode is opBitNeg ||
-           opCode is opNot;
+    // Don't fold volatile instructions.
+    if (instruction.attributes & InstructionAttributes.volatile_)
+        return false;
+
+    // Avoid folding native integers.
+    foreach (reg; instruction.registers)
+        if (reg.type is NativeIntType.instance || reg.type is NativeUIntType.instance)
+            return false;
+
+    if (instruction.opCode !is opAriAdd &&
+        instruction.opCode !is opAriSub &&
+        instruction.opCode !is opAriMul &&
+        instruction.opCode !is opAriDiv &&
+        instruction.opCode !is opAriRem &&
+        instruction.opCode !is opAriNeg &&
+        instruction.opCode !is opBitAnd &&
+        instruction.opCode !is opBitOr &&
+        instruction.opCode !is opBitXOr &&
+        instruction.opCode !is opBitNeg &&
+        instruction.opCode !is opNot)
+        return false;
+
+    return all(instruction.sourceRegisters, (Register r) => isConstantLoad(first(r.definitions).opCode));
 }
 
 /**
@@ -146,8 +158,7 @@ public final class ConstantFolder : OptimizerDefinition
 
                     foreach (bb; function_.blocks)
                         foreach (instr; bb.y.stream)
-                            if (isFoldable(instr.opCode) && !instr.sourceRegisters.empty &&
-                                all(instr.sourceRegisters, (Register r) => first(r.definitions) && isConstantLoad(first(r.definitions).opCode)))
+                            if (isFoldable(instr))
                                 constantOps.add(instr);
 
                     auto insns = constantOps.duplicate();
@@ -202,6 +213,7 @@ public final class ConstantFolder : OptimizerDefinition
 
                         if (result)
                             instr.block.stream.replace(instr, typeToConstantLoadOpCode(cast(CoreType)instr.targetRegister.type),
+                                                       InstructionAttributes.none,
                                                        constantToOperand(result.value, cast(CoreType)instr.targetRegister.type),
                                                        instr.targetRegister, null, null, null);
                     }
@@ -210,7 +222,7 @@ public final class ConstantFolder : OptimizerDefinition
                     // that were never used to begin with and those that are now rendered
                     // useless due to constant folding.
                     foreach (instr; constantLoads)
-                        if (instr.targetRegister.uses.empty)
+                        if (!(instr.attributes & InstructionAttributes.volatile_) && instr.targetRegister.uses.empty)
                             instr.block.stream.remove(instr);
 
                     constantInsns = !constantOps.empty;

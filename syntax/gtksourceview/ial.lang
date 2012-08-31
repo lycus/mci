@@ -65,8 +65,11 @@
           <keyword>pure</keyword>
           <keyword>nooptimize</keyword>
           <keyword>noinline</keyword>
+          <keyword>noreturn</keyword>
+          <keyword>nothrow</keyword>
           <keyword>align</keyword>
           <keyword>unwind</keyword>
+          <keyword>volatile</keyword>
         </context>
 
         <context id="conventions" style-ref="convention">

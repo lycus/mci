@@ -988,6 +988,7 @@ public final class ModuleReader : ModuleLoader
     body
     {
         auto code = _reader.read!OperationCode();
+        auto attributes = _reader.read!InstructionAttributes();
         auto opCode = find(allOpCodes, (OpCode op) => op.code == code);
 
         if (!opCode)
@@ -1120,7 +1121,7 @@ public final class ModuleReader : ModuleLoader
                 error("Unknown opcode operand type '%s'.", opCode.operandType);
         }
 
-        return stream.append(opCode, operand, target, source1, source2, source3);
+        return stream.append(opCode, attributes, operand, target, source1, source2, source3);
     }
 
     private Register readRegisterReference(Function function_)

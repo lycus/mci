@@ -47,6 +47,7 @@ public enum TokenType : ubyte
     module_, /// The $(PRE module) keyword.
     entry, /// The $(PRE entry) keyword.
     exit, /// The $(PRE exit) keyword.
+    volatile_, /// The $(PRE volatile) keyword.
     void_, /// The $(PRE void) keyword.
     int8, /// The $(PRE int8) keyword.
     uint8, /// The $(PRE uint8) keyword.
@@ -104,6 +105,7 @@ nothrow shared static this()
                        "module" : TokenType.module_,
                        "entry" : TokenType.entry,
                        "exit" : TokenType.exit,
+                       "volatile" : TokenType.volatile_,
                        "void" : TokenType.void_,
                        "int8" : TokenType.int8,
                        "uint8" : TokenType.uint8,

@@ -1,0 +1,16 @@
+type foo
+{
+    field static int32 bar;
+}
+
+function void volatile_insn()
+{
+    register int32 x;
+
+    block entry
+    {
+        x = load.i32 (42);
+        volatile field.static.set x (foo:bar);
+        volatile leave;
+    }
+}
