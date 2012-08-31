@@ -44,12 +44,13 @@ public final class DeadCodeEliminator : OptimizerDefinition
                 // Collect all the instructions that we know are live
                 // initially. All terminators are live, for instance.
                 // Note that we conservatively assume that instructions
-                // with no target are live.
+                // with no target are live. Volatile instructions are
+                // always considered live.
                 foreach (block; function_.blocks)
                 {
                     foreach (insn; block.y.stream)
                     {
-                        if (!insn.opCode.hasTarget || hasSideEffect(insn.opCode))
+                        if (insn.attributes & InstructionAttributes.volatile_ || !insn.opCode.hasTarget || hasSideEffect(insn.opCode))
                         {
                             live.add(insn);
                             queue.enqueue(insn);
