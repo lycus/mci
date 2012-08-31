@@ -93,6 +93,10 @@ body
     if (instruction.attributes & InstructionAttributes.volatile_)
         return false;
 
+    foreach (reg; instruction.registers)
+        if (reg.type is NativeIntType.instance || reg.type is NativeUIntType.instance)
+            return false;
+
     return instruction.opCode is opAriAdd ||
            instruction.opCode is opAriSub ||
            instruction.opCode is opAriMul ||
