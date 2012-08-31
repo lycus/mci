@@ -4,8 +4,8 @@
 
         ++ POSIX ++
 
-Installation on POSIX systems works through the Waf build system. You
-can obtain Waf from: http://code.google.com/p/waf
+Installation works through the Waf build system. You can obtain Waf from:
+http://code.google.com/p/waf
 
 Once installed, you must configure the project like so:
 
@@ -87,23 +87,3 @@ as it should:
 
     $ waf unittest
     $ waf test
-
-        ++ Windows ++
-
-Building on Windows is only supported via Visual D. Install your
-compiler of choice and configure Visual D to use it.
-
-You'll need the libffi library files. You can either build libffi
-from source under Cygwin or MinGW, or you can download precompiled
-binaries here: http://github.com/lycus/libffi-d/downloads
-
-You need to make sure that either the Cygwin or MinGW version of the
-library can be found via your library search paths. These can be set
-in the global Visual D options.
-
-Finally, select your desired solution configuration (Debug or Release)
-and build the solution.
-
-Note that the MCI cannot currently be compiled for 64-bit on Windows
-with DMD, due to limitations in Optlink (among other things). It is
-not a limitation in the MCI itself.
