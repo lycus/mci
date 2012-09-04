@@ -90,10 +90,6 @@ in
 }
 body
 {
-    // Don't fold volatile instructions.
-    if (instruction.attributes & InstructionAttributes.volatile_)
-        return false;
-
     // Avoid folding native integers.
     foreach (reg; instruction.registers)
         if (reg.type is NativeIntType.instance || reg.type is NativeUIntType.instance)
@@ -222,7 +218,7 @@ public final class ConstantFolder : OptimizerDefinition
                     // that were never used to begin with and those that are now rendered
                     // useless due to constant folding.
                     foreach (instr; constantLoads)
-                        if (!(instr.attributes & InstructionAttributes.volatile_) && instr.targetRegister.uses.empty)
+                        if (instr.targetRegister.uses.empty)
                             instr.block.stream.remove(instr);
 
                     constantInsns = !constantOps.empty;
