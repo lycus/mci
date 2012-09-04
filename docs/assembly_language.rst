@@ -221,6 +221,11 @@ store to the exact same location, for example) will not be optimized out. This
 is useful to model the semantics of the ``volatile`` qualifier in the C family
 of languages. Note that it has nothing to do with concurrency.
 
+Some attributes only have meaning for certain instructions. For example, the
+``volatile`` attribute has no meaning for instructions that don't involve
+memory accesses. Meaningless attributes are allowed on instructions but
+optimizers are free to remove them. The linter will also warn about them.
+
 Entry points
 ++++++++++++
 
