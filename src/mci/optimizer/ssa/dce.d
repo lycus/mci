@@ -50,7 +50,9 @@ public final class DeadCodeEliminator : OptimizerDefinition
                 {
                     foreach (insn; block.y.stream)
                     {
-                        if (insn.attributes & InstructionAttributes.volatile_ || !insn.opCode.hasTarget || hasSideEffect(insn.opCode))
+                        if ((insn.attributes & InstructionAttributes.volatile_ && hasMeaning(InstructionAttributes.volatile_, insn.opCode)) ||
+                            !insn.opCode.hasTarget ||
+                            hasSideEffect(insn.opCode))
                         {
                             live.add(insn);
                             queue.enqueue(insn);
