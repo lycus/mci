@@ -152,6 +152,32 @@ public enum InstructionAttributes : ubyte
     volatile_ = 0x01, /// The instruction must not be reordered relative to other volatile instructions.
 }
 
+public bool hasMeaning(InstructionAttributes attribute, OpCode opCode)
+in
+{
+    assert(attribute);
+    assert(opCode);
+}
+body
+{
+    final switch (attribute)
+    {
+        case InstructionAttributes.none:
+            assert(false);
+        case InstructionAttributes.volatile_:
+            return opCode is opMemGet ||
+                   opCode is opMemSet ||
+                   opCode is opArrayGet ||
+                   opCode is opArraySet ||
+                   opCode is opFieldGet ||
+                   opCode is opFieldSet ||
+                   opCode is opFieldUserGet ||
+                   opCode is opFieldUserSet ||
+                   opCode is opFieldStaticGet ||
+                   opCode is opFieldStaticSet;
+    }
+}
+
 public final class Instruction
 {
     private BasicBlock _block;

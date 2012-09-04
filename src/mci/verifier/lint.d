@@ -119,6 +119,10 @@ public final class Linter
         assert(function_);
         assert(function_.attributes & FunctionAttributes.ssa);
     }
+    out (result)
+    {
+        assert(result);
+    }
     body
     {
         auto messages = new NoNullList!LintMessage();
@@ -136,7 +140,8 @@ shared static this()
 {
     auto passes = new NoNullList!LintPass();
 
-    passes.add((msgs, insn) => lintReturningStackAllocatedMemory(msgs, insn));
+    passes.add((fn, insn) => lintReturningStackAllocatedMemory(fn, insn));
+    passes.add((fn, insn) => lintMeaninglessInstructionAttribute(fn, insn));
 
     standardPasses = passes;
 }
@@ -176,6 +181,26 @@ body
                 if (def.opCode is opMemSAlloc || def.opCode is opMemSNew)
                     message(messages, insn, "Returning stack-allocated memory.");
             }
+        }
+    }
+}
+
+private void lintMeaninglessInstructionAttribute(Function function_, NoNullList!LintMessage messages)
+in
+{
+    assert(function_);
+    assert(function_.attributes & FunctionAttributes.ssa);
+    assert(messages);
+}
+body
+{
+    foreach (bb; function_.blocks)
+    {
+        foreach (insn; bb.y.stream)
+        {
+            if (insn.attributes & InstructionAttributes.volatile_)
+                if (!hasMeaning(InstructionAttributes.volatile_, insn.opCode))
+                    message(messages, insn, "The volatile attribute has no effect on this instruction.");
         }
     }
 }
