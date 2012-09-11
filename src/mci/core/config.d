@@ -178,11 +178,6 @@ else version (Posix)
         public enum OperatingSystem operatingSystem = OperatingSystem.freebsd;
         public enum string operatingSystemName = "FreeBSD";
     }
-    else version (OpenBSD)
-    {
-        public enum OperatingSystem operatingSystem = OperatingSystem.openbsd;
-        public enum string operatingSystemName = "OpenBSD";
-    }
     else version (AIX)
     {
         public enum OperatingSystem operatingSystem = OperatingSystem.aix;
@@ -207,6 +202,8 @@ else version (Posix)
         static assert(false, "Hurd is not supported.");
     else version (SkyOS)
         static assert(false, "SkyOS is not supported.");
+    else version (OpenBSD)
+        static assert(false, "OpenBSD is not supported.");
     else version (SysV3)
         static assert(false, "System V R3 is not supported.");
     else version (SysV4)

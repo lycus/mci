@@ -100,9 +100,8 @@ Value Description
 1     All Linux systems.
 2     Mac OS X (and other Darwin systems).
 3     FreeBSD.
-4     OpenBSD.
-5     Solaris.
-6     AIX.
+4     Solaris.
+5     AIX.
 ===== ====================================
 
 get_endianness

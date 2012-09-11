@@ -308,9 +308,8 @@ public enum OperatingSystem : ubyte
     linux = 1, /// The Linux kernel (2.6 and up).
     osx = 2, /// Mac OS X (Leopard and up).
     freebsd = 3, /// The FreeBSD operating system.
-    openbsd = 4, /// The OpenBSD operating system.
-    solaris = 5, /// All Solaris variants.
-    aix = 6, /// IBM's AIX operating system.
+    solaris = 4, /// All Solaris variants.
+    aix = 5, /// IBM's AIX operating system.
 }
 
 /**
