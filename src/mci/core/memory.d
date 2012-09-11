@@ -15,8 +15,6 @@ static if (isPOSIX)
         private enum int _SC_PAGESIZE = 29;
     else static if (operatingSystem == OperatingSystem.freebsd)
         private enum int _SC_PAGESIZE = 47;
-    else static if (operatingSystem == OperatingSystem.openbsd)
-        private enum int _SC_PAGESIZE = 28;
 }
 else
 {
@@ -235,9 +233,9 @@ body
         {
             static if (operatingSystem == OperatingSystem.linux)
                 cacheflush(ptr, size, CacheLevel.instruction | CacheLevel.data);
-            else static if (operatingSystem == OperatingSystem.freebsd || operatingSystem == OperatingSystem.openbsd)
+            else static if (operatingSystem == OperatingSystem.freebsd)
             {
-                // TODO: Figure out what to do on these platforms.
+                // TODO: Figure out what to do on this platform.
                 static assert(false);
             }
             else
