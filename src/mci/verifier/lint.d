@@ -4,7 +4,8 @@ import mci.core.container,
        mci.core.utilities,
        mci.core.code.functions,
        mci.core.code.instructions,
-       mci.core.code.opcodes;
+       mci.core.code.opcodes,
+       mci.core.typing.types;
 
 /**
  * Represents a message emitted by the linter.
@@ -16,14 +17,12 @@ public final class LintMessage
 
     pure nothrow invariant()
     {
-        assert(_instruction);
         assert(_message);
     }
 
     private this(Instruction instruction, string message) pure nothrow
     in
     {
-        assert(instruction);
         assert(message);
     }
     body
@@ -33,17 +32,12 @@ public final class LintMessage
     }
 
     /**
-     * Gets the instruction that triggered the message.
+     * Gets the instruction that triggered the message, if any.
      *
      * Returns:
-     *  The instruction that triggered the message.
+     *  The instruction that triggered the message, if any.
      */
     @property public Instruction instruction() pure nothrow
-    out (result)
-    {
-        assert(result);
-    }
-    body
     {
         return _instruction;
     }
@@ -140,8 +134,9 @@ shared static this()
 {
     auto passes = new NoNullList!LintPass();
 
-    passes.add((fn, insn) => lintReturningStackAllocatedMemory(fn, insn));
-    passes.add((fn, insn) => lintMeaninglessInstructionAttribute(fn, insn));
+    passes.add((fn, msgs) => lintReturningStackAllocatedMemory(fn, msgs));
+    passes.add((fn, msgs) => lintMeaninglessInstructionAttribute(fn, msgs));
+    passes.add((fn, msgs) => lintMeaninglessParameterAttribute(fn, msgs));
 
     standardPasses = passes;
 }
@@ -150,7 +145,6 @@ public void message(T ...)(NoNullList!LintMessage messages, Instruction instruct
 in
 {
     assert(messages);
-    assert(instruction);
     assert(message);
 }
 body
@@ -195,12 +189,21 @@ in
 body
 {
     foreach (bb; function_.blocks)
-    {
         foreach (insn; bb.y.stream)
-        {
-            if (insn.attributes & InstructionAttributes.volatile_)
-                if (!hasMeaning(InstructionAttributes.volatile_, insn.opCode))
-                    message(messages, insn, "The volatile attribute has no effect on this instruction.");
-        }
-    }
+            if (insn.attributes & InstructionAttributes.volatile_ && !hasMeaning(InstructionAttributes.volatile_, insn.opCode))
+                message(messages, insn, "The volatile attribute has no effect on this instruction.");
+}
+
+private void lintMeaninglessParameterAttribute(Function function_, NoNullList!LintMessage messages)
+in
+{
+    assert(function_);
+    assert(function_.attributes & FunctionAttributes.ssa);
+    assert(messages);
+}
+body
+{
+    foreach (param; function_.parameters)
+        if (param.attributes & ParameterAttributes.noEscape && !hasAliasing(param.type))
+            message(messages, null, "The noescape attribute has no meaning for type %s as it has no aliasing.", param.type);
 }

@@ -905,7 +905,7 @@ public final class ModuleReader : ModuleLoader
         auto paramCount = _reader.read!uint();
 
         for (uint i = 0; i < paramCount; i++)
-            func.createParameter(toType(readTypeReference()));
+            readParameter(func);
 
         func.close();
 
@@ -923,6 +923,23 @@ public final class ModuleReader : ModuleLoader
             readBasicBlockUnwindSpecification(func).close();
 
         return func;
+    }
+
+    private Parameter readParameter(Function function_)
+    in
+    {
+        assert(function_);
+    }
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto type = toType(readTypeReference());
+        auto attr = _reader.read!ParameterAttributes();
+
+        return function_.createParameter(type, attr);
     }
 
     private Register readRegister(Function function_)

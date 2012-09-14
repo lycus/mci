@@ -137,8 +137,10 @@ public final class LintTool : Tool
 
                 foreach (msg; msgs)
                 {
-                    logf("Instruction (index %s in block %s): %s", findIndex(msg.instruction.block.stream, msg.instruction), msg.instruction.block,
-                         msg.instruction);
+                    if (msg.instruction)
+                        logf("Instruction (index %s in block %s): %s", findIndex(msg.instruction.block.stream, msg.instruction),
+                             msg.instruction.block, msg.instruction);
+
                     logf("Message: %s", msg.message);
                 }
 

@@ -436,3 +436,17 @@ public final class StaticArrayType : Type
         return elementType.toString() ~ "{" ~ to!string(_elements) ~ "}";
     }
 }
+
+public bool hasAliasing(Type type)
+in
+{
+    assert(type);
+}
+body
+{
+    return cast(PointerType)type ||
+           cast(ReferenceType)type ||
+           cast(ArrayType)type ||
+           cast(VectorType)type ||
+           cast(FunctionPointerType)type;
+}

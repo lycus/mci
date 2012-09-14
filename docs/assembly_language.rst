@@ -65,7 +65,7 @@ The grammar for type specifications is:
 
 .. productionlist::
     ReturnType : "void" | `TypeSpecification`
-    TypeSpecification : ( `CoreType` | `Type` ) | `PointerType` | `ReferenceType` | `ArrayType` | `VectorType` | `FunctionPointerType`
+    TypeSpecification : `CoreType` | `Type` | `PointerType` | `ReferenceType` | `ArrayType` | `VectorType` | `StaticArrayType` | `FunctionPointerType`
     PointerType : `TypeSpecification` "*"
     ReferenceType : `TypeSpecification` "&"
     ArrayType : `TypeSpecification` "[" "]"
@@ -105,14 +105,13 @@ Functions
 +++++++++
 
 Functions are the MCI's answer to the procedure abstraction. A function takes
-a number of arguments as input and returns a single output value.
+a number of parameters as input and returns a single output value.
 
 Function declarations have the grammar:
 
 .. productionlist::
     FunctionDeclaration : [ `MetadataList` ] "function" `FunctionAttributes` `ReturnType` `Identifier` `ParameterList` [ `CallingConvention` ] "{" `FunctionBody` "}"
-    FunctionAttributes : [ "ssa" ] [ "pure" ] [ "nooptimize" ] [ "noinline" ]
-    ParameterList : "(" [ [ `MetadataList` ] `TypeSpecification` { "," [ `MetadataList` ] `TypeSpecification` } ] ")"
+    FunctionAttributes : [ "ssa" ] [ "pure" ] [ "nooptimize" ] [ "noinline" ] [ "noreturn" ] [ "nothrow" ]
     CallingConvention : "cdecl" | "stdcall"
     FunctionBody : { `RegisterDeclaration` | `BasicBlockDeclaration` }
 
@@ -152,6 +151,22 @@ Function references have the grammar:
 
 The module reference is optional. If it is not specified, the function is
 looked up in the module being assembled.
+
+Parameters
+----------
+
+Parameters have the grammar:
+
+.. productionlist::
+    Parameter = `ParameterAttributes` `TypeSpecification`
+    ParameterAttributes = [ "noescape" ]
+    ParameterList : "(" [ [ `MetadataList` ] `Parameter` { "," [ `MetadataList` ] `Parameter` } ] ")"
+
+The ``noescape`` parameter only has significance for pointers, references,
+arrays, vectors, and function pointers. It indicates that the function will
+not escape an alias (i.e. pointer) to the pointed-to object. This means that
+the parameter is guaranteed to only reside in the current stack frame, or
+within objects that satisfy this same constraint.
 
 Registers
 ---------

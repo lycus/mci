@@ -156,6 +156,9 @@ public final class ModuleDisassembler
 
         foreach (i, param; function_.parameters)
         {
+            if (param.attributes & ParameterAttributes.noEscape)
+                _writer.write("noescape ");
+
             _writer.write(param.type);
 
             if (i < function_.parameters.count - 1)

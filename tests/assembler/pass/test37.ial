@@ -1,0 +1,6 @@
+function void foo(noescape int*, noescape float64, noescape mci/Object&)
+{
+    block entry
+    {
+    }
+}
