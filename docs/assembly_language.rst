@@ -163,10 +163,10 @@ Parameters have the grammar:
     ParameterList : "(" [ [ `MetadataList` ] `Parameter` { "," [ `MetadataList` ] `Parameter` } ] ")"
 
 The ``noescape`` parameter only has significance for pointers, references,
-arrays, and vectors. It indicates that the function will not escape an alias
-(i.e. pointer) to the pointed-to object. This means that the parameter is
-guaranteed to only reside in the current stack frame, or within objects
-that satisfy this same constraint.
+arrays, vectors, and function pointers. It indicates that the function will
+not escape an alias (i.e. pointer) to the pointed-to object. This means that
+the parameter is guaranteed to only reside in the current stack frame, or
+within objects that satisfy this same constraint.
 
 Registers
 ---------
