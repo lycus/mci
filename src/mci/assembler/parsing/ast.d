@@ -856,6 +856,7 @@ public class FieldDeclarationNode : Node
 public class ParameterNode : Node
 {
     private TypeReferenceNode _type;
+    private ParameterAttributes _attributes;
     private MetadataListNode _metadata;
 
     pure nothrow invariant()
@@ -863,7 +864,8 @@ public class ParameterNode : Node
         assert(_type);
     }
 
-    public this(SourceLocation location, TypeReferenceNode type, MetadataListNode metadata) pure nothrow
+    public this(SourceLocation location, TypeReferenceNode type, ParameterAttributes attributes,
+                MetadataListNode metadata) pure nothrow
     in
     {
         assert(type);
@@ -873,6 +875,7 @@ public class ParameterNode : Node
         super(location);
 
         _type = type;
+        _attributes = attributes;
         _metadata = metadata;
     }
 
@@ -886,6 +889,11 @@ public class ParameterNode : Node
         return _type;
     }
 
+    @property public final ParameterAttributes attributes() pure nothrow
+    {
+        return _attributes;
+    }
+
     @property public final MetadataListNode metadata() pure nothrow
     {
         return _metadata;
@@ -894,6 +902,11 @@ public class ParameterNode : Node
     @property public override ReadOnlyIndexable!Node children()
     {
         return toReadOnlyIndexable!Node(_type, _metadata);
+    }
+
+    public override string toString()
+    {
+        return "attributes: " ~ to!string(_attributes);
     }
 }
 

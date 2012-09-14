@@ -67,6 +67,7 @@
           <keyword>noinline</keyword>
           <keyword>noreturn</keyword>
           <keyword>nothrow</keyword>
+          <keyword>noescape</keyword>
           <keyword>align</keyword>
           <keyword>unwind</keyword>
           <keyword>volatile</keyword>

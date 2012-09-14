@@ -875,9 +875,17 @@ public final class Parser
             if (peek().type == TokenType.openBracket)
                 paramMetadata = parseMetadataList();
 
+            ParameterAttributes paramAttr;
+
+            if (peek().type == TokenType.noEscape)
+            {
+                next();
+                paramAttr |= ParameterAttributes.noEscape;
+            }
+
             auto paramType = parseTypeSpecification();
 
-            params.add(new ParameterNode(paramType.location, paramType, paramMetadata));
+            params.add(new ParameterNode(paramType.location, paramType, paramAttr, paramMetadata));
 
             if (peek().type != TokenType.closeParen)
             {

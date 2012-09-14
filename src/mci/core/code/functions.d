@@ -197,12 +197,22 @@ public final class BasicBlock
 public enum string entryBlockName = "entry"; /// The name of the entry basic block of all functions.
 
 /**
- * Represents a paramter of a function.
+ * Various attributes of a parameter.
+ */
+public enum ParameterAttributes : ubyte
+{
+    none = 0x00, /// No attributes.
+    noEscape = 0x01, /// The parameter is guaranteed to not escape beyond the stack frame.
+}
+
+/**
+ * Represents a parameter of a function.
  */
 public final class Parameter
 {
     private Function _function;
     private Type _type;
+    private ParameterAttributes _attributes;
     private List!MetadataPair _metadata;
 
     pure nothrow invariant()
@@ -212,7 +222,7 @@ public final class Parameter
         assert(_metadata);
     }
 
-    private this(Function function_, Type type)
+    private this(Function function_, Type type, ParameterAttributes attributes)
     in
     {
         assert(function_);
@@ -222,6 +232,7 @@ public final class Parameter
     {
         _function = function_;
         _type = type;
+        _attributes = attributes;
         _metadata = new typeof(_metadata)();
     }
 
@@ -255,6 +266,17 @@ public final class Parameter
     body
     {
         return _type;
+    }
+
+    /**
+     * Gets the attributes of this parameter.
+     *
+     * Returns:
+     *  The attributes of this parameter.
+     */
+    @property public ParameterAttributes attributes() pure nothrow
+    {
+        return _attributes;
     }
 
     /**
@@ -515,11 +537,12 @@ public final class Function
      *
      * Params:
      *  type = The type of the parameter.
+     *  attributes = Attributes of the parameter.
      *
      * Returns:
      *  The newly created parameter.
      */
-    public Parameter createParameter(Type type)
+    public Parameter createParameter(Type type, ParameterAttributes attributes)
     in
     {
         assert(type);
@@ -531,7 +554,7 @@ public final class Function
     }
     body
     {
-        auto param = new Parameter(this, type);
+        auto param = new Parameter(this, type, attributes);
 
         _parameters.add(param);
 

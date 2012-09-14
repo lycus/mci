@@ -41,6 +41,7 @@ public enum TokenType : ubyte
     noInlining, /// The $(PRE noinline) keyword.
     noReturn, /// The $(PRE noreturn) keyword.
     noThrow, /// The $(PRE nothrow) keyword.
+    noEscape, /// The $(PRE noescape) keyword.
     register, /// The $(PRE register) keyword.
     block, /// The $(PRE block) keyword.
     unwind, /// The $(PRE unwind) keyword.
@@ -99,6 +100,7 @@ nothrow shared static this()
                        "noinline" : TokenType.noInlining,
                        "noreturn" : TokenType.noReturn,
                        "nothrow" : TokenType.noThrow,
+                       "noescape" : TokenType.noEscape,
                        "register" : TokenType.register,
                        "block" : TokenType.block,
                        "unwind" : TokenType.unwind,

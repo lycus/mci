@@ -114,7 +114,7 @@ body
     auto f = new Function(intrinsicModule, ident, returnType, CallingConvention.cdecl, FunctionAttributes.intrinsic);
 
     foreach (param; parameters)
-        f.createParameter(param);
+        f.createParameter(param, ParameterAttributes.none); // We may want to tweak this for some intrinsics.
 
     f.close();
 

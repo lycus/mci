@@ -282,7 +282,7 @@ public final class ModuleWriter : ModuleSaver
         _writer.write(cast(uint)function_.parameters.count);
 
         foreach (param; function_.parameters)
-            writeTypeReference(param.type);
+            writeParameter(param);
 
         _writer.write(cast(uint)function_.registers.count);
 
@@ -296,6 +296,17 @@ public final class ModuleWriter : ModuleSaver
 
         foreach (block; function_.blocks)
             writeBasicBlockUnwindSpecification(block.y);
+    }
+
+    private void writeParameter(Parameter parameter)
+    in
+    {
+        assert(parameter);
+    }
+    body
+    {
+        writeTypeReference(parameter.type);
+        _writer.write(parameter.attributes);
     }
 
     private void writeRegister(Register register)

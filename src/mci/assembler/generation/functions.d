@@ -37,7 +37,7 @@ body
 
     foreach (param; node.parameters)
     {
-        auto p = func.createParameter(resolveType(param.type, module_, manager));
+        auto p = func.createParameter(resolveType(param.type, module_, manager), param.attributes);
 
         if (param.metadata)
             foreach (md; param.metadata.metadata)
