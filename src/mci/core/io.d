@@ -578,11 +578,11 @@ public class BinaryReader
      * endianness.
      *
      * Params:
-     *  T = Type of the value to read. Must be a primitive
-     *      according to $(D isPrimitiveType).
+     *  T = Type of the value to read. Must be serializable
+     *      according to $(D isSerializable).
      */
     public final T read(T)()
-        if (isPrimitiveType!T)
+        if (isSerializable!T)
     {
         T value;
 
@@ -606,12 +606,12 @@ public class BinaryReader
      * endianness.
      *
      * Params:
-     *  T = The array type. Must hold elements that are primitive
-     *      according to $(D isPrimitiveValue).
+     *  T = The array type. Must hold elements that are serializable
+     *      according to $(D isSerializable).
      *  length = How many elements to read.
      */
     public final T readArray(T)(ulong length)
-        if (isArray!T && isPrimitiveType!(ElementEncodingType!T))
+        if (isArray!T && isSerializable!(ElementEncodingType!T))
     {
         T arr;
 
@@ -695,12 +695,12 @@ public class BinaryWriter
      * endianness.
      *
      * Params:
-     *  T = Type of $(D value). Must be a primitive according
-     *      to $(D isPrimitiveType).
+     *  T = Type of $(D value). Must be serializable according
+     *      to $(D isSerializable).
      *  value = The value to write.
      */
     public final void write(T)(T value)
-        if (isPrimitiveType!T)
+        if (isSerializable!T)
     {
         if (endianness != _endianness)
         {
@@ -720,12 +720,12 @@ public class BinaryWriter
      * endianness.
      *
      * Params:
-     *  T = The array type. Must hold elements that are primitive
-     *      according to $(D isPrimitiveValue).
+     *  T = The array type. Must hold elements that are serializable
+     *      according to $(D isSerializable).
      *  values = The values to write.
      */
     public final void writeArray(T)(T values)
-        if (isArray!T && isPrimitiveType!(ElementEncodingType!T))
+        if (isArray!T && isSerializable!(ElementEncodingType!T))
     {
         foreach (item; values)
             write(item);
