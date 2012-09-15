@@ -13,7 +13,7 @@ import std.traits;
  */
 public template isAtomic(T)
 {
-    public enum bool isAtomic = isPrimitiveType!T || isPointer!T || is(T == class);
+    public enum bool isAtomic = isScalarType!T || isPointer!T || is(Unqual!T == class);
 }
 
 /**
@@ -31,16 +31,16 @@ public template isNullable(T)
 }
 
 /**
- * Indicates whether a type is primitive. That is, whether it is an integral,
- * floating point, character, or $(D enum) type.
+ * Indicates whether a type is serializable. All scalar types except $(D real)
+ * are considered serializable.
  *
  * Params:
  *  T = The type to test.
  *
  * Returns:
- *  $(D true) if $(D T) is a primitive type; otherwise, $(D false).
+ *  $(D true) if $(D T) is a serializable type; otherwise, $(D false).
  */
-public template isPrimitiveType(T)
+public template isSerializable(T)
 {
-    public enum bool isPrimitiveType = is(T == enum) || is(T == bool) || isNumeric!T || isSomeChar!T;
+    public enum bool isSerializable = (isScalarType!T || is(Unqual!T == enum)) && !is(Unqual!T == real);
 }
