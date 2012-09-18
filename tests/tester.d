@@ -108,7 +108,7 @@ private bool test(string directory, string cli, TestPass pass)
             failures++;
     };
 
-    if (pass.noParallel)
+    if (compiler == Compiler.gdc || pass.noParallel)
     {
         foreach (file; files)
             func(file);
