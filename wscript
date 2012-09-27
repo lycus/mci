@@ -62,8 +62,6 @@ def configure(conf):
             add_option('-O3')
         else:
             conf.fatal('--mode must be either debug or release.')
-
-        add_option('-lpthread', 'LINKFLAGS')
     elif conf.env.COMPILER_D == 'ldc2':
         add_option('-w')
         add_option('-wi')
