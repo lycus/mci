@@ -62,8 +62,6 @@ def configure(conf):
             add_option('-O3')
         else:
             conf.fatal('--mode must be either debug or release.')
-
-        add_option('-lpthread', 'LINKFLAGS')
     elif conf.env.COMPILER_D == 'ldc2':
         add_option('-w')
         add_option('-wi')
@@ -85,10 +83,8 @@ def configure(conf):
 
     if conf.options.lp64 == 'true':
         add_option('-m64')
-        conf.env.append_value('LINKFLAGS', '-m64')
     elif conf.options.lp64 == 'false':
         add_option('-m32')
-        conf.env.append_value('LINKFLAGS', '-m32')
     else:
         conf.fatal('--lp64 must be either true or false.')
 
