@@ -299,3 +299,4 @@ def dist(dst):
 
     with open('.gitignore', 'r') as f:
         dst.excl = ' '.join(l.strip() for l in f if l.strip())
+        dst.excl = ' .git/* .gitignore .arcconfig'
