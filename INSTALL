@@ -2,8 +2,6 @@
 
                 -- Installation --
 
-        ++ POSIX ++
-
 Installation works through the Waf build system. You can obtain Waf from:
 http://code.google.com/p/waf
 
