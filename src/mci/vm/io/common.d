@@ -2,7 +2,7 @@ module mci.vm.io.common;
 
 public enum string fileMagic = "LAIC"; /// Magic number used for the file format.
 
-public enum uint fileVersion = 45; /// The current version of the file format.
+public enum uint fileVersion = 46; /// The current version of the file format.
 
 package enum TypeReferenceType : ubyte
 {

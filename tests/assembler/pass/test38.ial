@@ -1,0 +1,7 @@
+function void test()
+{
+    block entry
+    {
+        forward (foo, bar);
+    }
+}

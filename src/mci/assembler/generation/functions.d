@@ -232,10 +232,10 @@ body
 
                         operand = asReadOnlyIndexable(registers);
                         break;
-                    case OperandType.ffi:
-                        auto ffi = *instrOperand.peek!FFISignatureNode();
+                    case OperandType.foreignFunction:
+                        auto ff = *instrOperand.peek!ForeignFunctionNode();
 
-                        operand = new FFISignature(ffi.library.name, ffi.entryPoint.name);
+                        operand = new ForeignFunction(ff.library.name, ff.entryPoint.name);
                         break;
                 }
             }

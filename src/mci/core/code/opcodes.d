@@ -44,7 +44,7 @@ public enum OperandType : ubyte
     label,
     branch,
     selector,
-    ffi,
+    foreignFunction,
 }
 
 public bool isArrayOperand(OperandType operandType) pure nothrow
@@ -124,8 +124,8 @@ body
             return typeid(Tuple!(BasicBlock, BasicBlock));
         case OperandType.selector:
             return typeid(ReadOnlyIndexable!Register);
-        case OperandType.ffi:
-            return typeid(FFISignature);
+        case OperandType.foreignFunction:
+            return typeid(ForeignFunction);
     }
 }
 
@@ -314,6 +314,7 @@ public enum OperationCode : ubyte
     callIndirect,
     raw,
     ffi,
+    forward,
     jump,
     jumpCond,
     leave,
@@ -432,6 +433,7 @@ public __gshared OpCode opCallTail;
 public __gshared OpCode opCallIndirect;
 public __gshared OpCode opRaw;
 public __gshared OpCode opFFI;
+public __gshared OpCode opForward;
 public __gshared OpCode opJump;
 public __gshared OpCode opJumpCond;
 public __gshared OpCode opLeave;
@@ -573,7 +575,8 @@ shared static this()
     opInvokeTail = create("invoke.tail", OperationCode.invokeTail, OpCodeType.normal, OperandType.function_, 0, false);
     opInvokeIndirect = create("invoke.indirect", OperationCode.invokeIndirect, OpCodeType.normal, OperandType.none, 1, false);
     opRaw = create("raw", OperationCode.raw, OpCodeType.controlFlow, OperandType.uint8Array, 0, false);
-    opFFI = create("ffi", OperationCode.ffi, OpCodeType.controlFlow, OperandType.ffi, 0, false);
+    opFFI = create("ffi", OperationCode.ffi, OpCodeType.controlFlow, OperandType.foreignFunction, 0, false);
+    opForward = create("forward", OperationCode.forward, OpCodeType.controlFlow, OperandType.foreignFunction, 0, false);
     opJump = create("jump", OperationCode.jump, OpCodeType.controlFlow, OperandType.label, 0, false);
     opJumpCond = create("jump.cond", OperationCode.jumpCond, OpCodeType.controlFlow, OperandType.branch, 1, false);
     opLeave = create("leave", OperationCode.leave, OpCodeType.controlFlow, OperandType.none, 0, false);

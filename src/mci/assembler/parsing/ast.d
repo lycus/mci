@@ -1478,7 +1478,7 @@ public class ArrayLiteralNode : Node
     }
 }
 
-public class FFISignatureNode : Node
+public class ForeignFunctionNode : Node
 {
     private SimpleNameNode _library;
     private SimpleNameNode _entryPoint;
@@ -1537,7 +1537,7 @@ public alias Algebraic!(LiteralValueNode,
                         BasicBlockReferenceNode,
                         BranchSelectorNode,
                         RegisterSelectorNode,
-                        FFISignatureNode) InstructionOperand;
+                        ForeignFunctionNode) InstructionOperand;
 
 public class InstructionOperandNode : Node
 {

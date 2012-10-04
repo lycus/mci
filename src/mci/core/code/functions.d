@@ -689,9 +689,10 @@ public enum CallingConvention : ubyte
 }
 
 /**
- * Represents the signature of an FFI invocation.
+ * Represents the signature of a function located in another module
+ * or in a native library.
  */
-public final class FFISignature
+public final class ForeignFunction
 {
     private string _library;
     private string _entryPoint;
@@ -703,11 +704,11 @@ public final class FFISignature
     }
 
     /**
-     * Constructs a new $(D FFISignature) instance.
+     * Constructs a new $(D ForeignFunction) instance.
      *
      * Params:
      *  library = The library to search in.
-     *  entryPoint = The procedure to search for.
+     *  entryPoint = The function to search for.
      */
     public this(string library, string entryPoint) pure nothrow
     in
@@ -738,7 +739,7 @@ public final class FFISignature
     }
 
     /**
-     * Gets the procedure to search for.
+     * Gets the function to search for.
      *
      * Returns:
      *  The procedure to search for.

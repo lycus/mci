@@ -219,10 +219,10 @@ Their grammar is:
 .. productionlist::
     Instruction : [ `MetadataList` ] `InstructionAttributes` [ `Register` "=" ] ? any instruction ? [ `Register` [ "," `Register` [ "," `Register` ] ] ] [ `InstructionOperand` ] ";"
     InstructionAttributes : [ "volatile" ]
-    InstructionOperand : "(" ( `Literal` | `LiteralArray` | `BasicBlock` | `BranchTarget` | `FFISignature` | `TypeSpecification` | `Field` | `Function` ) ")"
+    InstructionOperand : "(" ( `Literal` | `LiteralArray` | `BasicBlock` | `BranchTarget` | `ForeignFunction` | `TypeSpecification` | `Field` | `Function` ) ")"
     BranchTarget : `BasicBlock` "," `BasicBlock`
     RegisterSelector : `Register` { "," `Register` }
-    FFISignature : `Identifier` "," `Identifier`
+    ForeignFunction : `Identifier` "," `Identifier`
 
 The full list of valid instructions (with register counts, operand types, and
 so on) can be found on the instruction set page. Note that the parser is

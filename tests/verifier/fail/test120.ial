@@ -1,0 +1,7 @@
+function void test_fwd_cdecl() cdecl
+{
+    block entry
+    {
+        forward (a, b);
+    }
+}
