@@ -141,7 +141,7 @@ public alias Algebraic!(byte,
                         Field,
                         Function,
                         ReadOnlyIndexable!Register,
-                        FFISignature) InstructionOperand;
+                        ForeignFunction) InstructionOperand;
 
 /**
  * Various attributes of an instruction.

@@ -1131,8 +1131,8 @@ public final class ModuleReader : ModuleLoader
 
                 operand = asReadOnlyIndexable(regs);
                 break;
-            case OperandType.ffi:
-                operand = readFFISignature();
+            case OperandType.foreignFunction:
+                operand = readForeignFunction();
                 break;
             default:
                 error("Unknown opcode operand type '%s'.", opCode.operandType);
@@ -1219,7 +1219,7 @@ public final class ModuleReader : ModuleLoader
         return function_.parameters[i];
     }
 
-    private FFISignature readFFISignature()
+    private ForeignFunction readForeignFunction()
     out (result)
     {
         assert(result);
@@ -1229,7 +1229,7 @@ public final class ModuleReader : ModuleLoader
         auto library = readString();
         auto ep = readString();
 
-        return new FFISignature(library, ep);
+        return new ForeignFunction(library, ep);
     }
 
     private string readString()

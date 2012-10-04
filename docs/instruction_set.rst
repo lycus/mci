@@ -2235,7 +2235,7 @@ ffi
 **Source registers**
     0
 **Operand type**
-    FFI signature
+    Foreign function
 
 This instruction marks the function as an FFI function. FFI functions must
 only contain this one instruction, which points the code generator to the
@@ -2252,6 +2252,34 @@ locate the native entry point when the FFI function is called.
 
 If the native function returns and the function is marked ``noreturn``,
 undefined behavior results.
+
+This is a terminator instruction.
+
+forward
+-------
+
+**Has target register**
+    No
+**Source registers**
+    0
+**Operand type**
+    Foreign function
+
+This instruction marks a function as a reference. This means that, when a
+call to the function containing this instruction is made, the execution
+engine will forward it to a function in another module, as specified in
+the signature in the operand.
+
+The operand must point to a function with standard calling convention in
+a managed MCI module. The module name should not contain the file extension;
+only the base name.
+
+The function, when located in the specified module, is expected to have the
+exact same return type, parameter types, and attributes as the function this
+instruction is used in. If it does not, a runtime error results.
+
+Note that using forwarded functions results in some classes of optimizations
+(e.g. inlining) being disabled for calls to such functions.
 
 This is a terminator instruction.
 

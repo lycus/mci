@@ -1,0 +1,7 @@
+function void test_fwd()
+{
+    block entry
+    {
+        forward (asdf, fdsa);
+    }
+}

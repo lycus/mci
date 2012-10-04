@@ -86,6 +86,26 @@ public final class RawVerifier : CodeVerifier
     }
 }
 
+public final class ForwardVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        if (auto inst = getFirstInstruction(function_, opForward))
+        {
+            if (function_.blocks.count != 1)
+                error(inst, "Forward functions may only have an 'entry' basic block.");
+
+            auto bb = function_.blocks[entryBlockName];
+
+            if (bb.stream.count != 1 || first(bb.stream) !is inst)
+                error(inst, "Forward functions may only contain one 'forward' instruction, terminating the 'entry' block.");
+
+            if (function_.callingConvention != CallingConvention.standard)
+                error(inst, "Forward functions must have standard calling convention.");
+        }
+    }
+}
+
 public final class ExceptionContextVerifier : CodeVerifier
 {
     public override void verify(Function function_)

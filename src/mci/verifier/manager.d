@@ -35,6 +35,7 @@ public final class VerificationManager
                                          new TerminatorVerifier(),
                                          new FFIVerifier(),
                                          new RawVerifier(),
+                                         new ForwardVerifier(),
                                          new JumpVerifier(),
                                          new JumpTypeVerifier(),
                                          new ReturnVerifier(),

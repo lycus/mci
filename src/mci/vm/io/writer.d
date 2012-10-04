@@ -430,7 +430,7 @@ public final class ModuleWriter : ModuleSaver
                     writeRegisterReference(reg);
             }
             else
-                writeFFISignature(*operand.peek!FFISignature());
+                writeForeignFunction(*operand.peek!ForeignFunction());
         }
     }
 
@@ -595,7 +595,7 @@ public final class ModuleWriter : ModuleSaver
         _writer.write(cast(uint)findIndex(instruction.block.stream, instruction));
     }
 
-    private void writeFFISignature(FFISignature signature)
+    private void writeForeignFunction(ForeignFunction signature)
     in
     {
         assert(signature);

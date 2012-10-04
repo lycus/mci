@@ -157,10 +157,9 @@ public final class OptimizationManager
         if (function_.attributes & FunctionAttributes.noOptimization)
             return;
 
-        if (first(function_.blocks[entryBlockName].stream).opCode is opFFI)
-            return;
+        auto first = first(function_.blocks[entryBlockName].stream).opCode;
 
-        if (first(function_.blocks[entryBlockName].stream).opCode is opRaw)
+        if (first is opFFI || first is opRaw || first is opForward)
             return;
 
         foreach (opt; _codeOptimizers)

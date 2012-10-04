@@ -1090,7 +1090,7 @@ public final class Parser
         {
             consume("(");
 
-            // If we're parsing a byte array, register selector, or FFI signature,
+            // If we're parsing a byte array, register selector, or foreign function,
             // bring the opening parenthesis back in. This is hacky, but it makes
             // parsing easier.
             if (isArrayOperand(operandType) || operandType == OperandType.selector)
@@ -1252,8 +1252,8 @@ public final class Parser
                 operand = selector;
                 location = selector.location;
                 break;
-            case OperandType.ffi:
-                auto signature = parseFFISignature();
+            case OperandType.foreignFunction:
+                auto signature = parseForeignFunction();
                 operand = signature;
                 location = signature.location;
                 break;
@@ -1373,7 +1373,7 @@ public final class Parser
         return new ArrayLiteralNode(open.location, values);
     }
 
-    private FFISignatureNode parseFFISignature()
+    private ForeignFunctionNode parseForeignFunction()
     out (result)
     {
         assert(result);
@@ -1386,6 +1386,6 @@ public final class Parser
 
         auto ep = parseSimpleName();
 
-        return new FFISignatureNode(library.location, library, ep);
+        return new ForeignFunctionNode(library.location, library, ep);
     }
 }
