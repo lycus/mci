@@ -8,7 +8,6 @@ import std.conv,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.opcodes,
-       mci.core.typing.members,
        mci.core.typing.types,
        mci.assembler.parsing.location;
 
@@ -621,7 +620,7 @@ mixin DefineCoreTypeNode!("NativeUInt", "uint");
 mixin DefineCoreTypeNode!("Float32", "float32");
 mixin DefineCoreTypeNode!("Float64", "float64");
 
-public class FieldReferenceNode : Node
+public class MemberReferenceNode : Node
 {
     private StructureTypeReferenceNode _typeName;
     private SimpleNameNode _name;
@@ -669,6 +668,94 @@ public class FieldReferenceNode : Node
     @property public override ReadOnlyIndexable!Node children()
     {
         return toReadOnlyIndexable!Node(_typeName, _name);
+    }
+}
+
+public class GlobalFieldReferenceNode : Node
+{
+    private ModuleReferenceNode _moduleName;
+    private SimpleNameNode _name;
+
+    pure nothrow invariant()
+    {
+        assert(_name);
+    }
+
+    public this(SourceLocation location, ModuleReferenceNode moduleName, SimpleNameNode name) pure nothrow
+    in
+    {
+        assert(name);
+    }
+    body
+    {
+        super(location);
+
+        _moduleName = moduleName;
+        _name = name;
+    }
+
+    @property public final ModuleReferenceNode moduleName() pure nothrow
+    {
+        return _moduleName;
+    }
+
+    @property public final SimpleNameNode name() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _name;
+    }
+
+    @property public override ReadOnlyIndexable!Node children()
+    {
+        return toReadOnlyIndexable!Node(_moduleName, _name);
+    }
+}
+
+public class ThreadFieldReferenceNode : Node
+{
+    private ModuleReferenceNode _moduleName;
+    private SimpleNameNode _name;
+
+    pure nothrow invariant()
+    {
+        assert(_name);
+    }
+
+    public this(SourceLocation location, ModuleReferenceNode moduleName, SimpleNameNode name) pure nothrow
+    in
+    {
+        assert(name);
+    }
+    body
+    {
+        super(location);
+
+        _moduleName = moduleName;
+        _name = name;
+    }
+
+    @property public final ModuleReferenceNode moduleName() pure nothrow
+    {
+        return _moduleName;
+    }
+
+    @property public final SimpleNameNode name() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _name;
+    }
+
+    @property public override ReadOnlyIndexable!Node children()
+    {
+        return toReadOnlyIndexable!Node(_moduleName, _name);
     }
 }
 
@@ -720,21 +807,21 @@ public class TypeDeclarationNode : DeclarationNode
 {
     private SimpleNameNode _name;
     private LiteralValueNode _alignment;
-    private NoNullList!FieldDeclarationNode _fields;
+    private NoNullList!MemberDeclarationNode _members;
     private MetadataListNode _metadata;
 
     pure nothrow invariant()
     {
         assert(_name);
-        assert(_fields);
+        assert(_members);
     }
 
-    public this(SourceLocation location, SimpleNameNode name, LiteralValueNode alignment, NoNullList!FieldDeclarationNode fields,
+    public this(SourceLocation location, SimpleNameNode name, LiteralValueNode alignment, NoNullList!MemberDeclarationNode members,
                 MetadataListNode metadata)
     in
     {
         assert(name);
-        assert(fields);
+        assert(members);
     }
     body
     {
@@ -742,7 +829,7 @@ public class TypeDeclarationNode : DeclarationNode
 
         _name = name;
         _alignment = alignment;
-        _fields = fields.duplicate();
+        _members = members.duplicate();
         _metadata = metadata;
     }
 
@@ -761,14 +848,14 @@ public class TypeDeclarationNode : DeclarationNode
         return _alignment;
     }
 
-    @property public final ReadOnlyIndexable!FieldDeclarationNode fields() pure nothrow
+    @property public final ReadOnlyIndexable!MemberDeclarationNode members() pure nothrow
     out (result)
     {
         assert(result);
     }
     body
     {
-        return _fields;
+        return _members;
     }
 
     @property public final MetadataListNode metadata() pure nothrow
@@ -778,16 +865,14 @@ public class TypeDeclarationNode : DeclarationNode
 
     @property public override ReadOnlyIndexable!Node children()
     {
-        return new List!Node(concat(toReadOnlyIndexable!Node(_name, _alignment), castItems!Node(_fields), toReadOnlyIndexable!Node(_metadata)));
+        return new List!Node(concat(toReadOnlyIndexable!Node(_name, _alignment), castItems!Node(_members), toReadOnlyIndexable!Node(_metadata)));
     }
 }
 
-public class FieldDeclarationNode : Node
+public class MemberDeclarationNode : Node
 {
     private TypeReferenceNode _type;
     private SimpleNameNode _name;
-    private FieldStorage _storage;
-    private MetadataListNode _metadata;
 
     pure nothrow invariant()
     {
@@ -795,8 +880,7 @@ public class FieldDeclarationNode : Node
         assert(_name);
     }
 
-    public this(SourceLocation location, TypeReferenceNode type, SimpleNameNode name, FieldStorage storage,
-                MetadataListNode metadata) pure nothrow
+    public this(SourceLocation location, TypeReferenceNode type, SimpleNameNode name) pure nothrow
     in
     {
         assert(type);
@@ -808,8 +892,6 @@ public class FieldDeclarationNode : Node
 
         _type = type;
         _name = name;
-        _storage = storage;
-        _metadata = metadata;
     }
 
     @property public final TypeReferenceNode type() pure nothrow
@@ -832,24 +914,9 @@ public class FieldDeclarationNode : Node
         return _name;
     }
 
-    @property public final FieldStorage storage() pure nothrow
-    {
-        return _storage;
-    }
-
-    @property public final MetadataListNode metadata() pure nothrow
-    {
-        return _metadata;
-    }
-
     @property public override ReadOnlyIndexable!Node children()
     {
-        return toReadOnlyIndexable!Node(_type, _name, _metadata);
-    }
-
-    public override string toString()
-    {
-        return "storage: " ~ to!string(_storage);
+        return toReadOnlyIndexable!Node(_type, _name);
     }
 }
 
@@ -907,6 +974,87 @@ public class ParameterNode : Node
     public override string toString()
     {
         return "attributes: " ~ to!string(_attributes);
+    }
+}
+
+public abstract class FieldDeclarationNode : DeclarationNode
+{
+    private SimpleNameNode _name;
+    private TypeReferenceNode _type;
+    private MetadataListNode _metadata;
+
+    pure nothrow invariant()
+    {
+        assert(_name);
+        assert(_type);
+    }
+
+    protected this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type, MetadataListNode metadata)
+    in
+    {
+        assert(name);
+        assert(type);
+    }
+    body
+    {
+        super(location);
+
+        _name = name;
+        _type = type;
+        _metadata = metadata;
+    }
+
+    @property public final SimpleNameNode name() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _name;
+    }
+
+    @property public final TypeReferenceNode type() pure nothrow
+    {
+        return _type;
+    }
+
+    @property public final MetadataListNode metadata() pure nothrow
+    {
+        return _metadata;
+    }
+
+    @property public override ReadOnlyIndexable!Node children()
+    {
+        return new List!Node(concat(toReadOnlyIndexable!Node(_name, _type), toReadOnlyIndexable!Node(_metadata)));
+    }
+}
+
+public class GlobalFieldDeclarationNode : FieldDeclarationNode
+{
+    public this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type, MetadataListNode metadata)
+    in
+    {
+        assert(name);
+        assert(type);
+    }
+    body
+    {
+        super(location, name, type, metadata);
+    }
+}
+
+public class ThreadFieldDeclarationNode : FieldDeclarationNode
+{
+    public this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type, MetadataListNode metadata)
+    in
+    {
+        assert(name);
+        assert(type);
+    }
+    body
+    {
+        super(location, name, type, metadata);
     }
 }
 
@@ -1532,7 +1680,9 @@ public class ForeignFunctionNode : Node
 public alias Algebraic!(LiteralValueNode,
                         ArrayLiteralNode,
                         TypeReferenceNode,
-                        FieldReferenceNode,
+                        MemberReferenceNode,
+                        GlobalFieldReferenceNode,
+                        ThreadFieldReferenceNode,
                         FunctionReferenceNode,
                         BasicBlockReferenceNode,
                         BranchSelectorNode,

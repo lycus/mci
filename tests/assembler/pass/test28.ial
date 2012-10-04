@@ -1,4 +1,4 @@
 type T
 {
-    field instance float32[0] vec;
+    field float32[0] vec;
 }

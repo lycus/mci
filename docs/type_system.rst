@@ -69,7 +69,7 @@ Structure types
 +++++++++++++++
 
 A structure is a record that encapsulates a fixed number of fields, each of
-their own type. A field consists of a storage class, a type, and a name.
+their own type. A field consists of a type and a name.
 
 Examples::
 
@@ -78,25 +78,8 @@ Examples::
     // indirection.
     type Foo
     {
-        field instance int32 bar;
-        field instance float64 baz;
-    }
-
-    // A structure with a static field. The field does not contribute to the
-    // structure's size in memory, and cannot be accessed on an instance of
-    // the structure.
-    type Foo2
-    {
-        field static int32 bar;
-    }
-
-    // A type with a thread-local field. The field has distinct values for
-    // each running thread in the program. Thread-local fields are similar
-    // to static fields in that field.static.set and related instructions
-    // must be used to access them.
-    type Foo3
-    {
-        field thread int32 bar;
+        field int32 bar;
+        field float64 baz;
     }
 
 A structure can also specify its alignment (this is normally decided by the
@@ -130,7 +113,7 @@ Structures can be created in several ways:
   to the structure, or as a vector or array of the structure. Then, allocate
   memory with ``mem.alloc`` or ``mem.new``.
 * On the heap, GC-tracked: Declare a register as a reference to the structure
-  and allocate an instance with ``mem.gcnew``. Additionally, references can
+  and allocate an instance with ``mem.new``. Additionally, references can
   be contained in vectors and arrays, and in other GC-tracked structures.
 
 Type specifications
@@ -166,10 +149,10 @@ word-size boundary. For example, this is problematic::
 
     type BadAlign align 1
     {
-        field instance uint8 a;
+        field uint8 a;
 
         // This field will now be unaligned. This is undefined behavior.
-        field instance BadAlign& b;
+        field BadAlign& b;
     }
 
 Care should be taken when using an explicit alignment specification on

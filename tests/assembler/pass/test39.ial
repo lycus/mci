@@ -1,0 +1,2 @@
+field global int32 foo;
+field thread float32 bar;

@@ -8,7 +8,6 @@ import mci.core.common,
        mci.core.code.functions,
        mci.core.code.modules,
        mci.core.typing.core,
-       mci.core.typing.members,
        mci.core.typing.types;
 
 private __gshared NoNullDictionary!(Tuple!(CallingConvention, Type, NoNullList!Type), FunctionPointerType, false) functionPointerTypes;

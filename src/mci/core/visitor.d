@@ -1,9 +1,9 @@
 module mci.core.visitor;
 
-import mci.core.code.functions,
+import mci.core.code.fields,
+       mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.modules,
-       mci.core.typing.members,
        mci.core.typing.types;
 
 /**
@@ -35,9 +35,15 @@ public abstract class ModuleVisitor
         {
             visit(type.y);
 
-            foreach (field; type.y.fields)
+            foreach (field; type.y.members)
                 visit(field.y);
         }
+
+        foreach (field; module_.globalFields)
+            visit(field.y);
+
+        foreach (field; module_.threadFields)
+            visit(field.y);
 
         foreach (func; module_.functions)
         {
@@ -77,7 +83,25 @@ public abstract class ModuleVisitor
     {
     }
 
-    protected void visit(Field field)
+    protected void visit(StructureMember member)
+    in
+    {
+        assert(member);
+    }
+    body
+    {
+    }
+
+    protected void visit(GlobalField field)
+    in
+    {
+        assert(field);
+    }
+    body
+    {
+    }
+
+    protected void visit(ThreadField field)
     in
     {
         assert(field);

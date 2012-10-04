@@ -1,9 +1,9 @@
 type NonPrimitiveVector
 {
-    field instance Foo[3] vec;
+    field Foo[3] vec;
 }
 
 type Foo
 {
-    field instance float32 bar;
+    field float32 bar;
 }

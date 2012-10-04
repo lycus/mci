@@ -4,13 +4,13 @@ import std.conv,
        mci.core.common,
        mci.core.container,
        mci.core.analysis.utilities,
+       mci.core.code.fields,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.stream,
        mci.core.code.opcodes,
        mci.core.typing.cache,
        mci.core.typing.core,
-       mci.core.typing.members,
        mci.core.typing.types,
        mci.verifier.base;
 
@@ -541,26 +541,32 @@ public final class FieldTypeVerifier : CodeVerifier
         {
             foreach (instr; bb.y.stream)
             {
-                auto field = instr.operand.peek!Field();
+                auto field = instr.operand.peek!StructureMember();
+                auto gfield = instr.operand.peek!GlobalField();
+                auto tfield = instr.operand.peek!ThreadField();
 
-                if ((instr.opCode is opFieldGet || instr.opCode is opFieldStaticGet) &&
+                // Can't actually be null.
+                auto type = field ? field.type : gfield ? gfield.type : tfield ? tfield.type : null;
+
+                if ((instr.opCode is opFieldGet || instr.opCode is opFieldGlobalGet || instr.opCode is opFieldThreadGet) &&
                     instr.targetRegister.type !is field.type)
                 {
-                    error(instr, "Target register must be the type of the field reference.");
+                    error(instr, "Target register must be the type of the %s reference.", field ? "member" : "field");
                 }
                 else if (instr.opCode is opFieldSet && instr.sourceRegister2.type !is field.type)
-                    error(instr, "The second source register must be the type of the field reference.");
-                else if (instr.opCode is opFieldStaticSet && instr.sourceRegister1.type !is field.type)
+                    error(instr, "The second source register must be the type of the member reference.");
+                else if ((instr.opCode is opFieldGlobalSet || instr.opCode is opFieldThreadSet) && instr.sourceRegister1.type !is field.type)
                     error(instr, "The first source register must be the type of the field reference.");
-                else if ((instr.opCode is opFieldAddr || instr.opCode is opFieldStaticAddr) && instr.targetRegister.type !is getPointerType(field.type))
-                    error(instr, "Target register must be a pointer to the field's type.");
+                else if ((instr.opCode is opFieldAddr || instr.opCode is opFieldGlobalAddr || instr.opCode is opFieldThreadAddr) &&
+                    instr.targetRegister.type !is getPointerType(field.type))
+                    error(instr, "Target register must be a pointer to the %s's type.", field ? "member" : "field");
 
                 if (instr.opCode is opFieldGet || instr.opCode is opFieldSet || instr.opCode is opFieldAddr)
                 {
                     if (instr.sourceRegister1.type !is field.declaringType &&
                         instr.sourceRegister1.type !is getPointerType(field.declaringType) &&
                         instr.sourceRegister1.type !is getReferenceType(field.declaringType))
-                        error(instr, "The first source register must be the field's declaring type or a pointer or reference to the field's " ~
+                        error(instr, "The first source register must be the member's declaring type or a pointer or reference to the member's " ~
                                      "declaring type.");
                 }
             }

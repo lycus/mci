@@ -6,7 +6,6 @@ import mci.core.common,
        mci.core.tuple,
        mci.core.analysis.utilities,
        mci.core.typing.core,
-       mci.core.typing.members,
        mci.core.typing.types;
 
 public size_t computeSize(Type type, bool is32Bit, size_t simdAlignment)
@@ -43,41 +42,30 @@ body
 
     size_t size;
 
-    foreach (field; structType.fields)
+    foreach (field; structType.members)
     {
-        if (field.y.storage != FieldStorage.instance)
-            continue;
-
-        auto al = structType.alignment ? structType.alignment : computeAlignment(field.y.type, is32Bit, simdAlignment);
-
-        size = alignTo(size, al);
+        size = alignTo(size, structType.alignment ? structType.alignment : computeAlignment(field.y.type, is32Bit, simdAlignment));
         size += computeSize(field.y.type, is32Bit, simdAlignment);
     }
 
     return size;
 }
 
-public size_t computeOffset(Field field, bool is32Bit, size_t simdAlignment)
+public size_t computeOffset(StructureMember member, bool is32Bit, size_t simdAlignment)
 in
 {
-    assert(field);
-    assert(field.storage == FieldStorage.instance);
+    assert(member);
 }
 body
 {
-    auto alignment = field.declaringType.alignment;
+    auto alignment = member.declaringType.alignment;
     size_t offset;
 
-    foreach (fld; field.declaringType.fields)
+    foreach (fld; member.declaringType.members)
     {
-        if (fld.y.storage != FieldStorage.instance)
-            continue;
+        offset = alignTo(offset, alignment ? alignment : computeAlignment(fld.y.type, is32Bit, simdAlignment));
 
-        auto al = alignment ? alignment : computeAlignment(fld.y.type, is32Bit, simdAlignment);
-
-        offset = alignTo(offset, al);
-
-        if (fld.y is field)
+        if (fld.y is member)
             break;
 
         offset += computeSize(fld.y.type, is32Bit, simdAlignment);
@@ -93,7 +81,7 @@ public size_t computeAlignment(Type type, bool is32Bit, size_t simdAlignment)
         if (struc.alignment)
             return struc.alignment;
 
-        if (struc.fields.empty)
+        if (struc.members.empty)
             return 1;
 
         return computeSize(NativeUIntType.instance, is32Bit, simdAlignment);
@@ -132,7 +120,7 @@ body
     }
     body
     {
-        foreach (field; type.fields)
+        foreach (field; type.members)
         {
             auto offset = baseOffset + computeOffset(field.y, is32Bit, simdAlignment);
 

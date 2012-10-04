@@ -2,9 +2,9 @@ module mci.core.code.opcodes;
 
 import mci.core.container,
        mci.core.tuple,
+       mci.core.code.fields,
        mci.core.code.functions,
        mci.core.code.instructions,
-       mci.core.typing.members,
        mci.core.typing.types;
 
 public enum OpCodeType : ubyte
@@ -39,7 +39,9 @@ public enum OperandType : ubyte
     float32Array,
     float64Array,
     type,
-    field,
+    member,
+    globalField,
+    threadField,
     function_,
     label,
     branch,
@@ -114,8 +116,12 @@ body
             return typeid(ReadOnlyIndexable!double);
         case OperandType.type:
             return typeid(Type);
-        case OperandType.field:
-            return typeid(Field);
+        case OperandType.member:
+            return typeid(StructureMember);
+        case OperandType.globalField:
+            return typeid(GlobalField);
+        case OperandType.threadField:
+            return typeid(ThreadField);
         case OperandType.function_:
             return typeid(Function);
         case OperandType.label:
@@ -295,9 +301,12 @@ public enum OperationCode : ubyte
     fieldUserGet,
     fieldUserSet,
     fieldUserAddr,
-    fieldStaticGet,
-    fieldStaticSet,
-    fieldStaticAddr,
+    fieldGlobalGet,
+    fieldGlobalSet,
+    fieldGlobalAddr,
+    fieldThreadGet,
+    fieldThreadSet,
+    fieldThreadAddr,
     cmpEq,
     cmpNEq,
     cmpGT,
@@ -414,9 +423,12 @@ public __gshared OpCode opFieldAddr;
 public __gshared OpCode opFieldUserGet;
 public __gshared OpCode opFieldUserSet;
 public __gshared OpCode opFieldUserAddr;
-public __gshared OpCode opFieldStaticGet;
-public __gshared OpCode opFieldStaticSet;
-public __gshared OpCode opFieldStaticAddr;
+public __gshared OpCode opFieldGlobalGet;
+public __gshared OpCode opFieldGlobalSet;
+public __gshared OpCode opFieldGlobalAddr;
+public __gshared OpCode opFieldThreadGet;
+public __gshared OpCode opFieldThreadSet;
+public __gshared OpCode opFieldThreadAddr;
 public __gshared OpCode opCmpEq;
 public __gshared OpCode opCmpNEq;
 public __gshared OpCode opCmpGT;
@@ -497,7 +509,7 @@ shared static this()
     opLoadNull = create("load.null", OperationCode.loadNull, OpCodeType.normal, OperandType.none, 0, true);
     opLoadSize = create("load.size", OperationCode.loadSize, OpCodeType.normal, OperandType.type, 0, true);
     opLoadAlign = create("load.align", OperationCode.loadAlign, OpCodeType.normal, OperandType.type, 0, true);
-    opLoadOffset = create("load.offset", OperationCode.loadOffset, OpCodeType.normal, OperandType.field, 0, true);
+    opLoadOffset = create("load.offset", OperationCode.loadOffset, OpCodeType.normal, OperandType.member, 0, true);
     opCopy = create("copy", OperationCode.copy, OpCodeType.normal, OperandType.none, 1, true);
     opAriAdd = create("ari.add", OperationCode.ariAdd, OpCodeType.normal, OperandType.none, 2, true);
     opAriSub = create("ari.sub", OperationCode.ariSub, OpCodeType.normal, OperandType.none, 2, true);
@@ -551,15 +563,18 @@ shared static this()
     opArrayCmpLT = create("array.cmp.lt", OperationCode.arrayCmpLT, OpCodeType.normal, OperandType.none, 3, false);
     opArrayCmpGTEq = create("array.cmp.gteq", OperationCode.arrayCmpGTEq, OpCodeType.normal, OperandType.none, 3, false);
     opArrayCmpLTEq = create("array.cmp.lteq", OperationCode.arrayCmpLTEq, OpCodeType.normal, OperandType.none, 3, false);
-    opFieldGet = create("field.get", OperationCode.fieldGet, OpCodeType.normal, OperandType.field, 1, true);
-    opFieldSet = create("field.set", OperationCode.fieldSet, OpCodeType.normal, OperandType.field, 2, false);
-    opFieldAddr = create("field.addr", OperationCode.fieldAddr, OpCodeType.normal, OperandType.field, 1, true);
+    opFieldGet = create("field.get", OperationCode.fieldGet, OpCodeType.normal, OperandType.member, 1, true);
+    opFieldSet = create("field.set", OperationCode.fieldSet, OpCodeType.normal, OperandType.member, 2, false);
+    opFieldAddr = create("field.addr", OperationCode.fieldAddr, OpCodeType.normal, OperandType.member, 1, true);
     opFieldUserGet = create("field.user.get", OperationCode.fieldUserGet, OpCodeType.normal, OperandType.none, 1, true);
     opFieldUserSet = create("field.user.set", OperationCode.fieldUserSet, OpCodeType.normal, OperandType.none, 2, false);
     opFieldUserAddr = create("field.user.addr", OperationCode.fieldUserAddr, OpCodeType.normal, OperandType.none, 1, true);
-    opFieldStaticGet = create("field.static.get", OperationCode.fieldStaticGet, OpCodeType.normal, OperandType.field, 0, true);
-    opFieldStaticSet = create("field.static.set", OperationCode.fieldStaticSet, OpCodeType.normal, OperandType.field, 1, false);
-    opFieldStaticAddr = create("field.static.addr", OperationCode.fieldStaticAddr, OpCodeType.normal, OperandType.field, 0, true);
+    opFieldGlobalGet = create("field.global.get", OperationCode.fieldGlobalGet, OpCodeType.normal, OperandType.globalField, 0, true);
+    opFieldGlobalSet = create("field.global.set", OperationCode.fieldGlobalSet, OpCodeType.normal, OperandType.globalField, 1, false);
+    opFieldGlobalAddr = create("field.global.addr", OperationCode.fieldGlobalAddr, OpCodeType.normal, OperandType.globalField, 0, true);
+    opFieldThreadGet = create("field.thread.get", OperationCode.fieldThreadGet, OpCodeType.normal, OperandType.threadField, 0, true);
+    opFieldThreadSet = create("field.thread.set", OperationCode.fieldThreadSet, OpCodeType.normal, OperandType.threadField, 1, false);
+    opFieldThreadAddr = create("field.thread.addr", OperationCode.fieldThreadAddr, OpCodeType.normal, OperandType.threadField, 0, true);
     opCmpEq = create("cmp.eq", OperationCode.cmpEq, OpCodeType.normal, OperandType.none, 2, true);
     opCmpNEq = create("cmp.neq", OperationCode.cmpNEq, OpCodeType.normal, OperandType.none, 2, true);
     opCmpGT = create("cmp.gt", OperationCode.cmpGT, OpCodeType.normal, OperandType.none, 2, true);

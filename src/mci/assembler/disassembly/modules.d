@@ -3,11 +3,11 @@ module mci.assembler.disassembly.modules;
 import mci.core.container,
        mci.core.io,
        mci.core.tuple,
+       mci.core.code.fields,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.modules,
        mci.core.code.opcodes,
-       mci.core.typing.members,
        mci.core.typing.types,
        mci.core.utilities;
 
@@ -67,6 +67,12 @@ public final class ModuleDisassembler
         foreach (type; module_.types)
             writeType(type.y);
 
+        foreach (field; module_.globalFields)
+            writeGlobalField(field.y);
+
+        foreach (field; module_.threadFields)
+            writeThreadField(field.y);
+
         foreach (func; module_.functions)
             writeFunction(func.y);
 
@@ -101,27 +107,32 @@ public final class ModuleDisassembler
         _writer.writeln();
         _writer.writeln("{");
 
-        foreach (field; type.fields)
-        {
-            _writer.write("    field ");
-
-            final switch (field.y.storage)
-            {
-                case FieldStorage.instance:
-                    _writer.write("instance");
-                    break;
-                case FieldStorage.static_:
-                    _writer.write("static");
-                    break;
-                case FieldStorage.thread:
-                    _writer.write("thread");
-                    break;
-            }
-
-            _writer.writefln(" %s %s;", field.y.type, escapeIdentifier(field.y.name));
-        }
+        foreach (field; type.members)
+            _writer.writefln("    field %s %s;", field.y.type, escapeIdentifier(field.y.name));
 
         _writer.writeln("}");
+        _writer.writeln();
+    }
+
+    private void writeGlobalField(GlobalField field)
+    in
+    {
+        assert(field);
+    }
+    body
+    {
+        _writer.writefln("field global %s %s;", field.type, escapeIdentifier(field.name));
+        _writer.writeln();
+    }
+
+    private void writeThreadField(ThreadField field)
+    in
+    {
+        assert(field);
+    }
+    body
+    {
+        _writer.writefln("field thread %s %s;", field.type, escapeIdentifier(field.name));
         _writer.writeln();
     }
 

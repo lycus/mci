@@ -1,4 +1,1 @@
-type TLS
-{
-    field thread int32 foo;
-}
+field thread int32 foo;

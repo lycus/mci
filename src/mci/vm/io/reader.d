@@ -10,6 +10,7 @@ import std.exception,
        mci.core.nullable,
        mci.core.tuple,
        mci.core.utilities,
+       mci.core.code.fields,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.metadata,
@@ -18,7 +19,6 @@ import std.exception,
        mci.core.code.stream,
        mci.core.typing.cache,
        mci.core.typing.core,
-       mci.core.typing.members,
        mci.core.typing.types,
        mci.vm.io.common,
        mci.vm.io.exception,
@@ -29,13 +29,13 @@ private final class TypeDescriptor
 {
     private string _name;
     private uint _alignment;
-    private NoNullList!FieldDescriptor _fields;
+    private NoNullList!MemberDescriptor _members;
 
     pure nothrow invariant()
     {
         assert(_name);
         assert(!_alignment || powerOfTwo(_alignment));
-        assert(_fields);
+        assert(_members);
     }
 
     public this(string name, uint alignment)
@@ -48,7 +48,7 @@ private final class TypeDescriptor
     {
         _name = name;
         _alignment = alignment;
-        _fields = new typeof(_fields)();
+        _members = new typeof(_members)();
     }
 
     @property public string name() pure nothrow
@@ -71,21 +71,20 @@ private final class TypeDescriptor
         return _alignment;
     }
 
-    @property public NoNullList!FieldDescriptor fields() pure nothrow
+    @property public NoNullList!MemberDescriptor members() pure nothrow
     out (result)
     {
         assert(result);
     }
     body
     {
-        return _fields;
+        return _members;
     }
 }
 
-private final class FieldDescriptor
+private final class MemberDescriptor
 {
     private string _name;
-    private FieldStorage _storage;
     private TypeReferenceDescriptor _type;
 
     pure nothrow invariant()
@@ -94,7 +93,7 @@ private final class FieldDescriptor
         assert(_type);
     }
 
-    public this(string name, FieldStorage storage, TypeReferenceDescriptor type) pure nothrow
+    public this(string name, TypeReferenceDescriptor type) pure nothrow
     in
     {
         assert(name);
@@ -103,7 +102,6 @@ private final class FieldDescriptor
     body
     {
         _name = name;
-        _storage = storage;
         _type = type;
     }
 
@@ -115,11 +113,6 @@ private final class FieldDescriptor
     body
     {
         return _name;
-    }
-
-    @property public FieldStorage storage() pure nothrow
-    {
-        return _storage;
     }
 
     @property public TypeReferenceDescriptor type() pure nothrow
@@ -505,20 +498,29 @@ public final class ModuleReader : ModuleLoader
 
         foreach (tup; _types)
         {
-            foreach (field; tup.y.fields)
+            foreach (field; tup.y.members)
             {
                 auto fieldType = toType(field.type);
 
-                if (field.storage == FieldStorage.instance)
-                    if (auto struc = cast(StructureType)fieldType)
-                        if (tup.x.hasCycle(struc))
-                            error("Cyclic field %s:'%s' detected.", tup.x, field.name);
+                if (auto struc = cast(StructureType)fieldType)
+                    if (tup.x.hasCycle(struc))
+                        error("Cyclic member %s:'%s' detected.", tup.x, field.name);
 
-                tup.x.createField(field.name, fieldType, field.storage);
+                tup.x.createMember(field.name, fieldType);
             }
 
             tup.x.close();
         }
+
+        auto gfCount = _reader.read!uint();
+
+        for (uint i = 0; i < gfCount; i++)
+            readGlobalField(mod);
+
+        auto tfCount = _reader.read!uint();
+
+        for (uint i = 0; i < tfCount; i++)
+            readThreadField(mod);
 
         auto funcCount = _reader.read!uint();
 
@@ -575,29 +577,26 @@ public final class ModuleReader : ModuleLoader
                         error("Structure type expected.");
 
                     break;
-                case MetadataType.field:
-                    readMetadata(readFieldReference().metadata);
-
+                case MetadataType.globalField:
+                    readMetadata(readGlobalFieldReference().metadata);
+                    break;
+                case MetadataType.threadField:
+                    readMetadata(readThreadFieldReference().metadata);
                     break;
                 case MetadataType.function_:
                     readMetadata(readFunctionReference().metadata);
-
                     break;
                 case MetadataType.parameter:
                     readMetadata(readParameterReference(readFunctionReference()).metadata);
-
                     break;
                 case MetadataType.register:
                     readMetadata(readRegisterReference(readFunctionReference()).metadata);
-
                     break;
                 case MetadataType.block:
                     readMetadata(readBasicBlockReference(readFunctionReference()).metadata);
-
                     break;
                 case MetadataType.instruction:
                     readMetadata(readInstructionReference(readBasicBlockReference(readFunctionReference())).metadata);
-
                     break;
                 default:
                     error("Unknown metadata type '%s'.", mdType);
@@ -696,15 +695,15 @@ public final class ModuleReader : ModuleLoader
             error("Alignment %s is not a power of two.", alignment);
 
         auto type = new TypeDescriptor(name, alignment);
-        auto fieldCount = _reader.read!uint();
+        auto memberCount = _reader.read!uint();
 
-        for (uint i = 0; i < fieldCount; i++)
-            type.fields.add(readField());
+        for (uint i = 0; i < memberCount; i++)
+            type.members.add(readMember());
 
         return type;
     }
 
-    private FieldDescriptor readField()
+    private MemberDescriptor readMember()
     out (result)
     {
         assert(result);
@@ -712,10 +711,9 @@ public final class ModuleReader : ModuleLoader
     body
     {
         auto name = readString();
-        auto attributes = _reader.read!FieldStorage();
         auto type = readTypeReference();
 
-        return new FieldDescriptor(name, attributes, type);
+        return new MemberDescriptor(name, type);
     }
 
     private TypeReferenceDescriptor readTypeReference()
@@ -813,7 +811,7 @@ public final class ModuleReader : ModuleLoader
         }
     }
 
-    private Field readFieldReference()
+    private StructureMember readMemberReference()
     out (result)
     {
         assert(result);
@@ -828,10 +826,44 @@ public final class ModuleReader : ModuleLoader
         auto type = cast(StructureType)toType(declType);
         auto name = readString();
 
-        if (auto field = type.fields.get(name))
+        if (auto field = type.members.get(name))
             return *field;
 
-        error("Unknown field '%s'/'%s':'%s'.", type.module_.name, type.name, name);
+        error("Unknown member '%s'/'%s':'%s'.", type.module_.name, type.name, name);
+        assert(false);
+    }
+
+    private GlobalField readGlobalFieldReference()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto mod = toModule(readString());
+        auto name = readString();
+
+        if (auto field = mod.globalFields.get(name))
+            return *field;
+
+        error("Unknown global field '%s':'%s'.", mod.name, name);
+        assert(false);
+    }
+
+    private ThreadField readThreadFieldReference()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto mod = toModule(readString());
+        auto name = readString();
+
+        if (auto field = mod.threadFields.get(name))
+            return *field;
+
+        error("Unknown thread field '%s':'%s'.", mod.name, name);
         assert(false);
     }
 
@@ -878,6 +910,40 @@ public final class ModuleReader : ModuleLoader
             error("Function %s does not have an empty parameter list.");
 
         return func;
+    }
+
+    private GlobalField readGlobalField(Module module_)
+    in
+    {
+        assert(module_);
+    }
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto name = readString();
+        auto type = toType(readTypeReference());
+
+        return new GlobalField(module_, name, type);
+    }
+
+    private ThreadField readThreadField(Module module_)
+    in
+    {
+        assert(module_);
+    }
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto name = readString();
+        auto type = toType(readTypeReference());
+
+        return new ThreadField(module_, name, type);
     }
 
     private Function readFunction(Module module_)
@@ -1108,8 +1174,14 @@ public final class ModuleReader : ModuleLoader
             case OperandType.type:
                 operand = toType(readTypeReference());
                 break;
-            case OperandType.field:
-                operand = readFieldReference();
+            case OperandType.member:
+                operand = readMemberReference();
+                break;
+            case OperandType.globalField:
+                operand = readGlobalFieldReference();
+                break;
+            case OperandType.threadField:
+                operand = readThreadFieldReference();
                 break;
             case OperandType.function_:
                 operand = readFunctionReference();

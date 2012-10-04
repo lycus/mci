@@ -1,4 +1,4 @@
 type BrokenTypeSyntax
 {
-    field instance int32*. foo;
+    field int32*. foo;
 }

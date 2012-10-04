@@ -1,4 +1,4 @@
 type Test11
 {
-    field instance int32[3] vec;
+    field int32[3] vec;
 }

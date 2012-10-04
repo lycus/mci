@@ -7,7 +7,6 @@ import std.ascii,
        mci.core.memory,
        mci.core.utilities,
        mci.core.typing.core,
-       mci.core.typing.members,
        mci.core.typing.types,
        mci.vm.memory.base,
        mci.vm.memory.layout;
@@ -145,7 +144,7 @@ private final class PrettyPrinter
                      {
                          beginBlock();
 
-                         foreach (field; t.fields)
+                         foreach (field; t.members)
                          {
                              newLine();
 

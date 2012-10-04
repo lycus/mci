@@ -13,6 +13,7 @@ import std.algorithm,
        mci.core.typing.cache,
        mci.assembler.parsing.ast,
        mci.assembler.generation.exception,
+       mci.assembler.generation.fields,
        mci.assembler.generation.modules,
        mci.assembler.generation.types;
 
@@ -217,8 +218,14 @@ body
                     case OperandType.type:
                         operand = resolveType(*instrOperand.peek!TypeReferenceNode(), module_, manager);
                         break;
-                    case OperandType.field:
-                        operand = resolveField(*instrOperand.peek!FieldReferenceNode(), module_, manager);
+                    case OperandType.member:
+                        operand = resolveMember(*instrOperand.peek!MemberReferenceNode(), module_, manager);
+                        break;
+                    case OperandType.globalField:
+                        operand = resolveGlobalField(*instrOperand.peek!GlobalFieldReferenceNode(), module_, manager);
+                        break;
+                    case OperandType.threadField:
+                        operand = resolveThreadField(*instrOperand.peek!ThreadFieldReferenceNode(), module_, manager);
                         break;
                     case OperandType.function_:
                         operand = resolveFunction(*instrOperand.peek!FunctionReferenceNode(), module_, manager);

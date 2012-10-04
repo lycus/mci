@@ -1,4 +1,4 @@
 type Foo
 {
-    field static const int32 bar;
+    field global int32 bar;
 }

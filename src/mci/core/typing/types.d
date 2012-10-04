@@ -8,7 +8,6 @@ import std.conv,
        mci.core.code.metadata,
        mci.core.code.modules,
        mci.core.code.functions,
-       mci.core.typing.members,
        mci.core.utilities;
 
 public abstract class Type
@@ -25,12 +24,75 @@ public abstract class Type
     }
 }
 
+public final class StructureMember
+{
+    private StructureType _declaringType;
+    private string _name;
+    private Type _type;
+
+    pure nothrow invariant()
+    {
+        assert(_declaringType);
+        assert(_name);
+        assert(_type);
+    }
+
+    private this(StructureType declaringType, string name, Type type)
+    in
+    {
+        assert(declaringType);
+        assert(name);
+        assert(type);
+    }
+    body
+    {
+        _declaringType = declaringType;
+        _name = name;
+        _type = type;
+    }
+
+    @property public StructureType declaringType() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _declaringType;
+    }
+
+    @property public string name() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _name;
+    }
+
+    @property public Type type() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _type;
+    }
+
+    public override string toString()
+    {
+        return _declaringType.toString() ~ ":" ~ escapeIdentifier(_name);
+    }
+}
+
 public final class StructureType : Type
 {
     private Module _module;
     private string _name;
     private uint _alignment;
-    private NoNullDictionary!(string, Field) _fields;
+    private NoNullDictionary!(string, StructureMember) _members;
     private bool _isClosed;
     private List!MetadataPair _metadata;
 
@@ -39,7 +101,7 @@ public final class StructureType : Type
         assert(_module);
         assert(_name);
         assert(!_alignment || powerOfTwo(_alignment));
-        assert(_fields);
+        assert(_members);
         assert(_metadata);
     }
 
@@ -56,7 +118,7 @@ public final class StructureType : Type
         _module = module_;
         _name = name;
         _alignment = alignment;
-        _fields = new typeof(_fields)();
+        _members = new typeof(_members)();
         _metadata = new typeof(_metadata)();
 
         (cast(NoNullDictionary!(string, StructureType))module_.types)[name] = this;
@@ -82,7 +144,7 @@ public final class StructureType : Type
         return _module;
     }
 
-    @property public Lookup!(string, Field) fields() pure nothrow
+    @property public Lookup!(string, StructureMember) members() pure nothrow
     in
     {
         assert(_isClosed);
@@ -93,7 +155,7 @@ public final class StructureType : Type
     }
     body
     {
-        return _fields;
+        return _members;
     }
 
     @property public bool isClosed() pure nothrow
@@ -121,16 +183,15 @@ public final class StructureType : Type
         return _module.toString() ~ "/" ~ escapeIdentifier(_name);
     }
 
-    public Field createField(string name, Type type, FieldStorage storage = FieldStorage.instance)
+    public StructureMember createMember(string name, Type type)
     in
     {
         assert(name);
         assert(type);
-        assert(name !in _fields);
+        assert(name !in _members);
 
-        if (storage == FieldStorage.instance)
-            if (auto struc = cast(StructureType)type)
-                assert(!hasCycle(struc));
+        if (auto struc = cast(StructureType)type)
+            assert(!hasCycle(struc));
 
         assert(!_isClosed);
     }
@@ -140,7 +201,7 @@ public final class StructureType : Type
     }
     body
     {
-        return _fields[name] = new Field(this, name, type, storage);
+        return _members[name] = new StructureMember(this, name, type);
     }
 
     public void close() pure nothrow
@@ -153,18 +214,18 @@ public final class StructureType : Type
         _isClosed = true;
     }
 
-    public bool hasCycle(StructureType fieldType)
+    public bool hasCycle(StructureType memberType)
     in
     {
-        assert(fieldType);
+        assert(memberType);
     }
     body
     {
-        if (fieldType is this)
+        if (memberType is this)
             return true;
 
         // Important that we iterate _fields and not fields.
-        foreach (field; fieldType._fields)
+        foreach (field; memberType._members)
             if (auto struc = cast(StructureType)field.y.type)
                 if (hasCycle(struc))
                     return true;

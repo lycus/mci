@@ -1609,15 +1609,13 @@ field.get
 **Source registers**
     1
 **Operand type**
-    Field reference
+    Member reference
 
 Fetches the value of the field given as the operand on the structure
 given in the source register and assigns it to the target register.
 
 If the source register is a reference or a pointer, and is null, behavior
 is undefined.
-
-This instruction is only valid on ``instance`` fields.
 
 The source register must either be a structure or a pointer or reference to a
 structure with at most one indirection.
@@ -1632,15 +1630,13 @@ field.set
 **Source registers**
     2
 **Operand type**
-    Field reference
+    Member reference
 
 Sets the value of the field given in the operand on the structure given
 in the first source register to the value in the second source register.
 
 If the first source register is a reference or a pointer, and is null,
 behavior is undefined.
-
-This instruction is only valid on ``instance`` fields.
 
 The first source register must be a structure or a pointer or reference
 to a structure with a most one indirection. The second source register
@@ -1654,15 +1650,13 @@ field.addr
 **Source registers**
     1
 **Operand type**
-    Field reference
+    Member reference
 
 Gets the address of the field given as the operand on the structure given
 in the source register and assigns it to the target register.
 
 If the source register is a reference or a pointer, and is null, behavior
 is undefined.
-
-This instruction is only valid on ``instance`` fields.
 
 Note that if the given structure is in a register with no indirection (i.e. on
 the stack), dereferencing and writing to the pointer's address when the
@@ -1740,7 +1734,7 @@ The source register must be a reference, an array, or a vector.
 The target register must be a pointer to either a reference, an array, or a
 vector.
 
-field.static.get
+field.global.get
 ----------------
 
 **Has target register**
@@ -1748,15 +1742,13 @@ field.static.get
 **Source registers**
     0
 **Operand type**
-    Field reference
+    Global field reference
 
-Similar to field.set_, but operates on ``static`` and ``thread`` fields. This
-means that the instruction does not need an instance of the structure to get
-the value of the given field.
+Similar to field.get_, but operates on global fields. This means that the
+instruction does not need an instance of the structure to get the value of
+the given field.
 
-This instruction is only valid on ``static`` and ``thread`` fields.
-
-field.static.set
+field.global.set
 ----------------
 
 **Has target register**
@@ -1764,15 +1756,13 @@ field.static.set
 **Source registers**
     1
 **Operand type**
-    Field reference
+    Global field reference
 
-Similar to field.set_, but operates on ``static`` and ``thread`` fields. This
-means that the instruction does not need an instance of the structure to set
-the value of the given field.
+Similar to field.set_, but operates on global fields. This means that the
+instruction does not need an instance of the structure to set the value of
+the given field.
 
-This instruction is only valid on ``static`` and ``thread`` fields.
-
-field.static.addr
+field.global.addr
 -----------------
 
 **Has target register**
@@ -1780,18 +1770,58 @@ field.static.addr
 **Source registers**
     0
 **Operand type**
-    Field reference
+    Global field reference
 
-Similar to field.set_, but operates on ``static`` and ``thread`` fields. This
-means that the instruction does not need an instance of the structure to get
-the address of the given field.
+Similar to field.addr_, but operates on global fields. This means that the
+instruction does not need an instance of the structure to set the value of
+the given field.
 
-This instruction is only valid on ``static`` and ``thread`` fields.
+Pointers to global fields are always valid.
 
-Note that, since the fields this instruction operates on have static lifetime,
-a pointer loaded via this instruction is always valid; undefined behavior can
-never occur from reading or writing to its address. Passing pointers to fields
-marked as ``thread`` to other threads than the owning thread is allowed.
+field.thread.get
+----------------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    Global field reference
+
+Similar to field.get_, but operates on TLS fields. This means that the
+instruction does not need an instance of the structure to get the value of
+the given field.
+
+field.thread.set
+----------------
+
+**Has target register**
+    No
+**Source registers**
+    1
+**Operand type**
+    Global field reference
+
+Similar to field.set_, but operates on TLS fields. This means that the
+instruction does not need an instance of the structure to set the value of
+the given field.
+
+field.thread.addr
+-----------------
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    Global field reference
+
+Similar to field.addr_, but operates on TLS fields. This means that the
+instruction does not need an instance of the structure to set the value of
+the given field.
+
+Pointers to TLS fields are valid so long as the thread owning the field
+instance that a pointer is pointing to has not exited.
 
 Comparison instructions
 +++++++++++++++++++++++

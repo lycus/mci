@@ -4,10 +4,10 @@ import std.conv,
        std.variant,
        mci.core.container,
        mci.core.tuple,
+       mci.core.code.fields,
        mci.core.code.functions,
        mci.core.code.metadata,
        mci.core.code.opcodes,
-       mci.core.typing.members,
        mci.core.typing.types,
        mci.core.utilities;
 
@@ -138,7 +138,9 @@ public alias Algebraic!(byte,
                         BasicBlock,
                         Tuple!(BasicBlock, BasicBlock),
                         Type,
-                        Field,
+                        StructureMember,
+                        GlobalField,
+                        ThreadField,
                         Function,
                         ReadOnlyIndexable!Register,
                         ForeignFunction) InstructionOperand;
@@ -173,8 +175,10 @@ body
                    opCode is opFieldSet ||
                    opCode is opFieldUserGet ||
                    opCode is opFieldUserSet ||
-                   opCode is opFieldStaticGet ||
-                   opCode is opFieldStaticSet;
+                   opCode is opFieldGlobalGet ||
+                   opCode is opFieldGlobalSet ||
+                   opCode is opFieldThreadGet ||
+                   opCode is opFieldThreadSet;
     }
 }
 

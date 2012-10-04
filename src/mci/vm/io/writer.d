@@ -4,12 +4,12 @@ import mci.core.common,
        mci.core.container,
        mci.core.io,
        mci.core.tuple,
+       mci.core.code.fields,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.metadata,
        mci.core.code.modules,
        mci.core.typing.core,
-       mci.core.typing.members,
        mci.core.typing.types,
        mci.vm.io.common,
        mci.vm.io.extended,
@@ -65,6 +65,16 @@ public final class ModuleWriter : ModuleSaver
 
         foreach (type; module_.types)
             writeType(type.y);
+
+        _writer.write(cast(uint)module_.globalFields.count);
+
+        foreach (fld; module_.globalFields)
+            writeGlobalField(fld.y);
+
+        _writer.write(cast(uint)module_.threadFields.count);
+
+        foreach (fld; module_.threadFields)
+            writeThreadField(fld.y);
 
         _writer.write(cast(uint)module_.functions.count);
 
@@ -139,15 +149,24 @@ public final class ModuleWriter : ModuleSaver
             _writer.write(MetadataType.type);
             writeStructureTypeReference(type.y);
             writeMetadata(type.y.metadata);
+        }
 
-            foreach (field; filter(type.y.fields, (Tuple!(string, Field) tup) => !tup.y.metadata.empty))
-            {
-                count++;
+        foreach (field; filter(module_.globalFields, (Tuple!(string, GlobalField) tup) => !tup.y.metadata.empty))
+        {
+            count++;
 
-                _writer.write(MetadataType.field);
-                writeFieldReference(field.y);
-                writeMetadata(field.y.metadata);
-            }
+            _writer.write(MetadataType.globalField);
+            writeGlobalFieldReference(field.y);
+            writeMetadata(field.y.metadata);
+        }
+
+        foreach (field; filter(module_.threadFields, (Tuple!(string, ThreadField) tup) => !tup.y.metadata.empty))
+        {
+            count++;
+
+            _writer.write(MetadataType.threadField);
+            writeThreadFieldReference(field.y);
+            writeMetadata(field.y.metadata);
         }
 
         foreach (func; filter(module_.functions, (Tuple!(string, Function) tup) => !tup.y.metadata.empty))
@@ -246,13 +265,24 @@ public final class ModuleWriter : ModuleSaver
         writeString(type.name);
         _writer.write(type.alignment);
 
-        _writer.write(cast(uint)type.fields.count);
+        _writer.write(cast(uint)type.members.count);
 
-        foreach (field; type.fields)
-            writeField(field.y);
+        foreach (field; type.members)
+            writeMember(field.y);
     }
 
-    private void writeField(Field field)
+    private void writeMember(StructureMember member)
+    in
+    {
+        assert(member);
+    }
+    body
+    {
+        writeString(member.name);
+        writeTypeReference(member.type);
+    }
+
+    private void writeGlobalField(GlobalField field)
     in
     {
         assert(field);
@@ -260,7 +290,17 @@ public final class ModuleWriter : ModuleSaver
     body
     {
         writeString(field.name);
-        _writer.write(field.storage);
+        writeTypeReference(field.type);
+    }
+
+    private void writeThreadField(ThreadField field)
+    in
+    {
+        assert(field);
+    }
+    body
+    {
+        writeString(field.name);
         writeTypeReference(field.type);
     }
 
@@ -418,8 +458,12 @@ public final class ModuleWriter : ModuleSaver
             }
             else if (auto val = operand.peek!Type())
                 writeTypeReference(*val);
-            else if (auto val = operand.peek!Field())
-                writeFieldReference(*val);
+            else if (auto val = operand.peek!StructureMember())
+                writeMemberReference(*val);
+            else if (auto val = operand.peek!GlobalField())
+                writeGlobalFieldReference(*val);
+            else if (auto val = operand.peek!ThreadField())
+                writeThreadFieldReference(*val);
             else if (auto val = operand.peek!Function())
                 writeFunctionReference(*val);
             else if (auto val = operand.peek!(ReadOnlyIndexable!Register)())
@@ -553,14 +597,36 @@ public final class ModuleWriter : ModuleSaver
         }
     }
 
-    private void writeFieldReference(Field field)
+    private void writeMemberReference(StructureMember member)
+    in
+    {
+        assert(member);
+    }
+    body
+    {
+        writeStructureTypeReference(member.declaringType);
+        writeString(member.name);
+    }
+
+    private void writeGlobalFieldReference(GlobalField field)
     in
     {
         assert(field);
     }
     body
     {
-        writeStructureTypeReference(field.declaringType);
+        writeModuleReference(field.module_);
+        writeString(field.name);
+    }
+
+    private void writeThreadFieldReference(ThreadField field)
+    in
+    {
+        assert(field);
+    }
+    body
+    {
+        writeModuleReference(field.module_);
         writeString(field.name);
     }
 

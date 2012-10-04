@@ -1,4 +1,4 @@
 type BadFuncPtr
 {
-    field instance stdcall void() foo;
+    field stdcall void() foo;
 }

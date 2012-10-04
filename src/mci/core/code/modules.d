@@ -7,6 +7,7 @@ import std.array,
        mci.core.common,
        mci.core.config,
        mci.core.container,
+       mci.core.code.fields,
        mci.core.code.functions,
        mci.core.code.metadata,
        mci.core.typing.core,
@@ -16,6 +17,8 @@ import std.array,
 public final class Module
 {
     private string _name;
+    private NoNullDictionary!(string, GlobalField) _globalFields;
+    private NoNullDictionary!(string, ThreadField) _threadFields;
     private NoNullDictionary!(string, Function) _functions;
     private NoNullDictionary!(string, StructureType) _types;
     private Function _entryPoint;
@@ -27,6 +30,8 @@ public final class Module
     pure nothrow invariant()
     {
         assert(_name);
+        assert(_globalFields);
+        assert(_threadFields);
         assert(_functions);
         assert(_types);
     }
@@ -39,6 +44,8 @@ public final class Module
     body
     {
         _name = name;
+        _globalFields = new typeof(_globalFields)();
+        _threadFields = new typeof(_threadFields)();
         _functions = new typeof(_functions)();
         _types = new typeof(_types)();
     }
@@ -51,6 +58,26 @@ public final class Module
     body
     {
         return _name;
+    }
+
+    @property public Lookup!(string, GlobalField) globalFields() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _globalFields;
+    }
+
+    @property public Lookup!(string, ThreadField) threadFields() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _threadFields;
     }
 
     @property public Lookup!(string, Function) functions() pure nothrow
