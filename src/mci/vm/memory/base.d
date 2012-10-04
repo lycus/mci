@@ -3,8 +3,8 @@ module mci.vm.memory.base;
 import mci.core.config,
        mci.core.container,
        mci.core.memory,
+       mci.core.code.fields,
        mci.core.typing.core,
-       mci.core.typing.members,
        mci.core.typing.types,
        mci.vm.execution,
        mci.vm.exception,
@@ -192,33 +192,75 @@ public interface MovingGarbageCollector
     public void disableMoving() pure nothrow;
 }
 
-public enum BarrierFlags : ubyte
+public enum BarrierFlags : ushort
 {
-    none = 0x00,
-    fieldGet = 0x01,
-    fieldSet = 0x02,
-    arrayGet = 0x04,
-    arraySet = 0x08,
-    memoryGet = 0x10,
-    memorySet = 0x20,
+    none = 0x000,
+    memberGet = 0x001,
+    memberSet = 0x002,
+    globalFieldGet = 0x004,
+    globalFieldSet = 0x008,
+    threadFieldGet = 0x010,
+    threadFieldSet = 0x020,
+    arrayGet = 0x040,
+    arraySet = 0x080,
+    memoryGet = 0x100,
+    memorySet = 0x200,
 }
 
 public interface AtomicGarbageCollector
 {
     @property public BarrierFlags barriers() pure nothrow;
 
-    public void fieldGetBarrier(RuntimeObject* rto, Field field, RuntimeObject** source, RuntimeObject** destination)
+    public void memberGetBarrier(RuntimeObject* rto, StructureMember member, RuntimeObject** source, RuntimeObject** destination)
     in
     {
         assert(rto);
+        assert(member);
         assert(source);
         assert(destination);
     }
 
-    public void fieldSetBarrier(RuntimeObject* rto, Field field, RuntimeObject** destination, RuntimeObject** source)
+    public void memberSetBarrier(RuntimeObject* rto, StructureMember member, RuntimeObject** destination, RuntimeObject** source)
     in
     {
         assert(rto);
+        assert(member);
+        assert(destination);
+        assert(source);
+    }
+
+    public void globalFieldGetBarrier(RuntimeObject* rto, GlobalField field, RuntimeObject** source, RuntimeObject** destination)
+    in
+    {
+        assert(rto);
+        assert(field);
+        assert(source);
+        assert(destination);
+    }
+
+    public void globalFieldSetBarrier(RuntimeObject* rto, GlobalField field, RuntimeObject** destination, RuntimeObject** source)
+    in
+    {
+        assert(rto);
+        assert(field);
+        assert(destination);
+        assert(source);
+    }
+
+    public void threadFieldGetBarrier(RuntimeObject* rto, ThreadField field, RuntimeObject** source, RuntimeObject** destination)
+    in
+    {
+        assert(rto);
+        assert(field);
+        assert(source);
+        assert(destination);
+    }
+
+    public void threadFieldSetBarrier(RuntimeObject* rto, ThreadField field, RuntimeObject** destination, RuntimeObject** source)
+    in
+    {
+        assert(rto);
+        assert(field);
         assert(destination);
         assert(source);
     }

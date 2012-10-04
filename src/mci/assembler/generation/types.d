@@ -10,7 +10,6 @@ import std.conv,
        mci.core.code.modules,
        mci.core.typing.core,
        mci.core.typing.cache,
-       mci.core.typing.members,
        mci.core.typing.types,
        mci.assembler.parsing.ast,
        mci.assembler.generation.exception,
@@ -52,7 +51,7 @@ body
     return type;
 }
 
-public Field generateField(FieldDeclarationNode node, StructureType type, ModuleManager manager)
+public StructureMember generateMember(MemberDeclarationNode node, StructureType type, ModuleManager manager)
 in
 {
     assert(node);
@@ -67,18 +66,11 @@ body
 {
     auto fieldType = resolveType(node.type, type.module_, manager);
 
-    if (node.storage == FieldStorage.instance)
-        if (auto struc = cast(StructureType)fieldType)
-            if (type.hasCycle(struc))
-                throw new GenerationException("Field " ~ type.toString() ~ ":'" ~ node.name.name ~ "' would create an infinite cycle.", node.location);
+    if (auto struc = cast(StructureType)fieldType)
+        if (type.hasCycle(struc))
+            throw new GenerationException("Member " ~ type.toString() ~ ":'" ~ node.name.name ~ "' would create an infinite cycle.", node.location);
 
-    auto field = type.createField(node.name.name, fieldType, node.storage);
-
-    if (node.metadata)
-        foreach (md; node.metadata.metadata)
-            field.metadata.add(MetadataPair(md.key.name, md.value.name));
-
-    return field;
+    return type.createMember(node.name.name, fieldType);
 }
 
 public Type resolveType(TypeReferenceNode node, Module module_, ModuleManager manager)
@@ -161,7 +153,7 @@ body
     return getFunctionPointerType(node.callingConvention, returnType, parameterTypes);
 }
 
-public Field resolveField(FieldReferenceNode node, Module module_, ModuleManager manager)
+public StructureMember resolveMember(MemberReferenceNode node, Module module_, ModuleManager manager)
 in
 {
     assert(node);
@@ -176,8 +168,8 @@ body
 {
     auto type = cast(StructureType)resolveType(node.typeName, module_, manager);
 
-    if (auto field = type.fields.get(node.name.name))
+    if (auto field = type.members.get(node.name.name))
         return *field;
 
-    throw new GenerationException("Unknown field " ~ type.toString() ~ ":'" ~ node.name.name ~ "'.", node.location);
+    throw new GenerationException("Unknown member " ~ type.toString() ~ ":'" ~ node.name.name ~ "'.", node.location);
 }

@@ -8,7 +8,6 @@ import std.algorithm,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.opcodes,
-       mci.core.typing.members,
        mci.core.typing.types,
        mci.assembler.exception,
        mci.assembler.parsing.ast,
@@ -236,6 +235,9 @@ public final class Parser
                 case TokenType.type:
                     ast.add(parseTypeDeclaration());
                     break;
+                case TokenType.field:
+                    ast.add(parseFieldDeclaration());
+                    break;
                 case TokenType.function_:
                     ast.add(parseFunctionDeclaration());
                     break;
@@ -249,7 +251,7 @@ public final class Parser
                     ast.add(parseModuleEntryPointDeclaration());
                     break;
                 default:
-                    errorGot("'type', 'function', 'entry', 'module', or 'thread'", token.location, token.value);
+                    errorGot("'type', 'field', 'function', 'entry', 'module', or 'thread'", token.location, token.value);
             }
         }
 
@@ -368,20 +370,20 @@ public final class Parser
 
         consume("{");
 
-        auto fields = new NoNullList!FieldDeclarationNode();
+        auto members = new NoNullList!MemberDeclarationNode();
         auto token = Token.init;
 
         while ((token = peek()).type != TokenType.closeBrace)
         {
             if (token.type == TokenType.field)
-                fields.add(parseFieldDeclaration());
+                members.add(parseMemberDeclaration());
             else
                 errorGot("'field'", token.location, token.value);
         }
 
         consume("}");
 
-        return new TypeDeclarationNode(name.location, name, alignment, fields, metadata);
+        return new TypeDeclarationNode(name.location, name, alignment, members, metadata);
     }
 
     private ModuleReferenceNode parseModuleReference()
@@ -594,7 +596,7 @@ public final class Parser
         }
     }
 
-    private FieldReferenceNode parseFieldReference()
+    private MemberReferenceNode parseMemberReference()
     out (result)
     {
         assert(result);
@@ -607,7 +609,57 @@ public final class Parser
 
         auto name = parseSimpleName();
 
-        return new FieldReferenceNode(name.location, type, name);
+        return new MemberReferenceNode(name.location, type, name);
+    }
+
+    private GlobalFieldReferenceNode parseGlobalFieldReference()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        next();
+
+        ModuleReferenceNode moduleName;
+
+        if (peek().type == TokenType.slash)
+        {
+            _stream.movePrevious();
+            moduleName = parseModuleReference();
+            next();
+        }
+        else
+            _stream.movePrevious();
+
+        auto name = parseSimpleName();
+
+        return new GlobalFieldReferenceNode(name.location, moduleName, name);
+    }
+
+    private ThreadFieldReferenceNode parseThreadFieldReference()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        next();
+
+        ModuleReferenceNode moduleName;
+
+        if (peek().type == TokenType.slash)
+        {
+            _stream.movePrevious();
+            moduleName = parseModuleReference();
+            next();
+        }
+        else
+            _stream.movePrevious();
+
+        auto name = parseSimpleName();
+
+        return new ThreadFieldReferenceNode(name.location, moduleName, name);
     }
 
     private FunctionReferenceNode parseFunctionReference()
@@ -635,46 +687,21 @@ public final class Parser
         return new FunctionReferenceNode(name.location, moduleName, name);
     }
 
-    private FieldDeclarationNode parseFieldDeclaration()
+    private MemberDeclarationNode parseMemberDeclaration()
     out (result)
     {
         assert(result);
     }
     body
     {
-        MetadataListNode metadata;
-
-        if (peek().type == TokenType.openBracket)
-            metadata = parseMetadataList();
-
         consume("field");
-
-        FieldStorage storage;
-
-        auto storageTok = next();
-
-        switch (storageTok.type)
-        {
-            case TokenType.instance:
-                storage = FieldStorage.instance;
-                break;
-            case TokenType.static_:
-                storage = FieldStorage.static_;
-                break;
-            case TokenType.thread:
-                storage = FieldStorage.thread;
-                break;
-            default:
-                errorGot("'instance', 'static', or 'thread'", storageTok.location, storageTok.value);
-                break;
-        }
 
         auto type = parseTypeSpecification();
         auto name = parseSimpleName();
 
         consume(";");
 
-        return new FieldDeclarationNode(_stream.previous.location, type, name, storage, metadata);
+        return new MemberDeclarationNode(_stream.previous.location, type, name);
     }
 
     private LiteralValueNode parseLiteralValue(T)()
@@ -790,6 +817,41 @@ public final class Parser
         next();
 
         return new MetadataListNode(open.location, metadata);
+    }
+
+    private FieldDeclarationNode parseFieldDeclaration()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        MetadataListNode metadata;
+
+        if (peek().type == TokenType.openBracket)
+            metadata = parseMetadataList();
+
+        consume("field");
+
+        auto tok = peek();
+        bool isGlobal;
+
+        if (tok.type == TokenType.global)
+            isGlobal = true;
+        else if (tok.type != TokenType.thread)
+            errorGot("'global' or 'thread'", tok.location, tok.value);
+
+        next();
+
+        auto type = parseTypeSpecification();
+        auto name = parseSimpleName();
+
+        consume(";");
+
+        if (isGlobal)
+            return new GlobalFieldDeclarationNode(name.location, name, type, metadata);
+        else
+            return new ThreadFieldDeclarationNode(name.location, name, type, metadata);
     }
 
     private FunctionDeclarationNode parseFunctionDeclaration()
@@ -1237,8 +1299,18 @@ public final class Parser
                 operand = type;
                 location = type.location;
                 break;
-            case OperandType.field:
-                auto field = parseFieldReference();
+            case OperandType.member:
+                auto field = parseMemberReference();
+                operand = field;
+                location = field.location;
+                break;
+            case OperandType.globalField:
+                auto field = parseGlobalFieldReference();
+                operand = field;
+                location = field.location;
+                break;
+            case OperandType.threadField:
+                auto field = parseThreadFieldReference();
                 operand = field;
                 location = field.location;
                 break;

@@ -4,5 +4,5 @@ type S
 
 type R
 {
-    field instance S&& s;
+    field S&& s;
 }

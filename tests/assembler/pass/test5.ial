@@ -1,5 +1,5 @@
 type Arrays
 {
-    field instance int32[] ints;
-    field instance float32[] floats;
+    field int32[] ints;
+    field float32[] floats;
 }

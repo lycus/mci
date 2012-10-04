@@ -29,8 +29,7 @@ public enum TokenType : ubyte
     type, /// The $(PRE type) keyword.
     align_, /// The $(PRE align) keyword.
     field, /// The $(PRE field) keyword.
-    instance, /// The $(PRE instance) keyword.
-    static_, /// The $(PRE static) keyword.
+    global, /// The $(PRE global) keyword.
     thread, /// The $(PRE thread) keyword.
     function_, /// The $(PRE function) keyword.
     cdecl, /// The $(PRE cdecl) keyword.
@@ -88,8 +87,7 @@ nothrow shared static this()
     keywordsToTypes = ["type" : TokenType.type,
                        "align" : TokenType.align_,
                        "field" : TokenType.field,
-                       "instance" : TokenType.instance,
-                       "static" : TokenType.static_,
+                       "global" : TokenType.global,
                        "thread" : TokenType.thread,
                        "function" : TokenType.function_,
                        "cdecl" : TokenType.cdecl,

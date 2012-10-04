@@ -8,7 +8,6 @@ import mci.core.container,
        mci.core.code.instructions,
        mci.core.code.stream,
        mci.core.code.opcodes,
-       mci.core.typing.members,
        mci.core.typing.types,
        mci.verifier.base;
 
@@ -65,34 +64,6 @@ public final class JumpVerifier : CodeVerifier
 
                 if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) => b.y is target.y))
                     error(instr, "True branch target basic block %s is not within function %s.", target.y, function_);
-            }
-        }
-    }
-}
-
-public final class FieldStorageVerifier : CodeVerifier
-{
-    public override void verify(Function function_)
-    {
-        foreach (bb; function_.blocks)
-        {
-            foreach (instr; bb.y.stream)
-            {
-                if (auto field = instr.operand.peek!Field())
-                {
-                    if (instr.opCode is opLoadOffset || instr.opCode is opFieldGet ||
-                        instr.opCode is opFieldSet || instr.opCode is opFieldAddr)
-                    {
-                        if (field.storage != FieldStorage.instance)
-                            error(instr, "Field reference must have instance storage.");
-                    }
-                    else if (instr.opCode is opFieldStaticGet || instr.opCode is opFieldStaticSet ||
-                             instr.opCode is opFieldStaticAddr)
-                    {
-                        if (field.storage == FieldStorage.instance)
-                            error(instr, "Field reference must have static storage.");
-                    }
-                }
             }
         }
     }

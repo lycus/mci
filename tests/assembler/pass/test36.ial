@@ -1,7 +1,4 @@
-type foo
-{
-    field static int32 bar;
-}
+field global int32 bar;
 
 function void volatile_insn()
 {
@@ -10,7 +7,7 @@ function void volatile_insn()
     block entry
     {
         x = load.i32 (42);
-        volatile field.static.set x (foo:bar);
+        volatile field.global.set x (bar);
         volatile leave;
     }
 }

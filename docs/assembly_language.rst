@@ -8,7 +8,7 @@ source files and assembles them to a single output file (a module).
 The grammar is:
 
 .. productionlist::
-    Program : { `TypeDeclaration` | `FunctionDeclaration` | `EntryPointDeclaration` | `ThreadEntryPointDeclaration` | `ThreadExitPointDeclaration` | `ModuleEntryPointDeclaration` | `ModuleExitPointDeclaration` }
+    Program : { `TypeDeclaration` | `GlobalFieldDeclaration` | `ThreadFieldDeclaration` | `FunctionDeclaration` | `EntryPointDeclaration` | `ThreadEntryPointDeclaration` | `ThreadExitPointDeclaration` | `ModuleEntryPointDeclaration` | `ModuleExitPointDeclaration` }
 
 Module references have the grammar:
 
@@ -75,31 +75,34 @@ The grammar for type specifications is:
     TypeParameterList : "(" [ `TypeSpecification` { "," `TypeSpecification` } ] ")"
     CoreType : "int" | "uint" | "int8" | "uint8" | "int16" | "uint16" | "int32 | "uint32" | "int64" | "uint64" | "float32" | "float64"
 
-Fields
-------
+Members
+-------
 
-A field consists of a type, a name, and a storage type. Fields are variables
-that represent the physical contents of structure types.
+A field consists of a type and a name. Fields are variables that represent
+the physical contents of structure types.
 
 Field declarations have the grammar:
 
 .. productionlist::
-    FieldDeclaration : [ `MetadataList` ] "field" `FieldStorage` `TypeSpecification` `Identifier` ";"
-    FieldStorage : "instance" | "static" | "thread"
-
-Fields stored as ``instance`` are part of all instances of the type.
-
-Fields stored as ``static`` essentially act as plain old global variables (in
-the C sense). They are shared between threads.
-
-Fields marked as ``thread`` go into thread-local storage. They are similar to
-``static`` fields in that they are not part of the instance of a type, but
-each thread in the program gets a distinct copy of a ``thread`` field.
+    FieldDeclaration : [ `MetadataList` ] "field" `TypeSpecification` `Identifier` ";"
 
 Field references have the grammar:
 
 .. productionlist::
     Field : `Type` ":" `Identifier`
+
+Fields
+++++++
+
+Fields that go into global or thread-local storage have the grammar:
+
+.. productionlist::
+    GlobalFieldDeclaration : "field" "global" `TypeSpecification` `Identifier` ";"
+    ThreadFieldDeclaration : "field" "thread" `TypeSpecification` `Identifier` ";"
+
+Global fields are like global variables in C: They are shared across all
+threads in a process. Thread-local variables, on the other hand, get a unique
+instance per thread.
 
 Functions
 +++++++++
@@ -162,7 +165,7 @@ Parameters have the grammar:
     ParameterAttributes = [ "noescape" ]
     ParameterList : "(" [ [ `MetadataList` ] `Parameter` { "," [ `MetadataList` ] `Parameter` } ] ")"
 
-The ``noescape`` parameter only has significance for pointers, references,
+The ``noescape`` attribute only has significance for pointers, references,
 arrays, vectors, and function pointers. It indicates that the function will
 not escape an alias (i.e. pointer) to the pointed-to object. This means that
 the parameter is guaranteed to only reside in the current stack frame, or

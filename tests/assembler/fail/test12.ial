@@ -1,4 +1,4 @@
 type VoidField
 {
-    field instance void foo;
+    field void foo;
 }

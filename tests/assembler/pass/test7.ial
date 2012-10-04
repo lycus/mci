@@ -1,4 +1,1 @@
-type Foo
-{
-    field static int32 bar;
-}
+field global int32 bar;

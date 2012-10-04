@@ -1,6 +1,6 @@
 type Foo
 {
-    field instance int32 bar;
+    field int32 bar;
 }
 
 function void foo()

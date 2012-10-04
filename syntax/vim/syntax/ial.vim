@@ -11,7 +11,7 @@ setlocal iskeyword+=.
 
 syn keyword ialType                     void int8 uint8 int16 uint16 int32 uint32 int64 uint64 int uint float32 float64
 syn keyword ialDeclaration              type field function register block module thread entry exit
-syn keyword ialModifier                 instance static ssa pure nooptimize noinline noreturn nothrow noescape align unwind volatile
+syn keyword ialModifier                 global ssa pure nooptimize noinline noreturn nothrow noescape align unwind volatile
 syn keyword ialConvention               cdecl stdcall
 syn keyword ialInstruction              nop comment
 syn keyword ialInstruction              load.i8 load.ui8 load.i16 load.ui16 load.i32 load.ui32 load.i64 load.ui64 load.f32 load.f64
@@ -31,10 +31,11 @@ syn keyword ialInstruction              array.conv
 syn keyword ialInstruction              array.cmp.eq array.cmp.neq array.cmp.gt array.cmp.lt array.cmp.gteq array.cmp.lteq
 syn keyword ialInstruction              field.get field.set field.addr
 syn keyword ialInstruction              field.user.get field.user.set field.user.addr
-syn keyword ialInstruction              field.static.get field.static.set field.static.addr
+syn keyword ialInstruction              field.global.get field.global.set field.global.addr
+syn keyword ialInstruction              field.thread.get field.thread.set field.thread.addr
 syn keyword ialInstruction              cmp.eq cmp.neq cmp.gt cmp.lt cmp.gteq cmp.lteq
 syn keyword ialInstruction              arg.push arg.pop call call.tail call.indirect invoke invoke.tail invoke.indirect
-syn keyword ialInstruction              jump jump.cond leave return dead phi raw ffi
+syn keyword ialInstruction              jump jump.cond leave return dead phi raw ffi forward
 syn keyword ialInstruction              eh.throw eh.rethrow eh.catch
 syn keyword ialInstruction              conv
 syn keyword ialInstruction              fence

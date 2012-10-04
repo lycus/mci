@@ -1,9 +1,9 @@
 module mci.core.analysis.statistics;
 
 import mci.core.visitor,
+       mci.core.code.fields,
        mci.core.code.functions,
        mci.core.code.instructions,
-       mci.core.typing.members,
        mci.core.typing.types;
 
 /**
@@ -12,7 +12,9 @@ import mci.core.visitor,
 private final class StatisticsVisitor : ModuleVisitor
 {
     private size_t _types;
-    private size_t _fields;
+    private size_t _members;
+    private size_t _globalFields;
+    private size_t _threadFields;
     private size_t _functions;
     private size_t _parameters;
     private size_t _registers;
@@ -24,9 +26,19 @@ private final class StatisticsVisitor : ModuleVisitor
         _types++;
     }
 
-    protected override void visit(Field field) pure nothrow
+    protected override void visit(StructureMember member) pure nothrow
     {
-        _fields++;
+        _members++;
+    }
+
+    protected override void visit(GlobalField field) pure nothrow
+    {
+        _globalFields++;
+    }
+
+    protected override void visit(ThreadField field) pure nothrow
+    {
+        _threadFields++;
     }
 
     protected override void visit(Function function_) pure nothrow
@@ -71,9 +83,31 @@ private final class StatisticsVisitor : ModuleVisitor
      * Returns:
      *  The amount of fields in the module.
      */
-    @property public size_t fields() pure nothrow
+    @property public size_t members() pure nothrow
     {
-        return _fields;
+        return _members;
+    }
+
+    /**
+     * Gets the amount of global fields in the module.
+     *
+     * Returns:
+     *  The amount of global fields in the module.
+     */
+    @property public size_t globalFields() pure nothrow
+    {
+        return _globalFields;
+    }
+
+    /**
+     * Gets the amount of thread fields in the module.
+     *
+     * Returns:
+     *  The amount of thread fields in the module.
+     */
+    @property public size_t threadFields() pure nothrow
+    {
+        return _threadFields;
     }
 
     /**

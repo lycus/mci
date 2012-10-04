@@ -5,12 +5,12 @@ import mci.core.common,
        mci.core.tuple,
        mci.core.code.functions,
        mci.core.code.modules,
-       mci.core.typing.members,
        mci.core.typing.core,
        mci.core.typing.types,
        mci.assembler.parsing.ast,
        mci.assembler.parsing.parser,
        mci.assembler.generation.exception,
+       mci.assembler.generation.fields,
        mci.assembler.generation.functions,
        mci.assembler.generation.types;
 
@@ -130,6 +130,7 @@ public final class GeneratorDriver
 
         _passes.add(new TypeCreationPass());
         _passes.add(new TypeClosurePass());
+        _passes.add(new FieldCreationPass());
         _passes.add(new FunctionCreationPass());
         _passes.add(new EntryPointPass());
     }
@@ -191,17 +192,36 @@ public final class TypeClosurePass : GeneratorPass
         {
             state.currentFile = type.x;
 
-            auto fields = new NoNullList!Field();
+            auto fields = new NoNullDictionary!(string, StructureMember)();
 
-            foreach (field; type.y.fields)
+            foreach (field; type.y.members)
             {
-                if (contains(fields, (Field f) => f.name == field.name.name))
-                    throw new GenerationException("Field " ~ field.toString() ~ " already defined.", field.location);
+                if (field.name.name in fields)
+                    throw new GenerationException("Member " ~ field.toString() ~ " already defined.", field.location);
 
-                fields.add(generateField(field, type.z, state.manager));
+                fields.add(field.name.name, generateMember(field, type.z, state.manager));
             }
 
             type.z.close();
+        }
+    }
+}
+
+public final class FieldCreationPass : GeneratorPass
+{
+    public void run(GeneratorState state)
+    {
+        foreach (unit; state.units)
+        {
+            state.currentFile = unit.x;
+
+            foreach (node; unit.y.nodes)
+                if (auto field = cast(GlobalFieldDeclarationNode)node)
+                    generateGlobalField(field, state.module_, state.manager);
+
+            foreach (node; unit.y.nodes)
+                if (auto field = cast(ThreadFieldDeclarationNode)node)
+                    generateThreadField(field, state.module_, state.manager);
         }
     }
 }

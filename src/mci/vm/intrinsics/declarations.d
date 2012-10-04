@@ -132,7 +132,7 @@ shared static this()
     objectType.close();
 
     weakType = new typeof(weakType)(intrinsicModule, "Weak");
-    weakType.createField("value", getReferenceType(objectType));
+    weakType.createMember("value", getReferenceType(objectType));
     weakType.close();
 
     getCompiler = createFunction!mci_get_compiler(UInt8Type.instance);
@@ -245,7 +245,7 @@ shared static this()
                                                                                        toNoNullList(toIterable!Type(getReferenceType(objectType)))));
     gcWaitForFreeCallbacks = createFunction!mci_gc_wait_for_free_callbacks(null);
     gcIsAtomic = createFunction!mci_gc_is_atomic(NativeUIntType.instance);
-    gcGetBarriers = createFunction!mci_gc_get_barriers(UInt8Type.instance);
+    gcGetBarriers = createFunction!mci_gc_get_barriers(UInt16Type.instance);
 
     nanWithPayloadF32 = createFunction!mci_nan_with_payload_f32(Float32Type.instance,
                                                                 UInt32Type.instance);

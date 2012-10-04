@@ -26,12 +26,16 @@ public final class StatisticsTool : Tool
 
     @property public string[] options() pure nothrow
     {
-        return ["\t--functions\t\t-f\t\tPrint a function list.",
+        return ["\t--gfields\t\t-g\t\tPrint a global field list.",
+                "\t--tfields\t\t-h\t\tPrint a thread field list.",
+                "\t--functions\t\t-f\t\tPrint a function list.",
                 "\t--types\t\t\t-t\t\tPrint a type list."];
     }
 
     public int run(string[] args)
     {
+        bool printGlobalFields;
+        bool printThreadFields;
         bool printFuncs;
         bool printTypes;
 
@@ -40,6 +44,8 @@ public final class StatisticsTool : Tool
             getopt(args,
                    config.caseSensitive,
                    config.bundling,
+                   "gfields|g", &printGlobalFields,
+                   "tfields|h", &printThreadFields,
                    "functions|f", &printFuncs,
                    "types|t", &printTypes);
             args = args[1 .. $];
@@ -100,13 +106,35 @@ public final class StatisticsTool : Tool
                 auto v = new StatisticsVisitor();
                 v.run(mod);
 
+                logf("Global fields: %s", v.globalFields);
+                logf("Thread fields: %s", v.threadFields);
                 logf("Functions: %s", v.functions);
                 logf("Parameters: %s", v.parameters);
                 logf("Registers: %s", v.registers);
                 logf("Basic blocks: %s", v.blocks);
                 logf("Instructions: %s", v.instructions);
                 logf("Types: %s", v.types);
-                logf("Fields: %s", v.fields);
+                logf("Members: %s", v.members);
+
+                if (printGlobalFields)
+                {
+                    log();
+                    logf("---------- Global fields in module %s ----------", mod);
+                    log();
+
+                    foreach (field; mod.globalFields)
+                        log(field.x);
+                }
+
+                if (printThreadFields)
+                {
+                    log();
+                    logf("---------- Thread fields in module %s ----------", mod);
+                    log();
+
+                    foreach (field; mod.threadFields)
+                        log(field.x);
+                }
 
                 if (printFuncs)
                 {
