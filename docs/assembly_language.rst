@@ -40,7 +40,7 @@ end of the line, e.g.::
 Types
 +++++
 
-Structure types are aggregates of fields. They can be used to form objects of
+Structure types are aggregates of members. They can be used to form objects of
 strongly typed data, and can be allocated on the stack, the native heap, and
 on the GC-managed heap.
 
@@ -78,18 +78,18 @@ The grammar for type specifications is:
 Members
 -------
 
-A field consists of a type and a name. Fields are variables that represent
+A member consists of a type and a name. Members are variables that represent
 the physical contents of structure types.
 
-Field declarations have the grammar:
+Member declarations have the grammar:
 
 .. productionlist::
-    FieldDeclaration : [ `MetadataList` ] "field" `TypeSpecification` `Identifier` ";"
+    MemberDeclaration : [ `MetadataList` ] "field" `TypeSpecification` `Identifier` ";"
 
-Field references have the grammar:
+Member references have the grammar:
 
 .. productionlist::
-    Field : `Type` ":" `Identifier`
+    Member : `Type` ":" `Identifier`
 
 Fields
 ++++++
@@ -103,6 +103,12 @@ Fields that go into global or thread-local storage have the grammar:
 Global fields are like global variables in C: They are shared across all
 threads in a process. Thread-local variables, on the other hand, get a unique
 instance per thread.
+
+Field references have the grammar:
+
+.. productionlist::
+    GlobalField : [ `Module` "/" ] `Identifier`
+    ThreadField : [ `Module` "/" ] `Identifier`
 
 Functions
 +++++++++
@@ -222,7 +228,7 @@ Their grammar is:
 .. productionlist::
     Instruction : [ `MetadataList` ] `InstructionAttributes` [ `Register` "=" ] ? any instruction ? [ `Register` [ "," `Register` [ "," `Register` ] ] ] [ `InstructionOperand` ] ";"
     InstructionAttributes : [ "volatile" ]
-    InstructionOperand : "(" ( `Literal` | `LiteralArray` | `BasicBlock` | `BranchTarget` | `ForeignFunction` | `TypeSpecification` | `Field` | `Function` ) ")"
+    InstructionOperand : "(" ( `Literal` | `LiteralArray` | `BasicBlock` | `BranchTarget` | `ForeignFunction` | `TypeSpecification` | `Member` | `GlobalField` | `ThreadField` | `Function` ) ")"
     BranchTarget : `BasicBlock` "," `BasicBlock`
     RegisterSelector : `Register` { "," `Register` }
     ForeignFunction : `Identifier` "," `Identifier`
