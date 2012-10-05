@@ -1,7 +1,9 @@
 module mci.assembler.generation.fields;
 
 import mci.core.code.fields,
+       mci.core.code.functions,
        mci.core.code.modules,
+       mci.core.code.symbols,
        mci.assembler.generation.exception,
        mci.assembler.generation.modules,
        mci.assembler.generation.types,
@@ -23,7 +25,9 @@ body
     if (auto fld = module_.globalFields.get(node.name.name))
         throw new GenerationException("Global field " ~ fld.toString() ~ " already defined.", node.location);
 
-    return new GlobalField(module_, node.name.name, resolveType(node.type, module_, manager));
+    auto forwarder = node.forwarder ? new ForeignSymbol(node.forwarder.library.name, node.forwarder.symbol.name) : null;
+
+    return new GlobalField(module_, node.name.name, resolveType(node.type, module_, manager), forwarder);
 }
 
 public ThreadField generateThreadField(ThreadFieldDeclarationNode node, Module module_, ModuleManager manager)
@@ -42,7 +46,9 @@ body
     if (auto fld = module_.threadFields.get(node.name.name))
         throw new GenerationException("Thread field " ~ fld.toString() ~ " already defined.", node.location);
 
-    return new ThreadField(module_, node.name.name, resolveType(node.type, module_, manager));
+    auto forwarder = node.forwarder ? new ForeignSymbol(node.forwarder.library.name, node.forwarder.symbol.name) : null;
+
+    return new ThreadField(module_, node.name.name, resolveType(node.type, module_, manager), forwarder);
 }
 
 public GlobalField resolveGlobalField(GlobalFieldReferenceNode node, Module module_, ModuleManager manager)

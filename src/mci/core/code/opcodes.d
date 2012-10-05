@@ -5,6 +5,7 @@ import mci.core.container,
        mci.core.code.fields,
        mci.core.code.functions,
        mci.core.code.instructions,
+       mci.core.code.symbols,
        mci.core.typing.types;
 
 public enum OpCodeType : ubyte
@@ -46,7 +47,7 @@ public enum OperandType : ubyte
     label,
     branch,
     selector,
-    foreignFunction,
+    foreignSymbol,
 }
 
 public bool isArrayOperand(OperandType operandType) pure nothrow
@@ -130,8 +131,8 @@ body
             return typeid(Tuple!(BasicBlock, BasicBlock));
         case OperandType.selector:
             return typeid(ReadOnlyIndexable!Register);
-        case OperandType.foreignFunction:
-            return typeid(ForeignFunction);
+        case OperandType.foreignSymbol:
+            return typeid(ForeignSymbol);
     }
 }
 
@@ -590,8 +591,8 @@ shared static this()
     opInvokeTail = create("invoke.tail", OperationCode.invokeTail, OpCodeType.normal, OperandType.function_, 0, false);
     opInvokeIndirect = create("invoke.indirect", OperationCode.invokeIndirect, OpCodeType.normal, OperandType.none, 1, false);
     opRaw = create("raw", OperationCode.raw, OpCodeType.controlFlow, OperandType.uint8Array, 0, false);
-    opFFI = create("ffi", OperationCode.ffi, OpCodeType.controlFlow, OperandType.foreignFunction, 0, false);
-    opForward = create("forward", OperationCode.forward, OpCodeType.controlFlow, OperandType.foreignFunction, 0, false);
+    opFFI = create("ffi", OperationCode.ffi, OpCodeType.controlFlow, OperandType.foreignSymbol, 0, false);
+    opForward = create("forward", OperationCode.forward, OpCodeType.controlFlow, OperandType.foreignSymbol, 0, false);
     opJump = create("jump", OperationCode.jump, OpCodeType.controlFlow, OperandType.label, 0, false);
     opJumpCond = create("jump.cond", OperationCode.jumpCond, OpCodeType.controlFlow, OperandType.branch, 1, false);
     opLeave = create("leave", OperationCode.leave, OpCodeType.controlFlow, OperandType.none, 0, false);

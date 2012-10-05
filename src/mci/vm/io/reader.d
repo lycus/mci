@@ -17,6 +17,7 @@ import std.exception,
        mci.core.code.modules,
        mci.core.code.opcodes,
        mci.core.code.stream,
+       mci.core.code.symbols,
        mci.core.typing.cache,
        mci.core.typing.core,
        mci.core.typing.types,
@@ -925,8 +926,12 @@ public final class ModuleReader : ModuleLoader
     {
         auto name = readString();
         auto type = toType(readTypeReference());
+        ForeignSymbol forwarder;
 
-        return new GlobalField(module_, name, type);
+        if (_reader.read!bool())
+            forwarder = readForeignSymbol();
+
+        return new GlobalField(module_, name, type, forwarder);
     }
 
     private ThreadField readThreadField(Module module_)
@@ -942,8 +947,12 @@ public final class ModuleReader : ModuleLoader
     {
         auto name = readString();
         auto type = toType(readTypeReference());
+        ForeignSymbol forwarder;
 
-        return new ThreadField(module_, name, type);
+        if (_reader.read!bool())
+            forwarder = readForeignSymbol();
+
+        return new ThreadField(module_, name, type, forwarder);
     }
 
     private Function readFunction(Module module_)
@@ -1203,8 +1212,8 @@ public final class ModuleReader : ModuleLoader
 
                 operand = asReadOnlyIndexable(regs);
                 break;
-            case OperandType.foreignFunction:
-                operand = readForeignFunction();
+            case OperandType.foreignSymbol:
+                operand = readForeignSymbol();
                 break;
             default:
                 error("Unknown opcode operand type '%s'.", opCode.operandType);
@@ -1291,7 +1300,7 @@ public final class ModuleReader : ModuleLoader
         return function_.parameters[i];
     }
 
-    private ForeignFunction readForeignFunction()
+    private ForeignSymbol readForeignSymbol()
     out (result)
     {
         assert(result);
@@ -1301,7 +1310,7 @@ public final class ModuleReader : ModuleLoader
         auto library = readString();
         auto ep = readString();
 
-        return new ForeignFunction(library, ep);
+        return new ForeignSymbol(library, ep);
     }
 
     private string readString()

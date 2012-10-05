@@ -981,6 +981,7 @@ public abstract class FieldDeclarationNode : DeclarationNode
 {
     private SimpleNameNode _name;
     private TypeReferenceNode _type;
+    private ForeignSymbolNode _forwarder;
     private MetadataListNode _metadata;
 
     pure nothrow invariant()
@@ -989,7 +990,8 @@ public abstract class FieldDeclarationNode : DeclarationNode
         assert(_type);
     }
 
-    protected this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type, MetadataListNode metadata)
+    protected this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type, ForeignSymbolNode forwarder,
+                   MetadataListNode metadata)
     in
     {
         assert(name);
@@ -1001,6 +1003,7 @@ public abstract class FieldDeclarationNode : DeclarationNode
 
         _name = name;
         _type = type;
+        _forwarder = forwarder;
         _metadata = metadata;
     }
 
@@ -1015,6 +1018,11 @@ public abstract class FieldDeclarationNode : DeclarationNode
     }
 
     @property public final TypeReferenceNode type() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
     {
         return _type;
     }
@@ -1024,15 +1032,21 @@ public abstract class FieldDeclarationNode : DeclarationNode
         return _metadata;
     }
 
+    @property public final ForeignSymbolNode forwarder() pure nothrow
+    {
+        return _forwarder;
+    }
+
     @property public override ReadOnlyIndexable!Node children()
     {
-        return new List!Node(concat(toReadOnlyIndexable!Node(_name, _type), toReadOnlyIndexable!Node(_metadata)));
+        return new List!Node(concat(toReadOnlyIndexable!Node(_name, _type, _forwarder), toReadOnlyIndexable!Node(_metadata)));
     }
 }
 
 public class GlobalFieldDeclarationNode : FieldDeclarationNode
 {
-    public this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type, MetadataListNode metadata)
+    public this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type, ForeignSymbolNode forwarder,
+                MetadataListNode metadata)
     in
     {
         assert(name);
@@ -1040,13 +1054,14 @@ public class GlobalFieldDeclarationNode : FieldDeclarationNode
     }
     body
     {
-        super(location, name, type, metadata);
+        super(location, name, type, forwarder, metadata);
     }
 }
 
 public class ThreadFieldDeclarationNode : FieldDeclarationNode
 {
-    public this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type, MetadataListNode metadata)
+    public this(SourceLocation location, SimpleNameNode name, TypeReferenceNode type, ForeignSymbolNode forwarder,
+                MetadataListNode metadata)
     in
     {
         assert(name);
@@ -1054,7 +1069,7 @@ public class ThreadFieldDeclarationNode : FieldDeclarationNode
     }
     body
     {
-        super(location, name, type, metadata);
+        super(location, name, type, forwarder, metadata);
     }
 }
 
@@ -1626,29 +1641,29 @@ public class ArrayLiteralNode : Node
     }
 }
 
-public class ForeignFunctionNode : Node
+public class ForeignSymbolNode : Node
 {
     private SimpleNameNode _library;
-    private SimpleNameNode _entryPoint;
+    private SimpleNameNode _symbol;
 
     pure nothrow invariant()
     {
         assert(_library);
-        assert(_entryPoint);
+        assert(_symbol);
     }
 
-    public this(SourceLocation location, SimpleNameNode library, SimpleNameNode entryPoint) pure nothrow
+    public this(SourceLocation location, SimpleNameNode library, SimpleNameNode symbol) pure nothrow
     in
     {
         assert(library);
-        assert(entryPoint);
+        assert(symbol);
     }
     body
     {
         super(location);
 
         _library = library;
-        _entryPoint = entryPoint;
+        _symbol = symbol;
     }
 
     @property public final SimpleNameNode library() pure nothrow
@@ -1661,19 +1676,19 @@ public class ForeignFunctionNode : Node
         return _library;
     }
 
-    @property public final SimpleNameNode entryPoint() pure nothrow
+    @property public final SimpleNameNode symbol() pure nothrow
     out (result)
     {
         assert(result);
     }
     body
     {
-        return _entryPoint;
+        return _symbol;
     }
 
     @property public override ReadOnlyIndexable!Node children()
     {
-        return toReadOnlyIndexable!Node(_library, _entryPoint);
+        return toReadOnlyIndexable!Node(_library, _symbol);
     }
 }
 
@@ -1687,7 +1702,7 @@ public alias Algebraic!(LiteralValueNode,
                         BasicBlockReferenceNode,
                         BranchSelectorNode,
                         RegisterSelectorNode,
-                        ForeignFunctionNode) InstructionOperand;
+                        ForeignSymbolNode) InstructionOperand;
 
 public class InstructionOperandNode : Node
 {

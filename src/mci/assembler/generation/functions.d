@@ -10,6 +10,7 @@ import std.algorithm,
        mci.core.code.metadata,
        mci.core.code.modules,
        mci.core.code.opcodes,
+       mci.core.code.symbols,
        mci.core.typing.cache,
        mci.assembler.parsing.ast,
        mci.assembler.generation.exception,
@@ -239,10 +240,10 @@ body
 
                         operand = asReadOnlyIndexable(registers);
                         break;
-                    case OperandType.foreignFunction:
-                        auto ff = *instrOperand.peek!ForeignFunctionNode();
+                    case OperandType.foreignSymbol:
+                        auto ff = *instrOperand.peek!ForeignSymbolNode();
 
-                        operand = new ForeignFunction(ff.library.name, ff.entryPoint.name);
+                        operand = new ForeignSymbol(ff.library.name, ff.symbol.name);
                         break;
                 }
             }

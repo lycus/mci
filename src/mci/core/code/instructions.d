@@ -8,6 +8,7 @@ import std.conv,
        mci.core.code.functions,
        mci.core.code.metadata,
        mci.core.code.opcodes,
+       mci.core.code.symbols,
        mci.core.typing.types,
        mci.core.utilities;
 
@@ -143,7 +144,7 @@ public alias Algebraic!(byte,
                         ThreadField,
                         Function,
                         ReadOnlyIndexable!Register,
-                        ForeignFunction) InstructionOperand;
+                        ForeignSymbol) InstructionOperand;
 
 /**
  * Various attributes of an instruction.
