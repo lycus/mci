@@ -230,24 +230,41 @@ public final class Parser
 
         while ((token = peekEOF()).type != TokenType.end)
         {
+            MetadataListNode metadata;
+
+            if (token.type == TokenType.openBracket)
+            {
+                metadata = parseMetadataList();
+                token = peek();
+            }
+
             switch (token.type)
             {
                 case TokenType.type:
-                    ast.add(parseTypeDeclaration());
+                    ast.add(parseTypeDeclaration(metadata));
                     break;
                 case TokenType.field:
-                    ast.add(parseFieldDeclaration());
+                    ast.add(parseFieldDeclaration(metadata));
                     break;
                 case TokenType.function_:
-                    ast.add(parseFunctionDeclaration());
+                    ast.add(parseFunctionDeclaration(metadata));
                     break;
                 case TokenType.entry:
+                    if (metadata)
+                        error("entry points cannot have metadata", metadata.location);
+
                     ast.add(parseEntryPointDeclaration());
                     break;
                 case TokenType.thread:
+                    if (metadata)
+                        error("entry points cannot have metadata", metadata.location);
+
                     ast.add(parseThreadEntryPointDeclaration());
                     break;
                 case TokenType.module_:
+                    if (metadata)
+                        error("entry points cannot have metadata", metadata.location);
+
                     ast.add(parseModuleEntryPointDeclaration());
                     break;
                 default:
@@ -344,18 +361,13 @@ public final class Parser
             return new ThreadExitPointDeclarationNode(func.location, func);
     }
 
-    private TypeDeclarationNode parseTypeDeclaration()
+    private TypeDeclarationNode parseTypeDeclaration(MetadataListNode metadata)
     out (result)
     {
         assert(result);
     }
     body
     {
-        MetadataListNode metadata;
-
-        if (peek().type == TokenType.openBracket)
-            metadata = parseMetadataList();
-
         consume("type");
 
         auto name = parseSimpleName();
@@ -819,18 +831,13 @@ public final class Parser
         return new MetadataListNode(open.location, metadata);
     }
 
-    private FieldDeclarationNode parseFieldDeclaration()
+    private FieldDeclarationNode parseFieldDeclaration(MetadataListNode metadata)
     out (result)
     {
         assert(result);
     }
     body
     {
-        MetadataListNode metadata;
-
-        if (peek().type == TokenType.openBracket)
-            metadata = parseMetadataList();
-
         consume("field");
 
         auto tok = peek();
@@ -854,18 +861,13 @@ public final class Parser
             return new ThreadFieldDeclarationNode(name.location, name, type, metadata);
     }
 
-    private FunctionDeclarationNode parseFunctionDeclaration()
+    private FunctionDeclarationNode parseFunctionDeclaration(MetadataListNode metadata)
     out (result)
     {
         assert(result);
     }
     body
     {
-        MetadataListNode metadata;
-
-        if (peek().type == TokenType.openBracket)
-            metadata = parseMetadataList();
-
         consume("function");
 
         FunctionAttributes attributes;

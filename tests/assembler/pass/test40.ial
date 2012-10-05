@@ -1,0 +1,15 @@
+[foo : bar]
+function void foo()
+{
+    block entry
+    {
+    }
+}
+
+[bar : baz]
+type bar
+{
+}
+
+[baz : asdf]
+field global int32 baz;
