@@ -4,6 +4,7 @@ import mci.core.container,
        mci.core.utilities,
        mci.core.code.metadata,
        mci.core.code.modules,
+       mci.core.code.symbols,
        mci.core.typing.types;
 
 public abstract class Field
@@ -11,6 +12,7 @@ public abstract class Field
     private Module _module;
     private string _name;
     private Type _type;
+    private ForeignSymbol _forwarder;
     private List!MetadataPair _metadata;
 
     pure nothrow invariant()
@@ -21,7 +23,7 @@ public abstract class Field
         assert(_metadata);
     }
 
-    private this(Module module_, string name, Type type)
+    private this(Module module_, string name, Type type, ForeignSymbol forwarder)
     in
     {
         assert(module_);
@@ -33,6 +35,7 @@ public abstract class Field
         _module = module_;
         _name = name;
         _type = type;
+        _forwarder = forwarder;
         _metadata = new typeof(_metadata)();
     }
 
@@ -66,6 +69,11 @@ public abstract class Field
         return _type;
     }
 
+    @property public ForeignSymbol forwarder() pure nothrow
+    {
+        return _forwarder;
+    }
+
     @property public List!MetadataPair metadata() pure nothrow
     out (result)
     {
@@ -84,7 +92,7 @@ public abstract class Field
 
 public final class GlobalField : Field
 {
-    public this(Module module_, string name, Type type)
+    public this(Module module_, string name, Type type, ForeignSymbol forwarder)
     in
     {
         assert(module_);
@@ -94,7 +102,7 @@ public final class GlobalField : Field
     }
     body
     {
-        super(module_, name, type);
+        super(module_, name, type, forwarder);
 
         (cast(NoNullDictionary!(string, GlobalField))module_.globalFields)[name] = this;
     }
@@ -102,7 +110,7 @@ public final class GlobalField : Field
 
 public final class ThreadField : Field
 {
-    public this(Module module_, string name, Type type)
+    public this(Module module_, string name, Type type, ForeignSymbol forwarder)
     in
     {
         assert(module_);
@@ -112,7 +120,7 @@ public final class ThreadField : Field
     }
     body
     {
-        super(module_, name, type);
+        super(module_, name, type, forwarder);
 
         (cast(NoNullDictionary!(string, ThreadField))module_.threadFields)[name] = this;
     }

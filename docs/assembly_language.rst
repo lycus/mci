@@ -97,12 +97,17 @@ Fields
 Fields that go into global or thread-local storage have the grammar:
 
 .. productionlist::
-    GlobalFieldDeclaration : "field" "global" `TypeSpecification` `Identifier` ";"
-    ThreadFieldDeclaration : "field" "thread" `TypeSpecification` `Identifier` ";"
+    GlobalFieldDeclaration : "field" "global" `TypeSpecification` `Identifier` `ForeignFieldSpecification` ";"
+    ThreadFieldDeclaration : "field" "thread" `TypeSpecification` `Identifier` `ForeignFieldSpecification` ";"
+    ForeignFieldSpecification : [ "(" `ForeignSymbol` ")" ]
 
 Global fields are like global variables in C: They are shared across all
 threads in a process. Thread-local variables, on the other hand, get a unique
 instance per thread.
+
+If a foreign field specification is given, the field is effectively a forward
+declaration for a field in another MCI module. It will be resolved and bound
+the first time it is used at runtime.
 
 Field references have the grammar:
 
@@ -228,10 +233,10 @@ Their grammar is:
 .. productionlist::
     Instruction : [ `MetadataList` ] `InstructionAttributes` [ `Register` "=" ] ? any instruction ? [ `Register` [ "," `Register` [ "," `Register` ] ] ] [ `InstructionOperand` ] ";"
     InstructionAttributes : [ "volatile" ]
-    InstructionOperand : "(" ( `Literal` | `LiteralArray` | `BasicBlock` | `BranchTarget` | `ForeignFunction` | `TypeSpecification` | `Member` | `GlobalField` | `ThreadField` | `Function` ) ")"
+    InstructionOperand : "(" ( `Literal` | `LiteralArray` | `BasicBlock` | `BranchTarget` | `ForeignSymbol` | `TypeSpecification` | `Member` | `GlobalField` | `ThreadField` | `Function` ) ")"
     BranchTarget : `BasicBlock` "," `BasicBlock`
     RegisterSelector : `Register` { "," `Register` }
-    ForeignFunction : `Identifier` "," `Identifier`
+    ForeignSymbol : `Identifier` "," `Identifier`
 
 The full list of valid instructions (with register counts, operand types, and
 so on) can be found on the instruction set page. Note that the parser is

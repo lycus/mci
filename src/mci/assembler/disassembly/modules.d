@@ -121,7 +121,12 @@ public final class ModuleDisassembler
     }
     body
     {
-        _writer.writefln("field global %s %s;", field.type, escapeIdentifier(field.name));
+        _writer.writef("field global %s %s", field.type, escapeIdentifier(field.name));
+
+        if (field.forwarder)
+            _writer.write(" (%s, %s)", field.forwarder.library, field.forwarder.symbol);
+
+        _writer.writeln(";");
         _writer.writeln();
     }
 
@@ -132,7 +137,12 @@ public final class ModuleDisassembler
     }
     body
     {
-        _writer.writefln("field thread %s %s;", field.type, escapeIdentifier(field.name));
+        _writer.writef("field thread %s %s", field.type, escapeIdentifier(field.name));
+
+        if (field.forwarder)
+            _writer.write(" (%s)", field.forwarder);
+
+        _writer.writeln(";");
         _writer.writeln();
     }
 

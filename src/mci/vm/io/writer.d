@@ -9,6 +9,7 @@ import mci.core.common,
        mci.core.code.instructions,
        mci.core.code.metadata,
        mci.core.code.modules,
+       mci.core.code.symbols,
        mci.core.typing.core,
        mci.core.typing.types,
        mci.vm.io.common,
@@ -291,6 +292,10 @@ public final class ModuleWriter : ModuleSaver
     {
         writeString(field.name);
         writeTypeReference(field.type);
+        _writer.write(!!field.forwarder);
+
+        if (field.forwarder)
+            writeForeignSymbol(field.forwarder);
     }
 
     private void writeThreadField(ThreadField field)
@@ -302,6 +307,10 @@ public final class ModuleWriter : ModuleSaver
     {
         writeString(field.name);
         writeTypeReference(field.type);
+        _writer.write(!!field.forwarder);
+
+        if (field.forwarder)
+            writeForeignSymbol(field.forwarder);
     }
 
     private void writeFunction(Function function_)
@@ -474,7 +483,7 @@ public final class ModuleWriter : ModuleSaver
                     writeRegisterReference(reg);
             }
             else
-                writeForeignFunction(*operand.peek!ForeignFunction());
+                writeForeignSymbol(*operand.peek!ForeignSymbol());
         }
     }
 
@@ -661,15 +670,15 @@ public final class ModuleWriter : ModuleSaver
         _writer.write(cast(uint)findIndex(instruction.block.stream, instruction));
     }
 
-    private void writeForeignFunction(ForeignFunction signature)
+    private void writeForeignSymbol(ForeignSymbol symbol)
     in
     {
-        assert(signature);
+        assert(symbol);
     }
     body
     {
-        writeString(signature.library);
-        writeString(signature.entryPoint);
+        writeString(symbol.library);
+        writeString(symbol.symbol);
     }
 
     private void writeString(string value)

@@ -853,12 +853,23 @@ public final class Parser
         auto type = parseTypeSpecification();
         auto name = parseSimpleName();
 
+        ForeignSymbolNode forwarder;
+
+        if (peek().type == TokenType.openParen)
+        {
+            next();
+
+            forwarder = parseForeignSymbol();
+
+            consume(")");
+        }
+
         consume(";");
 
         if (isGlobal)
-            return new GlobalFieldDeclarationNode(name.location, name, type, metadata);
+            return new GlobalFieldDeclarationNode(name.location, name, type, forwarder, metadata);
         else
-            return new ThreadFieldDeclarationNode(name.location, name, type, metadata);
+            return new ThreadFieldDeclarationNode(name.location, name, type, forwarder, metadata);
     }
 
     private FunctionDeclarationNode parseFunctionDeclaration(MetadataListNode metadata)
@@ -1154,7 +1165,7 @@ public final class Parser
         {
             consume("(");
 
-            // If we're parsing a byte array, register selector, or foreign function,
+            // If we're parsing a byte array, register selector, or foreign symbol,
             // bring the opening parenthesis back in. This is hacky, but it makes
             // parsing easier.
             if (isArrayOperand(operandType) || operandType == OperandType.selector)
@@ -1326,8 +1337,8 @@ public final class Parser
                 operand = selector;
                 location = selector.location;
                 break;
-            case OperandType.foreignFunction:
-                auto signature = parseForeignFunction();
+            case OperandType.foreignSymbol:
+                auto signature = parseForeignSymbol();
                 operand = signature;
                 location = signature.location;
                 break;
@@ -1447,7 +1458,7 @@ public final class Parser
         return new ArrayLiteralNode(open.location, values);
     }
 
-    private ForeignFunctionNode parseForeignFunction()
+    private ForeignSymbolNode parseForeignSymbol()
     out (result)
     {
         assert(result);
@@ -1460,6 +1471,6 @@ public final class Parser
 
         auto ep = parseSimpleName();
 
-        return new ForeignFunctionNode(library.location, library, ep);
+        return new ForeignSymbolNode(library.location, library, ep);
     }
 }

@@ -51,6 +51,7 @@ MODULES =
     $(MODULE mci.core.code.modules)
     $(MODULE mci.core.code.opcodes)
     $(MODULE mci.core.code.stream)
+    $(MODULE mci.core.code.symbols)
     $(MODULE mci.core.typing.cache)
     $(MODULE mci.core.typing.core)
     $(MODULE mci.core.typing.types)

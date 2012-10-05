@@ -317,6 +317,17 @@ public enum FunctionAttributes : ubyte
 }
 
 /**
+ * Represents the calling convention of
+ * a function.
+ */
+public enum CallingConvention : ubyte
+{
+    standard = 0, /// The MCI ABI. Not valid on FFI functions.
+    cdecl = 1, /// The platform's native C ABI.
+    stdCall = 2, /// The $(PRE stdcall) convention (mostly used on Windows).
+}
+
+/**
  * Represents an IAL function.
  */
 public final class Function
@@ -674,88 +685,5 @@ public final class Function
     public override string toString()
     {
         return _module.toString() ~ "/" ~ escapeIdentifier(_name);
-    }
-}
-
-/**
- * Represents the calling convention of
- * a function.
- */
-public enum CallingConvention : ubyte
-{
-    standard = 0, /// The MCI ABI. Not valid on FFI functions.
-    cdecl = 1, /// The platform's native C ABI.
-    stdCall = 2, /// The $(PRE stdcall) convention on Windows.
-}
-
-/**
- * Represents the signature of a function located in another module
- * or in a native library.
- */
-public final class ForeignFunction
-{
-    private string _library;
-    private string _entryPoint;
-
-    pure nothrow invariant()
-    {
-        assert(_library);
-        assert(_entryPoint);
-    }
-
-    /**
-     * Constructs a new $(D ForeignFunction) instance.
-     *
-     * Params:
-     *  library = The library to search in.
-     *  entryPoint = The function to search for.
-     */
-    public this(string library, string entryPoint) pure nothrow
-    in
-    {
-        assert(library);
-        assert(entryPoint);
-    }
-    body
-    {
-        _library = library;
-        _entryPoint = entryPoint;
-    }
-
-    /**
-     * Gets the library to search in.
-     *
-     * Returns:
-     *  The library to search in.
-     */
-    @property public string library() pure nothrow
-    out (result)
-    {
-        assert(result);
-    }
-    body
-    {
-        return _library;
-    }
-
-    /**
-     * Gets the function to search for.
-     *
-     * Returns:
-     *  The procedure to search for.
-     */
-    @property public string entryPoint() pure nothrow
-    out (result)
-    {
-        assert(result);
-    }
-    body
-    {
-        return _entryPoint;
-    }
-
-    public override string toString()
-    {
-        return escapeIdentifier(_library) ~ ", " ~ escapeIdentifier(_entryPoint);
     }
 }
