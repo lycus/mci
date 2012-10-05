@@ -293,22 +293,22 @@ public final class ModuleManager
                 auto home = std.process.environment["HOME"];
 
                 if (home)
-                    _probePaths.add(buildPath(home, "lib"));
+                    _probePaths.add(buildPath(home, "lib", "mci"));
             }
 
-            _probePaths.add(buildPath("usr", "local", "lib"));
+            _probePaths.add(buildPath("usr", "local", "lib", "mci"));
 
             static if (operatingSystem == OperatingSystem.osx)
-                addRange(_probePaths, ["/lib", buildPath("usr", "lib")]);
+                addRange(_probePaths, ["/lib", buildPath("usr", "lib", "mci")]);
             else
-                addRange(_probePaths, [buildPath("usr", "lib"), "/lib"]);
+                addRange(_probePaths, [buildPath("usr", "lib", "mci"), buildPath("/lib", "mci")]);
         }
         else
         {
             auto sysRoot = std.process.environment["SystemRoot"];
 
             if (sysRoot)
-                _probePaths.add(buildPath(sysRoot, "System32"));
+                _probePaths.add(buildPath(sysRoot, "System32", "mci"));
         }
 
         auto path = std.process.environment[isPOSIX ? "PATH" : "Path"];
