@@ -89,7 +89,7 @@ public final class AssemblerTool : Tool
 
         foreach (file; args)
         {
-            if (file[0] == '.' && file.length <= moduleFileExtension.length + 1)
+            if (file[0] == '.' && file.length <= inputFileExtension.length + 1)
             {
                 logf("Error: File '%s' has no name part.", file);
                 return 2;

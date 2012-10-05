@@ -41,14 +41,8 @@ public enum LinkerRenameStrategy : ubyte
     rename, /// Use a simplistic renaming scheme.
 }
 
-private bool silent; /// Indicates whether any console output from MCI should be printed.
+private bool silent;
 
-/**
- * Runs the command line interface.
- *
- * Params:
- *  args = Arguments from the command line.
- */
 private int run(string[] args)
 in
 {
@@ -165,12 +159,6 @@ body
     return tool.run(args[1 .. $]);
 }
 
-/**
- * Writes the usage hint to the console.
- *
- * Params:
- *  cli = Name of the command line interface executable.
- */
 private void usage(string cli)
 in
 {
