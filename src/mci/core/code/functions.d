@@ -685,7 +685,7 @@ public enum CallingConvention : ubyte
 {
     standard = 0, /// The MCI ABI. Not valid on FFI functions.
     cdecl = 1, /// The platform's native C ABI.
-    stdCall = 2, /// The $(PRE stdcall) convention on Windows.
+    stdCall = 2, /// The $(PRE stdcall) convention (mostly used on Windows).
 }
 
 /**
