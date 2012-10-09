@@ -471,12 +471,27 @@ load.offset
 **Source registers**
     0
 **Operand type**
-    Field reference
+    Member reference
 
 Loads the offset of a field in its containing structure type into the
 target register.
 
 The target register must be of type ``uint``.
+
+load.data
+~~~~~~~~~
+
+**Has target register**
+    Yes
+**Source registers**
+    0
+**Operand type**
+    Data block reference
+
+Loads a pointer to a data block into the target register. The pointer should
+never be explicitly freed and is always valid.
+
+The target register must be of type ``uint8*``.
 
 Arithmetic and logic instructions
 +++++++++++++++++++++++++++++++++
