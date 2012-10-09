@@ -1,0 +1,12 @@
+data foo ();
+
+function void wrong_load_data()
+{
+    register uint8[] a;
+
+    block entry
+    {
+        a = load.data (foo);
+        leave;
+    }
+}

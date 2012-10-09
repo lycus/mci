@@ -13,6 +13,7 @@ import std.algorithm,
        mci.core.code.symbols,
        mci.core.typing.cache,
        mci.assembler.parsing.ast,
+       mci.assembler.generation.data,
        mci.assembler.generation.exception,
        mci.assembler.generation.fields,
        mci.assembler.generation.modules,
@@ -47,6 +48,10 @@ body
     }
 
     func.close();
+
+    if (node.metadata)
+        foreach (md; node.metadata.metadata)
+            func.metadata.add(MetadataPair(md.key.name, md.value.name));
 
     return func;
 }
@@ -245,6 +250,9 @@ body
 
                         operand = new ForeignSymbol(ff.library.name, ff.symbol.name);
                         break;
+                    case OperandType.dataBlock:
+                        operand = resolveDataBlock(*instrOperand.peek!DataBlockReferenceNode(), module_, manager);
+                        break;
                 }
             }
 
@@ -255,10 +263,6 @@ body
                     instr.metadata.add(MetadataPair(md.key.name, md.value.name));
         }
     }
-
-    if (node.metadata)
-        foreach (md; node.metadata.metadata)
-            function_.metadata.add(MetadataPair(md.key.name, md.value.name));
 }
 
 public Function resolveFunction(FunctionReferenceNode node, Module module_, ModuleManager manager)

@@ -249,6 +249,9 @@ public final class Parser
                 case TokenType.function_:
                     ast.add(parseFunctionDeclaration(metadata));
                     break;
+                case TokenType.data:
+                    ast.add(parseDataBlockDeclaration(metadata));
+                    break;
                 case TokenType.entry:
                     if (metadata)
                         error("entry points cannot have metadata", metadata.location);
@@ -396,6 +399,23 @@ public final class Parser
         consume("}");
 
         return new TypeDeclarationNode(name.location, name, alignment, members, metadata);
+    }
+
+    private DataBlockDeclarationNode parseDataBlockDeclaration(MetadataListNode metadata)
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        consume("data");
+
+        auto name = parseSimpleName();
+        auto bytes = parseArrayLiteral!ubyte();
+
+        consume(";");
+
+        return new DataBlockDeclarationNode(name.location, name, bytes, metadata);
     }
 
     private ModuleReferenceNode parseModuleReference()
@@ -697,6 +717,31 @@ public final class Parser
         auto name = parseSimpleName();
 
         return new FunctionReferenceNode(name.location, moduleName, name);
+    }
+
+    private DataBlockReferenceNode parseDataBlockReference()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        next();
+
+        ModuleReferenceNode moduleName;
+
+        if (peek().type == TokenType.slash)
+        {
+            _stream.movePrevious();
+            moduleName = parseModuleReference();
+            next();
+        }
+        else
+            _stream.movePrevious();
+
+        auto name = parseSimpleName();
+
+        return new DataBlockReferenceNode(name.location, moduleName, name);
     }
 
     private MemberDeclarationNode parseMemberDeclaration()
@@ -1341,6 +1386,11 @@ public final class Parser
                 auto signature = parseForeignSymbol();
                 operand = signature;
                 location = signature.location;
+                break;
+            case OperandType.dataBlock:
+                auto block = parseDataBlockReference();
+                operand = block;
+                location = block.location;
                 break;
         }
 

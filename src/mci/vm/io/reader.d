@@ -10,6 +10,7 @@ import std.exception,
        mci.core.nullable,
        mci.core.tuple,
        mci.core.utilities,
+       mci.core.code.data,
        mci.core.code.fields,
        mci.core.code.functions,
        mci.core.code.instructions,
@@ -523,6 +524,11 @@ public final class ModuleReader : ModuleLoader
         for (uint i = 0; i < tfCount; i++)
             readThreadField(mod);
 
+        auto dbCount = _reader.read!uint();
+
+        for (uint i = 0; i < dbCount; i++)
+            readDataBlock(mod);
+
         auto funcCount = _reader.read!uint();
 
         for (uint i = 0; i < funcCount; i++)
@@ -598,6 +604,9 @@ public final class ModuleReader : ModuleLoader
                     break;
                 case MetadataType.instruction:
                     readMetadata(readInstructionReference(readBasicBlockReference(readFunctionReference())).metadata);
+                    break;
+                case MetadataType.dataBlock:
+                    readMetadata(readDataBlockReference().metadata);
                     break;
                 default:
                     error("Unknown metadata type '%s'.", mdType);
@@ -885,6 +894,23 @@ public final class ModuleReader : ModuleLoader
         assert(false);
     }
 
+    private DataBlock readDataBlockReference()
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto mod = toModule(readString());
+        auto name = readString();
+
+        if (auto data = mod.dataBlocks.get(name))
+            return *data;
+
+        error("Unknown data block '%s'/'%s'.", mod.name, name);
+        assert(false);
+    }
+
     private Function readEntryPointFunctionReference(Module module_, Type returnType)
     in
     {
@@ -953,6 +979,24 @@ public final class ModuleReader : ModuleLoader
             forwarder = readForeignSymbol();
 
         return new ThreadField(module_, name, type, forwarder);
+    }
+
+    private DataBlock readDataBlock(Module module_)
+    in
+    {
+        assert(module_);
+    }
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        auto name = readString();
+        auto count = _reader.read!uint();
+        auto bytes = toList(_reader.readArray!(ubyte[])(count));
+
+        return new DataBlock(module_, name, bytes);
     }
 
     private Function readFunction(Module module_)
@@ -1108,10 +1152,7 @@ public final class ModuleReader : ModuleLoader
         ReadOnlyIndexable!T readArray(T)()
         {
             auto count = _reader.read!uint();
-            auto values = new List!T();
-
-            for (uint i = 0; i < count; i++)
-                values.add(_reader.read!T());
+            auto values = toList(_reader.readArray!(T[])(count));
 
             return values;
         }
@@ -1214,6 +1255,9 @@ public final class ModuleReader : ModuleLoader
                 break;
             case OperandType.foreignSymbol:
                 operand = readForeignSymbol();
+                break;
+            case OperandType.dataBlock:
+                operand = readDataBlockReference();
                 break;
             default:
                 error("Unknown opcode operand type '%s'.", opCode.operandType);

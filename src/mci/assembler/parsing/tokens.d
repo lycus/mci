@@ -32,6 +32,7 @@ public enum TokenType : ubyte
     global, /// The $(PRE global) keyword.
     thread, /// The $(PRE thread) keyword.
     function_, /// The $(PRE function) keyword.
+    data, /// The $(PRE data) keyword.
     cdecl, /// The $(PRE cdecl) keyword.
     stdCall, /// The $(PRE stdcall) keyword.
     ssa, /// The $(PRE ssa) keyword.
@@ -90,6 +91,7 @@ nothrow shared static this()
                        "global" : TokenType.global,
                        "thread" : TokenType.thread,
                        "function" : TokenType.function_,
+                       "data" : TokenType.data,
                        "cdecl" : TokenType.cdecl,
                        "stdcall" : TokenType.stdCall,
                        "ssa" : TokenType.ssa,

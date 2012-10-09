@@ -7,6 +7,7 @@ import std.array,
        mci.core.common,
        mci.core.config,
        mci.core.container,
+       mci.core.code.data,
        mci.core.code.fields,
        mci.core.code.functions,
        mci.core.code.metadata,
@@ -21,6 +22,7 @@ public final class Module
     private NoNullDictionary!(string, ThreadField) _threadFields;
     private NoNullDictionary!(string, Function) _functions;
     private NoNullDictionary!(string, StructureType) _types;
+    private NoNullDictionary!(string, DataBlock) _dataBlocks;
     private Function _entryPoint;
     private Function _moduleEntryPoint;
     private Function _moduleExitPoint;
@@ -34,6 +36,7 @@ public final class Module
         assert(_threadFields);
         assert(_functions);
         assert(_types);
+        assert(_dataBlocks);
     }
 
     public this(string name)
@@ -48,6 +51,7 @@ public final class Module
         _threadFields = new typeof(_threadFields)();
         _functions = new typeof(_functions)();
         _types = new typeof(_types)();
+        _dataBlocks = new typeof(_dataBlocks)();
     }
 
     @property public string name() pure nothrow
@@ -98,6 +102,16 @@ public final class Module
     body
     {
         return _types;
+    }
+
+    @property public Lookup!(string, DataBlock) dataBlocks() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _dataBlocks;
     }
 
     @property public Function entryPoint()
