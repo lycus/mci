@@ -613,14 +613,17 @@ public class BinaryReader
     public final T readArray(T)(ulong length)
         if (isArray!T && isSerializable!(ElementEncodingType!T))
     {
-        T arr;
-
         // We have to unqualify the element type, as writing elements with
-        // immutable or const will fail.
-        for (ulong i = 0; i < length; i++)
-            arr ~= read!(Unqual!(ElementEncodingType!T))();
+        // immutable or const will fail. We do it this way so we can write
+        // each element in a preallocated array efficiently.
+        alias Unqual!(ElementEncodingType!T) E;
 
-        return arr;
+        E[] arr = new E[cast(size_t)length]; // Unsafe cast, but alas...
+
+        for (size_t i = 0; i < cast(size_t)length; i++)
+            arr[i] = read!E();
+
+        return cast(T)arr;
     }
 }
 

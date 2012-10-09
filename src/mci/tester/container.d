@@ -673,3 +673,10 @@ unittest
     assert(set.count == 0);
     assert(set.empty);
 }
+
+unittest
+{
+    auto bits = new BitArray(toList(true, true, false, true));
+
+    assert(bits.toArray() == [true, true, false, true]);
+}

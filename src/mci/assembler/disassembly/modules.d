@@ -1,8 +1,10 @@
 module mci.assembler.disassembly.modules;
 
-import mci.core.container,
+import std.conv,
+       mci.core.container,
        mci.core.io,
        mci.core.tuple,
+       mci.core.code.data,
        mci.core.code.fields,
        mci.core.code.functions,
        mci.core.code.instructions,
@@ -76,6 +78,9 @@ public final class ModuleDisassembler
         foreach (func; module_.functions)
             writeFunction(func.y);
 
+        foreach (data; module_.dataBlocks)
+            writeDataBlock(data.y);
+
         if (module_.entryPoint)
             writeEntryPoint(module_.entryPoint);
 
@@ -143,6 +148,27 @@ public final class ModuleDisassembler
             _writer.write(" (%s)", field.forwarder);
 
         _writer.writeln(";");
+        _writer.writeln();
+    }
+
+    private void writeDataBlock(DataBlock data)
+    in
+    {
+        assert(data);
+    }
+    body
+    {
+        string str;
+
+        foreach (i, val; data.bytes)
+        {
+            str ~= to!string(val);
+
+            if (i < data.bytes.count - 1)
+                str ~= ", ";
+        }
+
+        _writer.writef("data %s (%s);", escapeIdentifier(data.name), str);
         _writer.writeln();
     }
 

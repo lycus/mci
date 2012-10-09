@@ -4,6 +4,7 @@ import mci.core.common,
        mci.core.container,
        mci.core.io,
        mci.core.tuple,
+       mci.core.code.data,
        mci.core.code.fields,
        mci.core.code.functions,
        mci.core.code.instructions,
@@ -76,6 +77,11 @@ public final class ModuleWriter : ModuleSaver
 
         foreach (fld; module_.threadFields)
             writeThreadField(fld.y);
+
+        _writer.write(cast(uint)module_.dataBlocks.count);
+
+        foreach (data; module_.dataBlocks)
+            writeDataBlock(data.y);
 
         _writer.write(cast(uint)module_.functions.count);
 
@@ -168,6 +174,15 @@ public final class ModuleWriter : ModuleSaver
             _writer.write(MetadataType.threadField);
             writeThreadFieldReference(field.y);
             writeMetadata(field.y.metadata);
+        }
+
+        foreach (data; filter(module_.dataBlocks, (Tuple!(string, DataBlock) tup) => !tup.y.metadata.empty))
+        {
+            count++;
+
+            _writer.write(MetadataType.dataBlock);
+            writeDataBlockReference(data.y);
+            writeMetadata(data.y.metadata);
         }
 
         foreach (func; filter(module_.functions, (Tuple!(string, Function) tup) => !tup.y.metadata.empty))
@@ -313,6 +328,18 @@ public final class ModuleWriter : ModuleSaver
             writeForeignSymbol(field.forwarder);
     }
 
+    private void writeDataBlock(DataBlock data)
+    in
+    {
+        assert(data);
+    }
+    body
+    {
+        writeString(data.name);
+        _writer.write(cast(uint)data.bytes.count);
+        _writer.writeArray(data.bytes.toArray());
+    }
+
     private void writeFunction(Function function_)
     in
     {
@@ -411,9 +438,7 @@ public final class ModuleWriter : ModuleSaver
         void writeArray(T)(ReadOnlyIndexable!T values)
         {
             _writer.write(cast(uint)values.count);
-
-            foreach (b; values)
-                _writer.write(b);
+            _writer.writeArray(values.toArray());
         }
 
         if (operand.hasValue)
@@ -482,8 +507,10 @@ public final class ModuleWriter : ModuleSaver
                 foreach (reg; *val)
                     writeRegisterReference(reg);
             }
+            else if (auto val = operand.peek!ForeignSymbol())
+                writeForeignSymbol(*val);
             else
-                writeForeignSymbol(*operand.peek!ForeignSymbol());
+                writeDataBlockReference(*operand.peek!DataBlock());
         }
     }
 
@@ -648,6 +675,17 @@ public final class ModuleWriter : ModuleSaver
     {
         writeModuleReference(function_.module_);
         writeString(function_.name);
+    }
+
+    private void writeDataBlockReference(DataBlock data)
+    in
+    {
+        assert(data);
+    }
+    body
+    {
+        writeModuleReference(data.module_);
+        writeString(data.name);
     }
 
     private void writeParameterReference(Parameter parameter)

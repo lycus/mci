@@ -803,6 +803,108 @@ public class FunctionReferenceNode : Node
     }
 }
 
+public class DataBlockReferenceNode : Node
+{
+    private ModuleReferenceNode _moduleName;
+    private SimpleNameNode _name;
+
+    pure nothrow invariant()
+    {
+        assert(_name);
+    }
+
+    public this(SourceLocation location, ModuleReferenceNode moduleName, SimpleNameNode name) pure nothrow
+    in
+    {
+        assert(name);
+    }
+    body
+    {
+        super(location);
+
+        _moduleName = moduleName;
+        _name = name;
+    }
+
+    @property public final ModuleReferenceNode moduleName() pure nothrow
+    {
+        return _moduleName;
+    }
+
+    @property public final SimpleNameNode name() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _name;
+    }
+
+    @property public override ReadOnlyIndexable!Node children()
+    {
+        return toReadOnlyIndexable!Node(_moduleName, _name);
+    }
+}
+
+public class DataBlockDeclarationNode : DeclarationNode
+{
+    private SimpleNameNode _name;
+    private ArrayLiteralNode _bytes;
+    private MetadataListNode _metadata;
+
+    pure nothrow invariant()
+    {
+        assert(_name);
+        assert(_bytes);
+    }
+
+    public this(SourceLocation location, SimpleNameNode name, ArrayLiteralNode bytes, MetadataListNode metadata)
+    in
+    {
+        assert(name);
+        assert(bytes);
+    }
+    body
+    {
+        super(location);
+
+        _name = name;
+        _bytes = bytes;
+        _metadata = metadata;
+    }
+
+    @property public final SimpleNameNode name() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _name;
+    }
+
+    @property public final ArrayLiteralNode bytes() pure nothrow
+    out (result)
+    {
+        assert(result);
+    }
+    body
+    {
+        return _bytes;
+    }
+
+    @property public final MetadataListNode metadata() pure nothrow
+    {
+        return _metadata;
+    }
+
+    @property public override ReadOnlyIndexable!Node children()
+    {
+        return new List!Node(concat(toReadOnlyIndexable!Node(_name, _bytes), toReadOnlyIndexable!Node(_metadata)));
+    }
+}
+
 public class TypeDeclarationNode : DeclarationNode
 {
     private SimpleNameNode _name;
@@ -1699,6 +1801,7 @@ public alias Algebraic!(LiteralValueNode,
                         GlobalFieldReferenceNode,
                         ThreadFieldReferenceNode,
                         FunctionReferenceNode,
+                        DataBlockReferenceNode,
                         BasicBlockReferenceNode,
                         BranchSelectorNode,
                         RegisterSelectorNode,

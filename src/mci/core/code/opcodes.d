@@ -2,6 +2,7 @@ module mci.core.code.opcodes;
 
 import mci.core.container,
        mci.core.tuple,
+       mci.core.code.data,
        mci.core.code.fields,
        mci.core.code.functions,
        mci.core.code.instructions,
@@ -48,6 +49,7 @@ public enum OperandType : ubyte
     branch,
     selector,
     foreignSymbol,
+    dataBlock,
 }
 
 public bool isArrayOperand(OperandType operandType) pure nothrow
@@ -133,6 +135,8 @@ body
             return typeid(ReadOnlyIndexable!Register);
         case OperandType.foreignSymbol:
             return typeid(ForeignSymbol);
+        case OperandType.dataBlock:
+            return typeid(DataBlock);
     }
 }
 
@@ -243,6 +247,7 @@ public enum OperationCode : ubyte
     loadSize,
     loadAlign,
     loadOffset,
+    loadData,
     copy,
     ariAdd,
     ariSub,
@@ -365,6 +370,7 @@ public __gshared OpCode opLoadNull;
 public __gshared OpCode opLoadSize;
 public __gshared OpCode opLoadAlign;
 public __gshared OpCode opLoadOffset;
+public __gshared OpCode opLoadData;
 public __gshared OpCode opCopy;
 public __gshared OpCode opAriAdd;
 public __gshared OpCode opAriSub;
@@ -511,6 +517,7 @@ shared static this()
     opLoadSize = create("load.size", OperationCode.loadSize, OpCodeType.normal, OperandType.type, 0, true);
     opLoadAlign = create("load.align", OperationCode.loadAlign, OpCodeType.normal, OperandType.type, 0, true);
     opLoadOffset = create("load.offset", OperationCode.loadOffset, OpCodeType.normal, OperandType.member, 0, true);
+    opLoadData = create("load.data", OperationCode.loadData, OpCodeType.normal, OperandType.dataBlock, 0, true);
     opCopy = create("copy", OperationCode.copy, OpCodeType.normal, OperandType.none, 1, true);
     opAriAdd = create("ari.add", OperationCode.ariAdd, OpCodeType.normal, OperandType.none, 2, true);
     opAriSub = create("ari.sub", OperationCode.ariSub, OpCodeType.normal, OperandType.none, 2, true);

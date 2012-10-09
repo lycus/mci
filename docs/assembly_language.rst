@@ -8,7 +8,7 @@ source files and assembles them to a single output file (a module).
 The grammar is:
 
 .. productionlist::
-    Program : { `TypeDeclaration` | `GlobalFieldDeclaration` | `ThreadFieldDeclaration` | `FunctionDeclaration` | `EntryPointDeclaration` | `ThreadEntryPointDeclaration` | `ThreadExitPointDeclaration` | `ModuleEntryPointDeclaration` | `ModuleExitPointDeclaration` }
+    Program : { `TypeDeclaration` | `GlobalFieldDeclaration` | `ThreadFieldDeclaration` | `FunctionDeclaration` | `DataBlockDeclaration` | `EntryPointDeclaration` | `ThreadEntryPointDeclaration` | `ThreadExitPointDeclaration` | `ModuleEntryPointDeclaration` | `ModuleExitPointDeclaration` }
 
 Module references have the grammar:
 
@@ -233,7 +233,7 @@ Their grammar is:
 .. productionlist::
     Instruction : [ `MetadataList` ] `InstructionAttributes` [ `Register` "=" ] ? any instruction ? [ `Register` [ "," `Register` [ "," `Register` ] ] ] [ `InstructionOperand` ] ";"
     InstructionAttributes : [ "volatile" ]
-    InstructionOperand : "(" ( `Literal` | `LiteralArray` | `BasicBlock` | `BranchTarget` | `ForeignSymbol` | `TypeSpecification` | `Member` | `GlobalField` | `ThreadField` | `Function` ) ")"
+    InstructionOperand : "(" ( `Literal` | `LiteralArray` | `BasicBlock` | `BranchTarget` | `ForeignSymbol` | `TypeSpecification` | `Member` | `GlobalField` | `ThreadField` | `Function` | `DataBlock` ) ")"
     BranchTarget : `BasicBlock` "," `BasicBlock`
     RegisterSelector : `Register` { "," `Register` }
     ForeignSymbol : `Identifier` "," `Identifier`
@@ -254,6 +254,22 @@ Some attributes only have meaning for certain instructions. For example, the
 ``volatile`` attribute has no meaning for instructions that don't involve
 memory accesses. Meaningless attributes are allowed on instructions but
 optimizers are free to remove them. The linter will also warn about them.
+
+Data blocks
++++++++++++
+
+Data blocks are blobs of arbitrary data:
+
+.. productionlist::
+    DataBlockDeclaration : "data" `Identifier` "(" `LiteralArray` ")" ";"
+
+Data blocks consist of a series of unsigned 8-bit bytes. They can contain any
+data at all. They hold no particular meaning as far as the MCI is concerned.
+
+Data block references have the grammar:
+
+.. productionlist::
+    DataBlock : [ `Module` "/" ] `Identifier`
 
 Entry points
 ++++++++++++

@@ -10,6 +10,7 @@ import mci.core.common,
        mci.assembler.parsing.ast,
        mci.assembler.parsing.parser,
        mci.assembler.generation.exception,
+       mci.assembler.generation.data,
        mci.assembler.generation.fields,
        mci.assembler.generation.functions,
        mci.assembler.generation.types;
@@ -131,6 +132,7 @@ public final class GeneratorDriver
         _passes.add(new TypeCreationPass());
         _passes.add(new TypeClosurePass());
         _passes.add(new FieldCreationPass());
+        _passes.add(new DataBlockCreationPass());
         _passes.add(new FunctionCreationPass());
         _passes.add(new EntryPointPass());
     }
@@ -222,6 +224,21 @@ public final class FieldCreationPass : GeneratorPass
             foreach (node; unit.y.nodes)
                 if (auto field = cast(ThreadFieldDeclarationNode)node)
                     generateThreadField(field, state.module_, state.manager);
+        }
+    }
+}
+
+public final class DataBlockCreationPass : GeneratorPass
+{
+    public void run(GeneratorState state)
+    {
+        foreach (unit; state.units)
+        {
+            state.currentFile = unit.x;
+
+            foreach (node; unit.y.nodes)
+                if (auto data = cast(DataBlockDeclarationNode)node)
+                    generateDataBlock(data, state.module_, state.manager);
         }
     }
 }

@@ -277,7 +277,9 @@ public void addRange(T, V)(Collection!T col, V values)
 in
 {
     assert(col);
-    assert(values);
+
+    if (isNullable!V && !isArray!V)
+        assert(values);
 }
 body
 {
@@ -289,7 +291,6 @@ public void addRange(T)(Collection!T col, T[] values ...)
 in
 {
     assert(col);
-    assert(values);
 }
 body
 {
@@ -301,7 +302,9 @@ public void removeRange(T, V)(Collection!T col, V values)
 in
 {
     assert(col);
-    assert(values);
+
+    if (isNullable!V && !isArray!V)
+        assert(values);
 }
 body
 {
@@ -313,7 +316,6 @@ public void removeRange(T)(Collection!T col, T[] values ...)
 in
 {
     assert(col);
-    assert(values);
 }
 body
 {
@@ -881,10 +883,6 @@ public class List(T) : Indexable!T, Collection!T
 }
 
 public List!T toList(T)(T[] items ...)
-in
-{
-    assert(items);
-}
 out (result)
 {
     assert(result);
@@ -898,7 +896,8 @@ public List!(ForeachType!V) toList(V)(V items)
     if (isIterable!V)
 in
 {
-    assert(items);
+    if (isNullable!V && !isArray!V)
+        assert(items);
 }
 out (result)
 {
@@ -914,10 +913,6 @@ body
 }
 
 public Indexable!T toIndexable(T)(T[] items ...)
-in
-{
-    assert(items);
-}
 out (result)
 {
     assert(result);
@@ -931,7 +926,8 @@ public Indexable!(ForeachType!V) toIndexable(V)(V items)
     if (isIterable!V)
 in
 {
-    assert(items);
+    if (isNullable!V && !isArray!V)
+        assert(items);
 }
 out (result)
 {
@@ -943,10 +939,6 @@ body
 }
 
 public ReadOnlyIndexable!T toReadOnlyIndexable(T)(T[] items ...)
-in
-{
-    assert(items);
-}
 out (result)
 {
     assert(result);
@@ -960,7 +952,8 @@ public ReadOnlyIndexable!(ForeachType!V) toReadOnlyIndexable(V)(V items)
     if (isIterable!V)
 in
 {
-    assert(items);
+    if (isNullable!V && !isArray!V)
+        assert(items);
 }
 out (result)
 {
@@ -972,10 +965,6 @@ body
 }
 
 public Collection!T toCollection(T)(T[] items ...)
-in
-{
-    assert(items);
-}
 out (result)
 {
     assert(result);
@@ -989,7 +978,8 @@ public Collection!(ForeachType!V) toCollection(V)(V items)
     if (isIterable!V)
 in
 {
-    assert(items);
+    if (isNullable!V && !isArray!V)
+        assert(items);
 }
 out (result)
 {
@@ -1001,10 +991,6 @@ body
 }
 
 public ReadOnlyCollection!T toReadOnlyCollection(T)(T[] items ...)
-in
-{
-    assert(items);
-}
 out (result)
 {
     assert(result);
@@ -1018,7 +1004,8 @@ public ReadOnlyCollection!(ForeachType!V) toReadOnlyCollection(V)(V items)
     if (isIterable!V)
 in
 {
-    assert(items);
+    if (isNullable!V && !isArray!V)
+        assert(items);
 }
 out (result)
 {
@@ -1030,10 +1017,6 @@ body
 }
 
 public Countable!T toCountable(T)(T[] items ...)
-in
-{
-    assert(items);
-}
 out (result)
 {
     assert(result);
@@ -1047,7 +1030,8 @@ public Countable!(ForeachType!V) toCountable(V)(V items)
     if (isIterable!V)
 in
 {
-    assert(items);
+    if (isNullable!V && !isArray!V)
+        assert(items);
 }
 out (result)
 {
@@ -1059,10 +1043,6 @@ body
 }
 
 public Iterable!T toIterable(T)(T[] items ...)
-in
-{
-    assert(items);
-}
 out (result)
 {
     assert(result);
@@ -1076,7 +1056,8 @@ public Iterable!(ForeachType!V) toIterable(V)(V items)
     if (isIterable!V)
 in
 {
-    assert(items);
+    if (isNullable!V && !isArray!V)
+        assert(items);
 }
 out (result)
 {
@@ -1176,10 +1157,6 @@ public class NoNullList(T)
 }
 
 public NoNullList!T toNoNullList(T)(T[] items ...)
-in
-{
-    assert(items);
-}
 out (result)
 {
     assert(result);
@@ -1193,7 +1170,8 @@ public NoNullList!(ForeachType!V) toNoNullList(V)(V items)
     if (isIterable!V)
 in
 {
-    assert(items);
+    if (isNullable!V && !isArray!V)
+        assert(items);
 }
 out (result)
 {
@@ -2162,16 +2140,14 @@ public class BitArray : BitSequence, Indexable!bool
         }
         else
         {
-            assert(false); version (none) {
             // The index lies within the managed area, so shift all elements forward.
             _bits.length = _bits.length + 1;
-            _size++;
 
-            for (size_t i = 0; i < _size; i++)
+            for (size_t i = 0; i < _bits.length; i++)
                 if (i >= index)
                     _bits[i] = _bits[i + 1];
 
-            _bits[index] = item; }
+            _bits[index] = item;
         }
     }
 }

@@ -99,6 +99,11 @@ public final class ConstantLoadVerifier : CodeVerifier
                             error(instr, "Parameter at index '%s' (type %s) of the target function signature does not match " ~
                                   "that of the operand (%s).", i, target.parameterTypes[i], func.parameters[i].type);
                 }
+                else if (instr.opCode is opLoadData)
+                {
+                    if (instr.targetRegister.type !is getPointerType(UInt8Type.instance))
+                        error(instr, "The target of a 'load.data' instruction must be a pointer to uint8.");
+                }
             }
         }
     }
