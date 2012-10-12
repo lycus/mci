@@ -55,10 +55,10 @@ Consider a type like this::
 
     type Foo
     {
-        field instance Bar& bar;
-        field instance int32 i;
-        field instance float64 f;
-        field instance Baz[] baz;
+        field Bar& bar;
+        field int32 i;
+        field float64 f;
+        field Baz[] baz;
     }
 
 From this definition, it is clear that we do not need to scan the memory area
