@@ -242,16 +242,6 @@ static if (isPOSIX)
                 GC_free(data);
         }
 
-        public override void addRoot(RuntimeObject** ptr)
-        {
-            GC_add_roots(ptr, ptr + size_t.sizeof + 1);
-        }
-
-        public override void removeRoot(RuntimeObject** ptr)
-        {
-            GC_remove_roots(ptr, ptr + size_t.sizeof + 1);
-        }
-
         public override void addRange(RuntimeObject** ptr, size_t words)
         {
             GC_add_roots(ptr, ptr + size_t.sizeof * words + 1);

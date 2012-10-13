@@ -95,16 +95,6 @@ public final class DGarbageCollector : GarbageCollector
             GC.free(data);
     }
 
-    public override void addRoot(RuntimeObject** ptr)
-    {
-        GC.addRoot(ptr);
-    }
-
-    public override void removeRoot(RuntimeObject** ptr)
-    {
-        GC.removeRoot(ptr);
-    }
-
     public override void addRange(RuntimeObject** ptr, size_t words)
     {
         GC.addRange(ptr, words * size_t.sizeof);

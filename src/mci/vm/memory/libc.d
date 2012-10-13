@@ -115,14 +115,6 @@ public final class LibCGarbageCollector : GarbageCollector, InteractiveGarbageCo
             .free(data);
     }
 
-    public override void addRoot(RuntimeObject** ptr)
-    {
-    }
-
-    public override void removeRoot(RuntimeObject** ptr)
-    {
-    }
-
     public override void addRange(RuntimeObject** ptr, size_t words)
     {
     }

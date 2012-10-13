@@ -79,12 +79,14 @@ public final class RuntimeValue
 {
     private Type _type;
     private GarbageCollector _gc;
-    private ubyte* _data;
+    private size_t _size;
+    private RuntimeObject** _data;
 
     pure nothrow invariant()
     {
         assert(_type);
         assert(_gc);
+        assert(_size);
         assert(_data);
     }
 
@@ -99,14 +101,16 @@ public final class RuntimeValue
         _gc = gc;
         _type = type;
 
-        // GC roots must be at least one machine word long.
-        _data = cast(ubyte*)calloc(1, max(computeSize(NativeUIntType.instance, is32Bit, simdAlignment), computeSize(type, is32Bit, simdAlignment)));
-        gc.addRoot(cast(RuntimeObject**)_data);
+        // GC root ranges must be at least one machine word long.
+        _size = max(computeSize(NativeUIntType.instance, is32Bit, simdAlignment), computeSize(type, is32Bit, simdAlignment));
+        _data = cast(RuntimeObject**)calloc(1, _size);
+
+        gc.addRange(_data, _size);
     }
 
     ~this()
     {
-        _gc.removeRoot(cast(RuntimeObject**)_data);
+        _gc.removeRange(_data, _size);
         free(_data);
     }
 
@@ -130,7 +134,7 @@ public final class RuntimeValue
         return _type;
     }
 
-    @property public ubyte* data() pure nothrow
+    @property public RuntimeObject** data() pure nothrow
     out (result)
     {
         assert(result);

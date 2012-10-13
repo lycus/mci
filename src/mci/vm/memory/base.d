@@ -95,10 +95,6 @@ public abstract class GarbageCollector
 
     public abstract void free(RuntimeObject* data);
 
-    public abstract void addRoot(RuntimeObject** ptr);
-
-    public abstract void removeRoot(RuntimeObject** ptr);
-
     public abstract void addRange(RuntimeObject** ptr, size_t words);
 
     public abstract void removeRange(RuntimeObject** ptr, size_t words);
