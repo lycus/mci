@@ -54,7 +54,7 @@ public final class PinnedObjectManager
 
         *mem = rto;
 
-        _gc.addRoot(mem);
+        _gc.addRange(mem, 1);
         _objects.add(handle, mem);
 
         return handle;
@@ -70,7 +70,7 @@ public final class PinnedObjectManager
         auto mem = _objects[handle];
 
         _objects.remove(handle);
-        _gc.removeRoot(mem);
+        _gc.removeRange(mem, 1);
 
         free(mem);
 
@@ -86,7 +86,7 @@ public final class PinnedObjectManager
 
         foreach (pair; _objects)
         {
-            _gc.removeRoot(pair.y);
+            _gc.removeRange(pair.y, 1);
             free(pair.y);
         }
 
