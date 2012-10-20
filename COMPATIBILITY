@@ -53,3 +53,5 @@ addition, on POSIX, we make use of libdl for dynamically loading shared
 object files in the VM. This library is present on virtually any POSIX
 system, except BSD (where it's included in the standard C library anyway).
 This library isn't needed on Windows.
+
+Python 2.7+ is needed to run the project's build scripts.
