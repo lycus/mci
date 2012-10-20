@@ -2,7 +2,10 @@ docs/_build/*
 docs/_ddoc/*
 build/*
 
-.lock*
+waf
+
+.lock-*
+.waf-*
 
 *.mci
 *.ast

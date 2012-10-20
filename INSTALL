@@ -2,12 +2,14 @@
 
                 -- Installation --
 
-Installation works through the Waf build system. You can obtain Waf from:
-http://code.google.com/p/waf
+Installation works through the Waf build system. You can obtain Waf by
+running the included bootstrap script:
+
+    $ ./bootstrap.py
 
 Once installed, you must configure the project like so:
 
-    $ waf configure
+    $ ./waf configure
 
 You can use the --prefix option to specify where to install to. This
 defaults to "/usr/local" normally. The --check-d-compiler switch can be
@@ -41,41 +43,41 @@ libgc installation must support the typed GC API.
 
 For example, to build for a 32-bit CPU, do:
 
-    $ waf configure --lp64=false
+    $ ./waf configure --lp64=false
 
 Or to include Vim syntax files:
 
-    $ waf configure --vim=~/.vim
+    $ ./waf configure --vim=~/.vim
 
 You will likely want to build a release version if you're not a
 contributor to the project, so:
 
-    $ waf configure --mode=release
+    $ ./waf configure --mode=release
 
 With the project configured, you can execute a build by doing:
 
-    $ waf build
+    $ ./waf build
 
 To install the project:
 
-    $ waf install
+    $ ./waf install
 
 Should you wish to uninstall the installed files at a later point,
 simply execute:
 
-    $ waf uninstall
+    $ ./waf uninstall
 
 You can optionally build the documentation, which includes a guide
 to the compiler infrastructure and a framework reference:
 
-    $ waf docs
+    $ ./waf docs
 
 The documentation will be placed in 'docs/_build'. You'll probably
 be interested in 'docs/_build/html/index.html' primarily.
 
 API documentation can be generated from the MCI sources by running:
 
-    $ waf ddoc
+    $ ./waf ddoc
 
 This documentation will end up in 'docs/_ddoc', and you can access
 it via 'docs/_ddoc/index.html'.
@@ -83,5 +85,5 @@ it via 'docs/_ddoc/index.html'.
 Finally, you can run the test suite to ensure everything is working
 as it should:
 
-    $ waf unittest
-    $ waf test
+    $ ./waf unittest
+    $ ./waf test
