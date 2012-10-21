@@ -56,7 +56,10 @@ private int main(string[] args)
 
     TestPass[] passes;
 
-    foreach (file; sort(array(map!(x => x.name)(dirEntries(dir, "*.test", SpanMode.shallow, false)))))
+    auto files = filter!(x => globMatch(x.name, "*.test"))(dirEntries(dir, SpanMode.shallow, false));
+    auto names = sort(array(map!(x => x.name)(files)));
+
+    foreach (file; names)
     {
         TestPass pass;
 
@@ -99,7 +102,9 @@ private bool test(string directory, string cli, TestPass pass)
     ulong passes;
     ulong failures;
 
-    auto files = sort(array(filter!(x => count(x, '.') == 1)(map!(x => x.name[2 .. $])(dirEntries(".", "*.ial", SpanMode.shallow, false)))));
+    auto files = filter!(x => globMatch(x.name, "*.ial") && count(x.name, '.') == 1)(dirEntries(getcwd(), SpanMode.shallow, false));
+    auto names = sort(array(map!(x => baseName(x.name))(files)));
+
     auto func = (string file)
     {
         if (invoke(file, cli, pass))
@@ -110,12 +115,12 @@ private bool test(string directory, string cli, TestPass pass)
 
     if (compiler == Compiler.gdc || pass.noParallel)
     {
-        foreach (file; files)
+        foreach (file; names)
             func(file);
     }
     else
     {
-        foreach (file; parallel(files))
+        foreach (file; parallel(names))
             func(file);
     }
 
