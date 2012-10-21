@@ -17,6 +17,7 @@ private __gshared Mutex outputLock;
 
 private struct TestPass
 {
+    public string file;
     public string description;
     public string command;
     public int expected;
@@ -64,6 +65,8 @@ private int main(string[] args)
     {
         TestPass pass;
 
+        pass.file = baseName(file);
+
         foreach (line; splitLines(readText(file)))
         {
             if (startsWith(line, "D: "))
@@ -85,11 +88,13 @@ private int main(string[] args)
         passes ~= pass;
     }
 
+    bool failed;
+
     foreach (pass; passes)
         if (!test(dir, cli, pass))
-            return 1;
+            failed = true;
 
-    return 0;
+    return failed;
 }
 
 private bool test(string directory, string cli, TestPass pass)
@@ -130,6 +135,13 @@ private bool test(string directory, string cli, TestPass pass)
     stderr.writeln();
     stderr.writefln("========== Passes: %s - Failures: %s ==========", passes, failures);
     stderr.writeln();
+
+    {
+        auto f = File(pass.file ~ ".out", "w");
+
+        f.writeln(passes);
+        f.writeln(failures);
+    }
 
     chdir(buildPath("..", ".."));
 

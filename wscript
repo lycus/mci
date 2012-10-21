@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, shutil, subprocess
+import glob, os, shutil, subprocess
 from waflib import Build, Utils
 
 APPNAME = 'MCI'
@@ -223,15 +223,30 @@ class UnitTestContext(Build.BuildContext):
 def test(ctx):
     '''runs the infrastructure tests'''
 
+    stats = [0, 0]
+
     def run_test(parent, sub):
+        passes = 0
+        failures = 0
+
         _run_shell('tests', ctx, '{0} {1}'.format(os.path.join(os.pardir, OUT, 'tester'),
                                                   os.path.join(parent, sub)))
+
+        for file in glob.glob(os.path.join('tests', parent, sub, '*.out')):
+            with open(file, 'r') as f:
+                passes += int(f.readline())
+                failures += int(f.readline())
+
+        stats[0] = stats[0] + passes
+        stats[1] = stats[1] + failures
 
     run_test('assembler', 'pass')
     run_test('assembler', 'fail')
     run_test('disassembler', 'pass')
     run_test('verifier', 'pass')
     run_test('verifier', 'fail')
+
+    ctx.to_log('<<<<<<<<<<---------- Passes: {0} Failures: {1} ---------->>>>>>>>>>\n'.format(stats[0], stats[1]))
 
 class TestContext(Build.BuildContext):
     cmd = 'test'
