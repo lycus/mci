@@ -11,5 +11,6 @@ waf
 *.ast
 *.dot
 *.dis.*
+*.out
 
 *.orig
