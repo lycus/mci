@@ -1,2 +1,3 @@
+D: verify assembled modules
 C: verify <name>.mci
 R: 0

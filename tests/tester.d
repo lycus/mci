@@ -17,6 +17,7 @@ private __gshared Mutex outputLock;
 
 private struct TestPass
 {
+    public string description;
     public string command;
     public int expected;
     public bool swallowError;
@@ -56,13 +57,18 @@ private int main(string[] args)
 
     TestPass[] passes;
 
-    foreach (file; sort(array(map!(x => x.name)(dirEntries(dir, "*.test", SpanMode.shallow, false)))))
+    auto files = filter!(x => globMatch(x.name, "*.test"))(dirEntries(dir, SpanMode.shallow, false));
+    auto names = sort(array(map!(x => x.name)(files)));
+
+    foreach (file; names)
     {
         TestPass pass;
 
         foreach (line; splitLines(readText(file)))
         {
-            if (startsWith(line, "C: "))
+            if (startsWith(line, "D: "))
+                pass.description = line[3 .. $];
+            else if (startsWith(line, "C: "))
                 pass.command = line[3 .. $];
             else if (startsWith(line, "R: "))
                 pass.expected = to!int(line[3 .. $]);
@@ -91,7 +97,7 @@ private bool test(string directory, string cli, TestPass pass)
     if (canFind(pass.excludedArchitectures, architecture) || canFind(pass.excludedOperatingSystems, operatingSystem))
         return true;
 
-    stderr.writefln("---------- Testing '%s' (Expecting '%s') ----------", directory, pass.expected);
+    stderr.writefln("---------- Testing '%s' pass '%s' (expecting '%s') ----------", directory, pass.description, pass.expected);
     stderr.writeln();
 
     chdir(directory);
@@ -99,7 +105,9 @@ private bool test(string directory, string cli, TestPass pass)
     ulong passes;
     ulong failures;
 
-    auto files = sort(array(filter!(x => count(x, '.') == 1)(map!(x => x.name[2 .. $])(dirEntries(".", "*.ial", SpanMode.shallow, false)))));
+    auto files = filter!(x => globMatch(x.name, "*.ial") && count(x.name, '.') == 1)(dirEntries(getcwd(), SpanMode.shallow, false));
+    auto names = sort(array(map!(x => baseName(x.name))(files)));
+
     auto func = (string file)
     {
         if (invoke(file, cli, pass))
@@ -110,12 +118,12 @@ private bool test(string directory, string cli, TestPass pass)
 
     if (compiler == Compiler.gdc || pass.noParallel)
     {
-        foreach (file; files)
+        foreach (file; names)
             func(file);
     }
     else
     {
-        foreach (file; parallel(files))
+        foreach (file; parallel(names))
             func(file);
     }
 

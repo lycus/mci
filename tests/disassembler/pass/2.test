@@ -1,2 +1,3 @@
+D: assemble disassembled source files
 C: asm <name>.dis.ial -o <name>.dis.mci -d <name>.dis.ast
 R: 0
