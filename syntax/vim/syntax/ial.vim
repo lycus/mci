@@ -10,13 +10,13 @@ endif
 setlocal iskeyword+=.
 
 syn keyword ialType                     void int8 uint8 int16 uint16 int32 uint32 int64 uint64 int uint float32 float64
-syn keyword ialDeclaration              type field function register block module thread entry exit
+syn keyword ialDeclaration              type field function register block module thread entry exit data
 syn keyword ialModifier                 global ssa pure nooptimize noinline noreturn nothrow noescape align unwind volatile
 syn keyword ialConvention               cdecl stdcall
 syn keyword ialInstruction              nop comment
 syn keyword ialInstruction              load.i8 load.ui8 load.i16 load.ui16 load.i32 load.ui32 load.i64 load.ui64 load.f32 load.f64
 syn keyword ialInstruction              load.i8a load.ui8a load.i16a load.ui16a load.i32a load.ui32a load.i64a load.ui64a load.f32a load.f64a
-syn keyword ialInstruction              load.func load.null load.size load.align load.offset
+syn keyword ialInstruction              load.func load.null load.size load.align load.offset load.data
 syn keyword ialInstruction              copy
 syn keyword ialInstruction              ari.add ari.sub ari.mul ari.div ari.rem ari.neg
 syn keyword ialInstruction              bit.and bit.or bit.xor bit.neg
