@@ -1,2 +1,3 @@
+D: assemble source files
 C: asm <file> -o <name>.mci -d <name>.ast
 R: 1
