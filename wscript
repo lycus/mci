@@ -288,7 +288,13 @@ def ddoc(ctx):
 
     shutil.rmtree(bddir, True)
     shutil.copytree('bootdoc', bddir)
-    shutil.rmtree(os.path.join(bddir, '.git'), True)
+
+    git = os.path.join(bddir, '.git')
+
+    try:
+        shutil.rmtree(git)
+    except:
+        os.remove(git)
 
 class DdocContext(Build.BuildContext):
     cmd = 'ddoc'
