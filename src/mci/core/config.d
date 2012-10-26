@@ -203,3 +203,19 @@ else
     public enum EmulationLayer emulationLayer = EmulationLayer.none;
     public enum string emulationLayerName = "None";
 }
+
+version (MCI_Ddoc)
+{
+    public enum FloatingPointMethod floatingPointMethod = FloatingPointMethod.init; /// Indicates which method is used to execute floating-point operations.
+    public enum string floatingPointMethodName = string.init; /// Holds the name of the method used to execute floating-point operations.
+}
+else version (D_HardFloat)
+{
+    public enum FloatingPointMethod floatingPointMethod = FloatingPointMethod.hard;
+    public enum string floatingPointMethodName = "HardFloat";
+}
+else
+{
+    public enum FloatingPointMethod floatingPointMethod = FloatingPointMethod.soft;
+    public enum string floatingPointMethodName = "SoftFloat";
+}
