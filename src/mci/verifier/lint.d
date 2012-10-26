@@ -134,9 +134,9 @@ shared static this()
 {
     auto passes = new NoNullList!LintPass();
 
-    passes.add((fn, msgs) => lintReturningStackAllocatedMemory(fn, msgs));
     passes.add((fn, msgs) => lintMeaninglessInstructionAttribute(fn, msgs));
     passes.add((fn, msgs) => lintMeaninglessParameterAttribute(fn, msgs));
+    passes.add((fn, msgs) => lintLeakingStackAllocatedMemory(fn, msgs));
 
     standardPasses = passes;
 }
@@ -150,33 +150,6 @@ in
 body
 {
     messages.add(new LintMessage(instruction, format(message, args)));
-}
-
-private void lintReturningStackAllocatedMemory(Function function_, NoNullList!LintMessage messages)
-in
-{
-    assert(function_);
-    assert(function_.attributes & FunctionAttributes.ssa);
-    assert(messages);
-}
-body
-{
-    if (!function_.returnType)
-        return;
-
-    foreach (bb; function_.blocks)
-    {
-        foreach (insn; bb.y.stream)
-        {
-            if (insn.opCode is opReturn)
-            {
-                auto def = first(insn.sourceRegister1.definitions);
-
-                if (def.opCode is opMemSAlloc || def.opCode is opMemSNew)
-                    message(messages, insn, "Returning stack-allocated memory.");
-            }
-        }
-    }
 }
 
 private void lintMeaninglessInstructionAttribute(Function function_, NoNullList!LintMessage messages)
@@ -206,4 +179,40 @@ body
     foreach (param; function_.parameters)
         if (param.attributes & ParameterAttributes.noEscape && !hasAliasing(param.type))
             message(messages, null, "The noescape attribute has no meaning for type %s as it has no aliasing.", param.type);
+}
+
+private void lintLeakingStackAllocatedMemory(Function function_, NoNullList!LintMessage messages)
+in
+{
+    assert(function_);
+    assert(function_.attributes & FunctionAttributes.ssa);
+    assert(messages);
+}
+body
+{
+    if (!function_.returnType)
+        return;
+
+    foreach (bb; function_.blocks)
+    {
+        foreach (insn; bb.y.stream)
+        {
+            if (insn.opCode is opReturn)
+            {
+                auto def = first(insn.sourceRegister1.definitions);
+
+                if (def.opCode is opMemSAlloc || def.opCode is opMemSNew)
+                    message(messages, insn, "Returning stack-allocated memory.");
+            }
+            else if (insn.opCode is opMemSet)
+            {
+                auto ptrDef = first(insn.sourceRegister1.definitions);
+                auto valDef = first(insn.sourceRegister2.definitions);
+
+                if ((ptrDef.opCode is opFieldGlobalAddr || ptrDef.opCode is opFieldThreadAddr) &&
+                    (valDef.opCode is opMemSAlloc || valDef.opCode is opMemSNew))
+                    message(messages, insn, "Leaking stack-allocated memory.");
+            }
+        }
+    }
 }
