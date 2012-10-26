@@ -139,6 +139,7 @@ shared static this()
     passes.add((fn, msgs) => lintLeakingStackAllocatedMemory(fn, msgs));
     passes.add((fn, msgs) => lintReturningFromNoReturnFunction(fn, msgs));
     passes.add((fn, msgs) => lintThrowingInNoThrowFunction(fn, msgs));
+    passes.add((fn, msgs) => lintDeletingImmutableMemory(fn, msgs));
 
     standardPasses = passes;
 }
@@ -250,4 +251,29 @@ body
         foreach (insn; bb.y.stream)
             if (insn.opCode is opEHThrow || insn.opCode is opEHRethrow)
                 message(messages, insn, "Throwing in a nothrow function.");
+}
+
+private void lintDeletingImmutableMemory(Function function_, NoNullList!LintMessage messages)
+in
+{
+    assert(function_);
+    assert(function_.attributes & FunctionAttributes.ssa);
+    assert(messages);
+}
+body
+{
+    foreach (bb; function_.blocks)
+    {
+        foreach (insn; bb.y.stream)
+        {
+            if (insn.opCode is opMemFree)
+            {
+                auto def = first(insn.sourceRegister1.definitions);
+
+                if (def.opCode is opLoadData || def.opCode is opFieldGlobalAddr || def.opCode is opFieldThreadAddr || def.opCode is opMemAddr ||
+                    (def.opCode is opFieldAddr && cast(StructureType)def.sourceRegister1.type))
+                    message(messages, insn, "Deleting immutable memory (data block, stack, or global/thread field memory).");
+            }
+        }
+    }
 }
