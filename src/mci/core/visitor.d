@@ -1,6 +1,7 @@
 module mci.core.visitor;
 
-import mci.core.code.fields,
+import mci.core.code.data,
+       mci.core.code.fields,
        mci.core.code.functions,
        mci.core.code.instructions,
        mci.core.code.modules,
@@ -38,6 +39,9 @@ public abstract class ModuleVisitor
             foreach (field; type.y.members)
                 visit(field.y);
         }
+
+        foreach (data; module_.dataBlocks)
+            visit(data.y);
 
         foreach (field; module_.globalFields)
             visit(field.y);
@@ -87,6 +91,15 @@ public abstract class ModuleVisitor
     in
     {
         assert(member);
+    }
+    body
+    {
+    }
+
+    protected void visit(DataBlock data)
+    in
+    {
+        assert(data);
     }
     body
     {

@@ -109,6 +109,7 @@ public final class StatisticsTool : Tool
                 auto v = new StatisticsVisitor();
                 v.run(mod);
 
+                logf("Data blocks: %s", v.dataBlocks);
                 logf("Global fields: %s", v.globalFields);
                 logf("Thread fields: %s", v.threadFields);
                 logf("Functions: %s", v.functions);

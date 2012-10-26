@@ -1,6 +1,7 @@
 module mci.core.analysis.statistics;
 
 import mci.core.visitor,
+       mci.core.code.data,
        mci.core.code.fields,
        mci.core.code.functions,
        mci.core.code.instructions,
@@ -13,6 +14,7 @@ private final class StatisticsVisitor : ModuleVisitor
 {
     private size_t _types;
     private size_t _members;
+    private size_t _dataBlocks;
     private size_t _globalFields;
     private size_t _threadFields;
     private size_t _functions;
@@ -29,6 +31,11 @@ private final class StatisticsVisitor : ModuleVisitor
     protected override void visit(StructureMember member) pure nothrow
     {
         _members++;
+    }
+
+    protected override void visit(DataBlock data) pure nothrow
+    {
+        _dataBlocks++;
     }
 
     protected override void visit(GlobalField field) pure nothrow
@@ -86,6 +93,17 @@ private final class StatisticsVisitor : ModuleVisitor
     @property public size_t members() pure nothrow
     {
         return _members;
+    }
+
+    /**
+     * Gets the amount of data blocks in the module.
+     *
+     * Returns:
+     *  The amount of data blocks in the module.
+     */
+    @property public size_t dataBlocks() pure nothrow
+    {
+        return _dataBlocks;
     }
 
     /**
