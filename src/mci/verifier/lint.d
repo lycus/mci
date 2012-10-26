@@ -282,7 +282,8 @@ body
             {
                 auto def = first(insn.sourceRegister1.definitions);
 
-                if (def.opCode is opLoadData || def.opCode is opFieldGlobalAddr || def.opCode is opFieldThreadAddr || def.opCode is opMemAddr ||
+                if (def.opCode is opLoadData || def.opCode is opFieldGlobalAddr || def.opCode is opFieldThreadAddr ||
+                    def.opCode is opMemSAlloc || def.opCode is opMemSNew || def.opCode is opMemAddr ||
                     (def.opCode is opFieldAddr && cast(StructureType)def.sourceRegister1.type))
                     message(messages, insn, "Deleting immutable memory (data block, stack, or global/thread field memory).");
             }
