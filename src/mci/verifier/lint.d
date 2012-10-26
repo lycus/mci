@@ -290,3 +290,46 @@ body
         }
     }
 }
+
+private void lintLeakingNoEscapeParameter(Function function_, NoNullList!LintMessage messages)
+in
+{
+    assert(function_);
+    assert(function_.attributes & FunctionAttributes.ssa);
+    assert(messages);
+}
+body
+{
+    if (function_.parameters.empty)
+        return;
+
+    foreach (bb; function_.blocks)
+    {
+        foreach (insn; bb.y.stream)
+        {
+            if (insn.opCode is opReturn)
+            {
+                auto def = first(insn.sourceRegister1.definitions);
+
+                if (def.opCode is opArgPop && function_.parameters[findIndex(def.block.stream, def)].attributes & ParameterAttributes.noEscape)
+                    message(messages, insn, "Leaking a noescape parameter.");
+            }
+            else if (insn.opCode is opMemSet)
+            {
+                auto ptrDef = first(insn.sourceRegister1.definitions);
+                auto valDef = first(insn.sourceRegister2.definitions);
+
+                if ((ptrDef.opCode is opFieldGlobalAddr || ptrDef.opCode is opFieldThreadAddr) &&
+                    (valDef.opCode is opArgPop && function_.parameters[findIndex(valDef.block.stream, valDef)].attributes & ParameterAttributes.noEscape))
+                    message(messages, insn, "Leaking a noescape parameter.");
+            }
+            else if (insn.opCode is opEHThrow)
+            {
+                auto def = first(insn.sourceRegister1.definitions);
+
+                if (def.opCode is opArgPop && function_.parameters[findIndex(def.block.stream, def)].attributes & ParameterAttributes.noEscape)
+                    message(messages, insn, "Leaking a noescape parameter.");
+            }
+        }
+    }
+}
