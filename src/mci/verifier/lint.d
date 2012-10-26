@@ -192,9 +192,6 @@ in
 }
 body
 {
-    if (!function_.returnType)
-        return;
-
     foreach (bb; function_.blocks)
     {
         foreach (insn; bb.y.stream)
