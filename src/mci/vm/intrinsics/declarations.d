@@ -245,7 +245,7 @@ shared static this()
                                                                                        toNoNullList(toIterable!Type(getReferenceType(objectType)))));
     gcWaitForFreeCallbacks = createFunction!mci_gc_wait_for_free_callbacks(null);
     gcIsAtomic = createFunction!mci_gc_is_atomic(NativeUIntType.instance);
-    gcGetBarriers = createFunction!mci_gc_get_barriers(UInt16Type.instance);
+    gcGetBarriers = createFunction!mci_gc_get_barriers(UInt8Type.instance);
 
     nanWithPayloadF32 = createFunction!mci_nan_with_payload_f32(Float32Type.instance,
                                                                 UInt32Type.instance);

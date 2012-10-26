@@ -152,7 +152,7 @@ Linter
 Performs various static analyses for correctness on a set of modules. Accepts
 as input a set of module file names (must end in ``.mci``).
 
-These analyses are generally not very smart, and can easily give false
+These analyses are generally not very smart and can easily give false
 positives. They are primarily meant to help spot common errors in emitted IAL
 code. Note also that this tool only analyzes SSA functions.
 
