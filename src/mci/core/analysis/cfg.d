@@ -79,6 +79,9 @@ public struct ControlFlowBranch
               () => _type = ControlFlowType.exit);
     }
 
+    /**
+     * Iteration support.
+     */
     public int opApply(scope int delegate(BasicBlock) dg)
     {
         if (_block1)
@@ -100,6 +103,9 @@ public struct ControlFlowBranch
         return 0;
     }
 
+    /**
+     * Iteration support.
+     */
     public int opApply(scope int delegate(size_t, BasicBlock) dg)
     {
         if (_block1)
@@ -190,7 +196,9 @@ public struct ControlFlowBranch
 
 /**
  * Gets the branch targets of the terminator instruction
- * in a basic block. Assumes the input is verified IAL.
+ * in a basic block.
+ *
+ * Assumes the input is verified IAL.
  *
  * Params:
  *  block = The basic block to retrieve branch targets for.
@@ -243,6 +251,8 @@ body
  * Indicates whether $(D toBlock) is directly reachable by a
  * branch in $(D fromBlock).
  *
+ * Assumes the input is verified IAL.
+ *
  * Params:
  *  toBlock = The basic block to check branches from $(D fromBlock) against.
  *  fromBlock = The basic block to check for branches to $(D toBlock).
@@ -269,6 +279,8 @@ body
 /**
  * Indicates whether $(D toBlock) is directly or indirectly
  * reachable from $(D fromBlock).
+ *
+ * Assumes the input is verified IAL.
  *
  * Params:
  *  toBlock = The basic block to check for reachability from $(D fromBlock).
