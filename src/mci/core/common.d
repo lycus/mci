@@ -330,5 +330,5 @@ public enum InlineAssembly : ubyte
     dmd32, // DMD-style inline assembly for x86 (32-bit).
     dmd64, // DMD-style inline assembly for x86 (64-bit).
     gnu, // GNU-style inline assembly.
-    llvm, // LLVM-style inline assembly (import the $(D ldc.llvmasm) module).
+    llvm, // LLVM-style inline assembly (import the $(D ldc.llvmasm) module). Implies $(D dmd32) and $(D dmd64).
 }

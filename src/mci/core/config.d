@@ -26,20 +26,14 @@ else version (LDC)
     public enum Compiler compiler = Compiler.ldc;
     public enum string compilerName = "LDC";
 }
-else version (D_NET)
-{
-    // We cannot run on D.NET because some things like signals
-    // will interfere with the managed runtime.
-    static assert(false, "D.NET is not supported.");
-}
 else
-    static assert(false, "Compiler could not be determined.");
+    static assert(false, "Unknown or unsupported compiler.");
 
 version (D_Version2)
 {
 }
 else
-    static assert(false, "Unsupported D language version.");
+    static assert(false, "Unknown or unsupported D language version.");
 
 version (MCI_Ddoc)
 {
@@ -109,26 +103,8 @@ else version (MIPS64)
     public enum Architecture architecture = Architecture.mips;
     public enum string architectureName = "MIPS";
 }
-else version (S390)
-    static assert(false, "The System/390 architecture is not supported.");
-else version (S390X)
-    static assert(false, "The System/390 architecture is not supported.");
-else version (SPARC)
-    static assert(false, "The SPARC architecture is not supported.");
-else version (SPARC64)
-    static assert(false, "The SPARC architecture is not supported.");
-else version (HPPA)
-    static assert(false, "The PA-RISC architecture is not supported.");
-else version (HPPA64)
-    static assert(false, "The PA-RISC architecture is not supported.");
-else version (SH)
-    static assert(false, "The SuperH architecture is not supported.");
-else version (SH64)
-    static assert(false, "The SuperH architecture is not supported.");
-else version (Alpha)
-    static assert(false, "The Alpha architecture is not supported.");
 else
-    static assert(false, "Processor architecture could not be determined.");
+    static assert(false, "Unknown or unsupported processor architecture.");
 
 version (MCI_Ddoc)
     public enum bool is32Bit = bool.init; /// Indicates what bitness the MCI is being built for.
@@ -198,26 +174,14 @@ else version (Posix)
         public enum OperatingSystem operatingSystem = OperatingSystem.osx;
         public enum string operatingSystemName = "OS X";
     }
-    else version (Hurd)
-        static assert(false, "Hurd is not supported.");
-    else version (SkyOS)
-        static assert(false, "SkyOS is not supported.");
-    else version (OpenBSD)
-        static assert(false, "OpenBSD is not supported.");
-    else version (SysV3)
-        static assert(false, "System V R3 is not supported.");
-    else version (SysV4)
-        static assert(false, "System V R4 is not supported.");
-    else version (BSD)
-        static assert(false, "Unknown BSD operating system.");
     else
-        static assert(false, "Unknown POSIX operating system.");
+        static assert(false, "Unknown or unsupported POSIX operating system.");
 
     public enum bool isPOSIX = true;
     public enum bool isWindows = false;
 }
 else
-    static assert(false, "Operating system could not be determined.");
+    static assert(false, "Unknown or unsupported operating system.");
 
 version (MCI_Ddoc)
 {
