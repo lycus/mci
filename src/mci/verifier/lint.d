@@ -312,7 +312,7 @@ body
                 auto def = first(insn.sourceRegister1.definitions);
 
                 if (def.opCode is opArgPop && function_.parameters[findIndex(def.block.stream, def)].attributes & ParameterAttributes.noEscape)
-                    message(messages, insn, "Leaking a noescape parameter.");
+                    message(messages, insn, "Returning a noescape parameter.");
             }
             else if (insn.opCode is opMemSet)
             {
@@ -328,7 +328,7 @@ body
                 auto def = first(insn.sourceRegister1.definitions);
 
                 if (def.opCode is opArgPop && function_.parameters[findIndex(def.block.stream, def)].attributes & ParameterAttributes.noEscape)
-                    message(messages, insn, "Leaking a noescape parameter.");
+                    message(messages, insn, "Throwing a noescape parameter.");
             }
         }
     }
