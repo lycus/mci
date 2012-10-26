@@ -277,17 +277,15 @@ def ddoc(ctx):
     except os.error:
         pass
 
-    def get_rdmd(ctx):
-        if ctx.env.COMPILER_D == 'dmd':
-            return 'dmd'
-        elif ctx.env.COMPILER_D == 'gdc':
-            return 'gdmd'
-        elif ctx.env.COMPILER_D == 'ldc2':
-            return 'ldmd2'
-        else:
-            ctx.fatal('Unsupported D compiler.')
+    if ctx.env.COMPILER_D == 'dmd':
+        cmd = ' --dmd=dmd'
+    elif ctx.env.COMPILER_D == 'gdc':
+        cmd = ' --dmd=gdmd'
+    elif ctx.env.COMPILER_D == 'ldc2':
+        cmd = ' --dmd=ldmd2'
+    else:
+        ctx.fatal('Unsupported D compiler.')
 
-    cmd = ' --dmd=' + get_rdmd(ctx)
     cmd += ' --parallel'
     cmd += ' --verbose'
     cmd += ' --extra=index.d'
@@ -296,6 +294,15 @@ def ddoc(ctx):
     cmd += ' ' + os.path.join(os.pardir, 'src')
     cmd += ' -I' + os.path.join(os.pardir, 'libffi-d')
     cmd += ' -I' + os.path.join(os.pardir, 'libgc-d')
+
+    if ctx.env.COMPILER_D == 'dmd':
+        cmd += ' -version=MCI_Ddoc'
+    elif ctx.env.COMPILER_D == 'gdc':
+        cmd += ' -fversion=MCI_Ddoc'
+    elif ctx.env.COMPILER_D == 'ldc2':
+        cmd += ' -d-version=MCI_Ddoc'
+    else:
+        ctx.fatal('Unsupported D compiler.')
 
     _run_shell('docs', ctx, '{0} {1}'.format(os.path.join(os.pardir, OUT, 'generate'), cmd))
 

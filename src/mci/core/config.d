@@ -6,7 +6,7 @@ import mci.core.common;
 // in and sets appropriate constants. Reliance on these constants
 // should be avoided if possible.
 
-version (D_Ddoc)
+version (MCI_Ddoc)
 {
     public enum Compiler compiler = Compiler.init; /// Indicates what compiler the MCI is being built with.
     public enum string compilerName = string.init; /// Holds the name of the compiler the MCI is being built with.
@@ -41,7 +41,7 @@ version (D_Version2)
 else
     static assert(false, "Unsupported D language version.");
 
-version (D_Ddoc)
+version (MCI_Ddoc)
 {
     public enum InlineAssembly inlineAssembly = InlineAssembly.init; /// Indicates what kind of inline assembly the compiler provides.
 }
@@ -64,7 +64,7 @@ else version (LDC)
 else
     static assert(false, "Inline assembly not available.");
 
-version (D_Ddoc)
+version (MCI_Ddoc)
 {
     public enum Architecture architecture = Architecture.init; /// Indicates the architecture the MCI is being built for.
     public enum string architectureName = string.init; /// Holds the name of the architecture the MCI is being built for.
@@ -130,14 +130,14 @@ else version (Alpha)
 else
     static assert(false, "Processor architecture could not be determined.");
 
-version (D_Ddoc)
+version (MCI_Ddoc)
     public enum bool is32Bit = bool.init; /// Indicates what bitness the MCI is being built for.
 else version (D_LP64)
     public enum bool is32Bit = false;
 else
     public enum bool is32Bit = true;
 
-version (D_Ddoc)
+version (MCI_Ddoc)
 {
     public enum Endianness endianness = Endianness.init; /// Indicates what endianness the MCI is being built for.
     public string endiannessName = string.init; /// Holds the name of the endianness the MCI is being built for.
@@ -155,7 +155,7 @@ else version (BigEndian)
 else
     static assert(false, "Endianness could not be determined.");
 
-version (D_Ddoc)
+version (MCI_Ddoc)
 {
     public enum OperatingSystem operatingSystem = OperatingSystem.init; /// Indicates what operating system MCI is being built for.
     public enum string operatingSystemName = string.init; /// Holds the name of the operating system the MCI is being built for.
@@ -219,7 +219,7 @@ else version (Posix)
 else
     static assert(false, "Operating system could not be determined.");
 
-version (D_Ddoc)
+version (MCI_Ddoc)
 {
     public enum EmulationLayer emulationLayer = EmulationLayer.init; /// Indicates what emulation layer, if any, the MCI is being built under.
     public enum string emulationLayerName = string.init; /// Holds the name of the emulation layer the MCI is being built under.
