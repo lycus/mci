@@ -89,7 +89,7 @@ private bool test(string directory, string cli, TestPass pass)
     if (canFind(pass.excludedArchitectures, architecture) || canFind(pass.excludedOperatingSystems, operatingSystem))
         return true;
 
-    stderr.writefln("---------- Testing '%s' pass '%s' (expecting '%s') ----------", directory, pass.description, pass.expected);
+    stderr.writefln(">> Testing '%s' pass '%s' (expecting '%s')", directory, pass.description, pass.expected);
     stderr.writeln();
 
     chdir(directory);
@@ -120,7 +120,7 @@ private bool test(string directory, string cli, TestPass pass)
     }
 
     stderr.writeln();
-    stderr.writefln("========== Passes: %s - Failures: %s ==========", passes, failures);
+    stderr.writefln("<< Passes: %s - Failures: %s", passes, failures);
     stderr.writeln();
 
     {
@@ -158,7 +158,7 @@ private bool invoke(string file, string cli, TestPass pass)
         scope (exit)
             outputLock.unlock();
 
-        stderr.writefln("%s\t\tFailed ('%s')", cmd, result);
+        stderr.writefln("%-60sFailed ('%s')", cmd, result);
 
         if (!pass.swallowError)
         {
@@ -175,7 +175,7 @@ private bool invoke(string file, string cli, TestPass pass)
         scope (exit)
             outputLock.unlock();
 
-        stderr.writefln("%s\t\tFailed ('!')", cmd);
+        stderr.writefln("%-60sFailed ('!')", cmd);
 
         if (!pass.swallowError)
         {
@@ -194,7 +194,7 @@ private bool invoke(string file, string cli, TestPass pass)
         scope (exit)
             outputLock.unlock();
 
-        stderr.writefln("%s\t\tPassed ('%s')", cmd, result);
+        stderr.writefln("%-60sPassed ('%s')", cmd, result);
 
         return true;
     }
