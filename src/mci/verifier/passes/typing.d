@@ -380,7 +380,7 @@ public final class ArrayVerifier : CodeVerifier
         {
             foreach (instr; bb.y.stream)
             {
-                if (isArray(instr.opCode))
+                if (instr.opCode is opArrayAddr || instr.opCode is opArrayLen)
                 {
                     if (!isArrayOrVector(instr.sourceRegister1.type))
                         error(instr, "The first source register must be an array or a vector.");
