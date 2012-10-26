@@ -201,7 +201,7 @@ body
             {
                 auto def = first(insn.sourceRegister1.definitions);
 
-                if (def.opCode is opMemSAlloc || def.opCode is opMemSNew)
+                if (def.opCode is opMemSAlloc || def.opCode is opMemSNew || def.opCode is opMemAddr)
                     message(messages, insn, "Returning stack-allocated memory.");
             }
             else if (insn.opCode is opMemSet)
@@ -210,7 +210,7 @@ body
                 auto valDef = first(insn.sourceRegister2.definitions);
 
                 if ((ptrDef.opCode is opFieldGlobalAddr || ptrDef.opCode is opFieldThreadAddr) &&
-                    (valDef.opCode is opMemSAlloc || valDef.opCode is opMemSNew))
+                    (valDef.opCode is opMemSAlloc || valDef.opCode is opMemSNew || valDef.opCode is opMemAddr))
                     message(messages, insn, "Leaking stack-allocated memory.");
             }
         }
