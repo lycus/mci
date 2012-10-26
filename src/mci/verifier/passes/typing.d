@@ -254,7 +254,7 @@ public final class ReturnTypeVerifier : CodeVerifier
     public override void verify(Function function_)
     {
         foreach (bb; function_.blocks)
-            if (auto instr = getFirstInstruction(bb.y, opReturn))
+            if (auto instr = bb.y.getFirstInstruction(opReturn))
                 if (instr.sourceRegister1.type !is function_.returnType)
                     error(instr, "The type of the source register (%s) does not match the return type of the function (%s).",
                           instr.sourceRegister1.type, function_.returnType ? to!string(function_.returnType) : "void");
@@ -380,7 +380,7 @@ public final class ArrayVerifier : CodeVerifier
         {
             foreach (instr; bb.y.stream)
             {
-                if (isArray(instr.opCode))
+                if (instr.opCode is opArrayAddr || instr.opCode is opArrayLen)
                 {
                     if (!isArrayOrVector(instr.sourceRegister1.type))
                         error(instr, "The first source register must be an array or a vector.");
@@ -388,11 +388,7 @@ public final class ArrayVerifier : CodeVerifier
                     if (instr.opCode !is opArrayLen && instr.sourceRegister2.type !is NativeUIntType.instance)
                         error(instr, "The second source register must be of type uint.");
 
-                    if (instr.opCode is opArrayGet && instr.targetRegister.type !is getElementType(instr.sourceRegister1.type))
-                        error(instr, "The target register must be of the first source register's element type.");
-                    else if (instr.opCode is opArraySet && instr.sourceRegister3.type !is getElementType(instr.sourceRegister1.type))
-                        error(instr, "The third source register must be of the first source register's element type.");
-                    else if (instr.opCode is opArrayAddr && instr.targetRegister.type !is getPointerType(getElementType(instr.sourceRegister1.type)))
+                    if (instr.opCode is opArrayAddr && instr.targetRegister.type !is getPointerType(getElementType(instr.sourceRegister1.type)))
                         error(instr, "The target register must be a pointer to the first source register's element type.");
                     else if (instr.opCode is opArrayLen && instr.targetRegister.type !is NativeUIntType.instance)
                         error(instr, "The target register must be of type uint.");
@@ -550,54 +546,29 @@ public final class FieldTypeVerifier : CodeVerifier
                 auto gfield = instr.operand.peek!GlobalField();
                 auto tfield = instr.operand.peek!ThreadField();
 
-                // Can't actually be null.
+                // Can only be null in the user field case.
                 auto type = field ? field.type : gfield ? gfield.type : tfield ? tfield.type : null;
 
-                if ((instr.opCode is opFieldGet || instr.opCode is opFieldGlobalGet || instr.opCode is opFieldThreadGet) &&
-                    instr.targetRegister.type !is field.type)
-                {
-                    error(instr, "Target register must be the type of the %s reference.", field ? "member" : "field");
-                }
-                else if (instr.opCode is opFieldSet && instr.sourceRegister2.type !is field.type)
-                    error(instr, "The second source register must be the type of the member reference.");
-                else if ((instr.opCode is opFieldGlobalSet || instr.opCode is opFieldThreadSet) && instr.sourceRegister1.type !is field.type)
-                    error(instr, "The first source register must be the type of the field reference.");
-                else if ((instr.opCode is opFieldAddr || instr.opCode is opFieldGlobalAddr || instr.opCode is opFieldThreadAddr) &&
-                    instr.targetRegister.type !is getPointerType(field.type))
+                if ((instr.opCode is opFieldAddr || instr.opCode is opFieldGlobalAddr || instr.opCode is opFieldThreadAddr) &&
+                    instr.targetRegister.type !is getPointerType(type))
                     error(instr, "Target register must be a pointer to the %s's type.", field ? "member" : "field");
 
-                if (instr.opCode is opFieldGet || instr.opCode is opFieldSet || instr.opCode is opFieldAddr)
+                if (instr.opCode is opFieldAddr &&
+                    instr.sourceRegister1.type !is field.declaringType &&
+                    instr.sourceRegister1.type !is getPointerType(field.declaringType) &&
+                    instr.sourceRegister1.type !is getReferenceType(field.declaringType))
                 {
-                    if (instr.sourceRegister1.type !is field.declaringType &&
-                        instr.sourceRegister1.type !is getPointerType(field.declaringType) &&
-                        instr.sourceRegister1.type !is getReferenceType(field.declaringType))
-                        error(instr, "The first source register must be the member's declaring type or a pointer or reference to the member's " ~
-                                     "declaring type.");
+                    error(instr, "The first source register must be the member's declaring type or a pointer or reference to the member's " ~
+                                 "declaring type.");
                 }
-            }
-        }
-    }
-}
-
-public final class UserFieldVerifier : CodeVerifier
-{
-    public override void verify(Function function_)
-    {
-        foreach (bb; function_.blocks)
-        {
-            foreach (instr; bb.y.stream)
-            {
-                if ((instr.opCode is opFieldUserGet || instr.opCode is opFieldUserSet || instr.opCode is opFieldUserAddr) &&
-                    !isManaged(instr.sourceRegister1.type))
-                    error(instr, "The first source register must be a reference, an array, or a vector.");
-
-                if (instr.opCode is opFieldUserSet && !isManaged(instr.sourceRegister2.type))
-                    error(instr, "The second source register must be a reference, an array, or a vector.");
-                else if (instr.opCode is opFieldUserGet && !isManaged(instr.targetRegister.type))
-                    error(instr, "The target register must be a reference, an array, or a vector.");
                 else if (instr.opCode is opFieldUserAddr)
+                {
+                    if (!isManaged(instr.sourceRegister1.type))
+                        error(instr, "The first source register must be a reference, an array, or a vector.");
+
                     if (!cast(PointerType)instr.targetRegister.type || !isManaged(getElementType(instr.targetRegister.type)))
                         error(instr, "The target register must be a pointer to either a reference, an array, or a vector.");
+                }
             }
         }
     }
@@ -659,7 +630,7 @@ public final class FunctionArgumentTypeVerifier : CodeVerifier
     {
         auto entry = function_.blocks[entryBlockName];
 
-        if (!containsManagedCode(entry))
+        if (!entry.containsManagedCode())
             return;
 
         foreach (i, param; function_.parameters)

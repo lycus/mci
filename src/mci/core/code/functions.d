@@ -4,6 +4,7 @@ import mci.core.container,
        mci.core.code.instructions,
        mci.core.code.metadata,
        mci.core.code.modules,
+       mci.core.code.opcodes,
        mci.core.code.stream,
        mci.core.typing.types,
        mci.core.utilities;
@@ -186,6 +187,32 @@ public final class BasicBlock
     body
     {
         _isClosed = true;
+    }
+
+    public Instruction getFirstInstruction(OpCode opCode)
+    in
+    {
+        assert(opCode);
+    }
+    body
+    {
+        return find(_stream, (Instruction i) => i.opCode is opCode);
+    }
+
+    public Instruction getFirstInstruction(OperandType operandType)
+    {
+        return find(_stream, (Instruction i) => i.opCode.operandType == operandType);
+    }
+
+    public Instruction getFirstInstruction(OpCodeType type)
+    {
+        return find(_stream, (Instruction instr) => instr.opCode.type == type);
+    }
+
+    public bool containsManagedCode()
+    {
+        // FIXME: This doesn't really make sense for forwarded functions.
+        return !getFirstInstruction(opFFI) && !getFirstInstruction(opRaw);
     }
 
     public override string toString()
@@ -680,6 +707,38 @@ public final class Function
     body
     {
         _registers.remove(register.name);
+    }
+
+    public Instruction getFirstInstruction(OpCode opCode)
+    in
+    {
+        assert(opCode);
+    }
+    body
+    {
+        foreach (bb; _blocks)
+            if (auto instr = bb.y.getFirstInstruction(opCode))
+                return instr;
+
+        return null;
+    }
+
+    public Instruction getFirstInstruction(OperandType operandType)
+    {
+        foreach (bb; _blocks)
+            if (auto instr = bb.y.getFirstInstruction(operandType))
+                return instr;
+
+        return null;
+    }
+
+    public Instruction getFirstInstruction(OpCodeType type)
+    {
+        foreach (bb; _blocks)
+            if (auto instr = bb.y.getFirstInstruction(type))
+                return instr;
+
+        return null;
     }
 
     public override string toString()

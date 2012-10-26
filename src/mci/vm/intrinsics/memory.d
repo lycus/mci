@@ -86,7 +86,7 @@ extern (C)
         return !!cast(AtomicGarbageCollector)context.engine.gc;
     }
 
-    public ushort mci_gc_get_barriers(VirtualMachineContext context)
+    public ubyte mci_gc_get_barriers(VirtualMachineContext context)
     {
         return (cast(AtomicGarbageCollector)context.engine.gc).barriers;
     }

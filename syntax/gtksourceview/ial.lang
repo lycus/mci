@@ -56,6 +56,7 @@
           <keyword>thread</keyword>
           <keyword>entry</keyword>
           <keyword>exit</keyword>
+          <keyword>data</keyword>
         </context>
 
         <context id="modifiers" style-ref="modifier">
@@ -108,6 +109,7 @@
           <keyword>load\.size</keyword>
           <keyword>load\.align</keyword>
           <keyword>load\.offset</keyword>
+          <keyword>load\.data</keyword>
 
           <keyword>copy</keyword>
 
@@ -141,8 +143,6 @@
           <keyword>mem\.set</keyword>
           <keyword>mem\.addr</keyword>
 
-          <keyword>array\.get</keyword>
-          <keyword>array\.set</keyword>
           <keyword>array\.addr</keyword>
           <keyword>array\.len</keyword>
 
@@ -172,17 +172,9 @@
           <keyword>array\.cmp\.gteq</keyword>
           <keyword>array\.cmp\.lteq</keyword>
 
-          <keyword>field\.get</keyword>
-          <keyword>field\.set</keyword>
           <keyword>field\.addr</keyword>
-          <keyword>field\.user\.get</keyword>
-          <keyword>field\.user\.set</keyword>
           <keyword>field\.user\.addr</keyword>
-          <keyword>field\.global\.get</keyword>
-          <keyword>field\.global\.set</keyword>
           <keyword>field\.global\.addr</keyword>
-          <keyword>field\.thread\.get</keyword>
-          <keyword>field\.thread\.set</keyword>
           <keyword>field\.thread\.addr</keyword>
 
           <keyword>cmp\.eq</keyword>

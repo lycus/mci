@@ -171,17 +171,7 @@ body
             assert(false);
         case InstructionAttributes.volatile_:
             return opCode is opMemGet ||
-                   opCode is opMemSet ||
-                   opCode is opArrayGet ||
-                   opCode is opArraySet ||
-                   opCode is opFieldGet ||
-                   opCode is opFieldSet ||
-                   opCode is opFieldUserGet ||
-                   opCode is opFieldUserSet ||
-                   opCode is opFieldGlobalGet ||
-                   opCode is opFieldGlobalSet ||
-                   opCode is opFieldThreadGet ||
-                   opCode is opFieldThreadSet;
+                   opCode is opMemSet;
     }
 }
 

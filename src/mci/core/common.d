@@ -284,7 +284,7 @@ public enum Compiler : ubyte
 public enum Architecture : ubyte
 {
     x86 = 0, /// The x86 architecture (32-bit and 64-bit).
-    arm = 1, /// The ARM (Advanced RISC Machine) architecture (32-bit).
+    arm = 1, /// The ARM architecture (32-bit).
     ppc = 2, /// The PowerPC architecture (32-bit and 64-bit).
     ia64 = 3, /// The Itanium architecture (64-bit).
     mips = 4, /// The MIPS architecture (32-bit and 64-bit).
@@ -304,10 +304,10 @@ public enum Endianness : ubyte
  */
 public enum OperatingSystem : ubyte
 {
-    windows = 0, /// The Windows operating system (Windows 2000 and up).
+    windows = 0, /// The Windows operating system (Windows 7 and up).
     linux = 1, /// The Linux kernel (2.6 and up).
     osx = 2, /// Mac OS X (Leopard and up).
-    freebsd = 3, /// The FreeBSD operating system.
+    freebsd = 3, /// The FreeBSD operating system (9.0 and up).
     solaris = 4, /// All Solaris variants.
     aix = 5, /// IBM's AIX operating system.
 }
@@ -330,5 +330,14 @@ public enum InlineAssembly : ubyte
     dmd32, // DMD-style inline assembly for x86 (32-bit).
     dmd64, // DMD-style inline assembly for x86 (64-bit).
     gnu, // GNU-style inline assembly.
-    llvm, // LLVM-style inline assembly (import the $(D ldc.llvmasm) module).
+    llvm, // LLVM-style inline assembly (import the $(D ldc.llvmasm) module). Implies $(D dmd32) and $(D dmd64).
+}
+
+/**
+ * Indicates which method is used to execute floating-point operations.
+ */
+public enum FloatingPointMethod : ubyte
+{
+    soft, /// Floating-point operations are done in software.
+    hard, /// Floating-point operations are done in hardware.
 }

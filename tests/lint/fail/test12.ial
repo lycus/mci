@@ -1,0 +1,15 @@
+field global mci/Object& of;
+
+function ssa void foo(noescape mci/Object&)
+{
+    register mci/Object& o;
+    register mci/Object&* p;
+
+    block entry
+    {
+        o = arg.pop;
+        p = field.global.addr (of);
+        mem.set p, o;
+        leave;
+    }
+}

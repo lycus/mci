@@ -652,19 +652,11 @@ Returns flags indicating which barriers the current GC requires.
 
 Possible flags:
 
-====== ================================================
-0x000  No barriers are required.
-0x001  Read barriers are required for members.
-0x002  Write barriers are required for members.
-0x004  Read barriers are required for global fields.
-0x008  Write barriers are required for global fields.
-0x010  Read barriers are required for thread fields.
-0x020  Write barriers are required for thread fields.
-0x040  Read barriers are required for array loads.
-0x080  Write barriers are required for array stores.
-0x100  Read barriers are required for indirect loads.
-0x200  Write barriers are required for indirect stores.
-====== ================================================
+==== ==============================================
+0x0  No barriers are required.
+0x1  Read barriers are required for memory loads.
+0x2  Write barriers are required for memory stores.
+==== ==============================================
 
 Math and IEEE 754 operations
 ++++++++++++++++++++++++++++

@@ -1,0 +1,10 @@
+function ssa nothrow void foo()
+{
+    register mci/Object& o;
+
+    block entry
+    {
+        o = mem.new;
+        eh.throw o;
+    }
+}

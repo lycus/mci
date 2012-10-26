@@ -10,29 +10,26 @@ endif
 setlocal iskeyword+=.
 
 syn keyword ialType                     void int8 uint8 int16 uint16 int32 uint32 int64 uint64 int uint float32 float64
-syn keyword ialDeclaration              type field function register block module thread entry exit
+syn keyword ialDeclaration              type field function register block module thread entry exit data
 syn keyword ialModifier                 global ssa pure nooptimize noinline noreturn nothrow noescape align unwind volatile
 syn keyword ialConvention               cdecl stdcall
 syn keyword ialInstruction              nop comment
 syn keyword ialInstruction              load.i8 load.ui8 load.i16 load.ui16 load.i32 load.ui32 load.i64 load.ui64 load.f32 load.f64
 syn keyword ialInstruction              load.i8a load.ui8a load.i16a load.ui16a load.i32a load.ui32a load.i64a load.ui64a load.f32a load.f64a
-syn keyword ialInstruction              load.func load.null load.size load.align load.offset
+syn keyword ialInstruction              load.func load.null load.size load.align load.offset load.data
 syn keyword ialInstruction              copy
 syn keyword ialInstruction              ari.add ari.sub ari.mul ari.div ari.rem ari.neg
 syn keyword ialInstruction              bit.and bit.or bit.xor bit.neg
 syn keyword ialInstruction              not shl shr rol ror
 syn keyword ialInstruction              mem.alloc mem.new mem.free mem.salloc mem.snew mem.pin mem.unpin
 syn keyword ialInstruction              mem.get mem.set mem.addr
-syn keyword ialInstruction              array.get array.set array.addr array.len
+syn keyword ialInstruction              array.addr array.len
 syn keyword ialInstruction              array.ari.add array.ari.sub array.ari.mul array.ari.div array.ari.rem array.ari.neg
 syn keyword ialInstruction              array.bit.or array.bit.xor array.bit.neg
 syn keyword ialInstruction              array.not array.shl array.shr array.rol array.ror
 syn keyword ialInstruction              array.conv
 syn keyword ialInstruction              array.cmp.eq array.cmp.neq array.cmp.gt array.cmp.lt array.cmp.gteq array.cmp.lteq
-syn keyword ialInstruction              field.get field.set field.addr
-syn keyword ialInstruction              field.user.get field.user.set field.user.addr
-syn keyword ialInstruction              field.global.get field.global.set field.global.addr
-syn keyword ialInstruction              field.thread.get field.thread.set field.thread.addr
+syn keyword ialInstruction              field.addr field.user.addr field.global.addr field.thread.addr
 syn keyword ialInstruction              cmp.eq cmp.neq cmp.gt cmp.lt cmp.gteq cmp.lteq
 syn keyword ialInstruction              arg.push arg.pop call call.tail call.indirect invoke invoke.tail invoke.indirect
 syn keyword ialInstruction              jump jump.cond leave return dead phi raw ffi forward

@@ -188,94 +188,16 @@ public interface MovingGarbageCollector
     public void disableMoving() pure nothrow;
 }
 
-public enum BarrierFlags : ushort
+public enum BarrierFlags : ubyte
 {
-    none = 0x000,
-    memberGet = 0x001,
-    memberSet = 0x002,
-    globalFieldGet = 0x004,
-    globalFieldSet = 0x008,
-    threadFieldGet = 0x010,
-    threadFieldSet = 0x020,
-    arrayGet = 0x040,
-    arraySet = 0x080,
-    memoryGet = 0x100,
-    memorySet = 0x200,
+    none = 0x0,
+    memoryGet = 0x1,
+    memorySet = 0x2,
 }
 
 public interface AtomicGarbageCollector
 {
     @property public BarrierFlags barriers() pure nothrow;
-
-    public void memberGetBarrier(RuntimeObject* rto, StructureMember member, RuntimeObject** source, RuntimeObject** destination)
-    in
-    {
-        assert(rto);
-        assert(member);
-        assert(source);
-        assert(destination);
-    }
-
-    public void memberSetBarrier(RuntimeObject* rto, StructureMember member, RuntimeObject** destination, RuntimeObject** source)
-    in
-    {
-        assert(rto);
-        assert(member);
-        assert(destination);
-        assert(source);
-    }
-
-    public void globalFieldGetBarrier(RuntimeObject* rto, GlobalField field, RuntimeObject** source, RuntimeObject** destination)
-    in
-    {
-        assert(rto);
-        assert(field);
-        assert(source);
-        assert(destination);
-    }
-
-    public void globalFieldSetBarrier(RuntimeObject* rto, GlobalField field, RuntimeObject** destination, RuntimeObject** source)
-    in
-    {
-        assert(rto);
-        assert(field);
-        assert(destination);
-        assert(source);
-    }
-
-    public void threadFieldGetBarrier(RuntimeObject* rto, ThreadField field, RuntimeObject** source, RuntimeObject** destination)
-    in
-    {
-        assert(rto);
-        assert(field);
-        assert(source);
-        assert(destination);
-    }
-
-    public void threadFieldSetBarrier(RuntimeObject* rto, ThreadField field, RuntimeObject** destination, RuntimeObject** source)
-    in
-    {
-        assert(rto);
-        assert(field);
-        assert(destination);
-        assert(source);
-    }
-
-    public void arrayGetBarrier(RuntimeObject* rto, size_t index, RuntimeObject** source, RuntimeObject** destination)
-    in
-    {
-        assert(rto);
-        assert(source);
-        assert(destination);
-    }
-
-    public void arraySetBarrier(RuntimeObject* rto, size_t index, RuntimeObject** destination, RuntimeObject** source)
-    in
-    {
-        assert(rto);
-        assert(destination);
-        assert(source);
-    }
 
     public void memoryGetBarrier(RuntimeObject** source, RuntimeObject** destination)
     in

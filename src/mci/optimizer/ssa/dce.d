@@ -1,9 +1,9 @@
 module mci.optimizer.ssa.dce;
 
 import mci.core.container,
-       mci.core.analysis.utilities,
        mci.core.code.functions,
        mci.core.code.instructions,
+       mci.core.code.opcodes,
        mci.optimizer.base;
 
 /**

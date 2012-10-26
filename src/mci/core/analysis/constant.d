@@ -11,14 +11,21 @@ private union ConstantData
     public double float64;
 }
 
+/**
+ * Represents the backing type of a $(D Constant).
+ */
 public enum ConstantType : ubyte
 {
-    int64,
-    uint64,
-    float32,
-    float64,
+    int64, /// 64-bit signed integer.
+    uint64, /// 64-bit unsigned integer.
+    float32, /// 32-bit floating-point number.
+    float64, /// 64-bit floating-point number.
 }
 
+/**
+ * Represents a constant value supporting various ALU operations.
+ * Typically used in analysis of IAL code.
+ */
 public struct Constant
 {
     private ConstantData _data;
