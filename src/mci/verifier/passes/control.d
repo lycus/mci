@@ -16,7 +16,7 @@ public final class TerminatorVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            auto cfo = getFirstInstruction(bb.y, OpCodeType.controlFlow);
+            auto cfo = bb.y.getFirstInstruction(OpCodeType.controlFlow);
 
             if (!cfo)
                 error(null, "All basic blocks must have a terminator.");
@@ -33,12 +33,12 @@ public final class ReturnVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            auto leave = getFirstInstruction(bb.y, opLeave);
+            auto leave = bb.y.getFirstInstruction(opLeave);
 
             if (leave && function_.returnType)
                     error(leave, "Function does not return 'void', so 'leave' is invalid.");
 
-            auto ret = getFirstInstruction(bb.y, opReturn);
+            auto ret = bb.y.getFirstInstruction(opReturn);
 
             if (ret && !function_.returnType)
                 error(ret, "Function returns 'void', so 'return' is invalid.");
@@ -50,7 +50,7 @@ public final class FFIVerifier : CodeVerifier
 {
     public override void verify(Function function_)
     {
-        if (auto inst = getFirstInstruction(function_, opFFI))
+        if (auto inst = function_.getFirstInstruction(opFFI))
         {
             if (function_.blocks.count != 1)
                 error(inst, "FFI functions may only have an 'entry' basic block.");
@@ -70,7 +70,7 @@ public final class RawVerifier : CodeVerifier
 {
     public override void verify(Function function_)
     {
-        if (auto inst = getFirstInstruction(function_, opRaw))
+        if (auto inst = function_.getFirstInstruction(opRaw))
         {
             if (function_.blocks.count != 1)
                 error(inst, "Raw functions may only have an 'entry' basic block.");
@@ -90,7 +90,7 @@ public final class ForwardVerifier : CodeVerifier
 {
     public override void verify(Function function_)
     {
-        if (auto inst = getFirstInstruction(function_, opForward))
+        if (auto inst = function_.getFirstInstruction(opForward))
         {
             if (function_.blocks.count != 1)
                 error(inst, "Forward functions may only have an 'entry' basic block.");

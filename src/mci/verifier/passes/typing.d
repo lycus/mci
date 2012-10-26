@@ -254,7 +254,7 @@ public final class ReturnTypeVerifier : CodeVerifier
     public override void verify(Function function_)
     {
         foreach (bb; function_.blocks)
-            if (auto instr = getFirstInstruction(bb.y, opReturn))
+            if (auto instr = bb.y.getFirstInstruction(opReturn))
                 if (instr.sourceRegister1.type !is function_.returnType)
                     error(instr, "The type of the source register (%s) does not match the return type of the function (%s).",
                           instr.sourceRegister1.type, function_.returnType ? to!string(function_.returnType) : "void");
@@ -630,7 +630,7 @@ public final class FunctionArgumentTypeVerifier : CodeVerifier
     {
         auto entry = function_.blocks[entryBlockName];
 
-        if (!containsManagedCode(entry))
+        if (!entry.containsManagedCode())
             return;
 
         foreach (i, param; function_.parameters)

@@ -9,52 +9,6 @@ import mci.core.common,
        mci.core.typing.core,
        mci.core.typing.types;
 
-public Instruction getFirstInstruction(Function function_, OpCode opCode)
-in
-{
-    assert(function_);
-    assert(opCode);
-}
-body
-{
-    foreach (bb; function_.blocks)
-        if (auto instr = getFirstInstruction(bb.y, opCode))
-            return instr;
-
-    return null;
-}
-
-public Instruction getFirstInstruction(BasicBlock block, OpCode opCode)
-in
-{
-    assert(block);
-    assert(opCode);
-}
-body
-{
-    return find(block.stream, (Instruction i) => i.opCode is opCode);
-}
-
-public Instruction getFirstInstruction(BasicBlock block, OperandType operandType)
-in
-{
-    assert(block);
-}
-body
-{
-    return find(block.stream, (Instruction i) => i.opCode.operandType == operandType);
-}
-
-public Instruction getFirstInstruction(BasicBlock block, OpCodeType type)
-in
-{
-    assert(block);
-}
-body
-{
-    return find(block.stream, (Instruction instr) => instr.opCode.type == type);
-}
-
 public bool isNullable(Type type) pure nothrow
 in
 {
@@ -246,11 +200,6 @@ body
         return true;
 
     return false;
-}
-
-public bool containsManagedCode(BasicBlock block)
-{
-    return !getFirstInstruction(block, opFFI) && !getFirstInstruction(block, opRaw);
 }
 
 public ReadOnlyIndexable!Type getSignature(Function function_, ref Type returnType)

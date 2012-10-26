@@ -48,14 +48,14 @@ public final class JumpVerifier : CodeVerifier
     {
         foreach (bb; function_.blocks)
         {
-            if (auto instr = getFirstInstruction(bb.y, OperandType.label))
+            if (auto instr = bb.y.getFirstInstruction(OperandType.label))
             {
                 auto target = *instr.operand.peek!BasicBlock();
 
                 if (!contains(function_.blocks, (Tuple!(string, BasicBlock) b) => b.y is target))
                     error(instr, "Target basic block %s is not within function %s.", target, function_);
             }
-            else if (auto instr = getFirstInstruction(bb.y, OperandType.branch))
+            else if (auto instr = bb.y.getFirstInstruction(OperandType.branch))
             {
                 auto target = *instr.operand.peek!(Tuple!(BasicBlock, BasicBlock))();
 
@@ -108,7 +108,7 @@ public final class FunctionArgumentCountVerifier : CodeVerifier
     {
         auto entry = function_.blocks[entryBlockName];
 
-        if (!containsManagedCode(entry))
+        if (!entry.containsManagedCode())
             return;
 
         for (size_t i = 0; i < function_.parameters.count; i++)
@@ -204,7 +204,7 @@ public final class SSAFormVerifier : CodeVerifier
                 }
             }
         }
-        else if (auto phi = getFirstInstruction(function_, opPhi))
+        else if (auto phi = function_.getFirstInstruction(opPhi))
             error(phi, "The 'phi' instruction is not valid in non-SSA functions.");
     }
 }

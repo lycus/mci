@@ -39,7 +39,7 @@ public final class FunctionArgumentOrderVerifier : CodeVerifier
             if (bb.y is entry)
                 continue;
 
-            if (auto pop = getFirstInstruction(bb.y, opArgPop))
+            if (auto pop = bb.y.getFirstInstruction(opArgPop))
                 error(pop, "The 'arg.pop' instruction is only valid at the beginning of the 'entry' basic block.");
         }
 
@@ -65,7 +65,7 @@ public final class PhiOrderVerifier : CodeVerifier
         auto entry = function_.blocks[entryBlockName];
 
         foreach (bb; function_.blocks)
-            if (auto phi = getFirstInstruction(entry, opPhi))
+            if (auto phi = entry.getFirstInstruction(opPhi))
                 error(phi, "The 'phi' instruction is not valid in the 'entry' basic block.");
 
         foreach (bb; function_.blocks)
