@@ -230,9 +230,15 @@ body
         return;
 
     foreach (bb; function_.blocks)
+    {
         foreach (insn; bb.y.stream)
+        {
             if (insn.opCode is opLeave || insn.opCode is opReturn)
                 message(messages, insn, "Returning from a noreturn function.");
+            else if (isDirectCallSite(insn.opCode) && !(insn.operand.peek!Function().attributes & FunctionAttributes.noReturn))
+                message(messages, insn, "Calling non-noreturn function in noreturn function.");
+        }
+    }
 }
 
 private void lintThrowingInNoThrowFunction(Function function_, NoNullList!LintMessage messages)
@@ -248,9 +254,15 @@ body
         return;
 
     foreach (bb; function_.blocks)
+    {
         foreach (insn; bb.y.stream)
+        {
             if (insn.opCode is opEHThrow || insn.opCode is opEHRethrow)
                 message(messages, insn, "Throwing in a nothrow function.");
+            else if (isDirectCallSite(insn.opCode) && !(insn.operand.peek!Function().attributes & FunctionAttributes.noThrow))
+                message(messages, insn, "Calling non-nothrow function in nothrow function.");
+        }
+    }
 }
 
 private void lintDeletingImmutableMemory(Function function_, NoNullList!LintMessage messages)
