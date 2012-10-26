@@ -207,6 +207,12 @@ Statistics
 Outputs statistics about a set of modules to ``stdout``. Takes as input the
 file names of those modules (must end in ``.mci``).
 
+The ``-g`` parameter causes a list of global fields to be printed.
+
+The ``-e`` parameter causes a list of thread fields to be printed.
+
 The ``-f`` parameter causes a list of functions to be printed.
 
 The ``-t`` parameter causes a list of types to be printed.
+
+The ``-d`` parameter causes a list of data blocks to be printed.
