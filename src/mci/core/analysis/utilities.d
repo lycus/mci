@@ -137,9 +137,7 @@ in
 }
 body
 {
-    return opCode is opArrayGet ||
-           opCode is opArraySet ||
-           opCode is opArrayAddr ||
+    return opCode is opArrayAddr ||
            opCode is opArrayLen;
 }
 

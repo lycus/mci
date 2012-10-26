@@ -3,11 +3,13 @@ field global int32 bar;
 function void volatile_insn()
 {
     register int32 x;
+    register int32* p;
 
     block entry
     {
         x = load.i32 (42);
-        volatile field.global.set x (bar);
+        p = field.global.addr (bar);
+        volatile mem.set p, x;
         volatile leave;
     }
 }

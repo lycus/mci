@@ -166,12 +166,12 @@ a native word-size boundary as well. This is less important to users, as the
 Structures instantiated on the GC heap are prefixed by a header (which is
 implementation-defined) containing type information, GC bits, and so on. This
 header also has a dedicated native word-sized field that can be accessed with
-``field.user.set`` and related instructions. This field is primarily intended
-for letting compilers assign language-specific type information to objects.
+``field.user.addr``. This field is primarily there to let compilers assign
+language-specific type information to objects.
 
 Examples of references:
 
-* Reference to a struct called Foo: ``Foo&``
+* Reference to a structure called Foo: ``Foo&``
 
 Any reference-to-reference conversion is valid, including reference-to-array
 and reference-to-vector conversions.

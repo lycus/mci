@@ -1061,49 +1061,6 @@ Array and vector instructions
 These instructions are used to index into and manipulate arrays and
 vectors.
 
-array.get
----------
-
-**Has target register**
-    Yes
-**Source registers**
-    2
-**Operand type**
-    None
-
-Fetches the value at the index given in the second source register from
-the array given in the first source register and assigns it to the target
-register.
-
-If the source array/vector is null, behavior is undefined. Indexing beyond
-the bounds of an array results in undefined behavior.
-
-The first source register must be an array, vector, or static array, while the
-second register must be of type ``uint``.
-
-The target register must be of the first source register's element type.
-
-array.set
----------
-
-**Has target register**
-    No
-**Source registers**
-    3
-**Operand type**
-    None
-
-Sets the element at the index given in the second source register of the
-array given in the first source register to the value in the third source
-register.
-
-If the source array/vector is null, behavior is undefined. Indexing beyond
-the bounds of an array results in undefined behavior.
-
-The first source register must be an array, vector, or static array, while the
-second register must be of type ``uint``. The third register must be of the
-element type of the array in the first source register.
-
 array.addr
 ----------
 
@@ -1616,47 +1573,6 @@ Structure field instructions
 These instructions are used to operate on fields contained in structures
 types and pointers to them.
 
-field.get
----------
-
-**Has target register**
-    Yes
-**Source registers**
-    1
-**Operand type**
-    Member reference
-
-Fetches the value of the field given as the operand on the structure
-given in the source register and assigns it to the target register.
-
-If the source register is a reference or a pointer, and is null, behavior
-is undefined.
-
-The source register must either be a structure or a pointer or reference to a
-structure with at most one indirection.
-
-The target register's type must match the field type.
-
-field.set
----------
-
-**Has target register**
-    No
-**Source registers**
-    2
-**Operand type**
-    Member reference
-
-Sets the value of the field given in the operand on the structure given
-in the first source register to the value in the second source register.
-
-If the first source register is a reference or a pointer, and is null,
-behavior is undefined.
-
-The first source register must be a structure or a pointer or reference
-to a structure with a most one indirection. The second source register
-must match the field's type.
-
 field.addr
 ----------
 
@@ -1687,42 +1603,6 @@ structure with at most one indirection.
 The target register must be a pointer to the type of the field given in
 the operand.
 
-field.user.get
---------------
-
-**Has target register**
-    Yes
-**Source registers**
-    1
-**Operand type**
-    None
-
-Fetches the value of the source register's header user data field and assigns
-it to the target register.
-
-If the source register is null, behavior is undefined.
-
-The source register must be a reference, an array, or a vector.
-
-The target register must be a reference, an array, or a vector.
-
-field.user.set
---------------
-
-**Has target register**
-    No
-**Source registers**
-    2
-**Operand type**
-    None
-
-Sets the value of the first source register's header user data field to the
-value given in the second source register.
-
-If the source register is null, behavior is undefined.
-
-Both source registers must be references, arrays, or vectors.
-
 field.user.addr
 ---------------
 
@@ -1749,34 +1629,6 @@ The source register must be a reference, an array, or a vector.
 The target register must be a pointer to either a reference, an array, or a
 vector.
 
-field.global.get
-----------------
-
-**Has target register**
-    Yes
-**Source registers**
-    0
-**Operand type**
-    Global field reference
-
-Similar to field.get_, but operates on global fields. This means that the
-instruction does not need an instance of the structure to get the value of
-the given field.
-
-field.global.set
-----------------
-
-**Has target register**
-    No
-**Source registers**
-    1
-**Operand type**
-    Global field reference
-
-Similar to field.set_, but operates on global fields. This means that the
-instruction does not need an instance of the structure to set the value of
-the given field.
-
 field.global.addr
 -----------------
 
@@ -1792,34 +1644,6 @@ instruction does not need an instance of the structure to set the value of
 the given field.
 
 Pointers to global fields are always valid.
-
-field.thread.get
-----------------
-
-**Has target register**
-    Yes
-**Source registers**
-    0
-**Operand type**
-    Global field reference
-
-Similar to field.get_, but operates on TLS fields. This means that the
-instruction does not need an instance of the structure to get the value of
-the given field.
-
-field.thread.set
-----------------
-
-**Has target register**
-    No
-**Source registers**
-    1
-**Operand type**
-    Global field reference
-
-Similar to field.set_, but operates on TLS fields. This means that the
-instruction does not need an instance of the structure to set the value of
-the given field.
 
 field.thread.addr
 -----------------

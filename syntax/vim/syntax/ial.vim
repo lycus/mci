@@ -23,16 +23,13 @@ syn keyword ialInstruction              bit.and bit.or bit.xor bit.neg
 syn keyword ialInstruction              not shl shr rol ror
 syn keyword ialInstruction              mem.alloc mem.new mem.free mem.salloc mem.snew mem.pin mem.unpin
 syn keyword ialInstruction              mem.get mem.set mem.addr
-syn keyword ialInstruction              array.get array.set array.addr array.len
+syn keyword ialInstruction              array.addr array.len
 syn keyword ialInstruction              array.ari.add array.ari.sub array.ari.mul array.ari.div array.ari.rem array.ari.neg
 syn keyword ialInstruction              array.bit.or array.bit.xor array.bit.neg
 syn keyword ialInstruction              array.not array.shl array.shr array.rol array.ror
 syn keyword ialInstruction              array.conv
 syn keyword ialInstruction              array.cmp.eq array.cmp.neq array.cmp.gt array.cmp.lt array.cmp.gteq array.cmp.lteq
-syn keyword ialInstruction              field.get field.set field.addr
-syn keyword ialInstruction              field.user.get field.user.set field.user.addr
-syn keyword ialInstruction              field.global.get field.global.set field.global.addr
-syn keyword ialInstruction              field.thread.get field.thread.set field.thread.addr
+syn keyword ialInstruction              field.addr field.user.addr field.global.addr field.thread.addr
 syn keyword ialInstruction              cmp.eq cmp.neq cmp.gt cmp.lt cmp.gteq cmp.lteq
 syn keyword ialInstruction              arg.push arg.pop call call.tail call.indirect invoke invoke.tail invoke.indirect
 syn keyword ialInstruction              jump jump.cond leave return dead phi raw ffi forward

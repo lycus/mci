@@ -70,7 +70,6 @@ public final class VerificationManager
                                          new ArrayComparisonVerifier(),
                                          new ArrayConversionVerifier(),
                                          new FieldTypeVerifier(),
-                                         new UserFieldVerifier(),
                                          new TrampolineVerifier()));
     }
 
