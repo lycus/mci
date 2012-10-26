@@ -137,6 +137,8 @@ shared static this()
     passes.add((fn, msgs) => lintMeaninglessInstructionAttribute(fn, msgs));
     passes.add((fn, msgs) => lintMeaninglessParameterAttribute(fn, msgs));
     passes.add((fn, msgs) => lintLeakingStackAllocatedMemory(fn, msgs));
+    passes.add((fn, msgs) => lintReturningFromNoReturnFunction(fn, msgs));
+    passes.add((fn, msgs) => lintThrowingInNoThrowFunction(fn, msgs));
 
     standardPasses = passes;
 }
@@ -215,4 +217,40 @@ body
             }
         }
     }
+}
+
+private void lintReturningFromNoReturnFunction(Function function_, NoNullList!LintMessage messages)
+in
+{
+    assert(function_);
+    assert(function_.attributes & FunctionAttributes.ssa);
+    assert(messages);
+}
+body
+{
+    if (!(function_.attributes & FunctionAttributes.noReturn))
+        return;
+
+    foreach (bb; function_.blocks)
+        foreach (insn; bb.y.stream)
+            if (insn.opCode is opLeave || insn.opCode is opReturn)
+                message(messages, insn, "Returning from a noreturn function.");
+}
+
+private void lintThrowingInNoThrowFunction(Function function_, NoNullList!LintMessage messages)
+in
+{
+    assert(function_);
+    assert(function_.attributes & FunctionAttributes.ssa);
+    assert(messages);
+}
+body
+{
+    if (!(function_.attributes & FunctionAttributes.noThrow))
+        return;
+
+    foreach (bb; function_.blocks)
+        foreach (insn; bb.y.stream)
+            if (insn.opCode is opEHThrow || insn.opCode is opEHRethrow)
+                message(messages, insn, "Throwing in a nothrow function.");
 }
