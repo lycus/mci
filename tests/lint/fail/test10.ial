@@ -1,0 +1,10 @@
+function ssa void foo(noescape mci/Object&)
+{
+    register mci/Object& o;
+
+    block entry
+    {
+        o = arg.pop;
+        eh.throw o;
+    }
+}

@@ -243,6 +243,7 @@ def test(ctx):
     run_test('assembler', 'pass')
     run_test('assembler', 'fail')
     run_test('disassembler', 'pass')
+    run_test('lint', 'fail')
     run_test('verifier', 'pass')
     run_test('verifier', 'fail')
 

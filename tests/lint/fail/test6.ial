@@ -1,0 +1,16 @@
+function ssa noreturn void foo()
+{
+    block entry
+    {
+        invoke (bar);
+        dead;
+    }
+}
+
+function ssa void bar()
+{
+    block entry
+    {
+        leave;
+    }
+}

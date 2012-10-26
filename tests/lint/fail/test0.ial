@@ -1,0 +1,10 @@
+function ssa int* foo()
+{
+    register int* s;
+
+    block entry
+    {
+        s = mem.snew;
+        return s;
+    }
+}

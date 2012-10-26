@@ -1,0 +1,7 @@
+function ssa noreturn void foo()
+{
+    block entry
+    {
+        leave;
+    }
+}

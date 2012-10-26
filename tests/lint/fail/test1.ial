@@ -1,0 +1,7 @@
+function ssa void foo()
+{
+    block entry
+    {
+        volatile leave;
+    }
+}

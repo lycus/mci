@@ -140,6 +140,7 @@ shared static this()
     passes.add((fn, msgs) => lintReturningFromNoReturnFunction(fn, msgs));
     passes.add((fn, msgs) => lintThrowingInNoThrowFunction(fn, msgs));
     passes.add((fn, msgs) => lintDeletingImmutableMemory(fn, msgs));
+    passes.add((fn, msgs) => lintLeakingNoEscapeParameter(fn, msgs));
 
     standardPasses = passes;
 }

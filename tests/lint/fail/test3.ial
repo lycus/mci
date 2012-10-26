@@ -1,0 +1,15 @@
+field global int32* i;
+
+function ssa void foo()
+{
+    register int32* i;
+    register int32** p;
+
+    block entry
+    {
+        i = mem.snew;
+        p = field.global.addr (i);
+        mem.set p, i;
+        leave;
+    }
+}

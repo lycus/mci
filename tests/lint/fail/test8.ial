@@ -1,0 +1,13 @@
+data foo (1, 2, 3);
+
+function ssa void foo()
+{
+    register uint8* p;
+
+    block entry
+    {
+        p = load.data (foo);
+        mem.free p;
+        leave;
+    }
+}

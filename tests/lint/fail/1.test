@@ -1,0 +1,3 @@
+D: lint assembled modules
+C: lint <name>.mci
+R: 1

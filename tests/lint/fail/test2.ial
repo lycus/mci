@@ -1,0 +1,10 @@
+function ssa void foo(noescape int)
+{
+    register int i;
+
+    block entry
+    {
+        i = arg.pop;
+        leave;
+    }
+}

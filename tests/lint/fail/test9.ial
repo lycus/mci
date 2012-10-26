@@ -1,0 +1,11 @@
+function ssa void foo()
+{
+    register int32* p;
+
+    block entry
+    {
+        p = mem.snew;
+        mem.free p;
+        leave;
+    }
+}
