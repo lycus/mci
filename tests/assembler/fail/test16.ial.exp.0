@@ -1,0 +1,1 @@
+Error: Generation failed in 'test16.ial' (line 12, column 14): Module entry point does not have return type void.
