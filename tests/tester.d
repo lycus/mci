@@ -162,8 +162,8 @@ private bool invoke(string file, string cli, TestPass pass)
 
         if (!pass.swallowError)
         {
-            stderr.writefln("Error was (%s):", full);
-            stderr.writeln(readText(file ~ ".res"));
+            stderr.writeln("Error was:");
+            stderr.writeln(output);
         }
 
         return false;
@@ -179,10 +179,27 @@ private bool invoke(string file, string cli, TestPass pass)
 
         if (!pass.swallowError)
         {
-            stderr.writefln("Output was (%s):", full);
+            stderr.writeln("Output was:");
             stderr.writeln(output);
             stderr.writeln("Expected output is:");
             stderr.writeln(exp);
+        }
+
+        return false;
+    }
+    else if (!exp && strip(output))
+    {
+        outputLock.lock();
+
+        scope (exit)
+            outputLock.unlock();
+
+        stderr.writefln("%-60sFailed ('?')", cmd);
+
+        if (!pass.swallowError)
+        {
+            stderr.writeln("Expected no output, but got:");
+            stderr.writeln(output);
         }
 
         return false;
