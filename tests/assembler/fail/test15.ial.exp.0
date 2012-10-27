@@ -1,0 +1,1 @@
+Error: Generation failed in 'test15.ial' (line 3, column 13): Member 'test15'/'S':'s' would create an infinite cycle.

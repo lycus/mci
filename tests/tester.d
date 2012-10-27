@@ -11,8 +11,7 @@ import core.sync.mutex,
        mci.core.common,
        mci.core.config;
 
-private __gshared string windowsPath;
-private __gshared string posixPath;
+private __gshared string path;
 private __gshared Mutex outputLock;
 
 private struct TestPass
@@ -29,26 +28,14 @@ private struct TestPass
 
 private int main(string[] args)
 {
-    version (Windows)
-        windowsPath = buildPath("..", "src", "mci", "cli", "Test", "mci.exe");
-    else
-        posixPath = buildPath("..", "build", "mci");
-
+    path = buildPath("..", "build", "mci");
     outputLock = new typeof(outputLock)();
 
     auto dir = args[1];
     string cli;
 
-    version (Windows)
-    {
-        if (exists(windowsPath))
-            cli = buildPath("..", "..", windowsPath);
-    }
-    else
-    {
-        if (exists(posixPath))
-            cli = buildPath("..", "..", posixPath);
-    }
+    if (exists(path))
+        cli = buildPath("..", "..", path);
 
     if (!cli)
     {
@@ -102,7 +89,7 @@ private bool test(string directory, string cli, TestPass pass)
     if (canFind(pass.excludedArchitectures, architecture) || canFind(pass.excludedOperatingSystems, operatingSystem))
         return true;
 
-    stderr.writefln("---------- Testing '%s' pass '%s' (expecting '%s') ----------", directory, pass.description, pass.expected);
+    stderr.writefln(">> Testing '%s' pass '%s' (expecting '%s')", directory, pass.description, pass.expected);
     stderr.writeln();
 
     chdir(directory);
@@ -133,7 +120,7 @@ private bool test(string directory, string cli, TestPass pass)
     }
 
     stderr.writeln();
-    stderr.writefln("========== Passes: %s - Failures: %s ==========", passes, failures);
+    stderr.writefln("<< Passes: %s - Failures: %s", passes, failures);
     stderr.writeln();
 
     {
@@ -150,10 +137,19 @@ private bool test(string directory, string cli, TestPass pass)
 
 private bool invoke(string file, string cli, TestPass pass)
 {
-    auto cmd = replace(replace(pass.command, "<file>", file), "<name>", file[0 .. $ - 4]);
-    auto full = cli ~ " " ~ cmd;
-    auto base = baseName(cli) ~ " " ~ cmd;
-    auto result = system(full ~ " -s");
+    auto args = replace(replace(pass.command, "<file>", file), "<name>", file[0 .. $ - 4]);
+    auto full = cli ~ " " ~ args;
+    auto cmd = baseName(cli) ~ " " ~ args;
+    auto name = pass.file[0 .. $ - 5];
+    auto expFile = format("%s.exp.%s", file, name);
+
+    string exp;
+
+    if (exists(expFile))
+        exp = readText(expFile);
+
+    auto result = system(full ~ format(" 1> %s.res.%s 2>&1", file, name));
+    auto output = readText(format("%s.res.%s", file, name));
 
     if (result != pass.expected)
     {
@@ -162,12 +158,48 @@ private bool invoke(string file, string cli, TestPass pass)
         scope (exit)
             outputLock.unlock();
 
-        stderr.writefln("%s\t\tFailed ('%s')", base, result);
+        stderr.writefln("%-60sFailed ('%s')", cmd, result);
 
         if (!pass.swallowError)
         {
-            stderr.writefln("Error was (%s):", full);
-            system(full);
+            stderr.writeln("Error was:");
+            stderr.writeln(output);
+        }
+
+        return false;
+    }
+    else if (exp && output != exp)
+    {
+        outputLock.lock();
+
+        scope (exit)
+            outputLock.unlock();
+
+        stderr.writefln("%-60sFailed ('!')", cmd);
+
+        if (!pass.swallowError)
+        {
+            stderr.writeln("Output was:");
+            stderr.writeln(output);
+            stderr.writeln("Expected output is:");
+            stderr.writeln(exp);
+        }
+
+        return false;
+    }
+    else if (!exp && strip(output))
+    {
+        outputLock.lock();
+
+        scope (exit)
+            outputLock.unlock();
+
+        stderr.writefln("%-60sFailed ('?')", cmd);
+
+        if (!pass.swallowError)
+        {
+            stderr.writeln("Expected no output, but got:");
+            stderr.writeln(output);
         }
 
         return false;
@@ -179,7 +211,7 @@ private bool invoke(string file, string cli, TestPass pass)
         scope (exit)
             outputLock.unlock();
 
-        stderr.writefln("%s\t\tPassed ('%s')", base, result);
+        stderr.writefln("%-60sPassed ('%s')", cmd, result);
 
         return true;
     }

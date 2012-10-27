@@ -27,9 +27,10 @@ public final class StatisticsTool : Tool
     @property public string[] options() pure nothrow
     {
         return ["\t--gfields\t\t-g\t\tPrint a global field list.",
-                "\t--tfields\t\t-h\t\tPrint a thread field list.",
+                "\t--tfields\t\t-e\t\tPrint a thread field list.",
                 "\t--functions\t\t-f\t\tPrint a function list.",
-                "\t--types\t\t\t-t\t\tPrint a type list."];
+                "\t--types\t\t\t-t\t\tPrint a type list.",
+                "\t--dblocks\t\t-d\t\tPrint a data block list."];
     }
 
     public int run(string[] args)
@@ -38,6 +39,7 @@ public final class StatisticsTool : Tool
         bool printThreadFields;
         bool printFuncs;
         bool printTypes;
+        bool printDataBlocks;
 
         try
         {
@@ -45,9 +47,10 @@ public final class StatisticsTool : Tool
                    config.caseSensitive,
                    config.bundling,
                    "gfields|g", &printGlobalFields,
-                   "tfields|h", &printThreadFields,
+                   "tfields|e", &printThreadFields,
                    "functions|f", &printFuncs,
-                   "types|t", &printTypes);
+                   "types|t", &printTypes,
+                   "dblocks|d", &printDataBlocks);
             args = args[1 .. $];
         }
         catch (Exception ex)
@@ -106,6 +109,7 @@ public final class StatisticsTool : Tool
                 auto v = new StatisticsVisitor();
                 v.run(mod);
 
+                logf("Data blocks: %s", v.dataBlocks);
                 logf("Global fields: %s", v.globalFields);
                 logf("Thread fields: %s", v.threadFields);
                 logf("Functions: %s", v.functions);
@@ -154,6 +158,16 @@ public final class StatisticsTool : Tool
 
                     foreach (type; mod.types)
                         log(type.x);
+                }
+
+                if (printDataBlocks)
+                {
+                    log();
+                    logf("---------- Data blocks in module %s ----------", mod);
+                    log();
+
+                    foreach (data; mod.dataBlocks)
+                        log(data.x);
                 }
             }
             catch (IOException ex)
