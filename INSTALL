@@ -34,8 +34,7 @@ The MCI Waf script also supports some additional options:
         you wish to enable this, you should probably set this value to
         "~/.local/share/gtksourceview-3.0/language-specs" or similar.
     * --valgrind (= "false")
-      - Whether to run the unit test suite with Valgrind. Note that
-        this is disabled on OS X regardless of this setting.
+      - Whether to run the unit test suite with Valgrind.
 
 You will need to have libffi, libgc and libdl installed for the build
 to succeed. Your libffi installation must support the closure API. Your
