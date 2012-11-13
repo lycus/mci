@@ -1,0 +1,8 @@
+function void foo() cdecl
+{
+    block entry
+    {
+        invoke.tail (foo);
+        leave;
+    }
+}

@@ -1871,6 +1871,8 @@ generator that tail call optimization must be done.
 This instruction must be immediately followed by a return_ instruction which
 must return the resulting value of this call.
 
+Tail calls can only be done in functions with standard calling convention.
+
 call.indirect
 -------------
 
@@ -1924,6 +1926,8 @@ functions with no return type (i.e. returning ``void``), and thus has no
 target register.
 
 This instruction must be immediately followed by a leave_ instruction.
+
+Tail calls can only be done in functions with standard calling convention.
 
 invoke.indirect
 ---------------

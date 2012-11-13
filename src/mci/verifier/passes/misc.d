@@ -208,3 +208,14 @@ public final class SSAFormVerifier : CodeVerifier
             error(phi, "The 'phi' instruction is not valid in non-SSA functions.");
     }
 }
+
+public final class TailCallConventionVerifier : CodeVerifier
+{
+    public override void verify(Function function_)
+    {
+        foreach (bb; function_.blocks)
+            foreach (i, instr; bb.y.stream)
+                if ((instr.opCode is opCallTail || instr.opCode is opInvokeTail) && function_.callingConvention != CallingConvention.standard)
+                    error(instr, "Tail calls can only be done in functions with standard calling convention.");
+    }
+}

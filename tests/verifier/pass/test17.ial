@@ -1,0 +1,8 @@
+function void foo()
+{
+    block entry
+    {
+        invoke.tail (foo);
+        leave;
+    }
+}
