@@ -102,7 +102,7 @@ public final class TailCallReturnVerifier : CodeVerifier
                         error(instr, "The 'return' instruction after a 'call.tail' instruction must return the resulting value from the call.");
                 }
                 else if (instr.opCode is opInvokeTail)
-                    if (bb.y.stream[i + 1] !is opLeave)
+                    if (bb.y.stream[i + 1].opCode !is opLeave)
                         error(instr, "The 'invoke.tail' instruction must be followed by a 'leave' instruction.");
             }
         }

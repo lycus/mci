@@ -1,0 +1,10 @@
+function int32 foo() cdecl
+{
+    register int32 i;
+
+    block entry
+    {
+        i = call.tail (foo);
+        return i;
+    }
+}
