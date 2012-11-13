@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
-import os, stat, urllib2
+import os
+import stat
 
-f = urllib2.urlopen('http://waf.googlecode.com/files/waf-1.7.5')
+try:
+    from urllib.request import urlretrieve
+except:
+    from urllib import urlretrieve
 
-with open('waf', 'wb') as waf:
-    waf.write(f.read())
-
+urlretrieve('http://waf.googlecode.com/files/waf-1.7.5', 'waf')
 os.chmod('waf', os.stat('waf').st_mode | stat.S_IXUSR)
