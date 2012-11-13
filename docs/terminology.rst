@@ -4,6 +4,13 @@ Terminology
 This document attempts to explain various terms and abbreviations often used
 in the MCI source code and documentation.
 
+AA
+++
+
+Abbreviation for alias analysis. This is the technique of proving whether or
+not two pointers definitely, definitely not, or possibly point to the same
+memory location.
+
 ALU
 +++
 
