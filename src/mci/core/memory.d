@@ -79,7 +79,7 @@ private Select!(isPOSIX, int, uint) accessToFlags(MemoryAccess access) pure noth
         final switch (access)
         {
             case MemoryAccess.read:
-                return PAGE_READ;
+                return PAGE_READONLY;
             case MemoryAccess.write:
                 return PAGE_READWRITE;
             case MemoryAccess.execute:
