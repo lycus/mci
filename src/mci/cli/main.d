@@ -11,7 +11,7 @@ import core.memory,
 static if (isPOSIX)
 {
     /**
-     * Indicates which garbage collector to use when running program.s
+     * Indicates which garbage collector to use when running programs.
      */
     public enum GarbageCollectorType : ubyte
     {
@@ -23,7 +23,7 @@ static if (isPOSIX)
 else
 {
     /**
-     * Indicates which garbage collector to use when running program.s
+     * Indicates which garbage collector to use when running programs.
      */
     public enum GarbageCollectorType : ubyte
     {
