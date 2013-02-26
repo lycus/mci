@@ -1,6 +1,7 @@
 module mci.vm.threading.tls;
 
-import mci.core.common,
+import core.sys.windows.windows,
+       mci.core.common,
        mci.core.config,
        mci.core.container,
        mci.core.sync;
@@ -9,8 +10,6 @@ import mci.core.common,
 
 static if (isWindows)
 {
-    import core.sys.windows.windows;
-
     package alias void function() WindowsThreadEventCallback;
 
     package final class ThreadEvent

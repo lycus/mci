@@ -1,20 +1,13 @@
 module mci.vm.ffi;
 
-import std.string,
+import core.sys.posix.dlfcn,
+       core.sys.windows.windows,
+       std.file,
+       std.path,
+       std.string,
        std.utf,
        mci.core.config,
        mci.core.code.functions;
-
-static if (isPOSIX)
-{
-    import core.sys.posix.dlfcn,
-           std.file,
-           std.path;
-}
-else
-{
-    import core.sys.windows.windows;
-}
 
 public alias extern (C) void function() EntryPoint; /// Represents a procedure loaded from a dynamic link library.
 

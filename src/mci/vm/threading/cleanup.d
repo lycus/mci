@@ -3,18 +3,18 @@ module mci.vm.threading.cleanup;
 import core.memory,
        core.thread,
        core.stdc.stdlib,
+       core.sys.posix.pthread,
        std.conv,
        mci.core.common,
        mci.core.config,
        mci.core.container,
-       mci.core.sync;
+       mci.core.sync,
+       mci.vm.threading.tls;
 
 public alias void delegate() ThreadEventCallback;
 
 static if (isWindows)
 {
-    import mci.vm.threading.tls;
-
     private __gshared NoNullDictionary!(Thread, ThreadEventCallback, false) callbacks;
     private __gshared Mutex lock;
 
@@ -55,8 +55,6 @@ static if (isWindows)
 }
 else
 {
-    import core.sys.posix.pthread;
-
     private __gshared pthread_key_t key;
 
     private struct CallbackData

@@ -1,24 +1,20 @@
 module mci.core.memory;
 
 import core.cpuid,
+       core.sys.posix.unistd,
+       core.sys.posix.sys.mman,
+       core.sys.windows.windows,
        std.traits,
        mci.core.common,
        mci.core.config;
 
 static if (isPOSIX)
 {
-    import core.sys.posix.unistd,
-           core.sys.posix.sys.mman;
-
     // TODO: Move to druntime.
     static if (operatingSystem == OperatingSystem.osx)
         private enum int _SC_PAGESIZE = 29;
     else static if (operatingSystem == OperatingSystem.freebsd)
         private enum int _SC_PAGESIZE = 47;
-}
-else
-{
-    import core.sys.windows.windows;
 }
 
 public __gshared size_t pageSize; /// Holds the page size of the system.
