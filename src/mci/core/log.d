@@ -9,7 +9,7 @@ import std.algorithm,
 
 private __gshared Mutex mutex;
 
-nothrow shared static this()
+shared static this()
 {
     mutex = new typeof(mutex)();
 }

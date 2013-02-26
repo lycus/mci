@@ -623,7 +623,7 @@ public class List(T) : Indexable!T, Collection!T
     private T[] _array;
     private size_t _size;
 
-    public this()
+    public this() pure nothrow
     {
     }
 
@@ -1193,7 +1193,7 @@ public class Dictionary(K, V, bool order = true) : Map!(K, V)
     static if (order)
         private List!(Tuple!(K, V)) _list;
 
-    public this()
+    public this() pure nothrow
     {
         static if (order)
             _list = new typeof(_list)();

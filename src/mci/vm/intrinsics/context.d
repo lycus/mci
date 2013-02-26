@@ -17,7 +17,7 @@ public final class VirtualMachineState
         assert(_objects);
     }
 
-    private this()
+    private this() pure nothrow
     {
         _objects = new typeof(_objects)();
     }

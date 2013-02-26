@@ -10,7 +10,7 @@ import mci.core.visitor,
 /**
  * Gathers various statistics about a module.
  */
-private final class StatisticsVisitor : ModuleVisitor
+public final class StatisticsVisitor : ModuleVisitor
 {
     private size_t _types;
     private size_t _members;

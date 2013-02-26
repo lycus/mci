@@ -90,7 +90,7 @@ public final class RuntimeValue
         assert(_data);
     }
 
-    public this(GarbageCollector gc, Type type) nothrow
+    public this(GarbageCollector gc, Type type)
     in
     {
         assert(gc);
