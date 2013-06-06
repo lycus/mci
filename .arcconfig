@@ -1,8 +1,0 @@
-{
-    "project_id" : "MCI",
-    "conduit_uri" : "http://phabricator.lycus.org/",
-    "phutil_libraries" : [
-        "libphlycus"
-    ],
-    "unit.engine" : "LycusTestEngine"
-}
