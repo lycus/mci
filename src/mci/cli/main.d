@@ -75,7 +75,7 @@ body
     if (help)
     {
         log("Managed Compiler Infrastructure (MCI) 1.0");
-        log("Copyright (c) 2012 The Lycus Foundation - http://lycus.org");
+        log("Copyright (c) 2013 The Lycus Foundation - http://lycus.org");
         log("Available under the terms of the MIT License");
         log();
 
