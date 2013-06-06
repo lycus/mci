@@ -7,6 +7,3 @@
 [submodule "bootdoc"]
 	path = bootdoc
 	url = git://github.com/lycus/bootdoc.git
-[submodule "libphlycus"]
-	path = libphlycus
-	url = git://github.com/lycus/libphlycus.git
